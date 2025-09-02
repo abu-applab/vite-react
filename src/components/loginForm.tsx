@@ -5,10 +5,11 @@ import qPass from '../assets/images/Q-pass.svg'
 import tawtheeq from '../assets/images/Tawtheeq-logo.svg'
 import { Label } from "@radix-ui/react-label";
 import { Input } from "./ui/input";
-import { Mail, Lock, AlertCircle } from "lucide-react"
+import { Mail, Lock } from "lucide-react"
+// AlertCircle
 import { Button } from "./ui/button";
 import { useNavigate } from "react-router-dom";
-import { Alert, AlertDescription } from "./ui/alert";
+// import { Alert, AlertDescription } from "./ui/alert";
 
 
 const LoginForm = () => {
