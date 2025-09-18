@@ -1,10 +1,11 @@
-import DynamicForm from "@/components/service/dynamic-form"
-import { NewServiceRequestModal } from "@/components/service/new-service-request-modal"
+import DynamicForm from "@/components/dynamic-form"
+import FormSubmitted from "@/components/formSubmitted"
+import { NewServiceRequestModal, serviceOptions } from "@/components/service/new-service-request-modal"
 import { RequestedService } from "@/components/service/requested-service"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { getFormConfig } from "@/lib/form-data"
+import { getServiceFormConfig } from "@/lib/form-data"
 import { CirclePlus, Search } from "lucide-react"
 import { useState } from "react"
 import { Link } from "react-router-dom"
@@ -20,23 +21,23 @@ const requestedServicesData = [
   {
     id: "AP-IZ-LE-81686",
     plotNumber: "28368",
-    serviceType: "Land Use Letter",
+    serviceType: "Land Transfer",
     submittedDate: "12-07-2025",
-    status: "Approved",
+    status: "In progress",
   },
   {
     id: "AP-IZ-LE-81686",
     plotNumber: "28368",
-    serviceType: "Land Use Letter",
+    serviceType: "Sublease",
     submittedDate: "12-07-2025",
-    status: "Approved",
+    status: "Rejected",
   },
   {
     id: "AP-IZ-LE-81686",
     plotNumber: "28368",
-    serviceType: "Land Use Letter",
+    serviceType: "Rental Relationship Request",
     submittedDate: "12-07-2025",
-    status: "Approved",
+    status: "In progress",
   },
 ]
 
@@ -44,9 +45,44 @@ const Service = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedService, setSelectedService] = useState<string>("")
   const [requestedServices, setRequestedServices] = useState(requestedServicesData)
+  const [formData, setFormData] = useState<Record<string, any>>({})
+  const [errors, setErrors] = useState<Record<string, string>>({})
+  const [isFormSubmitted, setIsFormSubmitted] = useState(false)
 
-  const handlePerviousButton = () => {
-    setSelectedService("")
+
+  const handleInputChange = (fieldId: string, value: any) => {
+    setFormData((prev) => ({ ...prev, [fieldId]: value }))
+    setErrors((prev) => ({ ...prev, [fieldId]: "" }))
+  }
+
+  const validateForm = () => {
+    const config = getServiceFormConfig(selectedService)
+    let newErrors: Record<string, string> = {}
+    config.sections.forEach((section) => {
+      section.fields?.forEach((field) => {
+        if (field.required && !formData[field.id]) {
+          newErrors[field.id] = `${field.label} is required`
+        }
+      })
+    })
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (validateForm()) {
+      const serviceTitle = serviceOptions.find((service) => service.key === selectedService)?.title ?? "Unknown Service"
+      const newRequest = {
+        id: "AP-IZ-LE-81686",
+        plotNumber: "28368",
+        serviceType: serviceTitle,
+        submittedDate: "12-07-2025",
+        status: "Approved",
+      }
+      setRequestedServices((prev) => [...prev, newRequest])
+      setIsFormSubmitted(true)
+    }
   }
 
   return (
@@ -103,14 +139,20 @@ const Service = () => {
           </div>
         </>
       )
-        : <DynamicForm 
-            config={getFormConfig(selectedService)} 
-            handlePerviousButton={handlePerviousButton} 
-            setSelectedService={setSelectedService} 
-            selectedService={selectedService}
-            setRequestedServices={setRequestedServices}
-            requestedServices={requestedServices}
-          />
+        : <>
+          {isFormSubmitted ? (
+            <FormSubmitted onGoToRequest={() => setSelectedService("")} />
+          ) : (
+            <DynamicForm
+              config={getServiceFormConfig(selectedService)}
+              formData={formData}
+              errors={errors}
+              handleInputChange={handleInputChange}
+              handleSubmit={handleSubmit}
+              handlePerviousButton={() => setSelectedService("")}
+            />
+          )}
+        </>
       }
       <NewServiceRequestModal
         open={isModalOpen}

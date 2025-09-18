@@ -8,8 +8,18 @@ import HubPage from './screens/hubPage';
 import Service from './screens/service';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import ApplicationPage from './screens/applicationPage';
-
+import ApplicationPage from './screens/application';
+import AllocatedPlotsPage from './screens/allocatedPlotsPage';
+import PlotDetailsScreen from './screens/plotDetailsScreen';
+import DirectoryScreen from './screens/directoryScreen';
+import ViolationPage from './screens/violationsScreen';
+import BotRequestAndReportsPage from './screens/botRequestAndReportsPage';
+import PaymentScreen from './screens/paymentScreen';
+import Agreements from './screens/agreements';
+import MyProfile from './screens/myProfile';
+import Notifications from './screens/notifications';
+// import Settings from './screens/settings'
+import CompanyProfile from './screens/companyProfile';
 
 function App() {
   const { i18n } = useTranslation();
@@ -51,12 +61,21 @@ function App() {
         <Route path="/portal" element={<PortalLayout />}>
           <Route index element={<HubPage />} />
           <Route path="/portal/application" element={<ApplicationPage />} />
-          <Route path="/portal/payments" element={<HubPage />} />
-          <Route path="/portal/allocated-plots" element={<HubPage />} />
-          <Route path="/portal/bot-reports" element={<HubPage />} />
-          <Route path="/portal/violations" element={<HubPage />} />
-          <Route path="/portal/directory" element={<HubPage />} />
+          <Route path="/portal/payments" element={<PaymentScreen />} />
+          <Route path="/portal/allocated-plots" element={<AllocatedPlotsPage />} />
+          <Route path="/portal/agreements" element={<Agreements />} />
+          <Route path="/portal/allocated-plots/:id" element={<PlotDetailsScreen />} />
+          <Route path="/portal/bot-requests" element={<BotRequestAndReportsPage selectedBotType="request" />} />
+          <Route path="/portal/bot-reports/" element={<BotRequestAndReportsPage selectedBotType="reports" />} />
+          <Route path="/portal/bot-requests/:form" element={<BotRequestAndReportsPage selectedBotType="request" />} />
+          <Route path="/portal/bot-reports/:form" element={<BotRequestAndReportsPage selectedBotType="reports" />} />
+          <Route path="/portal/violations" element={<ViolationPage />} />
+          <Route path="/portal/directory" element={<DirectoryScreen />} />
           <Route path="/portal/service" element={<Service />} />
+          <Route path="/portal/my-profile" element={<MyProfile />} />
+          <Route path="/portal/notifications" element={<Notifications />} />
+          {/* <Route path="/portal/settings" element={<Settings />} /> */}
+          <Route path="/portal/company-profile" element={<CompanyProfile />} />
           {/* <Route path="add-company" element={<AddCompany />} /> */}
         </Route>
       </Routes>

@@ -1,7 +1,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
 import { useState } from "react";
 import { Card, CardContent } from "./ui/card";
-import qPass from '../assets/images/Q-pass.svg'
+// import qPass from '../assets/images/Q-pass.svg'
 import tawtheeq from '../assets/images/Tawtheeq-logo.svg'
 import { Label } from "@radix-ui/react-label";
 import { Input } from "./ui/input";
@@ -77,18 +77,17 @@ const LoginForm = () => {
             <AlertDescription className="text-sm text-center">NAS authentication failed. Please try again!</AlertDescription>
           </Alert>
         </div> */}
-        <div className="grid grid-cols-2 gap-4 pt-4">
+        <div className="grid grid-cols-1 gap-4 pt-4">
           <Card className="cursor-pointer hover:shadow-md transition-shadow border-2 hover:border-maroon-100 py-0">
             <CardContent className="flex items-center justify-center space-y-3 py-6" onClick={() => navigate(`/portal`)}>
               <img src={tawtheeq} alt="Tawtheeq" className="h-[72px] w-[72px]" />
             </CardContent>
           </Card>
-
-          <Card className="cursor-pointer hover:shadow-md transition-shadow border-2 hover:border-maroon-100 py-0">
+          {/* <Card className="cursor-pointer hover:shadow-md transition-shadow border-2 hover:border-maroon-100 py-0">
             <CardContent className="flex items-center justify-center space-y-3 py-6" onClick={() => navigate("/portal")}>
               <img src={qPass} alt="Q-Pass" className="h-[72px] w-[72px]" />
             </CardContent>
-          </Card>
+          </Card> */}
         </div>
       </TabsContent>
 

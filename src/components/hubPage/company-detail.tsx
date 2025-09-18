@@ -1,6 +1,8 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { EllipsisVertical, CircleAlert } from "lucide-react"
+import { EllipsisVertical, CircleAlert, FileText, ChevronRight, Touchpad, Eye } from "lucide-react"
 import { Badge } from "../ui/badge"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu"
+import { useNavigate } from "react-router-dom"
 
 
 export interface CompanyDetailAlert {
@@ -32,6 +34,9 @@ export function CompanyDetail({
     email,
     alerts = [],
 }: CompanyCardProps) {
+
+    const navigate = useNavigate()
+
     return (
         <Card className="w-full">
             <CardHeader className="pb-3">
@@ -53,7 +58,27 @@ export function CompanyDetail({
                             <div className={`w-1.5 h-1.5 rounded-[50%] ${isActive ? "bg-green-600" : "bg-red-600"} `} />
                             {isActive ? "Active" : "Expired"}
                         </Badge>
-                        <EllipsisVertical className="w-4 h-4" />
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <EllipsisVertical className="w-4 h-4" />
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent className="w-64 mt-2 rounded-lg shadow-lg border bg-white p-0 pb-2">
+                                <DropdownMenuItem className="flex items-center  mt-2 gap-3 px-4 py-2 hover:bg-gray-50 cursor-pointer font-medium text-sm" onClick={() => { }}>
+                                    <FileText className="w-6 h-6 text-maroon-100" />
+                                    <span className="flex-1">Applications</span>
+                                    <ChevronRight className="w-6 h-6 text-black" />
+                                </DropdownMenuItem>
+                                <DropdownMenuItem className="flex items-center mt-2 gap-3 px-4 py-2 hover:bg-gray-50 cursor-pointer font-medium text-sm" onClick={() => { }}>
+                                    <Touchpad className="w-6 h-6 text-maroon-100" />
+                                    <span className="flex-1">Service Requests</span>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem className="flex items-center mt-2 gap-3 px-4 py-2 hover:bg-gray-50 cursor-pointer font-medium text-sm" onClick={() => {navigate("/portal/company-profile") }}>
+                                    <Eye className="w-6 h-6 text-maroon-100" />
+                                    <span className="flex-1">View Details</span>
+                                    <ChevronRight className="w-6 h-6  text-black" />
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                     </div>
                 </div>
             </CardHeader>
@@ -82,9 +107,9 @@ export function CompanyDetail({
                 </div>
 
                 {alerts.length > 0 && (
-                    <div className={`grid ${alerts.length === 1 ? 'grid-cols-1': 'grid-cols-2'} mt-1 gap-2.5`}>
+                    <div className={`grid ${alerts.length === 1 ? 'grid-cols-1' : 'grid-cols-2'} mt-1 gap-2.5`}>
                         {
-                            alerts.map(({title, id, type}) => {
+                            alerts.map(({ title, id, type }) => {
                                 return (
                                     <div key={id} className={`flex flex-row items-center justify-center gap-2 ${type === 'warning' ? 'bg-amber-50 text-amber-600' : 'bg-red-50 text-red-600'} px-4 py-1.5 rounded-lg`}>
                                         <CircleAlert />

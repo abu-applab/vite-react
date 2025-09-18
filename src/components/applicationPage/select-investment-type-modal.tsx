@@ -3,43 +3,21 @@ import { Button } from "../ui/button"
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog"
 import { Label } from "../ui/label"
+import { serviceOptions } from "@/constants"
 
 interface SelectInvestmentTypeModalProps {
     open: boolean
     onOpenChange: (open: boolean) => void
-    selectedService: any
-    setSelectedService: any
+    selectedApplication: any
+    setSelectedApplication: any
 }
 
-export const serviceOptions = [
-    {
-        title: "Logistics Park",
-        key: "logisticsPark"
-    },
-    {
-        title: "Industrial Plots",
-        key: "industrialPlots"
-    },
-    {
-        title: "Commercial Plots",
-        key: "commercialPlots"
-    },
-    {
-        title: "Open Yards",
-        key: "openYards"
-    },
-    {
-        title: "SMI",
-        key: "smi",
-    }
-]
 
-
-export function SelectInvestmentTypeModal({ open, onOpenChange, selectedService, setSelectedService }: SelectInvestmentTypeModalProps) {
+export function SelectInvestmentTypeModal({ open, onOpenChange, selectedApplication, setSelectedApplication }: SelectInvestmentTypeModalProps) {
 
     const handleDone = () => {
-        if (selectedService) {
-            console.log("Selected service:", selectedService)
+        if (selectedApplication) {
+            console.log("Selected service:", selectedApplication)
             // Handle the selected service here
             onOpenChange(false)
             //   setSelectedService("")
@@ -48,7 +26,7 @@ export function SelectInvestmentTypeModal({ open, onOpenChange, selectedService,
 
     const handleCancel = () => {
         onOpenChange(false)
-        setSelectedService("")
+        setSelectedApplication("")
     }
 
     return (
@@ -69,7 +47,7 @@ export function SelectInvestmentTypeModal({ open, onOpenChange, selectedService,
                 </DialogHeader>
 
                 <div className="px-5 py-3">
-                    <RadioGroup value={selectedService} onValueChange={setSelectedService}>
+                    <RadioGroup value={selectedApplication} onValueChange={setSelectedApplication}>
                         <div className="space-y-3">
                             {serviceOptions.map(({ key, title }) => (
                                 <div key={key} className="flex items-center space-x-3">
@@ -89,7 +67,7 @@ export function SelectInvestmentTypeModal({ open, onOpenChange, selectedService,
                     </Button>
                     <Button
                         onClick={handleDone}
-                        disabled={!selectedService}
+                        disabled={!selectedApplication}
                         className="px-6 bg-maroon-100 hover:bg-[#7A1F2B] text-white"
                     >
                         Done

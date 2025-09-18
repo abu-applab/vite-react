@@ -1,24 +1,28 @@
 export interface FormField {
-    id: string
-    label: string
-    type: "text" | "select" | "textarea" | "file" | "number"
-    required: boolean
-    placeholder?: string
-    options?: string[]
+    id: string;
+    label: string;
+    type: "text" | "select" | "textarea" | "file" | "number";
+    required: boolean;
+    placeholder?: string;
+    options?: string[];
+    disabled?: boolean;
 }
 
 export interface FormSection {
+    key?: string
     title: string
-    fields: FormField[]
+    fields?: FormField[]
+    points?: string[]
 }
 
 export interface FormConfig {
+    key?: string,
     title: string
     description: string
     sections: FormSection[]
 }
 
-export function getFormConfig(formType: string): FormConfig {
+export function getServiceFormConfig(formType: string): FormConfig {
     switch (formType) {
         case "landUseLetter":
             return {
@@ -260,7 +264,795 @@ export function getFormConfig(formType: string): FormConfig {
                     },
                 ],
             }
+        default:
+            throw new Error(`Unknown form type: ${formType}`)
+    }
+}
+export function getApplicationFormConfig(formType: string): FormConfig[] {
+    switch (formType) {
+        case "logisticsPark":
+            return [
+                {
+                    title: "Logistics Apllication",
+                    description: "Application for setting up, expanding, or modifying an logistics project.",
+                    sections: [
+                        {
+                            title: "Intended Use & Business Plan",
+                            fields: [
+                                {
+                                    id: "landUSe",
+                                    label: "Land Use",
+                                    type: "select",
+                                    required: true,
+                                    options: ["Industry", "Industry 2", "Industry 3"],
+                                },
+                                {
+                                    id: "cluster",
+                                    label: "Cluster",
+                                    type: "select",
+                                    required: true,
+                                    options: ["Doha Industry Area", "Industry 2", "Industry 3"],
+                                },
+                                {
+                                    id: "isicCode",
+                                    label: "ISIC Code",
+                                    type: "text",
+                                    required: true,
+                                    options: ["Agreement A", "Agreement B", "Agreement C"],
+                                },
+                                {
+                                    id: "landTransferType",
+                                    label: "Land Transfer Type",
+                                    type: "select",
+                                    required: true,
+                                    placeholder: "",
+                                },
+                                {
+                                    id: "Description of Proposed Business Activities",
+                                    label: "Comments (Optional)",
+                                    type: "textarea",
+                                    required: true,
+                                    placeholder: "",
+                                },
+                            ],
+                        },
+                        {
+                            title: "Requested Area",
+                            fields: [
+                                {
+                                    id: "loacation",
+                                    label: "Location",
+                                    type: "text",
+                                    required: true,
+                                    placeholder: "",
+                                },
+                                {
+                                    id: "category",
+                                    label: "Category",
+                                    type: "text",
+                                    required: true,
+                                    placeholder: "Enter company name in Arabic",
+                                },
+                                {
+                                    id: "totalRequestedPlotSize",
+                                    label: "Total Requested Plot Size",
+                                    type: "text",
+                                    required: true,
+                                    placeholder: "Enter PO Box",
+                                },
+                            ],
+                        },
+                        {
+                            title: "Employment",
+                            fields: [
+                                {
+                                    id: "currentNumberOfEmployees",
+                                    label: "Current Number of Employees",
+                                    type: "text",
+                                    required: true,
+                                    placeholder: "",
+                                },
+                                {
+                                    id: "additionalEmploymentProjected",
+                                    label: "Additional Employment Projected",
+                                    type: "text",
+                                    required: true,
+                                    placeholder: "",
+                                },
+                                {
+                                    id: "totalEmployment",
+                                    label: "Total Employment",
+                                    type: "text",
+                                    required: true,
+                                    placeholder: "",
+                                },
+                            ],
+                        },
+                        {
+                            title: "Project Financial Information",
+                            fields: [
+                                {
+                                    id: "constructionCost",
+                                    label: "Construction Cost",
+                                    type: "text",
+                                    required: true,
+                                    placeholder: "",
+                                },
+                                {
+                                    id: "workingCapital",
+                                    label: "Working Capital",
+                                    type: "text",
+                                    required: true,
+                                    placeholder: "",
+                                },
+                                {
+                                    id: "totalInvestment",
+                                    label: "Total Investment",
+                                    type: "text",
+                                    required: true,
+                                    placeholder: "",
+                                },
+                            ],
+                        },
+                    ],
+                }
+            ]
+        case "industrialPlots":
+            return [
+                {
+                    title: "Industrial Application",
+                    description: "Application for setting up, expanding, or modifying an industrial project.",
+                    key: "instruction",
+                    sections: [
+                        {
+                            title: "Instruction for completing the form",
+                            points: [
+                                "Applicants are requested to read this form carefully and the documents for reading, to fill in the required information and to attach copies of all the required documents",
+                                "Manateq reserves the right to request more information from the applicant. There are no guarantees that this application will be approved",
+                                "Applicants shall nominate a contact person with whom all communications with Manateq will be made. The contact person nominated should ideally be the Project Manager or such as deemed as appropriate by the applicant to be able to answer any queries regarding this application.",
+                                "Applicants must provide a valid email and mobile number for all communications and SMS notifications.",
+                            ],
+                        },
+                        {
+                            title: "Important Information and Reading Materials",
+                            points: ["Development Guidelines and Design Criteria", "Lease Agreement"],
+                        },
+                        {
+                            title: "Required Documents (Attach the following documents with the application form)",
+                            key: "requiredDocuments",
+                            points: [
+                                "A Valid Commercial Registration",
+                                "Industrial License / Initial Approval from Ministry of Commerce and Industry",
+                                "Business Plan and Feasibility Study",
+                                "Conceptual Site Layout",
+                                "Material safety data sheets",
+                                "Owners' IDs",
+                                "Financial Capacity Proof to Execute the Project",
+                                "Credit Bureau Consent Form",
+                                "Company Profile (if applicable)",
+                                "Three Years of Audited Financial Statements (if applicable)",
+                            ],
+                        },
+                    ],
+                },
+                {
+                    title: "Industrial Application",
+                    description: "Application to apply for an industrial project.",
+                    sections: [
+                        {
+                            title: "Technology",
+                            fields: [
+                                {
+                                    id: "technologyCountryOfOrigin",
+                                    label: "Technology Country of Origin",
+                                    type: "text",
+                                    required: true,
+                                    placeholder: ""
+                                },
+                                {
+                                    id: "equipmentCountryOfOrigin",
+                                    label: "Equipment Country of Origin",
+                                    type: "text",
+                                    required: true,
+                                    placeholder: ""
+                                },
+                                {
+                                    id: "equipmentYearOfProduction",
+                                    label: "Equipment Year of Production",
+                                    type: "text",
+                                    required: true,
+                                    placeholder: ""
+                                }
+                            ]
+                        },
+                        {
+                            title: "Intended Use & Business Plan",
+                            fields: [
+                                {
+                                    id: "landUse",
+                                    label: "Land Use",
+                                    type: "select",
+                                    required: true,
+                                    options: ["Industry", "Industry 2", "Industry 3"]
+                                },
+                                {
+                                    id: "location",
+                                    label: "Location",
+                                    type: "select",
+                                    required: true,
+                                    options: ["Doha Industrial Area", "Plot 2", "Plot 3"]
+                                },
+                                {
+                                    id: "isicSection",
+                                    label: "ISIC Section",
+                                    type: "select",
+                                    required: true,
+                                    options: ["C - Manufacturing", "Plot 2", "Plot 3"]
+                                },
+                                {
+                                    id: "isicCodeDescription",
+                                    label: "ISIC Code & Description",
+                                    type: "select",
+                                    required: true,
+                                    options: ["C.2011 – Manufacture of basic chemicals", "Plot 2", "Plot 3"]
+                                },
+                                {
+                                    id: "descriptionOfProposedBusinessActivities",
+                                    label: "Description of Proposed Business Activities",
+                                    type: "textarea",
+                                    required: true,
+                                    placeholder: ""
+                                }
+                            ]
+                        },
+                        {
+                            title: "Estimated Requested Area (SQM)",
+                            fields: [
+                                {
+                                    id: "totalRequestedPlotArea",
+                                    label: "Total Requested Plot Area (SQM)",
+                                    type: "number",
+                                    required: true
+                                },
+                                {
+                                    id: "openArea",
+                                    label: "Open Area (SQM)",
+                                    type: "number",
+                                    required: true
+                                },
+                                {
+                                    id: "administration",
+                                    label: "Administration (SQM)",
+                                    type: "number",
+                                    required: true
+                                },
+                                {
+                                    id: "laboratory",
+                                    label: "Laboratory (SQM)",
+                                    type: "number",
+                                    required: true
+                                },
+                                {
+                                    id: "rawMaterialStorage",
+                                    label: "Raw Material Storage (SQM)",
+                                    type: "number",
+                                    required: true
+                                },
+                                {
+                                    id: "productionArea",
+                                    label: "Production Area (SQM)",
+                                    type: "number",
+                                    required: true
+                                },
+                                {
+                                    id: "finishedProductStorage",
+                                    label: "Finished Product Storage (SQM)",
+                                    type: "number",
+                                    required: true
+                                },
+                                {
+                                    id: "maintenanceWorkshops",
+                                    label: "Maintenance/Workshops (SQM)",
+                                    type: "number",
+                                    required: true
+                                }
+                            ]
+                        },
+                        {
+                            title: "Utilities",
+                            fields: [
+                                {
+                                    id: "portableWater",
+                                    label: "Portable Water (m³/day)",
+                                    type: "number",
+                                    required: true
+                                },
+                                {
+                                    id: "sewer",
+                                    label: "Sewer (m³/day)",
+                                    type: "number",
+                                    required: true
+                                },
+                                {
+                                    id: "naturalGas",
+                                    label: "Natural Gas (m³/year)",
+                                    type: "number",
+                                    required: true
+                                },
+                                {
+                                    id: "seaCoolingWater",
+                                    label: "Sea Cooling Water (m³/H)",
+                                    type: "number",
+                                    required: true
+                                },
+                                {
+                                    id: "electricity",
+                                    label: "Electricity (KVA)",
+                                    type: "number",
+                                    required: true
+                                },
+                                {
+                                    id: "fuelProducts",
+                                    label: "Fuel Products (mt/year)",
+                                    type: "number",
+                                    required: true
+                                }
+                            ]
+                        },
+                        {
+                            title: "Product Information",
+                            fields: [
+                                {
+                                    id: "nameOfProduct",
+                                    label: "Name of Product",
+                                    type: "text",
+                                    required: true
+                                },
+                                {
+                                    id: "annualProductionCapacity",
+                                    label: "Annual Production Capacity",
+                                    type: "text",
+                                    required: true
+                                },
+                                {
+                                    id: "quantity",
+                                    label: "Quantity",
+                                    type: "number",
+                                    required: true
+                                },
+                                {
+                                    id: "isicCode",
+                                    label: "ISIC Code",
+                                    type: "select",
+                                    required: true,
+                                    options: ["290512 - Alcohols (Industrial use)", "kg", "liters"]
+                                },
+                                {
+                                    id: "sourceOfRawMaterials",
+                                    label: "Source of Raw Materials",
+                                    type: "text",
+                                    required: true
+                                },
+                                {
+                                    id: "unit",
+                                    label: "Unit",
+                                    type: "text",
+                                    required: true,
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    title: "Industrial Application",
+                    description: "Application to apply for an industrial project.",
+                    sections: [
+                        {
+                            title: "Employment",
+                            fields: [
+                                {
+                                    id: "currentNumberOfEmployees",
+                                    label: "Current Number of Employees",
+                                    type: "number",
+                                    required: true
+                                },
+                                {
+                                    id: "additionalEmploymentProjected",
+                                    label: "Additional Employment Projected",
+                                    type: "number",
+                                    required: true
+                                }
+                            ]
+                        },
+                        {
+                            title: "Safety",
+                            fields: [
+                                {
+                                    id: "firstAidEquipment",
+                                    label: "First Aid Equipment",
+                                    type: "text",
+                                    required: true
+                                },
+                                {
+                                    id: "fireFightingSystem",
+                                    label: "Fire Fighting System",
+                                    type: "text",
+                                    required: true
+                                },
+                                {
+                                    id: "numberOfShifts",
+                                    label: "Number of Shifts",
+                                    type: "number",
+                                    required: true
+                                },
+                                {
+                                    id: "safetyEquipmentSystem",
+                                    label: "Safety Equipment/System",
+                                    type: "text",
+                                    required: true
+                                },
+                                {
+                                    id: "workersFacilities",
+                                    label: "Workers Facilities",
+                                    type: "text",
+                                    required: true
+                                },
+                                {
+                                    id: "emergencyResponsePlan",
+                                    label: "Emergency Response Plan",
+                                    type: "text",
+                                    required: true
+                                },
+                                {
+                                    id: "gasesEmittedDustsInfo",
+                                    label: "Gases Emitted/Dusts Info",
+                                    type: "text",
+                                    required: true
+                                },
+                                {
+                                    id: "stackHeight",
+                                    label: "Stack Height (m)",
+                                    type: "number",
+                                    required: true
+                                },
+                                {
+                                    id: "temperature",
+                                    label: "Temperature (Celsius)",
+                                    type: "number",
+                                    required: true
+                                },
+                                {
+                                    id: "rateOfEmission",
+                                    label: "Rate of Emission",
+                                    type: "number",
+                                    required: true
+                                },
+                                {
+                                    id: "wasteType",
+                                    label: "Waste Type",
+                                    type: "text",
+                                    required: true
+                                },
+                                {
+                                    id: "industrialWasteWater",
+                                    label: "Industrial Waste Water",
+                                    type: "text",
+                                    required: true
+                                },
+                                {
+                                    id: "hazardousWaste",
+                                    label: "Hazardous/Non-Hazardous",
+                                    type: "text",
+                                    required: true
+                                },
+                                {
+                                    id: "domesticWasteWater",
+                                    label: "Domestic Waste Water",
+                                    type: "text",
+                                    required: true
+                                },
+                                {
+                                    id: "wasteQuantity",
+                                    label: "Quantity (m³/year)",
+                                    type: "number",
+                                    required: true
+                                },
+                                {
+                                    id: "treatmentType",
+                                    label: "Treatment Type",
+                                    type: "text",
+                                    required: true
+                                },
+                                {
+                                    id: "recyclingUsagePlans",
+                                    label: "Recycling & Usage Plans",
+                                    type: "text",
+                                    required: true
+                                },
+                                {
+                                    id: "noiseLevel",
+                                    label: "Level of Noise at Plot Boundary (dB)",
+                                    type: "number",
+                                    required: true
+                                }
+                            ]
+                        },
+                        {
+                            title: "Project Financial Information",
+                            fields: [
+                                {
+                                    id: "constructionCost",
+                                    label: "Construction Cost (QAR)",
+                                    type: "number",
+                                    required: true
+                                },
+                                {
+                                    id: "equity",
+                                    label: "Equity (QAR)",
+                                    type: "number",
+                                    required: true
+                                },
+                                {
+                                    id: "costOfPlantAndMachinery",
+                                    label: "Cost of Plant & Machinery (QAR)",
+                                    type: "number",
+                                    required: true
+                                },
+                                {
+                                    id: "debt",
+                                    label: "Debt (QAR)",
+                                    type: "number",
+                                    required: true
+                                },
+                                {
+                                    id: "costOfOtherFixedAssets",
+                                    label: "Cost of Other Fixed Assets (QAR)",
+                                    type: "number",
+                                    required: true
+                                },
+                                {
+                                    id: "workingCapital",
+                                    label: "Working Capital (QAR)",
+                                    type: "number",
+                                    required: true
+                                },
+                                {
+                                    id: "totalCost",
+                                    label: "Total Cost",
+                                    type: "number",
+                                    required: true
+                                },
+                                {
+                                    id: "totalFunding",
+                                    label: "Total Funding",
+                                    type: "number",
+                                    required: true
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    title: "Industrial Application",
+                    description: "Application to apply for an industrial project.",
+                    sections: [
+                        {
+                            title: "",
+                            fields: [
+                                {
+                                    id: "validCommercialRegistration",
+                                    label: "A Valid Commercial Registration",
+                                    type: "file",
+                                    required: true
+                                },
 
+                                {
+                                    id: "ownersId",
+                                    label: "Owners ID",
+                                    type: "file",
+                                    required: true
+                                },
+
+                                {
+                                    id: "businessPlan",
+                                    label: "Business Plan/Feasibility Study",
+                                    type: "file",
+                                    required: true
+                                },
+
+                                {
+                                    id: "industrialLicense",
+                                    label: "Industrial License/Initial Approved from Ministry of Commerce and Industry",
+                                    type: "file",
+                                    required: true
+                                },
+
+                                {
+                                    id: "conceptualSiteLayout1",
+                                    label: "Conceptual Site Layout",
+                                    type: "file",
+                                    required: true
+                                },
+
+                                {
+                                    id: "materialSafetyDataSheets",
+                                    label: "Material Safety Date Sheets",
+                                    type: "file",
+                                    required: true
+                                },
+
+                                {
+                                    id: "conceptualSiteLayout2",
+                                    label: "Conceptual Site Layout",
+                                    type: "file",
+                                    required: true
+                                },
+
+                                {
+                                    id: "projectedCashFlow",
+                                    label: "Projected Cash Flow",
+                                    type: "file",
+                                    required: true
+                                },
+
+                                {
+                                    id: "financialCapacityProof",
+                                    label: "Financial Capacity Proof to Execute the Project",
+                                    type: "file",
+                                    required: true
+                                },
+
+                                {
+                                    id: "creditBureauReport",
+                                    label: "Credit Bureau Report for Owner/Company",
+                                    type: "file",
+                                    required: true
+                                },
+
+                                {
+                                    id: "companyProfile",
+                                    label: "Company Profile (if applicable)",
+                                    type: "file",
+                                    required: false
+                                },
+
+                                {
+                                    id: "auditedFinancialStatements",
+                                    label: "Three Years of Audited Financial Statements (if applicable)",
+                                    type: "file",
+                                    required: false
+                                },
+
+                            ]
+                        },
+                    ]
+                }
+            ]
+
+        default:
+            throw new Error(`Unknown form type: ${formType}`)
+    }
+}
+
+
+export function getCommonFormConfig(formType: string): FormConfig {
+    switch (formType) {
+        case "companyProfile":
+            return {
+                title: "",
+                description: "",
+                sections: [
+                    {
+                        title: "",
+                        fields: [
+                            {
+                                id: "arabicName",
+                                label: "Arabic Company Name",
+                                type: "text",
+                                required: true,
+                                placeholder: "",
+                            },
+                            {
+                                id: "englishName",
+                                label: "English Company Name",
+                                type: "text",
+                                required: true,
+                                placeholder: "",
+                            },
+                            {
+                                id: "address",
+                                label: "Address",
+                                type: "text",
+                                required: true,
+                                placeholder: "",
+                            },
+                            {
+                                id: "box",
+                                label: "PO Box",
+                                type: "text",
+                                required: true,
+                                placeholder: "",
+                            },
+                            {
+                                id: "telephone",
+                                label: "Telephone",
+                                type: "text",
+                                required: true,
+                                placeholder: "30321867",
+                            },
+                            {
+                                id: "crno",
+                                label: "CR No.",
+                                type: "text",
+                                placeholder: "1623",
+                                disabled: true,
+                                required: true,
+                            },
+                            {
+                                id: "category",
+                                label: "Company Category",
+                                type: "select",
+                                options: [
+                                    "SME Start-up & Micro Enterprise (0-9 employees)",
+                                    "SME Small Enterprise (10-49 employees)",
+                                    "SME Medium Enterprise (50-249 employees)",
+                                    "Others",
+                                ],
+                                required: true,
+                            },
+                        ],
+                    }
+                ],
+            }
+        case "profileForm":
+            return {
+                title: "",
+                description: "",
+                sections: [
+                    {
+                        title: "",
+                        fields: [
+                            {
+                                id: "firstName",
+                                label: "First Name",
+                                type: "text",
+                                required: true,
+                                placeholder: "Enter first name",
+                            },
+                            {
+                                id: "lastName",
+                                label: "Last Name",
+                                type: "text",
+                                required: true,
+                                placeholder: "Enter last name",
+                            },
+                            {
+                                id: "email",
+                                label: "Email",
+                                type: "text",
+                                required: true,
+                                placeholder: "example@domain.com",
+                                disabled: true
+                            },
+                            {
+                                id: "phone",
+                                label: "Mobile Phone",
+                                type: "text",
+                                required: true,
+                                placeholder: "+973 12345678",
+                            },
+                            {
+                                id: "landline",
+                                label: "Landline Number",
+                                type: "text",
+                                required: false,
+                                placeholder: "44443333",
+                            },
+                        ],
+                    },
+                ],
+            }
+        // other cases (landUseLetter, rentalRelationship, etc.) remain as is
         default:
             throw new Error(`Unknown form type: ${formType}`)
     }
