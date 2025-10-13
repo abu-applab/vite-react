@@ -20,11 +20,11 @@ interface RequestedServiceProps {
 function getStatusColor(status: string) {
   switch (status.toLowerCase()) {
     case "approved":
-      return "bg-green-100 text-green-800 hover:bg-green-100"
+      return "bg-green-100 text-green-600 hover:bg-green-100"
     case "in progress":
-      return "bg-green-100 text-green-800 hover:bg-green-100"
+      return "bg-green-100 text-green-600 hover:bg-green-100"
     case "rejected":
-      return "bg-red-100 text-red-800 hover:bg-red-100"
+      return "bg-green-100 text-green-600 hover:bg-green-100"
     default:
       return ""
   }
@@ -35,18 +35,18 @@ export function RequestedService({ request }: RequestedServiceProps) {
     <Card key={`${request.id}`} className="relative">
       <CardHeader className="flex flex-row items-center justify-between space-y-0">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gray-100 rounded flex items-center justify-center">
-            <MessageSquareDot className="h-4 w-4 text-gray-600" />
+          <div className="w-12 h-12 border border-[#E4E4E7] rounded-[8px] bg-white flex items-center justify-center">
+            <MessageSquareDot className="w-5 h-5 text-black" />
           </div>
           <div className="flex flex-col">
-            <span className="text-sm font-medium text-gray-900">1902</span>
-            <h3 className="font-medium text-base text-gray-900">{request.serviceType}</h3>
+            <span className="text-lg leading-7 font-medium text-gray-800">1902</span>
+            <h3 className="font-medium text-base text-gray-500">{request.serviceType}</h3>
           </div>
         </div>
         <div className="flex items-center">
-          <Badge className={`${getStatusColor(request.status)} border-0 text-xs flex flex-row items-center justify-center rounded-2xl px-2`}>
-            <span className="text-xl">•</span>
-            <span>{request.status}</span>
+          <Badge className={`${getStatusColor(request.status)} border-0 text-xs flex items-center justify-center rounded-2xl px-2 py-1`}>
+            <span className="size-1.5 bg-green-600 rounded-full mr-1"></span>
+            <span className="text-xs leading-4 font-medium">{request.status}</span>
           </Badge>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -71,10 +71,6 @@ export function RequestedService({ request }: RequestedServiceProps) {
             <div>
               <p className="text-gray-500 mb-1">Plot Number</p>
               <p className="font-medium text-gray-900">{request.plotNumber}</p>
-            </div>
-            <div className="mt-2">
-              <p className="text-gray-500 mb-1">Service Type</p>
-              <p className="font-medium text-gray-900">{request.serviceType}</p>
             </div>
           </div>
           <div className="text-right">

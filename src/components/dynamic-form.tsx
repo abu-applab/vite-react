@@ -9,11 +9,13 @@ import FileUpload from "./file-upload"
 import { Trash2 } from "lucide-react"
 import pdfLogo from "../assets/images/pdf-logo.svg"
 import { cn } from "@/lib/utils"
+import type { Dispatch, SetStateAction } from "react"
 
 interface DynamicFormProps {
   config: FormConfig
   formData: Record<string, any>
   errors: Record<string, string>
+  setErrors: Dispatch<SetStateAction<Record<string, string>>>
   handleInputChange: (fieldId: string, value: any) => void
   handleSubmit?: (e: React.FormEvent) => void
   handlePerviousButton?: () => void
@@ -25,9 +27,10 @@ const DynamicForm = ({
   config,
   formData,
   errors,
+  setErrors,
   handleInputChange,
   handleSubmit,
-  handlePerviousButton,
+  // handlePerviousButton,
   isNewApplication = false,
   goToNextStep,
 }: DynamicFormProps) => {
@@ -71,13 +74,19 @@ const DynamicForm = ({
         )
 
       case "select":
+        const isDisabled =
+          field.dependsOn && field.disabled;
         return (
           <div className="space-y-2">
             <Label htmlFor={field.id}>
               {field.label}
               {field.required && <span className="text-destructive">*</span>}
             </Label>
-            <Select onValueChange={(value) => handleInputChange(field.id, value)}>
+            <Select 
+              value={formData[field.id] || ""} 
+              onValueChange={(value) => handleInputChange(field.id, value)} 
+              disabled={!!isDisabled}
+            >
               <SelectTrigger className={`w-full ${errors[field.id] ? "border-red-600" : ""}`}>
                 <SelectValue placeholder={`Select ${field.label.toLowerCase()}`} />
               </SelectTrigger>
@@ -115,16 +124,20 @@ const DynamicForm = ({
       case "file":
         return (
           <div className="space-y-2">
-            <Label htmlFor={field.id}>
+            {/* <Label htmlFor={field.id}>
               {field.label}
               {field.required && <span className="text-destructive">*</span>}
-            </Label>
+            </Label> */}
             {!formData?.[field.id] ? (
               <>
                 <FileUpload
                   onFileUpload={(value) => handleInputChange(field.id, value)}
+                  handleFileUploadError={(uploadError: string) => setErrors((prev) => ({
+                    ...prev,
+                    [field.id]: uploadError
+                  }))}
                   isServiceForm
-                  accepetedFile="PDF or Word up to 10 MB"
+                  fileLabel={field.label}
                 />
                 {errors[field.id] && <span className="text-sm text-red-600">{errors[field.id]}</span>}
               </>
@@ -169,8 +182,9 @@ const DynamicForm = ({
         <form onSubmit={handleSubmit} className="space-y-6">
           {config.sections.map((section, sectionIndex) => (
             <Card key={sectionIndex}>
-              <CardHeader>
+              <CardHeader className="flex items-center justify-between">
                 <CardTitle className="text-lg">{section.title}</CardTitle>
+                {section.subTitle && <CardTitle className="text-sm leading-5 font-normal text-muted-foreground">{section.subTitle}</CardTitle>}
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -184,11 +198,11 @@ const DynamicForm = ({
             </Card>
           ))}
 
-          <div className="flex justify-between">
-            <Button type="button" variant="outline" onClick={handlePerviousButton}>
+          <div className="flex justify-end">
+            {/* <Button type="button" variant="outline" onClick={handlePerviousButton}>
               Previous
-            </Button>
-            <Button type={isNewApplication ? "button" : "submit" } className="bg-maroon-100 hover:bg-[#7A1F2B]" onClick={isNewApplication ? goToNextStep : handleSubmit}>
+            </Button> */}
+            <Button type={isNewApplication ? "button" : "submit"} className="bg-maroon-100 hover:bg-[#7A1F2B]" onClick={isNewApplication ? goToNextStep : handleSubmit}>
               {isNewApplication ? "Next" : "Submit"}
             </Button>
           </div>

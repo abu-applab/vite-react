@@ -13,72 +13,40 @@ interface NewServiceRequestModalProps {
 
 export const serviceOptions = [
     {
-      title: "Land Use Letter",
-      key: "landUseLetter"
-    },
-    {
       title: "Rental Relationship",
       key: "rentalRelationship"
-    },
-    {
-      title: "Change Activity",
-      key: "changeActivity"
-    },
-    {
-      title: "NOC Completion Certificate",
-      key: "nocCompletionCertificate"
     },
     {
       title: "Land Transfer",
       key: "landTransfer",
     },
     {
-      title: "Sublease",
-      key: "sublease",
-    },
-    {
-      title: "NOC Commerial License",
-      key: "nocCommerialLicense",
-    },
-    {
-      title: "PEO Letter",
-      key: "peoLetter",
-    },
-    {
       title: "Certified Copy of Agreement",
-      key:  "certifiedCopyofAgreement",
+      key:  "certifiedCopyOfAgreement",
     },
     {
       title: "Demarcation Letter",
       key: "demarcationLetter"
     },
     {
-      title: "To Whom It May Concern",
-      key:  "toWhomItMayConcern",
-    },
-    {
       title: "Complaint",
       key: "complaint",
-    },
-    {
-      title: "NOC Building Permit",
-      key:  "nocBuildingPermit",
-    },
-    {
-      title: "NOC CTO/Renew",
-      key: "nocCTORenew",
-    },
-    {
-      title: "NOC Environmental Certificate Permit",
-      key:  "nocEnvironmentalCertificatePermit",
     },
     {
       title: "Technical Queries",
       key: "technicalQueries",
     },
     {
-      title: "Kharama",
-      key:  "kharama",
+      title: "Kharamaa",
+      key:  "kahramaa",
+    },
+    {
+      title: "Update Contatc Details",
+      key: "updateContactDetails",
+    },
+    {
+      title: "Update Company Information",
+      key:  "updateCompanyInformation",
     },
   ]
 

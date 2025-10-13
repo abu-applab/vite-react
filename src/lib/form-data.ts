@@ -6,11 +6,16 @@ export interface FormField {
     placeholder?: string;
     options?: string[];
     disabled?: boolean;
+    min?: number;
+    max?: number;
+    pattern?: string;
+    dependsOn?: string
 }
 
 export interface FormSection {
     key?: string
     title: string
+    subTitle?: string
     fields?: FormField[]
     points?: string[]
 }
@@ -73,6 +78,8 @@ export function getServiceFormConfig(formType: string): FormConfig {
                                 type: "textarea",
                                 required: false,
                                 placeholder: "Enter any additional comments",
+                                min: 3,
+                                max: 200
                             },
                         ],
                     },
@@ -104,29 +111,34 @@ export function getServiceFormConfig(formType: string): FormConfig {
                         title: "Request Details",
                         fields: [
                             {
-                                id: "plot",
-                                label: "Plot",
-                                type: "select",
-                                required: true,
-                                options: ["Plot 1", "Plot 2", "Plot 3"],
-                            },
-                            {
                                 id: "agreement",
                                 label: "Agreement",
                                 type: "select",
                                 required: true,
                                 options: ["Agreement A", "Agreement B", "Agreement C"],
+                                dependsOn: "plot",
+                                disabled: true
                             },
                             {
-                                id: "amount",
-                                label: "Amount",
-                                type: "number",
+                                id: "plot",
+                                label: "Plot",
+                                type: "select",
                                 required: true,
-                                placeholder: "",
+                                options: ["Plot 1", "Plot 2", "Plot 3"],
+                                dependsOn: "agreement",
                             },
                             {
                                 id: "duration",
                                 label: "Duration",
+                                type: "number",
+                                required: true,
+                                placeholder: "",
+                                max: 240,
+                                min: 1,
+                            },
+                            {
+                                id: "amount",
+                                label: "Amount",
                                 type: "number",
                                 required: true,
                                 placeholder: "",
@@ -137,11 +149,14 @@ export function getServiceFormConfig(formType: string): FormConfig {
                                 type: "textarea",
                                 required: false,
                                 placeholder: "Enter any additional comments",
+                                min: 3,
+                                max: 200
                             },
                         ],
                     },
                     {
                         title: "Required Documents",
+                        subTitle: "(Note: Allowed file types: PDF, JPG, PNG. Max 2MB per file)",
                         fields: [
                             {
                                 id: "crOfTheOwner",
@@ -164,6 +179,12 @@ export function getServiceFormConfig(formType: string): FormConfig {
                             {
                                 id: "subleaseAgreement",
                                 label: "Sublease Agreement ",
+                                type: "file",
+                                required: true,
+                            },
+                            {
+                                id: "rentalRelationshipForm",
+                                label: "Rental Relationship Form",
                                 type: "file",
                                 required: true,
                             },
@@ -226,6 +247,8 @@ export function getServiceFormConfig(formType: string): FormConfig {
                                 type: "textarea",
                                 required: false,
                                 placeholder: "Enter any additional comments",
+                                min: 3,
+                                max: 200
                             },
                         ],
                     },
@@ -262,6 +285,125 @@ export function getServiceFormConfig(formType: string): FormConfig {
                             },
                         ],
                     },
+                ],
+            }
+        case "certifiedCopyOfAgreement":
+            return {
+                title: "Certified Copy of Agreement Form",
+                description: "Request to transfer ownership of your land to another party.",
+                sections: [
+                    {
+                        title: "Request Details",
+                        fields: [
+                            {
+                                id: "plot",
+                                label: "Plot",
+                                type: "select",
+                                required: true,
+                                options: ["Rental Relationship", "Lease Authorization", "Authentication Letter"],
+                            },
+                            {
+                                id: "agreement",
+                                label: "Agreement",
+                                type: "select",
+                                required: true,
+                                options: ["Agreement A", "Agreement B", "Agreement C"],
+                            },
+                            {
+                                id: "comments",
+                                label: "Comments (Optional)",
+                                type: "textarea",
+                                required: false,
+                                placeholder: "Enter any additional comments",
+                                min: 3,
+                                max: 200
+                            },
+                        ],
+                    },
+                ],
+            }
+        case "kahramaa":
+            return {
+                title: "Kahramaa",
+                description: "Request to transfer ownership of your land to another party.",
+                sections: [
+                    {
+                        title: "Request Details",
+                        fields: [
+                            {
+                                id: "agreement",
+                                label: "Agreement",
+                                type: "select",
+                                required: true,
+                                options: ["Agreement A", "Agreement B", "Agreement C"],
+                            },
+                            {
+                                id: "plot",
+                                label: "Plot",
+                                type: "select",
+                                required: true,
+                                options: ["Plot 1", "Plot 2", "Plot 3"],
+                            },
+                            {
+                                id: "comments",
+                                label: "Comments (Optional)",
+                                type: "textarea",
+                                required: false,
+                                placeholder: "Enter any additional comments",
+                                min: 3,
+                                max: 200
+                            },
+                        ],
+                    },
+                ],
+            }
+        case "complaint":
+            return {
+                title: "Complaint",
+                description: "Request to transfer ownership of your land to another party.",
+                sections: [
+                    {
+                        title: "Request Details",
+                        fields: [
+                            {
+                                id: "agreement",
+                                label: "Agreement",
+                                type: "select",
+                                required: true,
+                                options: ["Agreement A", "Agreement B", "Agreement C"],
+                            },
+                            {
+                                id: "descrition",
+                                label: "Description",
+                                type: "text",
+                                required: true,
+                                placeholder: "",
+                                min: 3,
+                                max: 100
+                            },
+                            {
+                                id: "comments",
+                                label: "Comments (Optional)",
+                                type: "textarea",
+                                required: false,
+                                placeholder: "Enter any additional comments",
+                                min: 3,
+                                max: 200
+                            },
+                        ],
+                    },
+                    {
+                        title: "Required Documents",
+                        subTitle: "(Note: Allowed file types: PDF, JPG, PNG. Max 2MB per file)",
+                        fields: [
+                            {
+                                id: "letterWithFullDescriptionOfComplaint",
+                                label: "Letter with full description of complaint",
+                                type: "file",
+                                required: true,
+                            },
+                        ]
+                    }
                 ],
             }
         default:
