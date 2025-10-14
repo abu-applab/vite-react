@@ -4,7 +4,7 @@ export interface FormField {
     type: "text" | "select" | "textarea" | "file" | "number";
     required: boolean;
     placeholder?: string;
-    options?: string[];
+    options?: string[] | {id: string, name: string}[];
     disabled?: boolean;
     min?: number;
     max?: number;
@@ -115,7 +115,11 @@ export function getServiceFormConfig(formType: string): FormConfig {
                                 label: "Agreement",
                                 type: "select",
                                 required: true,
-                                options: ["Agreement A", "Agreement B", "Agreement C"],
+                                options: [
+                                    { id: '1', name: "Agreement A" },
+                                    { id: '2', name: "Agreement B" },
+                                    { id: '3', name: "Agreement C" }
+                                ],
                                 dependsOn: "plot",
                                 disabled: true
                             },
@@ -124,7 +128,11 @@ export function getServiceFormConfig(formType: string): FormConfig {
                                 label: "Plot",
                                 type: "select",
                                 required: true,
-                                options: ["Plot 1", "Plot 2", "Plot 3"],
+                                options: [
+                                    { id: '1', name: "Plot 1" },
+                                    { id: '2', name: "Plot 2" },
+                                    { id: '3', name: "Plot 3" }
+                                ],
                                 dependsOn: "agreement",
                             },
                             {
@@ -296,18 +304,29 @@ export function getServiceFormConfig(formType: string): FormConfig {
                         title: "Request Details",
                         fields: [
                             {
-                                id: "plot",
-                                label: "Plot",
-                                type: "select",
-                                required: true,
-                                options: ["Rental Relationship", "Lease Authorization", "Authentication Letter"],
-                            },
-                            {
                                 id: "agreement",
                                 label: "Agreement",
                                 type: "select",
                                 required: true,
-                                options: ["Agreement A", "Agreement B", "Agreement C"],
+                                options: [
+                                    { id: '1', name: "Agreement A" },
+                                    { id: '2', name: "Agreement B" },
+                                    { id: '3', name: "Agreement C" }
+                                ],
+                                dependsOn: "plot",
+                                disabled: true
+                            },
+                            {
+                                id: "plot",
+                                label: "Plot",
+                                type: "select",
+                                required: true,
+                                options: [
+                                    { id: '1', name: "Plot 1" },
+                                    { id: '2', name: "Plot 2" },
+                                    { id: '3', name: "Plot 3" }
+                                ],
+                                dependsOn: "agreement",
                             },
                             {
                                 id: "comments",
@@ -335,14 +354,25 @@ export function getServiceFormConfig(formType: string): FormConfig {
                                 label: "Agreement",
                                 type: "select",
                                 required: true,
-                                options: ["Agreement A", "Agreement B", "Agreement C"],
+                                options: [
+                                    { id: '1', name: "Agreement A" },
+                                    { id: '2', name: "Agreement B" },
+                                    { id: '3', name: "Agreement C" }
+                                ],
+                                dependsOn: "plot",
+                                disabled: true
                             },
                             {
                                 id: "plot",
                                 label: "Plot",
                                 type: "select",
                                 required: true,
-                                options: ["Plot 1", "Plot 2", "Plot 3"],
+                                options: [
+                                    { id: '1', name: "Plot 1" },
+                                    { id: '2', name: "Plot 2" },
+                                    { id: '3', name: "Plot 3" }
+                                ],
+                                dependsOn: "agreement",
                             },
                             {
                                 id: "comments",
@@ -366,11 +396,15 @@ export function getServiceFormConfig(formType: string): FormConfig {
                         title: "Request Details",
                         fields: [
                             {
-                                id: "agreement",
-                                label: "Agreement",
+                                id: "plot",
+                                label: "Plot",
                                 type: "select",
                                 required: true,
-                                options: ["Agreement A", "Agreement B", "Agreement C"],
+                                options: [
+                                    { id: '1', name: "Plot 1" },
+                                    { id: '2', name: "Plot 2" },
+                                    { id: '3', name: "Plot 3" }
+                                ],
                             },
                             {
                                 id: "descrition",
@@ -406,6 +440,300 @@ export function getServiceFormConfig(formType: string): FormConfig {
                     }
                 ],
             }
+        case "demarcationLetter":
+            return {
+                title: "Demarcation Letter",
+                description: "Request to transfer ownership of your land to another party.",
+                sections: [
+                    {
+                        title: "Request Details",
+                        fields: [
+                            {
+                                id: "agreement",
+                                label: "Agreement",
+                                type: "select",
+                                required: true,
+                                options: [
+                                    { id: '1', name: "Agreement A" },
+                                    { id: '2', name: "Agreement B" },
+                                    { id: '3', name: "Agreement C" }
+                                ],
+                                dependsOn: "plot",
+                                disabled: true
+                            },
+                            {
+                                id: "plot",
+                                label: "Plot",
+                                type: "select",
+                                required: true,
+                                options: [
+                                    { id: '1', name: "Plot 1" },
+                                    { id: '2', name: "Plot 2" },
+                                    { id: '3', name: "Plot 3" }
+                                ],
+                                dependsOn: "agreement",
+                            },
+                            {
+                                id: "buildingPermitApplicationNumber",
+                                label: "Building Permit Application Number",
+                                type: "number",
+                                required: true,
+                                placeholder: "",
+                                max: 10
+                            },
+                            {
+                                id: "comments",
+                                label: "Comments (Optional)",
+                                type: "textarea",
+                                required: false,
+                                placeholder: "Enter any additional comments",
+                                min: 3,
+                                max: 200
+                            },
+                        ],
+                    },
+                    {
+                        title: "Required Documents",
+                        subTitle: "(Note: Allowed file types: PDF, JPG, PNG. Max 2MB per file)",
+                        fields: [
+                            {
+                                id: "letterWithFullDescriptionOfComplaint",
+                                label: "Letter with full description of complaint",
+                                type: "file",
+                                required: true,
+                            },
+                        ]
+                    }
+                ],
+            }
+        case "updateCompanyInformation":
+            return {
+                title: "Update Company Information",
+                description: "Request to transfer ownership of your land to another party.",
+                sections: [
+                    {
+                        title: "Request Details",
+                        fields: [
+                            {
+                                id: "agreement",
+                                label: "Agreement",
+                                type: "select",
+                                required: true,
+                                options: [
+                                    { id: '1', name: "Agreement A" },
+                                    { id: '2', name: "Agreement B" },
+                                    { id: '3', name: "Agreement C" }
+                                ],
+                                dependsOn: "plot",
+                                disabled: true
+                            },
+                            {
+                                id: "plot",
+                                label: "Plot",
+                                type: "select",
+                                required: true,
+                                options: [
+                                    { id: '1', name: "Plot 1" },
+                                    { id: '2', name: "Plot 2" },
+                                    { id: '3', name: "Plot 3" }
+                                ],
+                                dependsOn: "agreement",
+                            },
+                            {
+                                id: "requiredUpdate",
+                                label: "Required Update",
+                                type: "select",
+                                required: true,
+                                options: ["Company Name", 'Signatory'],
+                            },
+                            {
+                                id: "newCompanyEn",
+                                label: "New Company Name (EN)",
+                                type: "text",
+                                required: true,
+                                placeholder: "",
+                                min: 3,
+                                max: 80
+                            },
+                            {
+                                id: "newCompanyAr",
+                                label: "New Company Name (AR)",
+                                type: "text",
+                                required: true,
+                                placeholder: "",
+                                min: 3,
+                                max: 80
+                            },
+                            {
+                                id: "newSignatory",
+                                label: "New Signatory",
+                                type: "select",
+                                required: true,
+                                options: ["New Signatory 1", 'New Signatory 2', 'New Signatory 3'],
+                            },
+                            {
+                                id: "comments",
+                                label: "Comments (Optional)",
+                                type: "textarea",
+                                required: false,
+                                placeholder: "Enter any additional comments",
+                                min: 3,
+                                max: 200
+                            },
+                        ],
+                    },
+                    {
+                        title: "Required Documents",
+                        subTitle: "(Note: Allowed file types: PDF, JPG, PNG. Max 2MB per file)",
+                        fields: [
+                            {
+                                id: "nOCToWhomItMayConcern",
+                                label: "NOC (To Whom It May Concern)",
+                                type: "file",
+                                required: true,
+                            },
+                            {
+                                id: "newCommercialRegistration",
+                                label: "New Commercial Registration (CR) Copy",
+                                type: "file",
+                                required: true,
+                            },
+                        ]
+                    }
+                ],
+            }
+        case "updateContactDetails":
+            return {
+                title: "Update Contact Details",
+                description: "Request to transfer ownership of your land to another party.",
+                sections: [
+                    {
+                        title: "Request Details",
+                        fields: [
+                            {
+                                id: "agreement",
+                                label: "Agreement",
+                                type: "select",
+                                required: true,
+                                options: [
+                                    { id: '1', name: "Agreement A" },
+                                    { id: '2', name: "Agreement B" },
+                                    { id: '3', name: "Agreement C" }
+                                ],
+                                dependsOn: "plot",
+                                disabled: true
+                            },
+                            {
+                                id: "plot",
+                                label: "Plot",
+                                type: "select",
+                                required: true,
+                                options: [
+                                    { id: '1', name: "Plot 1" },
+                                    { id: '2', name: "Plot 2" },
+                                    { id: '3', name: "Plot 3" }
+                                ],
+                                dependsOn: "agreement",
+                            },
+                            {
+                                id: "requiredUpdate",
+                                label: "Required Update",
+                                type: "select",
+                                required: true,
+                                options: ["Company Name", 'Signatory'],
+                            },
+                            {
+                                id: "newEmail",
+                                label: "New Email",
+                                type: "text",
+                                required: true,
+                                placeholder: "",
+                            },
+                            {
+                                id: "newPhone",
+                                label: "New Phone",
+                                type: "number",
+                                required: true,
+                                placeholder: "",
+                            },
+                            {
+                                id: "newPoBox",
+                                label: "New PO Box",
+                                type: "number",
+                                required: true,
+                                placeholder: "",
+                            },
+                            {
+                                id: "comments",
+                                label: "Comments (Optional)",
+                                type: "textarea",
+                                required: false,
+                                placeholder: "Enter any additional comments",
+                                min: 3,
+                                max: 200
+                            },
+                        ],
+                    },
+                    {
+                        title: "Required Documents",
+                        subTitle: "(Note: Allowed file types: PDF, JPG, PNG. Max 2MB per file)",
+                        fields: [
+                            {
+                                id: "letterAttachment",
+                                label: "Letter Attachment",
+                                type: "file",
+                                required: true,
+                            },
+                        ]
+                    }
+                ],
+            }
+            case "technicalQueries":
+                return {
+                    title: "Technical Queries",
+                    description: "Request to transfer ownership of your land to another party.",
+                    sections: [
+                        {
+                            title: "Request Details",
+                            fields: [
+                                {
+                                    id: "agreement",
+                                    label: "Agreement",
+                                    type: "select",
+                                    required: true,
+                                    options: [
+                                        { id: '1', name: "Agreement A" },
+                                        { id: '2', name: "Agreement B" },
+                                        { id: '3', name: "Agreement C" }
+                                    ],
+                                    dependsOn: "plot",
+                                    disabled: true
+                                },
+                                {
+                                    id: "plot",
+                                    label: "Plot",
+                                    type: "select",
+                                    required: true,
+                                    options: [
+                                        { id: '1', name: "Plot 1" },
+                                        { id: '2', name: "Plot 2" },
+                                        { id: '3', name: "Plot 3" }
+                                    ],
+                                    dependsOn: "agreement",
+                                },
+                                {
+                                    id: "comments",
+                                    label: "Comments (Optional)",
+                                    type: "textarea",
+                                    required: false,
+                                    placeholder: "Enter any additional comments",
+                                    min: 3,
+                                    max: 200
+                                },
+                            ],
+                        },
+                    ],
+                }    
         default:
             throw new Error(`Unknown form type: ${formType}`)
     }

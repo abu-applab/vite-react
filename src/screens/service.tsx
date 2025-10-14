@@ -59,28 +59,97 @@ const Service = () => {
   }
 
   const validateForm = () => {
-    const config = getServiceFormConfig(selectedService)
-    let newErrors: Record<string, string> = {}
-    config.sections.forEach((section) => {
-      section.fields?.forEach((field) => {
-        if (field.required && !formState[field.id]) {
-          newErrors[field.id] = `${field.label} is required`
+  const config = getServiceFormConfig(selectedService);
+  let newErrors: Record<string, string> = {};
+
+  // --- Helper Functions ---
+  const isEmpty = (val: any) => val === undefined || val === null || val === "";
+  const isDigitsOnly = (val: string) => /^\d+$/.test(val);
+  const hasSpecialChars = (val: string) => /[^A-Za-z0-9\u0600-\u06FF\s]/.test(val);
+  const isArabic = (val: string) => /[\u0600-\u06FF]/.test(val);
+  const isEnglish = (val: string) => /[A-Za-z]/.test(val);
+  const isValidEmail = (val: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
+  const isValidPhone = (val: string) => /^\d{8}$/.test(val);
+  const isValidPOBox = (val: string) => /^\d{5,8}$/.test(val);
+
+  const validateTextLength = (field: any, value: string) => {
+    if (field.max && value.length > field.max)
+      return `Maximum ${field.max} characters allowed`;
+    if (field.min && value.length < field.min)
+      return `Minimum ${field.min} characters required`;
+  };
+
+  const validateDuration = (field: any, value: number) => {
+    if (field.min && value < field.min || field.max && value > field.max)
+      return `Duration must be between ${field.min} and ${field.max} months.`;
+  };
+
+  const validateCompanyName = (field: any, value: string) => {
+    if (hasSpecialChars(value)) return "Special characters are not allowed.";
+    if (field.label.includes("(EN)") && isArabic(value)) return "Must be English characters.";
+    if (field.label.includes("(AR)") && isEnglish(value)) return "Must be Arabic characters.";
+  };
+
+  // --- Main Validation Loop ---
+  config.sections.forEach(section => {
+    section.fields?.forEach(field => {
+      const value = formState[field.id]?.trim?.() || formState[field.id];
+
+      // Required
+      if (field.required && isEmpty(value)) {
+        newErrors[field.id] = `${field.label} is required`;
+        return;
+      }
+
+      // Service-specific rule
+      if (selectedService === "certifiedCopyOfAgreement" && field.id === "comments" && isDigitsOnly(value)) {
+        newErrors[field.id] = "This field cannot contain digits only.";
+        return;
+      }
+
+      // Text / Textarea validations
+      if (["text", "textarea"].includes(field.type) && value) {
+        const err = validateTextLength(field, value);
+        if (err) {
+          newErrors[field.id] = err;
+          return;
         }
-        console.log('formState[field.id]: ', formState[field.id]);
-        console.log('field.max: ', field.max);
-        console.log('formState[field.id]: ', formState[field.id]?.length);
-        if (field.max &&  field.max < formState[field.id]?.length) {
-          newErrors[field.id] = `Maximum ${field.max} characters allowed`
-        }
-        if (formState[field.id] && field.min &&  field.min > formState[field.id]?.length) {
-          newErrors[field.id] = `Minimum ${field.min} characters required`
-        }
-      })
-    })
-    setErrors(newErrors)
-    console.log('formState: ', formState);
-    return Object.keys(newErrors).length === 0
-  }
+      }
+
+      // Duration check
+      if (field.label === "Duration" && value) {
+        const err = validateDuration(field, Number(value));
+        if (err) newErrors[field.id] = err;
+      }
+
+      // Number validations
+      if (field.type === "number" && value) {
+        if (field.max && String(value).length > field.max)
+          newErrors[field.id] = `Accepts up to ${field.max} digits only`;
+      }
+
+      // Company name
+      if (field.label.includes("New Company Name") && value) {
+        const err = validateCompanyName(field, value);
+        if (err) newErrors[field.id] = err;
+      }
+
+      // Email / Phone / PO Box
+      if (field.label === "New Email" && value && !isValidEmail(value))
+        newErrors[field.id] = "Please enter a valid email address.";
+
+      if (field.label === "New Phone" && value && !isValidPhone(value))
+        newErrors[field.id] = "Must contain exactly 8 digits.";
+
+      if (field.label === "New PO Box" && value && !isValidPOBox(value))
+        newErrors[field.id] = "Must contain 5 to 8 digits.";
+    });
+  });
+
+  setErrors(newErrors);
+  console.log("formState:", formState);
+  return Object.keys(newErrors).length === 0;
+};
 
   // const handleSubmit = (e: React.FormEvent) => {
   //   e.preventDefault()

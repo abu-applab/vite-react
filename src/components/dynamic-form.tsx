@@ -68,6 +68,7 @@ const DynamicForm = ({
               value={formData[field.id] || ""}
               onChange={(e) => handleInputChange(field.id, e.target.value)}
               className={`${errors[field.id] ? "border-red-600" : ""}`}
+              {...(field.type === "number" ? { onWheel: (e) => e.currentTarget.blur() } : {})}
             />
             {errors[field.id] && <span className="text-sm text-red-600">{errors[field.id]}</span>}
           </div>
@@ -82,20 +83,32 @@ const DynamicForm = ({
               {field.label}
               {field.required && <span className="text-destructive">*</span>}
             </Label>
-            <Select 
-              value={formData[field.id] || ""} 
-              onValueChange={(value) => handleInputChange(field.id, value)} 
+            <Select
+              value={formData[field.id] || ""}
+              onValueChange={(value) => {
+                // Update this field value
+                handleInputChange(field.id, value);
+      
+                // ✅ If this field has a dependency, update that too
+                if (field.dependsOn) {
+                  handleInputChange(field.dependsOn, value);
+                }
+              }}
               disabled={!!isDisabled}
             >
               <SelectTrigger className={`w-full ${errors[field.id] ? "border-red-600" : ""}`}>
                 <SelectValue placeholder={`Select ${field.label.toLowerCase()}`} />
               </SelectTrigger>
               <SelectContent>
-                {field.options?.map((option) => (
-                  <SelectItem key={option} value={option}>
-                    {option}
-                  </SelectItem>
-                ))}
+                {field.options?.map((option) => {
+                  const key = typeof option === "string" ? option : option.id;
+                  const value = typeof option === "string" ? option : option.name;
+                  return (
+                    <SelectItem key={key} value={key}>
+                      {value}
+                    </SelectItem>
+                  )
+                })}
               </SelectContent>
             </Select>
             {errors[field.id] && <span className="text-sm text-red-600">{errors[field.id]}</span>}

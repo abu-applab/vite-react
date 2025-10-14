@@ -1,5 +1,3 @@
-"use client"
-
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -52,11 +50,15 @@ export default function CustomForm({ formType, handleChange, handleSubmit, formD
                             <SelectValue placeholder={`Select ${field.label}`} />
                         </SelectTrigger>
                         <SelectContent>
-                            {field.options?.map((opt) => (
-                                <SelectItem key={opt} value={opt}>
-                                    {opt}
-                                </SelectItem>
-                            ))}
+                            {field.options?.map((option) => {
+                                const key = typeof option === "string" ? option : option.id;
+                                const value = typeof option === "string" ? option : option.name;
+                                return (
+                                    <SelectItem key={key} value={key}>
+                                        {value}
+                                    </SelectItem>
+                                )
+                            })}
                         </SelectContent>
                     </Select>
                 )
