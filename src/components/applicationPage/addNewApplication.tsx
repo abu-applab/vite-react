@@ -109,6 +109,7 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication }: AddN
         handlePerviousButton={goToPreviousStep}
         formData={formData}
         errors={errors}
+        setErrors={setErrors}
         handleInputChange={handleInputChange}
       />
     )
@@ -135,6 +136,7 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication }: AddN
           handlePerviousButton={goToPreviousStep}
           formData={formData}
           errors={errors}
+          setErrors={setErrors}
           handleInputChange={handleInputChange}
         />
       )}

@@ -1,4 +1,4 @@
-import SigningAgreementModal from "@/components/service/agreement-signing-modal";
+import SigningAgreementModal from "@/components/agreement/agreement-signing-modal";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";

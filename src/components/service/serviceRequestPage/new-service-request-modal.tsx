@@ -1,13 +1,13 @@
 import { X } from "lucide-react"
-import { Button } from "../ui/button"
-import { RadioGroup, RadioGroupItem } from "../ui/radio-group"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog"
-import { Label } from "../ui/label"
+import { Button } from "../../ui/button"
+import { RadioGroup, RadioGroupItem } from "../../ui/radio-group"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../ui/dialog"
+import { Label } from "../../ui/label"
+import { useState } from "react"
 
 interface NewServiceRequestModalProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  selectedService: any
   setSelectedService: any
 }
 
@@ -51,12 +51,15 @@ export const serviceOptions = [
   ]
 
 
-export function NewServiceRequestModal({ open, onOpenChange, selectedService, setSelectedService }: NewServiceRequestModalProps) {
+export function NewServiceRequestModal({ open, onOpenChange, setSelectedService }: NewServiceRequestModalProps) {
+
+  const [value, setValue] = useState('')
 
   const handleDone = () => {
-    if (selectedService) {
-      console.log("Selected service:", selectedService)
+    if (value) {
+      console.log("Selected service:", value)
       // Handle the selected service here
+      setSelectedService(value)
       onOpenChange(false)
     //   setSelectedService("")
     }
@@ -85,7 +88,7 @@ export function NewServiceRequestModal({ open, onOpenChange, selectedService, se
         </DialogHeader>
 
         <div className="px-5 py-3">
-          <RadioGroup value={selectedService} onValueChange={setSelectedService}>
+          <RadioGroup value={value} onValueChange={setValue}>
             <div className="space-y-3">
               {serviceOptions.map(({key, title}) => (
                 <div key={key} className="flex items-center space-x-3">
@@ -105,7 +108,7 @@ export function NewServiceRequestModal({ open, onOpenChange, selectedService, se
           </Button>
           <Button
             onClick={handleDone}
-            disabled={!selectedService}
+            disabled={!value}
             className="px-6 bg-maroon-100 hover:bg-[#7A1F2B] text-white"
           >
             Done

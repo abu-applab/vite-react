@@ -18,11 +18,11 @@ export default function useNetworkRequest() {
             method = 'GET',
             body,
             header = {},
-            // loader = true,
             signal,
             responseType = "json"
         }: NetworkRequestOptions = {}
     ) => {
+        console.log('body: ', body);
 
         try {
             const headers: Record<string, string> = {
