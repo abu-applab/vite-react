@@ -4,6 +4,7 @@ import { ServiceHeader } from "@/components/service/serviceRequestPage/service-h
 import { RequestedServiceList } from "@/components/service/serviceRequestPage/requested-service-list"
 import { ServiceFormHandler } from "@/components/service/createNewRequest/service-form-handler"
 import { NewServiceRequestModal } from "@/components/service/serviceRequestPage/new-service-request-modal"
+import { EmptyRequest } from "@/components/service/serviceRequestPage/empty-request"
 
 const requestedServicesData = [
   {
@@ -34,7 +35,7 @@ const requestedServicesData = [
   //   submittedDate: "12-07-2025",
   //   status: "In progress",
   // },
-] 
+]
 
 const Service = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -56,14 +57,20 @@ const Service = () => {
         </div>
       </div>
 
-      {!selectedService || isModalOpen ? (
-        <>
-          <ServiceHeader onNewRequest={() => setIsModalOpen(true)} />
-          <RequestedServiceList services={requestedServices} />
-        </>
+      {!selectedService ? (
+        <div>
+          { requestedServicesData.length != 0 ?
+            <>
+              <ServiceHeader onNewRequest={() => setIsModalOpen(true)} />
+              <RequestedServiceList services={requestedServices} />
+            </> :
+            <EmptyRequest onNewRequest={() => setIsModalOpen(true)}/>
+          }
+        </div>
       ) : (
         <ServiceFormHandler
           selectedService={selectedService}
+          setSelectedService={setSelectedService}
           onBack={() => setSelectedService("")}
           onServiceAdded={handleServiceAdded}
         />

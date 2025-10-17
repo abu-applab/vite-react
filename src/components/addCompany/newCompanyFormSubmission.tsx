@@ -22,7 +22,8 @@ function NewCompanyFormSubmission({ className }: NewCompanyFormSubmissionProps) 
                 <div
                   className="w-full h-full rounded-full p-3"
                   style={{
-                    background: `conic-gradient(from 0deg, #880E27 0%, #D9D9D9 70%, transparent 100%)`,
+                    // background: `conic-gradient(from 0deg, #880E27 0%, #D9D9D9 70%, transparent 100%)`,
+                    background: `conic-gradient(from 0deg, transparent 0%, #D9D9D9 30%, #880E27 100%)`,
                   }}
                 >
                   <div className="w-full h-full rounded-full bg-stone-50"></div>

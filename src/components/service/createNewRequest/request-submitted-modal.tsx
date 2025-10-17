@@ -1,6 +1,6 @@
 import { X } from "lucide-react"
 import { Button } from "../../ui/button"
-import successfull from "../../assets/images/successfull.svg"
+import successfull from "../../../assets/images/success.svg"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../ui/dialog"
 
 interface NewServiceRequestModalProps {
@@ -9,45 +9,6 @@ interface NewServiceRequestModalProps {
     onGoToRequest: () => void
     referenceNumber?: string
 }
-
-export const serviceOptions = [
-    {
-        title: "Rental Relationship",
-        key: "rentalRelationship"
-    },
-    {
-        title: "Land Transfer",
-        key: "landTransfer",
-    },
-    {
-        title: "Certified Copy of Agreement",
-        key: "certifiedCopyOfAgreement",
-    },
-    {
-        title: "Demarcation Letter",
-        key: "demarcationLetter"
-    },
-    {
-        title: "Complaint",
-        key: "complaint",
-    },
-    {
-        title: "Technical Queries",
-        key: "technicalQueries",
-    },
-    {
-        title: "Kharamaa",
-        key: "kahramaa",
-    },
-    {
-        title: "Update Contatc Details",
-        key: "updateContactDetails",
-    },
-    {
-        title: "Update Company Information",
-        key: "updateCompanyInformation",
-    },
-]
 
 
 export function RequestSubmittedModal({ open, onOpenChange, onGoToRequest, referenceNumber = '1223' }: NewServiceRequestModalProps) {

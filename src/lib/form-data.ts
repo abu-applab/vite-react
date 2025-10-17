@@ -140,7 +140,7 @@ export function getServiceFormConfig(formType: string): FormConfig {
                                 label: "Duration",
                                 type: "number",
                                 required: true,
-                                placeholder: "",
+                                placeholder: "Enter duration (in months)",
                                 max: 240,
                                 min: 1,
                             },
@@ -149,7 +149,7 @@ export function getServiceFormConfig(formType: string): FormConfig {
                                 label: "Amount",
                                 type: "number",
                                 required: true,
-                                placeholder: "",
+                                placeholder: "Enter Amount",
                             },
                             {
                                 id: "comments",
@@ -411,7 +411,7 @@ export function getServiceFormConfig(formType: string): FormConfig {
                                 label: "Description",
                                 type: "text",
                                 required: true,
-                                placeholder: "",
+                                placeholder: "Enter description",
                                 min: 3,
                                 max: 100
                             },
@@ -478,7 +478,7 @@ export function getServiceFormConfig(formType: string): FormConfig {
                                 label: "Building Permit Application Number",
                                 type: "number",
                                 required: true,
-                                placeholder: "",
+                                placeholder: "Enter building permit application number",
                                 max: 10
                             },
                             {
@@ -551,7 +551,7 @@ export function getServiceFormConfig(formType: string): FormConfig {
                                 label: "New Company Name (EN)",
                                 type: "text",
                                 required: true,
-                                placeholder: "",
+                                placeholder: "Enter new company name in English",
                                 min: 3,
                                 max: 80
                             },
@@ -560,7 +560,7 @@ export function getServiceFormConfig(formType: string): FormConfig {
                                 label: "New Company Name (AR)",
                                 type: "text",
                                 required: true,
-                                placeholder: "",
+                                placeholder: "Enter new company name in Arabic",
                                 min: 3,
                                 max: 80
                             },
@@ -647,21 +647,21 @@ export function getServiceFormConfig(formType: string): FormConfig {
                                 label: "New Email",
                                 type: "text",
                                 required: true,
-                                placeholder: "",
+                                placeholder: "Enter new email",
                             },
                             {
                                 id: "newPhone",
                                 label: "New Phone",
                                 type: "number",
                                 required: true,
-                                placeholder: "",
+                                placeholder: "Enter new phone number",
                             },
                             {
                                 id: "newPoBox",
                                 label: "New PO Box",
                                 type: "number",
                                 required: true,
-                                placeholder: "",
+                                placeholder: "Enter new PO box number",
                             },
                             {
                                 id: "comments",

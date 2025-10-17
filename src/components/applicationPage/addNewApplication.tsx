@@ -3,7 +3,7 @@ import { Card } from "../ui/card"
 import FormSteps from "../addCompany/formSteps"
 import Instruction from "./instruction"
 import DynamicForm from "../dynamic-form"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { newApplicationPlots, type ServiceKey } from "@/constants"
 import FormSubmitted from "../formSubmitted"
 
@@ -26,6 +26,8 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication }: AddN
   const [formData, setFormData] = useState<Record<string, any>>({})
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [isFormSubmitted, setIsFormSubmitted] = useState(false)
+
+  const fieldRefs = useRef<Record<string, HTMLElement | null>>({})
 
   useEffect(() => {
     if (selectedApplication) {
@@ -111,6 +113,7 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication }: AddN
         errors={errors}
         setErrors={setErrors}
         handleInputChange={handleInputChange}
+        fieldRefs={fieldRefs}
       />
     )
   }
@@ -138,6 +141,7 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication }: AddN
           errors={errors}
           setErrors={setErrors}
           handleInputChange={handleInputChange}
+          fieldRefs={fieldRefs}
         />
       )}
     </div>

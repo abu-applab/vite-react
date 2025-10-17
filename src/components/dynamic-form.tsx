@@ -21,6 +21,7 @@ interface DynamicFormProps {
   handlePerviousButton?: () => void
   isNewApplication?: boolean
   goToNextStep?: () => void
+  fieldRefs: React.MutableRefObject<Record<string, HTMLElement | null>>
 }
 
 const DynamicForm = ({
@@ -33,6 +34,7 @@ const DynamicForm = ({
   // handlePerviousButton,
   isNewApplication = false,
   goToNextStep,
+  fieldRefs,
 }: DynamicFormProps) => {
   const getFileType = (fileName: string) => {
     const extension = fileName?.split(".").pop()?.toLowerCase()
@@ -63,6 +65,9 @@ const DynamicForm = ({
             </Label>
             <Input
               {...commonProps}
+              ref={(el) => {
+                fieldRefs.current[field.id] = el
+              }}
               type={field.type}
               placeholder={field.placeholder}
               value={formData[field.id] || ""}
@@ -96,7 +101,12 @@ const DynamicForm = ({
               }}
               disabled={!!isDisabled}
             >
-              <SelectTrigger className={`w-full ${errors[field.id] ? "border-red-600" : ""}`}>
+              <SelectTrigger 
+               className={`w-full ${errors[field.id] ? "border-red-600" : ""}`}
+               ref={(el) => {
+                fieldRefs.current[field.id] = el
+              }}
+               >
                 <SelectValue placeholder={`Select ${field.label.toLowerCase()}`} />
               </SelectTrigger>
               <SelectContent>
@@ -124,6 +134,9 @@ const DynamicForm = ({
             </Label>
             <Textarea
               {...commonProps}
+              ref={(el) => {
+                fieldRefs.current[field.id] = el
+              }}
               placeholder={field.placeholder}
               value={formData[field.id] || ""}
               onChange={(e) => handleInputChange(field.id, e.target.value)}
@@ -137,6 +150,12 @@ const DynamicForm = ({
       case "file":
         return (
           <div className="space-y-2">
+            <div
+              ref={(el) => {
+                fieldRefs.current[field.id] = el
+              }}
+              tabIndex={-1}
+            >
             {/* <Label htmlFor={field.id}>
               {field.label}
               {field.required && <span className="text-destructive">*</span>}
@@ -177,6 +196,7 @@ const DynamicForm = ({
                 </Button>
               </Card>
             )}
+            </div>
           </div>
         )
 
