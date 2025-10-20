@@ -17,7 +17,7 @@ const PortalLayout = () => {
 
     return (
         <div className='bg-[#f6f5ef] w-screen min-h-screen flex flex-col'>
-            <div className="flex flex-row items-center justify-between w-full h-[88px] px-[80px] py-6 border-b-2">
+            <div className="flex flex-row items-center justify-between w-full h-[88px] md:px-[80px] md:py-6 px-4 md:border-b-2">
                 <img src={manateqLogo2} alt="logo" className="w-[158px] h-10" />
                 <div className="flex items-center justify-center gap-2">
                     <div className="hidden md:flex items-center gap-2">
