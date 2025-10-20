@@ -2,35 +2,8 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { ChevronDown } from "lucide-react"
-import {
-  Home,
-  AppWindow,
-  Wallet,
-  SquareDashedBottom as SquareDashed,
-  FileText,
-  MessageSquareDot,
-  SquareLibrary,
-} from "lucide-react"
 import { useNavigate } from "react-router-dom"
-
-const navigationItems = [
-  { name: "Home", icon: Home, href: "/portal" },
-  { name: "Application", icon: AppWindow, href: "/portal/application" },
-  { name: "Payments", icon: Wallet, href: "/portal/payments" },
-  { name: "Allocated Plots", icon: SquareDashed, href: "/portal/allocated-plots" },
-  { name: "Agreements", icon: FileText, href: "/portal/agreements" },
-  {
-    name: "Service Request",
-    icon: MessageSquareDot,
-    // href: "/portal/service",
-    options: [
-      { name: "General Service Request", href: "/portal/service" },
-      { name: "Bot Requests", href: "/portal/bot-requests" },
-      { name: "Bot Reports", href: "/portal/bot-reports" },
-    ],
-  },
-  { name: "HSE Findings", icon: SquareLibrary, href: "/portal/violations" },
-]
+import { navigationItems } from "@/lib/utils"
 
 export function NavigationBar() {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
@@ -41,7 +14,7 @@ export function NavigationBar() {
   return (
     <div className="flex flex-row justify-between h-[56px] px-[80px] w-full border-b-2">
       {navigationItems.map((item) => {
-        if (item.options) {
+        if (item.children) {
           return (
             <DropdownMenu
               key={item.name}
@@ -52,7 +25,7 @@ export function NavigationBar() {
                 <Button
                   variant="ghost"
                   className={`h-full m-0 p-0 px-4 rounded-b-none hover:text-[#852533] hover:bg-[#f6f5ef] ${
-                    !!(item.options.find( option => pathName.replace(/^\/[^/]+/, "") === option.href))  && "h-[56px] border-b-2 border-b-[#852533] text-[#852533]"
+                    !!(item.children.find( option => pathName.replace(/^\/[^/]+/, "") === option.href))  && "h-[56px] border-b-2 border-b-[#852533] text-[#852533]"
                   }`}
                 >
                   <item.icon className="h-5 w-5" />
@@ -61,7 +34,7 @@ export function NavigationBar() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" className="w-56">
-                {item.options.map((option) => (
+                {item.children.map((option) => (
                   <DropdownMenuItem key={option.name} onClick={() => navigate(option.href)} className="cursor-pointer">
                     {option.name}
                   </DropdownMenuItem>

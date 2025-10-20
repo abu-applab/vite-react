@@ -48,7 +48,7 @@ const Service = () => {
 
   return (
     <div className="mx-[80px] mt-10">
-      <div>
+      <div className="hidden md:block">
         <h1 className="text-2xl mb-1">Service Request</h1>
         <div className="mb-6 text-base text-muted-foreground">
           <Link to="/portal">Al Noor Real Estate W.L.L</Link>

@@ -4,7 +4,7 @@ import FormSteps from "../addCompany/formSteps"
 import Instruction from "./instruction"
 import DynamicForm from "../dynamic-form"
 import { useEffect, useRef, useState } from "react"
-import { newApplicationPlots, type ServiceKey } from "@/constants"
+import { newApplicationPlots } from "@/constants"
 import FormSubmitted from "../formSubmitted"
 
 interface Step {
@@ -15,8 +15,10 @@ interface Step {
 }
 
 interface AddNewApplicationProps {
-  selectedApplication: ServiceKey
-  setSelectedApplication: (value: ServiceKey) => void
+  selectedApplication: string
+  setSelectedApplication: (value: string) => void
+  selectedLocation: string
+  setSelectedLocation: (value: string) => void
 }
 
 const AddNewApplication = ({ selectedApplication, setSelectedApplication }: AddNewApplicationProps) => {
@@ -32,7 +34,7 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication }: AddN
   useEffect(() => {
     if (selectedApplication) {
       setApplicationSteps(
-        newApplicationPlots[selectedApplication] ?? []
+        newApplicationPlots[selectedApplication as keyof typeof newApplicationPlots] ?? []
       )
     }
   }, [selectedApplication])
@@ -41,12 +43,6 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication }: AddN
     setFormData((prev) => ({ ...prev, [fieldId]: value }))
     setErrors((prev) => ({ ...prev, [fieldId]: "" }))
   }
-
-  // const handleSubmit = (e: React.FormEvent) => {
-  //   e.preventDefault()
-  //   setSelectedApplication("")
-  //   setIsFormSubmitted(true)
-  // }
 
   const goToNextStep = () => {
     setApplicationSteps((prevSteps) => {

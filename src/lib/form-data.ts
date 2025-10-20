@@ -867,11 +867,11 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                     ],
                 }
             ]
-        case "industrialPlots":
+        case "industrial":
             return [
                 {
                     title: "Industrial Application",
-                    description: "Application for setting up, expanding, or modifying an industrial project.",
+                    description: "Application to apply for an industrial project.",
                     key: "instruction",
                     sections: [
                         {

@@ -7,6 +7,13 @@ interface ServiceHeaderProps {
   onNewRequest: () => void
 }
 
+const companies = [
+  'Al Noor Real Estate',
+  'Qatar International Islamic Bank',
+  'Mesaieed Petrochemical Holding Company',
+  'Ezdan Holding Group',
+];
+
 export const ServiceHeader = ({ onNewRequest }: ServiceHeaderProps) => {
   return (
     <div className="flex flex-row items-center justify-between">
@@ -22,27 +29,30 @@ export const ServiceHeader = ({ onNewRequest }: ServiceHeaderProps) => {
           <CirclePlus className="h-4 w-4 mr-2" />
           New Service Request
         </Button>
-        <Select defaultValue="">
-          <SelectTrigger className="w-48 bg-background">
-            <SelectValue placeholder="Select Company" />
+        <Select defaultValue="Al Noor Real Estate">
+          <SelectTrigger className="bg-background pl-10">
+            <SelectValue placeholder="" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="al-noor">Al Noor Real Estate W.L.L</SelectItem>
-            <SelectItem value="qatar-bank">Qatar International Islamic Bank</SelectItem>
-            <SelectItem value="mesaieed">Mesaieed Petrochemical Holding Company</SelectItem>
-            <SelectItem value="ezdan">Ezdan Holding Group</SelectItem>
+            {companies.map((company, index) => (
+              <SelectItem key={index} value={company}>
+                {company}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
-        <Select>
-          <SelectTrigger className="w-32 bg-background">
+        <Select defaultValue="">
+          <SelectTrigger className="w-32 bg-background data-[placeholder]:text-foreground">
             <SelectValue placeholder="Status" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="pending">Pending</SelectItem>
             <SelectItem value="approved">Approved</SelectItem>
-            <SelectItem value="rejected">Rejected</SelectItem>
             <SelectItem value="in-progress">In Progress</SelectItem>
-            <SelectItem value="completed">Completed</SelectItem>
+            <SelectItem value="pending">Pending Request Fees</SelectItem>
+            <SelectItem value="completed">Cancelled</SelectItem>
+            <SelectItem value="rejected">Rejected</SelectItem>
+            <SelectItem value="pending">Pending Work</SelectItem>
+            <SelectItem value="pending">Pending Investor Update</SelectItem>
           </SelectContent>
         </Select>
       </div>

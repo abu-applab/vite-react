@@ -65,7 +65,7 @@ export const SelectCompanyDetailsformFields = [
   },
 ]
 
-export const initialIndustrialPlotsSteps = [
+export const initialIndustrialSteps = [
   { title: "Instruction", completed: false, active: true, stepNumber: "1" },
   { title: "Company Details (1 of 2)", completed: false, active: false, stepNumber: "2" },
   { title: "Company Details (2 of 2", completed: false, active: false, stepNumber: "3" },
@@ -78,32 +78,28 @@ export const serviceOptions = [
       key: "logisticsPark"
   },
   {
-      title: "Industrial Plots",
-      key: "industrialPlots"
+      title: "Industrial",
+      key: "industrial"
   },
   {
-      title: "Commercial Plots",
-      key: "commercialPlots"
+      title: "Commercial",
+      key: "commercial"
   },
   {
       title: "Open Yards",
       key: "openYards"
   },
-  {
-      title: "SMI",
-      key: "smi",
-  }
 ]
 
 export const newApplicationPlots = {
   logisticsPark: [],
-  industrialPlots: [
+  industrial: [
     { title: "Instruction", completed: false, active: true, stepNumber: "1" },
     { title: "Company Details (1 of 2)", completed: false, active: false, stepNumber: "2" },
     { title: "Company Details (2 of 2", completed: false, active: false, stepNumber: "3" },
     { title: "Document Upload", completed: false, active: false, stepNumber: "4" },
   ],
-  commercialPlots: [
+  commercial: [
     { title: "Instruction", completed: false, active: true, stepNumber: "1" },
     { title: "Company Details (1 of 2)", completed: false, active: false, stepNumber: "2" },
     { title: "Company Details (2 of 2", completed: false, active: false, stepNumber: "3" },
@@ -123,4 +119,4 @@ export const newApplicationPlots = {
   ],
 }
 
-export type ServiceKey = "" | "logisticsPark" | 'industrialPlots' | "commercialPlots" | "openYards" | "smi"
+export type ServiceKey = "" | "logisticsPark" | 'industrial' | "commercial" | "openYards" | "smi"

@@ -11,13 +11,11 @@ const Instruction = ({ config, goToNextStep, goToPreviousStep }: InstructionProp
     return (
         <div className="px-10 pb-4">
             <div className="mb-8">
-                <h3 className="text-xl font-semibold text-foreground">Open Yard Application</h3>
-                <p className="text-muted-foreground text-sm font-normal">Application for setting up, expanding, or modifying an open yard project.</p>
+                <h3 className="text-xl font-semibold text-foreground">{config.title}</h3>
+                <p className="text-muted-foreground text-sm font-normal">{config.description}</p>
             </div>
             <Card className="px-6">
                 {config.sections.map((section: any) => {
-                    if (section.key === "requiredDocuments") {
-                    }
                     return (
                         <div>
                             <div>

@@ -1,4 +1,4 @@
-import { initialIndustrialPlotsSteps } from "@/constants";
+import { initialIndustrialSteps } from "@/constants";
 import React, { createContext, useContext, useState, type ReactNode } from "react";
 
 // Define type for context
@@ -14,8 +14,8 @@ interface AppContextType {
     setIsMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
     addCompanySteps: StepsType[];
     setAddCompanySteps: React.Dispatch<React.SetStateAction<StepsType[]>>;
-    industrialPlotsSteps: StepsType[];
-    setIndustrialPlotsSteps: React.Dispatch<React.SetStateAction<StepsType[]>>;
+    industrialSteps: StepsType[];
+    setIndustrialSteps: React.Dispatch<React.SetStateAction<StepsType[]>>;
 }
 
 // Create context
@@ -38,7 +38,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
       { title: "FormSubmission", completed: false, active: false, stepNumber: "6" },
     ])
     
-    const [industrialPlotsSteps, setIndustrialPlotsSteps] = useState(initialIndustrialPlotsSteps)
+    const [industrialSteps, setIndustrialSteps] = useState(initialIndustrialSteps)
 
   return (
     <AppContext.Provider value={{ 
@@ -46,8 +46,8 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         setIsMenuOpen, 
         addCompanySteps, 
         setAddCompanySteps,
-        industrialPlotsSteps,
-        setIndustrialPlotsSteps
+        industrialSteps,
+        setIndustrialSteps
         }}>
       {children}
     </AppContext.Provider>
