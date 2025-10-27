@@ -24,7 +24,7 @@ export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
       }`}
     >
       {/* Header */}
-      <div className="flex justify-between items-center p-4 border-b">
+      <div className="flex justify-between items-center border-b w-full h-[88px] md:px-[80px] md:py-6 px-4">
         <img src={manateqLogo2} alt="Manateq Logo" className="w-40" />
         <Button variant="ghost" onClick={onClose} className="text-xl font-bold text-[#852533]">×</Button>
       </div>

@@ -28,7 +28,7 @@ interface AppProviderProps {
 
 // Provider
 export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
-    const [isMenuOpen, setIsMenuOpen] = useState(true)
+    const [isMenuOpen, setIsMenuOpen] = useState(false)
     const [addCompanySteps, setAddCompanySteps] = useState([
       { title: "Upload CR Document", completed: false, active: true, stepNumber: "1" },
       { title: "Review Company Details", completed: false, active: false, stepNumber: "2" },

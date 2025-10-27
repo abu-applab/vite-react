@@ -11,7 +11,8 @@ export const validateForm = (selectedService: string, formState: Record<string, 
   const isEnglish = (val: string) => /[A-Za-z]/.test(val)
   const isValidEmail = (val: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)
   const isValidPhone = (val: string) => /^\d{8}$/.test(val)
-  const isValidPOBox = (val: string) => /^\d{5,8}$/.test(val)
+  const isValidPOBox = (val: string) => /^[A-Za-z0-9]{5,8}$/.test(val);
+
 
   const validateTextLength = (field: any, value: string) => {
     if (field.max && value.length > field.max)
@@ -28,7 +29,8 @@ export const validateForm = (selectedService: string, formState: Record<string, 
         return
       }
 
-      if (selectedService === "certifiedCopyOfAgreement" && field.id === "comments" && isDigitsOnly(value))
+      if ((field.id.toLocaleLowerCase() === "comments" || field.id.toLocaleLowerCase() === "description" || field.label === "New PO Box" ) 
+        && isDigitsOnly(value))
         newErrors[field.id] = "This field cannot contain digits only."
 
       if (["text", "textarea"].includes(field.type) && value) {
@@ -47,7 +49,7 @@ export const validateForm = (selectedService: string, formState: Record<string, 
       if (field.label === "New Phone" && value && !isValidPhone(value))
         newErrors[field.id] = "Must contain exactly 8 digits."
       if (field.label === "New PO Box" && value && !isValidPOBox(value))
-        newErrors[field.id] = "Must contain 5 to 8 digits."
+        newErrors[field.id] = "Must contain 5 to 8 character."
     })
   })
 

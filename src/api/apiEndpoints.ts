@@ -2,47 +2,50 @@
 
 export const API_SERVICES_ENDPOINTS = {
     rentalRelationship: {
-      url: "/api/WebApp/createRentalRelationRequest",
+      url: "/createRentalRelationRequest",
       method: "POST",
       contentType: "multipart", 
     },
     landTransfer: {
-      url: "/api/WebApp/createLandTransfer",
+      url: "/createLandTransfer",
       method: "POST",
       contentType: "multipart", 
     },
     certifiedCopyOfAgreement: {
-      url: "/api/WebApp/createCertifiedCopyOfAgreementRequest",
+      url: "/createCertifiedCopyOfAgreementRequest",
       method: "POST",
       contentType: "json", 
     },
     demarcationLetter: {
-      url: "/api/WebApp/createDemarcationLetterRequest",
-      method: "POST",
-      contentType: "multipart", 
-    },
-    complaint: {
-      url: "/api/WebApp/createComplaintRequest",
+      url: "/createDemarcationLetterRequest",
       method: "POST",
       contentType: "json", 
     },
+    complaint: {
+      url: "/createComplaintRequest",
+      method: "POST",
+      contentType: "multipart", 
+    },
     technicalQueries: {
-        url: "/api/WebApp/createTechnicalQueriesRequest",
+        url: "/createTechnicalQueriesRequest",
         method: "POST",
         contentType: "json", 
     },
     kahramaa: {
-        url: "/api/WebApp/createKahramaRequest",
+        url: "/createKahramaRequest",
         method: "POST",
         contentType: "json", 
     },
-    updateContactDetail: {
-      url: "/api/WebApp/createUpdateContactDetailRequest",
+    updateContactDetails: {
+      url: "/createUpdateContactDetailRequest",
       method: "POST",
       contentType: "multipart", 
     },
     updateCompanyInformation: {
-      url: "/api/WebApp/updateCompanyUpdateRequestDetails",
+      urls: [
+        "/createBasicCompanyUpdateRequest", 
+        "/updateCompanyUpdateRequestDetails"
+      ],
       method: "POST",
       contentType: "multipart", 
     },

@@ -17,10 +17,6 @@ export const serviceOptions = [
       key: "rentalRelationship"
     },
     {
-      title: "Land Transfer",
-      key: "landTransfer",
-    },
-    {
       title: "Certified Copy of Agreement",
       key:  "certifiedCopyOfAgreement",
     },
@@ -59,6 +55,7 @@ export function NewServiceRequestModal({ open, onOpenChange, setSelectedService 
     if (value) {
       console.log("Selected service:", value)
       // Handle the selected service here
+      setValue('')
       setSelectedService(value)
       onOpenChange(false)
     //   setSelectedService("")
@@ -66,22 +63,23 @@ export function NewServiceRequestModal({ open, onOpenChange, setSelectedService 
   }
 
   const handleCancel = () => {
+    setValue('')
     onOpenChange(false)
     setSelectedService("")
   }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md max-h-[80vh] overflow-y-auto p-0 gap-0" showCloseButton={false}>
+      <DialogContent className="md:max-w-md max-h-[80vh] overflow-y-auto p-0 gap-0" showCloseButton={false}>
         <DialogHeader className="border-b px-5 py-3 flex flex-row items-center justify-between">
-          <DialogTitle className="text-lg font-medium text-foreground">
+          <DialogTitle className="text-lg font-medium text-foreground text-left">
             Select the type of service you want to request.
           </DialogTitle>
           <Button
             variant="ghost"
             size="icon"
-            className="h-6 w-6 text-gray-500 hover:text-black hover:bg-transparent"
-            onClick={() => onOpenChange(false)}
+            className="h-6 w-6 text-gray-500 hover:text-black hover:bg-transparent cursor-pointer"
+            onClick={() => handleCancel()}
           >
             <X className="h-4 w-4" />
           </Button>
@@ -109,7 +107,7 @@ export function NewServiceRequestModal({ open, onOpenChange, setSelectedService 
           <Button
             onClick={handleDone}
             disabled={!value}
-            className="px-6 bg-maroon-100 hover:bg-[#7A1F2B] text-white"
+            className="px-6 bg-maroon-100 hover:bg-[#7A1F2B] text-white cursor-pointer"
           >
             Done
           </Button>

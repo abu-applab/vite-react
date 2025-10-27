@@ -31,7 +31,7 @@ const DynamicForm = ({
   setErrors,
   handleInputChange,
   handleSubmit,
-  // handlePerviousButton,
+  handlePerviousButton,
   isNewApplication = false,
   goToNextStep,
   fieldRefs,
@@ -92,11 +92,20 @@ const DynamicForm = ({
               value={formData[field.id] || ""}
               onValueChange={(value) => {
                 // Update this field value
-                handleInputChange(field.id, value);
       
                 // ✅ If this field has a dependency, update that too
                 if (field.dependsOn) {
-                  handleInputChange(field.dependsOn, value);
+                  const selectedOption = field.options?.find(
+                    (val): val is { id: string; name: string; plotId: string, agreementId: string } =>
+                      typeof val !== "string" && val.id === value
+                  );
+                  if (!selectedOption) return; 
+                  console.log('selectedOption: ', selectedOption);
+
+                  handleInputChange(field.id, value);
+                  handleInputChange(field.dependsOn, selectedOption?.agreementId);
+                } else {
+                  handleInputChange(field.id, value);
                 }
               }}
               disabled={!!isDisabled}
@@ -206,7 +215,7 @@ const DynamicForm = ({
   }
 
   return (
-    <Card className={cn("p-10 bg-[#fcfaf7]", { "border-none shadow-none": isNewApplication })}>
+    <Card className={cn("md:p-10 bg-[#fcfaf7]", { "border-none shadow-none": isNewApplication })}>
       <CardHeader>
         <CardTitle className="text-xl">{config.title}</CardTitle>
         <CardDescription>{config.description}</CardDescription>
@@ -231,10 +240,10 @@ const DynamicForm = ({
             </Card>
           ))}
 
-          <div className="flex justify-end">
-            {/* <Button type="button" variant="outline" onClick={handlePerviousButton}>
+          <div className="flex items-center justify-between">
+            <Button type="button" variant="outline" onClick={handlePerviousButton}>
               Previous
-            </Button> */}
+            </Button>
             <Button type={isNewApplication ? "button" : "submit"} className="bg-maroon-100 hover:bg-[#7A1F2B]" onClick={isNewApplication ? goToNextStep : handleSubmit}>
               {isNewApplication ? "Next" : "Submit"}
             </Button>

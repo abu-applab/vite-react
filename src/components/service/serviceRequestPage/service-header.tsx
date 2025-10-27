@@ -29,14 +29,14 @@ export const ServiceHeader = ({ onNewRequest }: ServiceHeaderProps) => {
           </div>
           <Button
             size="icon"
-            className="bg-white hover:bg-zinc-50 text-black rounded-md border"
+            className="bg-white hover:bg-zinc-50 text-black rounded-md border cursor-pointer"
             onClick={onNewRequest}
           >
             <Plus className="h-5 w-5" />
           </Button>
           <Button
             size="icon"
-            className="bg-white text-black hover:bg-zinc-50 rounded-md border"
+            className="bg-white text-black hover:bg-zinc-50 rounded-md border cursor-pointer"
           >
             <ListFilter  className="h-5 w-5" />
           </Button>
@@ -65,7 +65,7 @@ export const ServiceHeader = ({ onNewRequest }: ServiceHeaderProps) => {
         </div>
         <div className="flex gap-2">
           <Button
-            className="text-black bg-white hover:bg-gray-100"
+            className="text-black bg-white hover:bg-gray-100 cursor-pointer"
             onClick={onNewRequest}
           >
             <CirclePlus className="h-4 w-4 mr-2" />

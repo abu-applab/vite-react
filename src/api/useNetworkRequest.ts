@@ -26,7 +26,8 @@ export default function useNetworkRequest() {
 
         try {
             const headers: Record<string, string> = {
-                Accept: '*/*',
+                // Accept: '*/*',
+                'Ocp-Apim-Subscription-Key': 'a80f5b997c3d4b8380ab8a3a0b8cfe78',
                 ...header,
             };
 
