@@ -6,10 +6,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Textarea } from "./ui/textarea"
 import { Button } from "./ui/button"
 import FileUpload from "./file-upload"
-import { Trash2 } from "lucide-react"
+import { ChevronsUpDown, Trash2 } from "lucide-react"
 import pdfLogo from "../assets/images/pdf-logo.svg"
 import { cn } from "@/lib/utils"
 import type { Dispatch, SetStateAction } from "react"
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
+import { Command, CommandGroup, CommandItem, CommandList } from "./ui/command"
+import { Checkbox } from "./ui/checkbox"
 
 interface DynamicFormProps {
   config: FormConfig
@@ -74,6 +77,7 @@ const DynamicForm = ({
               onChange={(e) => handleInputChange(field.id, e.target.value)}
               className={`${errors[field.id] ? "border-red-600" : ""}`}
               {...(field.type === "number" ? { onWheel: (e) => e.currentTarget.blur() } : {})}
+              disabled={field.disabled}
             />
             {errors[field.id] && <span className="text-sm text-red-600">{errors[field.id]}</span>}
           </div>
@@ -92,14 +96,14 @@ const DynamicForm = ({
               value={formData[field.id] || ""}
               onValueChange={(value) => {
                 // Update this field value
-      
+
                 // ✅ If this field has a dependency, update that too
                 if (field.dependsOn) {
                   const selectedOption = field.options?.find(
                     (val): val is { id: string; name: string; plotId: string, agreementId: string } =>
                       typeof val !== "string" && val.id === value
                   );
-                  if (!selectedOption) return; 
+                  if (!selectedOption) return;
                   console.log('selectedOption: ', selectedOption);
 
                   handleInputChange(field.id, value);
@@ -110,12 +114,12 @@ const DynamicForm = ({
               }}
               disabled={!!isDisabled}
             >
-              <SelectTrigger 
-               className={`w-full ${errors[field.id] ? "border-red-600" : ""}`}
-               ref={(el) => {
-                fieldRefs.current[field.id] = el
-              }}
-               >
+              <SelectTrigger
+                className={`w-full ${errors[field.id] ? "border-red-600" : ""}`}
+                ref={(el) => {
+                  fieldRefs.current[field.id] = el
+                }}
+              >
                 <SelectValue placeholder={`Select ${field.label.toLowerCase()}`} />
               </SelectTrigger>
               <SelectContent>
@@ -156,6 +160,88 @@ const DynamicForm = ({
           </div>
         )
 
+        case "multiselect":
+          return (
+            <div className="space-y-2" key={field.id}>
+              <Label htmlFor={field.id}>
+                {field.label}
+                {field.required && <span className="text-destructive">*</span>}
+              </Label>
+        
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    role="combobox"
+                    className={`w-full justify-between ${
+                      errors[field.id] ? "border-red-600" : ""
+                    }`}
+                  >
+                    {formData[field.id]?.length
+                      ? field.options!
+                          .filter((opt: any) =>
+                            formData[field.id].split(",").includes(opt.id)
+                          )
+                          .map((opt: any) => opt.name)
+                          .join(", ")
+                      : "Select options"}
+                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+        
+                <PopoverContent
+                  align="start"
+                  sideOffset={4}
+                  className="w-[var(--radix-popover-trigger-width)] p-1"
+                >
+                  <Command>
+                    <CommandList className="max-h-48 overflow-y-auto">
+                      <CommandGroup>
+                        {field.options!.map((option: any) => {
+                          const selectedIds = formData[field.id]
+                            ? formData[field.id].split(",")
+                            : []
+                          const isChecked = selectedIds.includes(option.id)
+        
+                          return (
+                            <CommandItem
+                              key={option.id}
+                              onSelect={() => {
+                                let updated
+                                if (isChecked) {
+                                  updated = selectedIds.filter((v: any) => v !== option.id)
+                                } else {
+                                  updated = [...selectedIds, option.id]
+                                }
+        
+                                // Convert to comma-separated string
+                                const updatedValue = updated.join(",")
+        
+                                handleInputChange(field.id, updatedValue)
+                              }}
+                            >
+                              <div className="flex items-center gap-2">
+                                <Checkbox 
+                                  checked={isChecked} 
+                                  className={`data-[state=checked]:bg-maroon-100 data-[state=checked]:border-gray-800`}
+                                  />
+                                <span>{option.name}</span>
+                              </div>
+                            </CommandItem>
+                          )
+                        })}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
+        
+              {errors[field.id] && (
+                <span className="text-sm text-red-600">{errors[field.id]}</span>
+              )}
+            </div>
+          )
+           
       case "file":
         return (
           <div className="space-y-2">
@@ -165,46 +251,46 @@ const DynamicForm = ({
               }}
               tabIndex={-1}
             >
-            {/* <Label htmlFor={field.id}>
+              {/* <Label htmlFor={field.id}>
               {field.label}
               {field.required && <span className="text-destructive">*</span>}
             </Label> */}
-            {!formData?.[field.id] ? (
-              <>
-                <FileUpload
-                  onFileUpload={(value) => handleInputChange(field.id, value)}
-                  handleFileUploadError={(uploadError: string) => setErrors((prev) => ({
-                    ...prev,
-                    [field.id]: uploadError
-                  }))}
-                  isServiceForm
-                  fileLabel={field.label}
-                />
-                {errors[field.id] && <span className="text-sm text-red-600">{errors[field.id]}</span>}
-              </>
-            ) : (
-              <Card className="p-4.5 flex flex-row items-center justify-between">
-                <div className="flex flex-row gap-3 items-center justify-start">
-                  <div className="h-12 w-12 p-3">
-                    <img src={pdfLogo} alt="pdf logo" />
+              {!formData?.[field.id] ? (
+                <>
+                  <FileUpload
+                    onFileUpload={(value) => handleInputChange(field.id, value)}
+                    handleFileUploadError={(uploadError: string) => setErrors((prev) => ({
+                      ...prev,
+                      [field.id]: uploadError
+                    }))}
+                    isServiceForm
+                    fileLabel={field.label}
+                  />
+                  {errors[field.id] && <span className="text-sm text-red-600">{errors[field.id]}</span>}
+                </>
+              ) : (
+                <Card className="p-4.5 flex flex-row items-center justify-between">
+                  <div className="flex flex-row gap-3 items-center justify-start">
+                    <div className="h-12 w-12 p-3">
+                      <img src={pdfLogo} alt="pdf logo" />
+                    </div>
+                    <div className="flex flex-col">
+                      <h4 className="font-medium text-gray-900">{getFileName(formData?.[field.id]?.name)}</h4>
+                      <p className="text-sm text-gray-600">
+                        {getFileType(formData?.[field.id]?.name)} • {formatFileSize(formData?.[field.id]?.size)}
+                      </p>
+                    </div>
                   </div>
-                  <div className="flex flex-col">
-                    <h4 className="font-medium text-gray-900">{getFileName(formData?.[field.id]?.name)}</h4>
-                    <p className="text-sm text-gray-600">
-                      {getFileType(formData?.[field.id]?.name)} • {formatFileSize(formData?.[field.id]?.size)}
-                    </p>
-                  </div>
-                </div>
-                <Button
-                  className="border-2 h-8 w-8 p-2"
-                  type="button"
-                  variant="ghost"
-                  onClick={() => handleInputChange(field.id, null)}
-                >
-                  <Trash2 className="h-4 w-4 text-[#82764f]" />
-                </Button>
-              </Card>
-            )}
+                  <Button
+                    className="border-2 h-8 w-8 p-2"
+                    type="button"
+                    variant="ghost"
+                    onClick={() => handleInputChange(field.id, null)}
+                  >
+                    <Trash2 className="h-4 w-4 text-[#82764f]" />
+                  </Button>
+                </Card>
+              )}
             </div>
           </div>
         )
@@ -230,7 +316,20 @@ const DynamicForm = ({
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {section.fields?.map((field) => (
+                  {section.fields
+                    ?.filter((field) => {
+                    // If field has showIfSelected, show it only if that value is selected in multiselect
+                    if (field.showIfSelected) {
+                      const selectedList =
+                        formData.RequiredUpdateSet ??
+                        formData.RequiredUpdate ??
+                        []; // fallback to empty array to avoid errors
+                  
+                      return selectedList.includes(field.showIfSelected);
+                    }
+                    return true;
+                  })
+                    ?.map((field) => (
                     <div key={field.id} className={field.type === "textarea" || field.type === "file" ? "md:col-span-2" : ""}>
                       {renderField(field)}
                     </div>

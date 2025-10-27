@@ -1,5 +1,10 @@
 // /network/apiEndpoints.js
 
+export const API_ENDPOINTS = {
+   getPlots: '/getPlots',
+   getSignatories: '/getSignatories'
+}
+
 export const API_SERVICES_ENDPOINTS = {
     rentalRelationship: {
       url: "/createRentalRelationRequest",
@@ -49,5 +54,4 @@ export const API_SERVICES_ENDPOINTS = {
       method: "POST",
       contentType: "multipart", 
     },
-  };
-  
+};

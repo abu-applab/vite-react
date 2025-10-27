@@ -24,7 +24,8 @@ export const validateForm = (selectedService: string, formState: Record<string, 
   config.sections.forEach((section) => {
     section.fields?.forEach((field) => {
       const value = formState[field.id]?.trim?.() || formState[field.id]
-      if (field.required && isEmpty(value)) {
+      const selectedList = formState.RequiredUpdateSet ?? formState.RequiredUpdate ?? []; 
+      if (field.required && isEmpty(value) && (!field.showIfSelected || (field.showIfSelected && selectedList?.includes(field.showIfSelected)))) {
         newErrors[field.id] = `${field.label} is required`
         return
       }

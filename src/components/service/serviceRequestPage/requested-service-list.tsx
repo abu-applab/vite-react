@@ -1,8 +1,8 @@
 import { Eye, MessageSquareDot, MoreVertical } from "lucide-react"
 import { Button } from "../../ui/button"
 import { Card, CardContent, CardHeader } from "../../ui/card"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu"
 import { Badge } from "../../ui/badge"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 
 interface RequestedServiceListProps {
     services: any[]
@@ -13,9 +13,24 @@ function getStatusColor(status: string) {
         case "approved":
             return "bg-green-100 text-green-600 hover:bg-green-100"
         case "in progress":
-            return "bg-green-100 text-green-600 hover:bg-green-100"
+        case "pending":
+            return "bg-orange-100 text-orange-600 hover:bg-orange-100"
         case "rejected":
-            return "bg-green-100 text-green-600 hover:bg-green-100"
+            return "bg-red-100 text-red-600 hover:bg-red-100"
+        default:
+            return ""
+    }
+}
+
+function getPointerColor(status: string) {
+    switch (status.toLowerCase()) {
+        case "approved":
+            return "bg-green-600"
+        case "in progress":    
+        case "pending":
+            return "bg-orange-600"
+        case "rejected":
+            return "bg-red-600"
         default:
             return ""
     }
@@ -44,7 +59,7 @@ export const RequestedServiceList = ({ services }: RequestedServiceListProps) =>
                         </div>
                         <div className="flex items-center">
                             <Badge className={`${getStatusColor(request.status)} border-0 text-xs md:flex items-center justify-center rounded-2xl px-2 py-1 hidden`}>
-                                <span className="size-1.5 bg-green-600 rounded-full mr-1"></span>
+                                <span className={`size-1.5 ${getPointerColor(request.status)} rounded-full mr-1`}></span>
                                 <span className="text-xs leading-4 font-medium">{request.status}</span>
                             </Badge>
                             <DropdownMenu>

@@ -1,7 +1,7 @@
 export interface FormField {
     id: string;
     label: string;
-    type: "text" | "select" | "textarea" | "file" | "number";
+    type: "text" | "select" | "textarea" | "file" | "number" | "multiselect";
     required: boolean;
     placeholder?: string;
     options?: string[] | {id: string, name: string, plotId?: string, agreementId?: string}[];
@@ -10,6 +10,7 @@ export interface FormField {
     max?: number;
     pattern?: string;
     dependsOn?: string
+    showIfSelected?: string
 }
 
 export interface FormSection {
@@ -24,6 +25,8 @@ export interface FormConfig {
     key?: string,
     title: string
     description: string
+    needsPlots?: boolean
+    needsSignatory?: boolean
     sections: FormSection[]
 }
 
@@ -106,6 +109,7 @@ export function getServiceFormConfig(formType: string): FormConfig {
             return {
                 title: "Rental Relation",
                 description: "Request an official letter confirming the permitted use of your land.",
+                needsPlots: true,
                 sections: [
                     {
                         title: "Request Details",
@@ -113,13 +117,8 @@ export function getServiceFormConfig(formType: string): FormConfig {
                             {
                                 id: "Agreement",
                                 label: "Agreement",
-                                type: "select",
+                                type: "text",
                                 required: true,
-                                options: [
-                                    { id: '1d0d842d-bee6-ef11-be20-6045bd92ed51', plotId: '958c793-1b08-ee11-811b-00155d0f0c90', name: "Agreement A" },
-                                    { id: '1d0d842d-bee6-ef11-be20-6045bd92ed52', plotId: '958c793-1b08-ee11-811b-00155d0f0c91', name: "Agreement B" },
-                                    { id: '1d0d842d-bee6-ef11-be20-6045bd92ed53', plotId: '958c793-1b08-ee11-811b-00155d0f0c92', name: "Agreement C" }
-                                ],
                                 dependsOn: "Plot",
                                 disabled: true
                             },
@@ -128,11 +127,7 @@ export function getServiceFormConfig(formType: string): FormConfig {
                                 label: "Plot",
                                 type: "select",
                                 required: true,
-                                options: [
-                                    { id:'e958c793-1b08-ee11-811b-00155d0f0c90', agreementId: '1d0d842d-bee6-ef11-be20-6045bd92ed51', name: "Plot 1" },
-                                    { id:'e958c793-1b08-ee11-811b-00155d0f0c91', agreementId: '1d0d842d-bee6-ef11-be20-6045bd92ed52', name: "Plot 2" },
-                                    { id: 'e958c793-1b08-ee11-811b-00155d0f0c92', agreementId: '1d0d842d-bee6-ef11-be20-6045bd92ed53',  name: "Plot 3" }
-                                ],
+                                options: [],
                                 dependsOn: "Agreement",
                             },
                             {
@@ -238,9 +233,8 @@ export function getServiceFormConfig(formType: string): FormConfig {
                             {
                                 id: "agreement",
                                 label: "Agreement",
-                                type: "select",
+                                type: "text",
                                 required: true,
-                                options: ["Agreement A", "Agreement B", "Agreement C"],
                             },
                             {
                                 id: "landTransferType",
@@ -299,6 +293,7 @@ export function getServiceFormConfig(formType: string): FormConfig {
             return {
                 title: "Certified Copy of Agreement Form",
                 description: "Request to transfer ownership of your land to another party.",
+                needsPlots: true,
                 sections: [
                     {
                         title: "Request Details",
@@ -306,13 +301,8 @@ export function getServiceFormConfig(formType: string): FormConfig {
                             {
                                 id: "agreement",
                                 label: "Agreement",
-                                type: "select",
+                                type: "text",
                                 required: true,
-                                options: [
-                                    { id: '1d0d842d-bee6-ef11-be20-6045bd92ed51', plotId: '958c793-1b08-ee11-811b-00155d0f0c90', name: "Agreement A" },
-                                    { id: '1d0d842d-bee6-ef11-be20-6045bd92ed52', plotId: '958c793-1b08-ee11-811b-00155d0f0c91', name: "Agreement B" },
-                                    { id: '1d0d842d-bee6-ef11-be20-6045bd92ed53', plotId: '958c793-1b08-ee11-811b-00155d0f0c92', name: "Agreement C" }
-                                ],
                                 dependsOn: "plot",
                                 disabled: true
                             },
@@ -321,11 +311,7 @@ export function getServiceFormConfig(formType: string): FormConfig {
                                 label: "Plot",
                                 type: "select",
                                 required: true,
-                                options: [
-                                    { id:'e958c793-1b08-ee11-811b-00155d0f0c90', agreementId: '1d0d842d-bee6-ef11-be20-6045bd92ed51', name: "Plot 1" },
-                                    { id:'e958c793-1b08-ee11-811b-00155d0f0c91', agreementId: '1d0d842d-bee6-ef11-be20-6045bd92ed52', name: "Plot 2" },
-                                    { id: 'e958c793-1b08-ee11-811b-00155d0f0c92', agreementId: '1d0d842d-bee6-ef11-be20-6045bd92ed53',  name: "Plot 3" }
-                                ],
+                                options: [],
                                 dependsOn: "agreement",
                             },
                             {
@@ -345,6 +331,7 @@ export function getServiceFormConfig(formType: string): FormConfig {
             return {
                 title: "Kahramaa",
                 description: "Request to transfer ownership of your land to another party.",
+                needsPlots: true,
                 sections: [
                     {
                         title: "Request Details",
@@ -352,13 +339,8 @@ export function getServiceFormConfig(formType: string): FormConfig {
                             {
                                 id: "agreement",
                                 label: "Agreement",
-                                type: "select",
+                                type: "text",
                                 required: true,
-                                options: [
-                                    { id: '1d0d842d-bee6-ef11-be20-6045bd92ed51', plotId: '958c793-1b08-ee11-811b-00155d0f0c90', name: "Agreement A" },
-                                    { id: '1d0d842d-bee6-ef11-be20-6045bd92ed52', plotId: '958c793-1b08-ee11-811b-00155d0f0c91', name: "Agreement B" },
-                                    { id: '1d0d842d-bee6-ef11-be20-6045bd92ed53', plotId: '958c793-1b08-ee11-811b-00155d0f0c92', name: "Agreement C" }
-                                ],
                                 dependsOn: "plot",
                                 disabled: true
                             },
@@ -367,11 +349,7 @@ export function getServiceFormConfig(formType: string): FormConfig {
                                 label: "Plot",
                                 type: "select",
                                 required: true,
-                                options: [
-                                    { id:'e958c793-1b08-ee11-811b-00155d0f0c90', agreementId: '1d0d842d-bee6-ef11-be20-6045bd92ed51', name: "Plot 1" },
-                                    { id:'e958c793-1b08-ee11-811b-00155d0f0c91', agreementId: '1d0d842d-bee6-ef11-be20-6045bd92ed52', name: "Plot 2" },
-                                    { id: 'e958c793-1b08-ee11-811b-00155d0f0c92', agreementId: '1d0d842d-bee6-ef11-be20-6045bd92ed53',  name: "Plot 3" }
-                                ],
+                                options: [],
                                 dependsOn: "agreement",
                             },
                             {
@@ -391,6 +369,7 @@ export function getServiceFormConfig(formType: string): FormConfig {
             return {
                 title: "Complaint",
                 description: "Request to transfer ownership of your land to another party.",
+                needsPlots: true,
                 sections: [
                     {
                         title: "Request Details",
@@ -400,11 +379,7 @@ export function getServiceFormConfig(formType: string): FormConfig {
                                 label: "Plot",
                                 type: "select",
                                 required: true,
-                                options: [
-                                    { id:'e958c793-1b08-ee11-811b-00155d0f0c90', agreementId: '1d0d842d-bee6-ef11-be20-6045bd92ed51', name: "Plot 1" },
-                                    { id:'e958c793-1b08-ee11-811b-00155d0f0c91', agreementId: '1d0d842d-bee6-ef11-be20-6045bd92ed52', name: "Plot 2" },
-                                    { id: 'e958c793-1b08-ee11-811b-00155d0f0c92', agreementId: '1d0d842d-bee6-ef11-be20-6045bd92ed53',  name: "Plot 3" }
-                                ],
+                                options: [],
                             },
                             {
                                 id: "Description",
@@ -444,6 +419,7 @@ export function getServiceFormConfig(formType: string): FormConfig {
             return {
                 title: "Demarcation Letter",
                 description: "Request to transfer ownership of your land to another party.",
+                needsPlots: true,
                 sections: [
                     {
                         title: "Request Details",
@@ -451,13 +427,8 @@ export function getServiceFormConfig(formType: string): FormConfig {
                             {
                                 id: "agreement",
                                 label: "Agreement",
-                                type: "select",
+                                type: "text",
                                 required: true,
-                                options: [
-                                    { id: '1d0d842d-bee6-ef11-be20-6045bd92ed51', plotId: '958c793-1b08-ee11-811b-00155d0f0c90', name: "Agreement A" },
-                                    { id: '1d0d842d-bee6-ef11-be20-6045bd92ed52', plotId: '958c793-1b08-ee11-811b-00155d0f0c91', name: "Agreement B" },
-                                    { id: '1d0d842d-bee6-ef11-be20-6045bd92ed53', plotId: '958c793-1b08-ee11-811b-00155d0f0c92', name: "Agreement C" }
-                                ],
                                 dependsOn: "plot",
                                 disabled: true
                             },
@@ -466,11 +437,7 @@ export function getServiceFormConfig(formType: string): FormConfig {
                                 label: "Plot",
                                 type: "select",
                                 required: true,
-                                options: [
-                                    { id:'e958c793-1b08-ee11-811b-00155d0f0c90', agreementId: '1d0d842d-bee6-ef11-be20-6045bd92ed51', name: "Plot 1" },
-                                    { id:'e958c793-1b08-ee11-811b-00155d0f0c91', agreementId: '1d0d842d-bee6-ef11-be20-6045bd92ed52', name: "Plot 2" },
-                                    { id: 'e958c793-1b08-ee11-811b-00155d0f0c92', agreementId: '1d0d842d-bee6-ef11-be20-6045bd92ed53',  name: "Plot 3" }
-                                ],
+                                options: [],
                                 dependsOn: "agreement",
                             },
                             {
@@ -507,6 +474,8 @@ export function getServiceFormConfig(formType: string): FormConfig {
             return {
                 title: "Update Company Information",
                 description: "Request to transfer ownership of your land to another party.",
+                needsPlots: true,
+                // needsSignatory: true,
                 sections: [
                     {
                         title: "Request Details",
@@ -514,13 +483,8 @@ export function getServiceFormConfig(formType: string): FormConfig {
                             {
                                 id: "Agreement",
                                 label: "Agreement",
-                                type: "select",
+                                type: "text",
                                 required: true,
-                                options: [
-                                    { id: '1d0d842d-bee6-ef11-be20-6045bd92ed51', plotId: '958c793-1b08-ee11-811b-00155d0f0c90', name: "Agreement A" },
-                                    { id: '1d0d842d-bee6-ef11-be20-6045bd92ed52', plotId: '958c793-1b08-ee11-811b-00155d0f0c91', name: "Agreement B" },
-                                    { id: '1d0d842d-bee6-ef11-be20-6045bd92ed53', plotId: '958c793-1b08-ee11-811b-00155d0f0c92', name: "Agreement C" }
-                                ],
                                 dependsOn: "Plot",
                                 disabled: true
                             },
@@ -529,20 +493,19 @@ export function getServiceFormConfig(formType: string): FormConfig {
                                 label: "Plot",
                                 type: "select",
                                 required: true,
-                                options: [
-                                    { id:'e958c793-1b08-ee11-811b-00155d0f0c90', agreementId: '1d0d842d-bee6-ef11-be20-6045bd92ed51', name: "Plot 1" },
-                                    { id:'e958c793-1b08-ee11-811b-00155d0f0c91', agreementId: '1d0d842d-bee6-ef11-be20-6045bd92ed52', name: "Plot 2" },
-                                    { id: 'e958c793-1b08-ee11-811b-00155d0f0c92', agreementId: '1d0d842d-bee6-ef11-be20-6045bd92ed53',  name: "Plot 3" }
-                                ],
+                                options: [],
                                 dependsOn: "Agreement",
                             },
                             {
                                 id: "RequiredUpdate",
                                 label: "Required Update",
-                                type: "select",
+                                type: "multiselect",
                                 required: true,
-                                options: ["Company Name", 'Signatory'],
-                            },
+                                options: [
+                                    { id: "CompanyName", name: "Company Name" },
+                                    { id: "Signatory", name: "Signatory" },
+                                  ],
+                            }, 
                             {
                                 id: "NewCompanyNameEn",
                                 label: "New Company Name (EN)",
@@ -550,7 +513,8 @@ export function getServiceFormConfig(formType: string): FormConfig {
                                 required: true,
                                 placeholder: "Enter new company name in English",
                                 min: 3,
-                                max: 80
+                                max: 80,
+                                showIfSelected: 'CompanyName',
                             },
                             {
                                 id: "NewCompanyNameAr",
@@ -559,14 +523,16 @@ export function getServiceFormConfig(formType: string): FormConfig {
                                 required: true,
                                 placeholder: "Enter new company name in Arabic",
                                 min: 3,
-                                max: 80
+                                max: 80,
+                                showIfSelected: 'CompanyName',
                             },
                             {
                                 id: "NewSignatory",
                                 label: "New Signatory",
                                 type: "select",
                                 required: true,
-                                options: ["New Signatory 1", 'New Signatory 2', 'New Signatory 3'],
+                                options: [],
+                                showIfSelected: 'Signatory',
                             },
                             {
                                 id: "Comment",
@@ -603,6 +569,7 @@ export function getServiceFormConfig(formType: string): FormConfig {
             return {
                 title: "Update Contact Details",
                 description: "Request to transfer ownership of your land to another party.",
+                needsPlots: true,
                 sections: [
                     {
                         title: "Request Details",
@@ -610,13 +577,8 @@ export function getServiceFormConfig(formType: string): FormConfig {
                             {
                                 id: "Agreement",
                                 label: "Agreement",
-                                type: "select",
+                                type: "text",
                                 required: true,
-                                options: [
-                                    { id: '1d0d842d-bee6-ef11-be20-6045bd92ed51', plotId: '958c793-1b08-ee11-811b-00155d0f0c90', name: "Agreement A" },
-                                    { id: '1d0d842d-bee6-ef11-be20-6045bd92ed52', plotId: '958c793-1b08-ee11-811b-00155d0f0c91', name: "Agreement B" },
-                                    { id: '1d0d842d-bee6-ef11-be20-6045bd92ed53', plotId: '958c793-1b08-ee11-811b-00155d0f0c92', name: "Agreement C" }
-                                ],
                                 dependsOn: "Plot",
                                 disabled: true
                             },
@@ -625,26 +587,27 @@ export function getServiceFormConfig(formType: string): FormConfig {
                                 label: "Plot",
                                 type: "select",
                                 required: true,
-                                options: [
-                                    { id:'e958c793-1b08-ee11-811b-00155d0f0c90', agreementId: '1d0d842d-bee6-ef11-be20-6045bd92ed51', name: "Plot 1" },
-                                    { id:'e958c793-1b08-ee11-811b-00155d0f0c91', agreementId: '1d0d842d-bee6-ef11-be20-6045bd92ed52', name: "Plot 2" },
-                                    { id: 'e958c793-1b08-ee11-811b-00155d0f0c92', agreementId: '1d0d842d-bee6-ef11-be20-6045bd92ed53',  name: "Plot 3" }
-                                ],
+                                options: [],
                                 dependsOn: "Agreement",
                             },
                             {
                                 id: "RequiredUpdateSet",
                                 label: "Required Update",
-                                type: "select",
+                                type: "multiselect",
                                 required: true,
-                                options: ["POBox,POBox", 'Signatory'],
-                            },
+                                options: [
+                                  { id: "Email", name: "New Email" },
+                                  { id: "Phone", name: "Phone" },
+                                  { id: "POBox", name: "New PO Box" },
+                                ],
+                            },                              
                             {
                                 id: "Email",
                                 label: "New Email",
                                 type: "text",
                                 required: true,
                                 placeholder: "Enter new email",
+                                showIfSelected: "Email",
                             },
                             {
                                 id: "Phone",
@@ -652,6 +615,7 @@ export function getServiceFormConfig(formType: string): FormConfig {
                                 type: "number",
                                 required: true,
                                 placeholder: "Enter new phone number",
+                                showIfSelected: "Phone",
                             },
                             {
                                 id: "POBox",
@@ -659,6 +623,7 @@ export function getServiceFormConfig(formType: string): FormConfig {
                                 type: "text",
                                 required: true,
                                 placeholder: "Enter new PO box number",
+                                showIfSelected: "POBox",
                             },
                             {
                                 id: "Comments",
@@ -689,6 +654,7 @@ export function getServiceFormConfig(formType: string): FormConfig {
             return {
                 title: "Technical Queries",
                 description: "Request to transfer ownership of your land to another party.",
+                needsPlots: true,
                 sections: [
                     {
                         title: "Request Details",
@@ -696,13 +662,8 @@ export function getServiceFormConfig(formType: string): FormConfig {
                             {
                                 id: "agreement",
                                 label: "Agreement",
-                                type: "select",
+                                type: "text",
                                 required: true,
-                                options: [
-                                    { id: '1d0d842d-bee6-ef11-be20-6045bd92ed51', plotId: '958c793-1b08-ee11-811b-00155d0f0c90', name: "Agreement A" },
-                                    { id: '1d0d842d-bee6-ef11-be20-6045bd92ed52', plotId: '958c793-1b08-ee11-811b-00155d0f0c91', name: "Agreement B" },
-                                    { id: '1d0d842d-bee6-ef11-be20-6045bd92ed53', plotId: '958c793-1b08-ee11-811b-00155d0f0c92', name: "Agreement C" }
-                                ],
                                 dependsOn: "plot",
                                 disabled: true
                             },
@@ -711,11 +672,7 @@ export function getServiceFormConfig(formType: string): FormConfig {
                                 label: "Plot",
                                 type: "select",
                                 required: true,
-                                options: [
-                                    { id:'e958c793-1b08-ee11-811b-00155d0f0c90', agreementId: '1d0d842d-bee6-ef11-be20-6045bd92ed51', name: "Plot 1" },
-                                    { id:'e958c793-1b08-ee11-811b-00155d0f0c91', agreementId: '1d0d842d-bee6-ef11-be20-6045bd92ed52', name: "Plot 2" },
-                                    { id: 'e958c793-1b08-ee11-811b-00155d0f0c92', agreementId: '1d0d842d-bee6-ef11-be20-6045bd92ed53',  name: "Plot 3" }
-                                ],
+                                options: [],
                                 dependsOn: "agreement",
                             },
                             {
