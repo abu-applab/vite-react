@@ -36,11 +36,9 @@ export default function Footer() {
       </div>
 
       <div className="bg-white text-gray-700 text-sm">
-        <div className="container mx-auto flex flex-col md:flex-row justify-center gap-6 py-4">
-          <a href="#" className="hover:underline">Privacy Policy</a>
-          <a href="#" className="hover:underline">Terms and Conditions</a>
-          <a href="#" className="hover:underline">Accessibility</a>
-          <a href="#" className="hover:underline">Support Center</a>
+        <div className="container mx-auto flex flex-row justify-center md:gap-6">
+          <a href="#" className="md:hover:underline max-md:flex-1/2 max-md:text-center max-md:border-r py-2.5">Privacy Policy</a>
+          <a href="#" className="md:hover:underline max-md:flex-1/2 max-md:text-center py-2.5">Terms and Conditions</a>
         </div>
         <div className="text-center text-xs py-2 border-t border-gray-200">
           © Manateq Partners Portal. All rights reserved.

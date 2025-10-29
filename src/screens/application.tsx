@@ -237,7 +237,7 @@ const ApplicationPage = () => {
 
 
     return (
-        <div className="mx-[80px] mt-10">
+        <div className="">
             {/* Header */}
             <div>
                 <h1 className="text-2xl mb-1">Application</h1>

@@ -11,7 +11,7 @@ export const validateForm = (selectedService: string, formState: Record<string, 
   const isEnglish = (val: string) => /[A-Za-z]/.test(val)
   const isValidEmail = (val: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)
   const isValidPhone = (val: string) => /^\d{8}$/.test(val)
-  const isValidPOBox = (val: string) => /^[A-Za-z0-9]{5,8}$/.test(val);
+  const isValidPOBox = (val: string) => /^\d{5,8}$/.test(val);
 
 
   const validateTextLength = (field: any, value: string) => {

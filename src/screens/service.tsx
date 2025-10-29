@@ -1,10 +1,11 @@
 import { Link } from "react-router-dom"
-import { useState } from "react"
+import { Fragment, useState } from "react"
 import { ServiceHeader } from "@/components/service/serviceRequestPage/service-header"
 import { RequestedServiceList } from "@/components/service/serviceRequestPage/requested-service-list"
 import { ServiceFormHandler } from "@/components/service/createNewRequest/service-form-handler"
 import { NewServiceRequestModal } from "@/components/service/serviceRequestPage/new-service-request-modal"
 import { EmptyRequest } from "@/components/service/serviceRequestPage/empty-request"
+import { useApp } from "@/context/AppContext"
 
 const requestedServicesData = [
   {
@@ -38,6 +39,7 @@ const requestedServicesData = [
 ]
 
 const Service = () => {
+  const { selectedCompany } = useApp();
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedService, setSelectedService] = useState<string>("")
   const [requestedServices, setRequestedServices] = useState(requestedServicesData)
@@ -47,11 +49,11 @@ const Service = () => {
   }
 
   return (
-    <div className="md:mx-[80px] md:mt-10 m-4">
+    <Fragment>
       <div className="hidden md:block">
         <h1 className="text-2xl mb-1">Service Request</h1>
         <div className="mb-6 text-base text-muted-foreground">
-          <Link to="/portal">Al Noor Real Estate W.L.L</Link>
+          <Link to="/portal">{selectedCompany?.englishName}</Link>
           <span className="mx-2">›</span>
           <span className="text-maroon-100">New Service Request</span>
         </div>
@@ -81,7 +83,7 @@ const Service = () => {
         onOpenChange={setIsModalOpen}
         setSelectedService={setSelectedService}
       />
-    </div>
+    </Fragment>
   )
 }
 

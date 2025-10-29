@@ -1,7 +1,7 @@
 import PasswordResetForm from "@/components/settings/change-password";
 import NotificationSettings from "@/components/settings/notification-settings";
 import ProfileSettings from "@/components/settings/profile-settings";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { Link } from "react-router-dom"
 
 const tabs = [
@@ -14,7 +14,7 @@ const settings = () => {
     const [activeTab, setActiveTab] = useState('profile');
 
     return (
-        <div className="mx-[80px] mt-10">
+        <Fragment>
             <div>
                 <h1 className="text-xl mb-1">Settings</h1>
                 <p className="mb-6 text-base text-muted-foreground">
@@ -36,7 +36,7 @@ const settings = () => {
                     {activeTab === 'notification' && <NotificationSettings />}
                 </div>
             </div>
-        </div>
+        </Fragment>
     )
 }
 

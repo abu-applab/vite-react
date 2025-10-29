@@ -24,7 +24,7 @@ const PlotDetailsScreen = () => {
     // const { id } = useParams();
     const [activeTab, setActiveTab] = useState('phaseAndMilestones');
 
-    return <div className="mx-[80px] mt-10">
+    return <div className="">
         <div>
             <h1 className="text-2xl mb-1">Allocated Plots</h1>
             <p className="mb-6 text-base text-muted-foreground">

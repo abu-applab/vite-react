@@ -50,7 +50,7 @@ export const RequestedServiceList = ({ services }: RequestedServiceListProps) =>
                                 <div className="flex items-center justify-start gap-2">
                                     <span className="text-lg leading-7 font-medium text-gray-800">1902</span>
                                     <Badge className={`${getStatusColor(request.status)} md:hidden border-0 text-xs flex items-center justify-center rounded-2xl px-2 py-1`}>
-                                        <span className="size-1.5 bg-green-600 rounded-full mr-1"></span>
+                                        <span className={`size-1.5 ${getPointerColor(request.status)} rounded-full mr-1`}></span>
                                         <span className="text-xs leading-4 font-medium">{request.status}</span>
                                     </Badge>
                                 </div>

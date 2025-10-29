@@ -3,19 +3,14 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card } from "@/components/ui/card"
+import { useApp, type CompanyType } from "@/context/AppContext"
 
 interface ServiceHeaderProps {
   onNewRequest: () => void
 }
 
-const companies = [
-  'Al Noor Real Estate',
-  'Qatar International Islamic Bank',
-  'Mesaieed Petrochemical Holding Company',
-  'Ezdan Holding Group',
-];
-
 export const ServiceHeader = ({ onNewRequest }: ServiceHeaderProps) => {
+  const {companies, selectedCompany, setSelectedCompany} = useApp()
   return (
     <div className="">
 
@@ -43,14 +38,14 @@ export const ServiceHeader = ({ onNewRequest }: ServiceHeaderProps) => {
         </div>
 
         {/* Company Dropdown */}
-        <Select defaultValue="Al Noor Real Estate">
+        <Select defaultValue={selectedCompany?.accountID}>
           <SelectTrigger className="bg-background w-full">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {companies.map((company, index) => (
-              <SelectItem key={index} value={company}>
-                {company}
+            {companies.map((company) => (
+              <SelectItem key={company.accountID} value={company.accountID}>
+                {company.englishName}
               </SelectItem>
             ))}
           </SelectContent>
@@ -71,15 +66,21 @@ export const ServiceHeader = ({ onNewRequest }: ServiceHeaderProps) => {
             <CirclePlus className="h-4 w-4 mr-2" />
             New Service Request
           </Button>
-          <Select defaultValue="Al Noor Real Estate">
+          <Select 
+            value={selectedCompany?.accountID || ''}
+            onValueChange={(value) => {
+              const selectedValue = companies.find((company: CompanyType) => company.accountID === value)
+              selectedValue && setSelectedCompany(selectedValue)
+            }}
+            >
             <SelectTrigger className="bg-background">
              <Building2 className="h-4 w-4 mr-2 text-foreground" />
               <SelectValue placeholder="" />
             </SelectTrigger>
             <SelectContent>
-              {companies.map((company, index) => (
-                <SelectItem key={index} value={company}>
-                  {company}
+              {companies.map((company) => (
+                <SelectItem key={company.accountID} value={company.accountID}>
+                  {company.englishName}
                 </SelectItem>
               ))}
             </SelectContent>

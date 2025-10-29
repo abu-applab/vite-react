@@ -158,7 +158,7 @@ const HubPage = () => {
   }
 
   return (
-    <div className="w-full pt-[70px] px-[80px]">
+    <div className="">
       {isAddNewCompany ?
         <>
           <div>

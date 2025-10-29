@@ -2,7 +2,8 @@
 
 export const API_ENDPOINTS = {
    getPlots: '/getPlots',
-   getSignatories: '/getSignatories'
+   getSignatories: '/getSignatories',
+   getCompanies: '/getCompanies',
 }
 
 export const API_SERVICES_ENDPOINTS = {

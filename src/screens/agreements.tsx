@@ -163,7 +163,7 @@ const Agreements = () => {
     console.log('setSelectedService: ', setSelectedService);
 
     return (
-        <div className="mx-[80px] mt-10">
+        <div className="">
             <div>
                 <h1 className="text-2xl mb-1">Agreements</h1>
                 <p className="mb-6 text-base text-muted-foreground">

@@ -90,7 +90,7 @@ const CompanyProfile = () => {
     const [activeTab, setActiveTab] = useState('documents')
 
     return (
-        <div className="mx-[80px] mt-10">
+        <div className="">
             <div className="flex flex-row justify-between mb-8">
                 <div>
                     <h1 className="text-2xl mb-1">Company Profile</h1>

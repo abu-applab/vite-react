@@ -62,9 +62,9 @@ const DynamicForm = ({
       case "number":
         return (
           <div className="space-y-2">
-            <Label htmlFor={field.id}>
+            <Label htmlFor={field.id} className="gap-0">
               {field.label}
-              {field.required && <span className="text-destructive">*</span>}
+              {field.required && <div className="text-destructive">*</div>}
             </Label>
             <Input
               {...commonProps}
@@ -75,7 +75,7 @@ const DynamicForm = ({
               placeholder={field.placeholder}
               value={formData[field.id] || ""}
               onChange={(e) => handleInputChange(field.id, e.target.value)}
-              className={`${errors[field.id] ? "border-red-600" : ""}`}
+              className={`${errors[field.id] ? "border-red-600" : ""} placeholder:text-sm`}
               {...(field.type === "number" ? { onWheel: (e) => e.currentTarget.blur() } : {})}
               disabled={field.disabled}
             />
@@ -154,94 +154,93 @@ const DynamicForm = ({
               value={formData[field.id] || ""}
               onChange={(e) => handleInputChange(field.id, e.target.value)}
               rows={4}
-              className={`${errors[field.id] ? "border-red-600" : ""}`}
+              className={`${errors[field.id] ? "border-red-600" : ""} placeholder:text-sm`}
             />
             {errors[field.id] && <span className="text-sm text-red-600">{errors[field.id]}</span>}
           </div>
         )
 
-        case "multiselect":
-          return (
-            <div className="space-y-2" key={field.id}>
-              <Label htmlFor={field.id}>
-                {field.label}
-                {field.required && <span className="text-destructive">*</span>}
-              </Label>
-        
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    role="combobox"
-                    className={`w-full justify-between ${
-                      errors[field.id] ? "border-red-600" : ""
+      case "multiselect":
+        return (
+          <div className="space-y-2" key={field.id}>
+            <Label htmlFor={field.id}>
+              {field.label}
+              {field.required && <span className="text-destructive">*</span>}
+            </Label>
+
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  role="combobox"
+                  className={`w-full justify-between ${errors[field.id] ? "border-red-600" : ""
                     }`}
-                  >
-                    {formData[field.id]?.length
-                      ? field.options!
-                          .filter((opt: any) =>
-                            formData[field.id].split(",").includes(opt.id)
-                          )
-                          .map((opt: any) => opt.name)
-                          .join(", ")
-                      : "Select options"}
-                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                  </Button>
-                </PopoverTrigger>
-        
-                <PopoverContent
-                  align="start"
-                  sideOffset={4}
-                  className="w-[var(--radix-popover-trigger-width)] p-1"
                 >
-                  <Command>
-                    <CommandList className="max-h-48 overflow-y-auto">
-                      <CommandGroup>
-                        {field.options!.map((option: any) => {
-                          const selectedIds = formData[field.id]
-                            ? formData[field.id].split(",")
-                            : []
-                          const isChecked = selectedIds.includes(option.id)
-        
-                          return (
-                            <CommandItem
-                              key={option.id}
-                              onSelect={() => {
-                                let updated
-                                if (isChecked) {
-                                  updated = selectedIds.filter((v: any) => v !== option.id)
-                                } else {
-                                  updated = [...selectedIds, option.id]
-                                }
-        
-                                // Convert to comma-separated string
-                                const updatedValue = updated.join(",")
-        
-                                handleInputChange(field.id, updatedValue)
-                              }}
-                            >
-                              <div className="flex items-center gap-2">
-                                <Checkbox 
-                                  checked={isChecked} 
-                                  className={`data-[state=checked]:bg-maroon-100 data-[state=checked]:border-gray-800`}
-                                  />
-                                <span>{option.name}</span>
-                              </div>
-                            </CommandItem>
-                          )
-                        })}
-                      </CommandGroup>
-                    </CommandList>
-                  </Command>
-                </PopoverContent>
-              </Popover>
-        
-              {errors[field.id] && (
-                <span className="text-sm text-red-600">{errors[field.id]}</span>
-              )}
-            </div>
-          )
-           
+                  {formData[field.id]?.length
+                    ? field.options!
+                      .filter((opt: any) =>
+                        formData[field.id].split(",").includes(opt.id)
+                      )
+                      .map((opt: any) => opt.name)
+                      .join(", ")
+                    : "Select options"}
+                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                </Button>
+              </PopoverTrigger>
+
+              <PopoverContent
+                align="start"
+                sideOffset={4}
+                className="w-[var(--radix-popover-trigger-width)] p-1"
+              >
+                <Command>
+                  <CommandList className="max-h-48 overflow-y-auto">
+                    <CommandGroup>
+                      {field.options!.map((option: any) => {
+                        const selectedIds = formData[field.id]
+                          ? formData[field.id].split(",")
+                          : []
+                        const isChecked = selectedIds.includes(option.id)
+
+                        return (
+                          <CommandItem
+                            key={option.id}
+                            onSelect={() => {
+                              let updated
+                              if (isChecked) {
+                                updated = selectedIds.filter((v: any) => v !== option.id)
+                              } else {
+                                updated = [...selectedIds, option.id]
+                              }
+
+                              // Convert to comma-separated string
+                              const updatedValue = updated.join(",")
+
+                              handleInputChange(field.id, updatedValue)
+                            }}
+                          >
+                            <div className="flex items-center gap-2">
+                              <Checkbox
+                                checked={isChecked}
+                                className={`data-[state=checked]:bg-maroon-100 data-[state=checked]:border-gray-800`}
+                              />
+                              <span>{option.name}</span>
+                            </div>
+                          </CommandItem>
+                        )
+                      })}
+                    </CommandGroup>
+                  </CommandList>
+                </Command>
+              </PopoverContent>
+            </Popover>
+
+            {errors[field.id] && (
+              <span className="text-sm text-red-600">{errors[field.id]}</span>
+            )}
+          </div>
+        )
+
       case "file":
         return (
           <div className="space-y-2">
@@ -301,42 +300,47 @@ const DynamicForm = ({
   }
 
   return (
-    <Card className={cn("md:p-10 bg-[#fcfaf7]", { "border-none shadow-none": isNewApplication })}>
-      <CardHeader>
-        <CardTitle className="text-xl">{config.title}</CardTitle>
-        <CardDescription>{config.description}</CardDescription>
+    <Card className={cn("lg:p-10 md:py-6 bg-white/50 border shadow max-md:border-none max-md:shadow-none max-md:bg-[#F6F5EF] p-0",
+      { "border-none shadow-none": isNewApplication }
+    )}>
+      <CardHeader className="max-md:shadow max-md:border max-md:bg-white max-md:p-4 max-md:rounded-lg">
+        <CardTitle className="text-xl">{config?.title}</CardTitle>
+        <CardDescription>{config?.description}</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="max-md:p-0">
         <form onSubmit={handleSubmit} className="space-y-6">
-          {config.sections.map((section, sectionIndex) => (
-            <Card key={sectionIndex}>
-              <CardHeader className="flex items-center justify-between">
-                <CardTitle className="text-lg">{section.title}</CardTitle>
-                {section.subTitle && <CardTitle className="text-sm leading-5 font-normal text-muted-foreground">{section.subTitle}</CardTitle>}
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {section.fields
-                    ?.filter((field) => {
-                    // If field has showIfSelected, show it only if that value is selected in multiselect
-                    if (field.showIfSelected) {
-                      const selectedList =
-                        formData.RequiredUpdateSet ??
-                        formData.RequiredUpdate ??
-                        []; // fallback to empty array to avoid errors
-                  
-                      return selectedList.includes(field.showIfSelected);
-                    }
-                    return true;
-                  })
-                    ?.map((field) => (
-                    <div key={field.id} className={field.type === "textarea" || field.type === "file" ? "md:col-span-2" : ""}>
-                      {renderField(field)}
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+          {config?.sections.map((section, sectionIndex) => (
+            <>
+               <h4 className="md:hidden block text-maroon-100 ml-4 mb-3">{section.title}</h4>
+              <Card key={sectionIndex}>
+                <CardHeader className="md:flex items-center justify-between hidden">
+                  <CardTitle className="text-lg">{section.title}</CardTitle>
+                  {section.subTitle && <CardTitle className="text-sm leading-5 font-normal md:text-muted-foreground text-zinc-800">{section.subTitle}</CardTitle>}
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {section.fields
+                      ?.filter((field) => {
+                        // If field has showIfSelected, show it only if that value is selected in multiselect
+                        if (field.showIfSelected) {
+                          const selectedList =
+                            formData.RequiredUpdateSet ??
+                            formData.RequiredUpdate ??
+                            []; // fallback to empty array to avoid errors
+
+                          return selectedList.includes(field.showIfSelected);
+                        }
+                        return true;
+                      })
+                      ?.map((field) => (
+                        <div key={field.id} className={field.type === "textarea" || field.type === "file" ? "md:col-span-2" : ""}>
+                          {renderField(field)}
+                        </div>
+                      ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </>
           ))}
 
           <div className="flex items-center justify-between">

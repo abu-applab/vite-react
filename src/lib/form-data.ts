@@ -475,7 +475,7 @@ export function getServiceFormConfig(formType: string): FormConfig {
                 title: "Update Company Information",
                 description: "Request to transfer ownership of your land to another party.",
                 needsPlots: true,
-                // needsSignatory: true,
+                needsSignatory: true,
                 sections: [
                     {
                         title: "Request Details",
@@ -620,7 +620,7 @@ export function getServiceFormConfig(formType: string): FormConfig {
                             {
                                 id: "POBox",
                                 label: "New PO Box",
-                                type: "text",
+                                type: "number",
                                 required: true,
                                 placeholder: "Enter new PO box number",
                                 showIfSelected: "POBox",

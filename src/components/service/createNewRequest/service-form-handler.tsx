@@ -7,6 +7,7 @@ import { RequestSubmittedModal } from "./request-submitted-modal";
 import Loader from "@/components/loader";
 import { serviceOptions } from "../serviceRequestPage/new-service-request-modal";
 import { extractReferenceNumber, parseApiError, prepareRequestBody, submitUpdateCompanyInformation, useFormConfigLoader } from "@/lib/utils";
+import { useApp } from "@/context/AppContext";
 
 interface ServiceFormHandlerProps {
   selectedService: string;
@@ -35,13 +36,22 @@ export const ServiceFormHandler = ({
   const fieldRefs = useRef<Record<string, HTMLElement | null>>({});
   const { loadServiceForm } = useFormConfigLoader()
   const networkRequest = useNetworkRequest();
+  const { selectedCompany } = useApp();
 
   useEffect(() => {
-    console.log('here');
     const loadFormConfig = async () => {
-      console.log('loadFormConfig');
-      const finalConfig = await loadServiceForm(selectedService)
-      setConfig(finalConfig)
+      setIsLoading(true);
+      try {
+        const finalConfig = await loadServiceForm(selectedService)
+        setIsLoading(false);
+        setConfig(finalConfig)
+      }
+      catch (error) {
+        console.log('error: ', error);
+        setErrorMessage(parseApiError(error));
+        setIsLoading(false);
+        setSubmittedModal(true);
+      }
     }
     loadFormConfig()
   }, [selectedService])
@@ -83,7 +93,7 @@ export const ServiceFormHandler = ({
         return;
       }
 
-      const body = prepareRequestBody(formState, apiConfig.contentType);
+      const body = prepareRequestBody(formState, apiConfig.contentType, selectedCompany?.accountID);
       const response = await networkRequest(apiConfig.url!, {
         method: apiConfig.method as "POST",
         body,
@@ -117,20 +127,21 @@ export const ServiceFormHandler = ({
     handleSubmit();
   };
 
-  if (!config) return <Loader />;
+  if (!config && isLoading) return <Loader />;
 
   return (
     <div>
-      <DynamicForm
-        config={config}
-        formData={formState}
-        errors={errors}
-        setErrors={setErrors}
-        handleInputChange={handleInputChange}
-        handleSubmit={handleSubmit}
-        handlePerviousButton={onBack}
-        fieldRefs={fieldRefs}
-      />
+      {config &&
+        <DynamicForm
+          config={config}
+          formData={formState}
+          errors={errors}
+          setErrors={setErrors}
+          handleInputChange={handleInputChange}
+          handleSubmit={handleSubmit}
+          handlePerviousButton={onBack}
+          fieldRefs={fieldRefs}
+        />}
       <RequestSubmittedModal
         open={isSubmittedModalOpen}
         onOpenChange={setSubmittedModal}
@@ -138,6 +149,7 @@ export const ServiceFormHandler = ({
         referenceNumber={referenceNumber}
         handleTryAgain={handleTryAgain}
         errorMessage={errorMessage}
+        isConfigLoaded={!!config}
       />
       {isLoading && <Loader />}
     </div>

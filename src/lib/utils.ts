@@ -5,6 +5,7 @@ import { clsx, type ClassValue } from "clsx"
 import { AppWindow, FileText, Home, MessageSquareDot, SquareDashed, SquareLibrary, Wallet } from "lucide-react"
 import { twMerge } from "tailwind-merge"
 import { getServiceFormConfig } from "./form-data";
+import { useApp } from "@/context/AppContext";
 
 interface SubmitCompanyUpdateProps {
   formState: Record<string, any>;
@@ -113,21 +114,22 @@ export const submitUpdateCompanyInformation = async ({
  */
 export const prepareRequestBody = (
   formState: Record<string, any>,
-  contentType: string
+  contentType: string,
+  companyId: string = ''
 ) => {
   if (contentType === "multipart") {
     const body = new FormData();
     Object.entries(formState).forEach(([key, val]) => {
       body.append(key, val instanceof File || val instanceof Blob ? val : String(val));
     });
-    body.append("Company", "314cd4d3-097c-ef11-ac20-000d3a246e53");
+    body.append("Company", companyId);
     body.append("ContactPerson", "d7323f05-356d-f011-b4cc-6045bd9e8ac7");
     return body;
   }
 
   return {
     ...formState,
-    company: "314cd4d3-097c-ef11-ac20-000d3a246e53",
+    company: companyId,
     contactPerson: "d7323f05-356d-f011-b4cc-6045bd9e8ac7",
   };
 };
@@ -136,11 +138,13 @@ export const prepareRequestBody = (
  * Extracts reference number key from API response data
  */
 export const extractReferenceNumber = (data: Record<string, any>): string => {
+  console.log('data: ', data);
   const refKey = Object.keys(data).find((k) =>
     k.toLowerCase().endsWith("referenceid")
-  );
+);
+  console.log('refKey: ', refKey);
   const refValue = refKey ? data[refKey] : "";
-  return refValue ? data[refValue] : "";
+  return refValue;
 };
 
 /**
@@ -154,29 +158,22 @@ export const parseApiError = (error: any): string => {
 };
 
 export const useFormConfigLoader = () => {
-  const networkRequest = useNetworkRequest()
+  const networkRequest = useNetworkRequest();
+  const { selectedCompany } = useApp();
 
   const loadServiceForm = async (serviceType: string) => {
     const baseConfig = getServiceFormConfig(serviceType)
-     let updatedConfig;
+    let updatedConfig = { ...baseConfig }
     // --- Call getPlots API if needed ---
     if (baseConfig.needsPlots) {
       const body = {
-        accountId: 'da79fca4-9a37-ef11-8409-000d3a26ab14',
+        accountId: selectedCompany?.accountID,
       }
       const plotsResponse = await networkRequest(API_ENDPOINTS.getPlots, {
         method: "GET",
         body,
       });
       const plotsData = plotsResponse?.data || []
-      console.log('plotsData: ', plotsData);
-
-      // Step 3: Transform API data into options
-      const agreementOptions = plotsData.map((item: any) => ({
-        id: item.agreementId,
-        plotId: item.plotID,
-        name: item.agreementNumber,
-      }));
 
       const plotOptions = plotsData.map((item: any) => ({
         id: item.plotID,
@@ -186,13 +183,10 @@ export const useFormConfigLoader = () => {
 
       // Step 4: Update baseConfig fields dynamically
        updatedConfig = {
-        ...baseConfig,
-        sections: baseConfig.sections.map((section: any) => ({
+        ...updatedConfig,
+        sections: updatedConfig.sections.map((section: any) => ({
           ...section,
           fields: section.fields.map((field: any) => {
-            if (field.id.toLowerCase() === "agreement") {
-              return { ...field, options: agreementOptions};
-            }
             if (field.id.toLowerCase() === "plot") {
               return { ...field, options: plotOptions };
             }
@@ -205,7 +199,7 @@ export const useFormConfigLoader = () => {
     // --- Call getSignatory API if needed ---
     if (baseConfig.needsSignatory) {
       const body = {
-        accountId: 'da79fca4-9a37-ef11-8409-000d3a26ab14',
+        companyId: 'da79fca4-9a37-ef11-8409-000d3a26ab14',
       }
       const signatoryResponse = await networkRequest(API_ENDPOINTS.getSignatories, {
         method: "GET",
@@ -215,15 +209,15 @@ export const useFormConfigLoader = () => {
 
       const signatoryOptions = signatoryData.map((s: any) => ({
         id: s.id,
-        name: s.fullName,
+        name: s.manateqID,
       }))
 
       updatedConfig = {
-        ...baseConfig,
-        sections: baseConfig.sections.map((section: any) => ({
+        ...updatedConfig,
+        sections: updatedConfig.sections.map((section: any) => ({
           ...section,
           fields: section.fields.map((field: any) => {
-            if (field.id.toLowerCase() === "newSignatory") {
+            if (field.id.toLowerCase() === "newsignatory") {
               return { ...field, options: signatoryOptions};
             }
             return field;

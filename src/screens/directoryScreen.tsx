@@ -25,7 +25,7 @@ const categories = [
 
 const DirectoryScreen = () => {
 
-    return <div className="mx-[80px] mt-10">
+    return <div className="">
         <div>
             <h1 className="text-2xl mb-1">Directory</h1>
             <p className="mb-6 text-base text-muted-foreground">

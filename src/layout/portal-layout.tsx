@@ -3,21 +3,51 @@ import manateqLogo2 from "../assets/images/manateq-hub-logo.svg"
 import qatarFlag from "../assets/images/qatar-flag.svg"
 import { Outlet, useNavigate } from "react-router-dom";
 import { BellDot, LogOut, Menu, Settings, User } from "lucide-react";
-// import { useState } from "react";
 import Footer from "@/components/footer";
 import { useApp } from "../context/AppContext";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import avatar from ".././assets/images/Avatar.svg"
 import { NavigationBar } from "@/components/navigationItems";
 import { MobileMenu } from "@/components/mobileMenu";
+import { useEffect, useState } from "react";
+import { API_ENDPOINTS } from "@/api/apiEndpoints";
+import useNetworkRequest from "@/api/useNetworkRequest";
+import Loader from "@/components/loader";
 
 const PortalLayout = () => {
-    const { isMenuOpen, setIsMenuOpen } = useApp();
+    const { isMenuOpen, setIsMenuOpen, setCompanies, setSelectedCompany } = useApp();
     const navigate = useNavigate();
+    const networkRequest = useNetworkRequest();
+    const [ isLoading, setIsLoading] = useState(false);
+
+    useEffect(() => {
+        const fetchCompanies = async () => {
+            setIsLoading(true)
+            const body = {
+                // hardcorded
+                contactId: 'd7323f05-356d-f011-b4cc-6045bd9e8ac7'
+            }
+            try {
+                const response = await networkRequest(API_ENDPOINTS.getCompanies, {
+                    method: 'GET',
+                    body: body
+                });
+                const companyList = response?.data?.[0]?.companies || [];
+                setCompanies(companyList);
+                companyList.length > 0 && setSelectedCompany(companyList[0])
+                setIsLoading(false)
+            } catch (error) {
+                setIsLoading(true)
+                console.error("Failed to fetch companies:", error);
+            }
+        };
+
+        fetchCompanies();
+    }, []);
 
     return (
         <div className='bg-[#f6f5ef] w-screen min-h-screen flex flex-col'>
-            <div className="flex flex-row items-center justify-between w-full h-[88px] md:px-[80px] md:py-6 px-4 md:border-b-2">
+            <div className="flex flex-row items-center justify-between w-full h-[88px] lg:px-20 md:px-6 px-4 md:border-b-2">
                 <img src={manateqLogo2} alt="logo" className="w-[158px] h-10" />
                 <div className="flex items-center justify-center gap-2">
                     <div className="hidden md:flex items-center gap-2">
@@ -65,20 +95,25 @@ const PortalLayout = () => {
                 </div>
             </div>
             {isMenuOpen &&
-                  <>
-                  {/* Desktop Navigation */}
-                  <div className="hidden md:block">
-                    <NavigationBar />
-                  </div>
-              
-                  {/* Mobile Menu */}
-                  <div className="block md:hidden">
-                    <MobileMenu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
-                  </div>
+                <>
+                    {/* Desktop Navigation */}
+                    <div className="hidden md:block">
+                        <NavigationBar />
+                    </div>
+
+                    {/* Mobile Menu */}
+                    <div className="block md:hidden">
+                        <MobileMenu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
+                    </div>
                 </>
             }
             <div className="flex-1">
-                <Outlet />
+                <div className="lg:px-20 md:px-6 md:mt-10 m-4">
+                    {
+                     isLoading ? <Loader /> :
+                     <Outlet /> 
+                    }
+                </div>   
             </div>
             <Footer />
         </div>

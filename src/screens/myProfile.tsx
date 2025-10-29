@@ -77,7 +77,7 @@ function StatusBadge({ status }: StatusBadgeProps) {
 
 const myProfile = () => {
     return (
-        <div className="mx-[80px] mt-10">
+        <div className="">
             <div>
                 <h1 className="text-2xl mb-1">My Profile</h1>
                 <p className="mb-6 text-base text-muted-foreground">

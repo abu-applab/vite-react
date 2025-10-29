@@ -9,6 +9,16 @@ export interface StepsType {
   active: boolean, 
   stepNumber: string,
 }
+export interface CompanyType {
+  accountID: string;
+  englishName: string;
+  arabicName: string;
+  crNumber: string;
+  email: string | null;
+  phone: string;
+  status: string;
+  createdOn: string;
+}
 interface AppContextType {
     isMenuOpen: boolean;
     setIsMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -16,6 +26,10 @@ interface AppContextType {
     setAddCompanySteps: React.Dispatch<React.SetStateAction<StepsType[]>>;
     industrialSteps: StepsType[];
     setIndustrialSteps: React.Dispatch<React.SetStateAction<StepsType[]>>;
+    companies: CompanyType[];
+    setCompanies: React.Dispatch<React.SetStateAction<CompanyType[]>>;
+    selectedCompany: CompanyType | null;
+    setSelectedCompany: React.Dispatch<React.SetStateAction<CompanyType | null>>;
 }
 
 // Create context
@@ -40,6 +54,10 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     
     const [industrialSteps, setIndustrialSteps] = useState(initialIndustrialSteps)
 
+    const [companies, setCompanies] = useState<CompanyType[]>([]);
+    const [selectedCompany, setSelectedCompany] = useState<CompanyType | null>(null);
+
+
   return (
     <AppContext.Provider value={{ 
         isMenuOpen, 
@@ -47,7 +65,11 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         addCompanySteps, 
         setAddCompanySteps,
         industrialSteps,
-        setIndustrialSteps
+        setIndustrialSteps,
+        companies,
+        setCompanies,
+        selectedCompany,
+        setSelectedCompany,
         }}>
       {children}
     </AppContext.Provider>

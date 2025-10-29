@@ -16,6 +16,7 @@ interface RequestSubmittedModalProps {
   referenceNumber?: string
   handleTryAgain: () => void
   errorMessage?: string
+  isConfigLoaded?: boolean
 }
 
 export function RequestSubmittedModal({
@@ -25,6 +26,7 @@ export function RequestSubmittedModal({
   referenceNumber = "",
   handleTryAgain,
   errorMessage = "An unexpected error occurred.",
+  isConfigLoaded = true
 }: RequestSubmittedModalProps) {
   const isSuccess = Boolean(referenceNumber)
 
@@ -32,6 +34,7 @@ export function RequestSubmittedModal({
 
   const status = isSuccess
     ? {
+        heading: 'Request Submitted',
         icon: successfull,
         title: "Request Submitted Successfully",
         subtitle: (
@@ -45,11 +48,12 @@ export function RequestSubmittedModal({
         buttonAction: onGoToRequest,
       }
     : {
+        heading: 'Request Failed',
         icon: failed,
         title: "Not Completed!",
         subtitle: errorMessage,
-        buttonText: "Try Again",
-        buttonAction: handleTryAgain,
+        buttonText: isConfigLoaded? "Try Again" : "Go back",
+        buttonAction: isConfigLoaded? handleTryAgain : onGoToRequest,
       }
 
   return (
@@ -57,7 +61,7 @@ export function RequestSubmittedModal({
       <DialogContent className="min-w-[600px] overflow-y-auto p-0 gap-0" showCloseButton={false}>
         <DialogHeader className="border-b px-5 py-3 flex flex-row items-center justify-between">
           <DialogTitle className="text-lg font-medium text-foreground">
-            Request Submitted
+            {status.heading}
           </DialogTitle>
           <Button
             variant="ghost"
