@@ -30,6 +30,11 @@ interface AppContextType {
     setCompanies: React.Dispatch<React.SetStateAction<CompanyType[]>>;
     selectedCompany: CompanyType | null;
     setSelectedCompany: React.Dispatch<React.SetStateAction<CompanyType | null>>;
+    isCreateNewForm: boolean;
+    setCreateNewForm: React.Dispatch<React.SetStateAction<boolean>>;
+    selectedLocation: string;
+    setSelectedLocation: React.Dispatch<React.SetStateAction<string>>;
+
 }
 
 // Create context
@@ -57,6 +62,9 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     const [companies, setCompanies] = useState<CompanyType[]>([]);
     const [selectedCompany, setSelectedCompany] = useState<CompanyType | null>(null);
 
+    const [isCreateNewForm, setCreateNewForm] = useState(false);
+    const [selectedLocation, setSelectedLocation] = useState('');
+
 
   return (
     <AppContext.Provider value={{ 
@@ -70,6 +78,10 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         setCompanies,
         selectedCompany,
         setSelectedCompany,
+        isCreateNewForm,
+        setCreateNewForm,
+        selectedLocation,
+        setSelectedLocation,
         }}>
       {children}
     </AppContext.Provider>

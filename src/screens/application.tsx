@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Search, Building2, Plus, Truck, Building, Factory, LandPlot } from "lucide-react"
-import { Link } from "react-router-dom";
 import { TabsContent } from "@/components/applicationPage/tab-content";
 import AddNewApplication from "@/components/applicationPage/addNewApplication";
 import { InvestmentSelector } from "@/components/applicationPage/investmentSelector";
@@ -11,12 +10,15 @@ import logistics from '../assets/images/logestics.svg'
 import industrial from '../assets/images/industrial.svg'
 import commercial from '../assets/images/commercial.svg'
 import openYards from '../assets/images/open-yards.svg'
+import { useApp, type CompanyType } from "@/context/AppContext";
+import PageHeader from "@/components/pageHeader";
 
 interface InvestmentOptions {
     id: string
     title: string
     description?: string
     image: string
+    disabled?: boolean
 }
 
 interface InvestmentType {
@@ -35,6 +37,7 @@ const investmentTypes: InvestmentType =
             title: "Logistics Park",
             description: "Zones for warehousing and distribution to strengthen trade.",
             image: logistics,
+            disabled: true
         },
         {
             id: "industrial",
@@ -47,6 +50,7 @@ const investmentTypes: InvestmentType =
             title: "Commercial",
             description: "Flexible spaces for storage and light industry.",
             image: commercial,
+            disabled: true,
         },
         {
             id: "openYards",
@@ -136,13 +140,6 @@ const draftedApplications = [
     },
 ];
 
-const companies = [
-    'Al Noor Real Estate',
-    'Qatar International Islamic Bank',
-    'Mesaieed Petrochemical Holding Company',
-    'Ezdan Holding Group',
-];
-
 const applicationTypes = [
     {
         title: 'Logistics',
@@ -180,12 +177,18 @@ const tabs = [
     { id: 'drafted', label: 'Drafted Applications' },
 ];
 
+const header = {
+    title: "Applications",
+    homeLink: 'companyName',
+    contentLinks: ['View Applications', 'Create New Applications'],
+  }
+
 const ApplicationPage = () => {
     const [step, setStep] = useState(0);
     const [activeTab, setActiveTab] = useState('submitted');
     const [isCreateNewApplication, setCreateNewApplication] = useState(false)
     const [selectedApplication, setSelectedApplication] = useState<string>("")
-    const [selectedLocation, setSelectedLocation] = useState<string>("")
+    const { companies, selectedCompany, setSelectedCompany, setSelectedLocation } = useApp()
 
 
     const steps = [
@@ -214,7 +217,8 @@ const ApplicationPage = () => {
             component: (
                 <InvestmentSelector
                     handleSelectedOption={(val: string) => {
-                        setSelectedLocation(val);
+                        const locationName = investmentLocations.options.find((loc) => loc.id === val)
+                        setSelectedLocation(locationName?.title ?? '');
                         setStep(2); // Go to AddNewApplication (step 3 → index 2)
                     }}
                     investmentContent={investmentLocations}
@@ -227,9 +231,8 @@ const ApplicationPage = () => {
             component: (
                 <AddNewApplication
                     selectedApplication={selectedApplication}
-                    setSelectedApplication={setSelectedLocation}
-                    selectedLocation={selectedLocation}
-                    setSelectedLocation={setSelectedLocation}
+                    setSelectedApplication={setSelectedApplication}
+                    setCreateNewApplication={setCreateNewApplication}
                 />
             ),
         },
@@ -239,17 +242,11 @@ const ApplicationPage = () => {
     return (
         <div className="">
             {/* Header */}
-            <div>
-                <h1 className="text-2xl mb-1">Application</h1>
-                <p className="mb-6 text-base text-muted-foreground">
-                    <Link to="/portal">Al Noor Real Estate W.L.L</Link>
-                    <span className="mx-2">›</span>
-                    <span className="text-maroon-100">Submitted Application</span>
-                </p>
-            </div>
+            <PageHeader header={header}/>
 
             {(!isCreateNewApplication) ? (
-                <div><div className="flex flex-wrap gap-3 items-center mb-6">
+                <div>
+                    <div className="flex flex-wrap gap-3 items-center mb-6">
                     <div className="relative flex-1">
                         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-maroon-100" />
                         <Input placeholder="Search..." className="pl-10 max-w-md bg-background" />
@@ -273,14 +270,20 @@ const ApplicationPage = () => {
                     </Select>
                     <div className="relative">
                         <Building2 className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4" />
-                        <Select defaultValue="Al Noor Real Estate">
+                        <Select
+                            value={selectedCompany?.accountID || ''}
+                            onValueChange={(value) => {
+                                const selectedValue = companies.find((company: CompanyType) => company.accountID === value)
+                                selectedValue && setSelectedCompany(selectedValue)
+                            }}
+                        >
                             <SelectTrigger className="bg-background pl-10">
                                 <SelectValue placeholder="" />
                             </SelectTrigger>
                             <SelectContent>
-                                {companies.map((company, index) => (
-                                    <SelectItem key={index} value={company}>
-                                        {company}
+                                {companies.map((company) => (
+                                    <SelectItem key={company.accountID} value={company.accountID}>
+                                        {company.englishName}
                                     </SelectItem>
                                 ))}
                             </SelectContent>
@@ -300,13 +303,13 @@ const ApplicationPage = () => {
                     </Select>
                 </div>
                     <div className="w-full h-fit">
-                        <div className="flex bg-white h-[56px] shadow-md gap-[8px]">
+                        <div className="flex items-center bg-white h-[56px] rounded-lg shadow-md gap-[8px]">
                             {tabs.map((tab) => (
-                                <button key={tab.id} className={`py-[10px] mt-[16px]  ml-[40px] text-sm font-medium ${activeTab === tab.id ? 'text-maroon-100 border-b-2 border-maroon-100' : 'text-black hover:text-gray-500'} focus:outline-none focus:text-maroon-100 `} onClick={() => setActiveTab(tab.id)} > {tab.label}
+                                <button key={tab.id} className={`py-[10px] h-full ml-[40px] text-sm font-medium ${activeTab === tab.id ? 'text-maroon-100 border-b-2 border-maroon-100' : 'text-black hover:text-gray-500'} focus:outline-none focus:text-maroon-100 `} onClick={() => setActiveTab(tab.id)} > {tab.label}
                                 </button>
                             ))}
                         </div>
-                        <div className="p-10 w-full min-h-[35vh] bg-[#fcfaf7] rounded-b-lg">
+                        <div className="mt-4 w-full min-h-[35vh] rounded-b-lg">
                             {activeTab === 'submitted' && <TabsContent applications={submittedApplications} />}
                             {activeTab === 'drafted' && <TabsContent applications={draftedApplications} />}
                         </div>

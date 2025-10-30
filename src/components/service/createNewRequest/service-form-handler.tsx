@@ -7,7 +7,8 @@ import { RequestSubmittedModal } from "./request-submitted-modal";
 import Loader from "@/components/loader";
 import { serviceOptions } from "../serviceRequestPage/new-service-request-modal";
 import { extractReferenceNumber, parseApiError, prepareRequestBody, submitUpdateCompanyInformation, useFormConfigLoader } from "@/lib/utils";
-import { useApp } from "@/context/AppContext";
+import { getServiceFormConfig } from "@/lib/form-data";
+import { useApp, type CompanyType } from "@/context/AppContext";
 
 interface ServiceFormHandlerProps {
   selectedService: string;
@@ -36,27 +37,56 @@ export const ServiceFormHandler = ({
   const fieldRefs = useRef<Record<string, HTMLElement | null>>({});
   const { loadServiceForm } = useFormConfigLoader()
   const networkRequest = useNetworkRequest();
-  const { selectedCompany } = useApp();
+  const { selectedCompany, setSelectedCompany, companies } = useApp();
 
   useEffect(() => {
     const loadFormConfig = async () => {
-      setIsLoading(true);
+      const initialValues: Record<string, any> = {};
+      let baseConfig = getServiceFormConfig(selectedService)
+      const companiesOptions = companies.map((company) => ({id: company.accountID, name: company.englishName}))
+      baseConfig = {
+        ...baseConfig,
+        sections: baseConfig.sections.map((section: any) => ({
+          ...section,
+          fields: section.fields.map((field: any) => {
+            if (field.id.toLowerCase() === "company") {
+              initialValues[field.id] = selectedCompany?.accountID ?? "";
+              return { ...field, options: companiesOptions };
+            }
+            if (field.id.toLowerCase() === "plot") {
+              initialValues[field.id] = "";
+              return { ...field, options: [{ id: "loading", name: "Fetching plots...", disabled: true }] };
+            }
+            if (field.id.toLowerCase() === "agreement") {
+              initialValues[field.id] = "";
+            }
+            return field;
+          }),
+        })),
+      };
+      setFormState((prev) => ({
+        ...prev,
+        ...initialValues
+      }));
+      setConfig(baseConfig)
       try {
-        const finalConfig = await loadServiceForm(selectedService)
-        setIsLoading(false);
+        const finalConfig = await loadServiceForm(baseConfig)
         setConfig(finalConfig)
       }
       catch (error) {
         console.log('error: ', error);
         setErrorMessage(parseApiError(error));
-        setIsLoading(false);
         setSubmittedModal(true);
       }
     }
     loadFormConfig()
-  }, [selectedService])
+  }, [selectedService, selectedCompany])
 
   const handleInputChange = (fieldId: string, value: any) => {
+    if(fieldId.toLowerCase() === 'company') {
+       const selectedValue = companies.find((company: CompanyType) => company.accountID === value)
+        selectedValue && setSelectedCompany(selectedValue)
+    }
     setFormState((prev) => ({ ...prev, [fieldId]: value }));
     setErrors((prev) => ({ ...prev, [fieldId]: "" }));
   };
@@ -93,7 +123,7 @@ export const ServiceFormHandler = ({
         return;
       }
 
-      const body = prepareRequestBody(formState, apiConfig.contentType, selectedCompany?.accountID);
+      const body = prepareRequestBody(formState, apiConfig.contentType);
       const response = await networkRequest(apiConfig.url!, {
         method: apiConfig.method as "POST",
         body,
@@ -127,11 +157,10 @@ export const ServiceFormHandler = ({
     handleSubmit();
   };
 
-  if (!config && isLoading) return <Loader />;
+  // if (!config && isLoading) return <Loader />;
 
   return (
     <div>
-      {config &&
         <DynamicForm
           config={config}
           formData={formState}
@@ -141,7 +170,7 @@ export const ServiceFormHandler = ({
           handleSubmit={handleSubmit}
           handlePerviousButton={onBack}
           fieldRefs={fieldRefs}
-        />}
+        />
       <RequestSubmittedModal
         open={isSubmittedModalOpen}
         onOpenChange={setSubmittedModal}

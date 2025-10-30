@@ -1,8 +1,8 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Card } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { ChevronDown, ArrowRight, ArrowUpRight } from "lucide-react"
+import { ArrowRight, ArrowUpRight, Building2 } from "lucide-react"
+import { useApp, type CompanyType } from "@/context/AppContext"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
 
 
 interface InvestmentTypeProps {
@@ -15,6 +15,7 @@ interface InvestmentOptions {
   title: string
   description?: string
   image: string
+  disabled?: boolean
 }
 
 interface InvestmentType {
@@ -24,9 +25,18 @@ interface InvestmentType {
 }
 
 
-export function InvestmentSelector({handleSelectedOption, investmentContent} : InvestmentTypeProps) {
+export function InvestmentSelector({ handleSelectedOption, investmentContent }: InvestmentTypeProps) {
   const [hoveredCard, setHoveredCard] = useState<string | null>(null)
   const [hoveredButton, setHoveredButton] = useState<string | null>(null)
+  const { companies, selectedCompany, setSelectedCompany, setCreateNewForm } = useApp()
+
+  // handling this state to show whether it's for view or create new service 
+    useEffect(() => {
+      setCreateNewForm(true);
+      return () => {
+        setCreateNewForm(false);
+      }
+    })
 
   return (
     <Card className="w-full p-10">
@@ -41,27 +51,25 @@ export function InvestmentSelector({handleSelectedOption, investmentContent} : I
               {investmentContent.description}
             </p>
           </div>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="w-full sm:w-auto whitespace-nowrap bg-transparent">
-                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 3v2m6-2v2m6 0a2 2 0 012 2v2h.01M9 3a2 2 0 00-2 2v2H5a2 2 0 00-2 2v3a2 2 0 002 2h2v2a2 2 0 002 2h6a2 2 0 002-2v-2h2a2 2 0 002-2V9a2 2 0 00-2-2h-.01V5a2 2 0 00-2-2h-2zm0 5a1 1 0 11-2 0 1 1 0 012 0z"
-                  />
-                </svg>
-                Al Noor Real Estate
-                <ChevronDown className="w-4 h-4 ml-2" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem>Al Noor Real Estate</DropdownMenuItem>
-              <DropdownMenuItem>Other Option 1</DropdownMenuItem>
-              <DropdownMenuItem>Other Option 2</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <Select
+            value={selectedCompany?.accountID || ''}
+            onValueChange={(value) => {
+              const selectedValue = companies.find((company: CompanyType) => company.accountID === value)
+              selectedValue && setSelectedCompany(selectedValue)
+            }}
+          >
+            <SelectTrigger className="bg-background">
+            <Building2 className="h-4 w-4 mr-2 text-foreground" />
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {companies.map((company) => (
+                <SelectItem key={company.accountID} value={company.accountID}>
+                  {company.englishName}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -74,7 +82,9 @@ export function InvestmentSelector({handleSelectedOption, investmentContent} : I
                 setHoveredCard(null)
                 setHoveredButton(null)
               }}
-              onClick={() => handleSelectedOption(option.id)}
+              onClick={() => {
+                if (!option.disabled) handleSelectedOption(option.id)
+              }}
             >
               {/* Image Container */}
               <div className="relative w-full h-48 overflow-hidden bg-muted">
@@ -99,7 +109,7 @@ export function InvestmentSelector({handleSelectedOption, investmentContent} : I
                       Apply Now
                       {hoveredButton ?
                         <ArrowRight className="w-4 h-4" />
-                        : <ArrowUpRight className="w-4 h-4" /> 
+                        : <ArrowUpRight className="w-4 h-4" />
                       }
                     </button>
                   </div>

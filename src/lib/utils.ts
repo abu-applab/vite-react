@@ -4,7 +4,6 @@ import { serviceOptions } from "@/constants"
 import { clsx, type ClassValue } from "clsx"
 import { AppWindow, FileText, Home, MessageSquareDot, SquareDashed, SquareLibrary, Wallet } from "lucide-react"
 import { twMerge } from "tailwind-merge"
-import { getServiceFormConfig } from "./form-data";
 import { useApp } from "@/context/AppContext";
 
 interface SubmitCompanyUpdateProps {
@@ -37,6 +36,21 @@ export const navigationItems = [
   { name: "HSE Findings", icon: SquareLibrary, href: "/portal/violations" },
 ]
 
+export const getFileType = (fileName: string) => {
+  const extension = fileName?.split(".").pop()?.toLowerCase()
+  return extension === "pdf" ? "PDF" : "DOC"
+}
+
+export const getFileName = (fileName: string) => fileName?.split(".")?.[0]
+
+export const formatFileSize = (bytes: number) => {
+  if (bytes === 0) return "0 Bytes"
+  const k = 1024
+  const sizes = ["Bytes", "KB", "MB", "GB"]
+  const i = Math.floor(Math.log(bytes) / Math.log(k))
+  return Number.parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i]
+}
+
 /**
  * Handles the chained request for "Update Company Information"
  */
@@ -51,8 +65,8 @@ export const submitUpdateCompanyInformation = async ({
   const firstBody = {
     agreement: formState.Agreement,
     plot: formState.Plot,
-    company: "314cd4d3-097c-ef11-ac20-000d3a246e53",
-    contactPerson: "d7323f05-356d-f011-b4cc-6045bd9e8ac7",
+    company: formState.companyId,
+    contactPerson: "a2032062-a76e-f011-b4cc-6045bd9e8ac7",
   };
 
   const firstResponse = await networkRequest(urls[0], {
@@ -75,7 +89,7 @@ export const submitUpdateCompanyInformation = async ({
   secondBody.append("NewCompanyNameAr", formState.NewCompanyNameAr || "");
   secondBody.append("NewSignatory", formState.NewSignatory || "");
   secondBody.append("Comment", formState.Comment || "");
-  secondBody.append("Company", "314cd4d3-097c-ef11-ac20-000d3a246e53");
+  secondBody.append("Company", formState.companyId || "");
   secondBody.append("ContactPerson", "d7323f05-356d-f011-b4cc-6045bd9e8ac7");
 
   if (formState.NewCRCopy)
@@ -115,21 +129,20 @@ export const submitUpdateCompanyInformation = async ({
 export const prepareRequestBody = (
   formState: Record<string, any>,
   contentType: string,
-  companyId: string = ''
 ) => {
   if (contentType === "multipart") {
     const body = new FormData();
     Object.entries(formState).forEach(([key, val]) => {
       body.append(key, val instanceof File || val instanceof Blob ? val : String(val));
     });
-    body.append("Company", companyId);
+    // body.append("Company", companyId);
     body.append("ContactPerson", "d7323f05-356d-f011-b4cc-6045bd9e8ac7");
     return body;
   }
 
   return {
     ...formState,
-    company: companyId,
+    // company: companyId,
     contactPerson: "d7323f05-356d-f011-b4cc-6045bd9e8ac7",
   };
 };
@@ -161,8 +174,7 @@ export const useFormConfigLoader = () => {
   const networkRequest = useNetworkRequest();
   const { selectedCompany } = useApp();
 
-  const loadServiceForm = async (serviceType: string) => {
-    const baseConfig = getServiceFormConfig(serviceType)
+  const loadServiceForm = async (baseConfig: any) => {
     let updatedConfig = { ...baseConfig }
     // --- Call getPlots API if needed ---
     if (baseConfig.needsPlots) {

@@ -4,7 +4,7 @@ export interface FormField {
     type: "text" | "select" | "textarea" | "file" | "number" | "multiselect";
     required: boolean;
     placeholder?: string;
-    options?: string[] | {id: string, name: string, plotId?: string, agreementId?: string}[];
+    options?: string[] | {id: string, name: string, agreementId?: string, disabled?: boolean}[];
     disabled?: boolean;
     min?: number;
     max?: number;
@@ -32,79 +32,6 @@ export interface FormConfig {
 
 export function getServiceFormConfig(formType: string): FormConfig {
     switch (formType) {
-        case "landUseLetter":
-            return {
-                title: "Land Use Letter",
-                description: "Request an official letter confirming the permitted use of your land.",
-                sections: [
-                    {
-                        title: "Request Details",
-                        fields: [
-                            {
-                                id: "plot",
-                                label: "Plot",
-                                type: "select",
-                                required: true,
-                                options: ["Plot 1", "Plot 2", "Plot 3"],
-                            },
-                            {
-                                id: "agreement",
-                                label: "Agreement",
-                                type: "select",
-                                required: true,
-                                options: ["Agreement A", "Agreement B", "Agreement C"],
-                            },
-                            {
-                                id: "engineeringConsultant",
-                                label: "Engineering Consultant Name",
-                                type: "text",
-                                required: true,
-                                placeholder: "Gulf Horizon Trading W.L.L.",
-                            },
-                            {
-                                id: "activityLetter",
-                                label: "Activity To Be Mentioned in Letter",
-                                type: "text",
-                                required: true,
-                                placeholder: "Gulf Horizon Trading W.L.L.",
-                            },
-                            {
-                                id: "subjectSummary",
-                                label: "Subject/Summary",
-                                type: "textarea",
-                                required: true,
-                                placeholder: "Enter subject or summary",
-                            },
-                            {
-                                id: "comments",
-                                label: "Comments (Optional)",
-                                type: "textarea",
-                                required: false,
-                                placeholder: "Enter any additional comments",
-                                min: 3,
-                                max: 200
-                            },
-                        ],
-                    },
-                    {
-                        title: "Required Documents",
-                        fields: [
-                            {
-                                id: "commercialRegistration",
-                                label: "Commercial Registration (CR Attachment)",
-                                type: "file",
-                                required: true,
-                            },
-                            {
-                                id: "gateLevelAttachment",
-                                label: "Gate Level Attachment",
-                                type: "file",
-                                required: true,
-                            },
-                        ],
-                    },
-                ],
-            }
         case "rentalRelationship":
             return {
                 title: "Rental Relation",
@@ -115,20 +42,27 @@ export function getServiceFormConfig(formType: string): FormConfig {
                         title: "Request Details",
                         fields: [
                             {
-                                id: "Agreement",
-                                label: "Agreement",
-                                type: "text",
+                                id: "Company",
+                                label: "Company",
+                                type: "select",
                                 required: true,
-                                dependsOn: "Plot",
-                                disabled: true
+                                options: [],
                             },
                             {
                                 id: "Plot",
                                 label: "Plot",
                                 type: "select",
                                 required: true,
-                                options: [],
+                                options: [{ id: "loading", name: "Fetching plots...", disabled: true }],
                                 dependsOn: "Agreement",
+                            },
+                            {
+                                id: "Agreement",
+                                label: "Agreement",
+                                type: "text",
+                                required: true,
+                                dependsOn: "Plot",
+                                disabled: true
                             },
                             {
                                 id: "Duration",
@@ -207,88 +141,6 @@ export function getServiceFormConfig(formType: string): FormConfig {
                     },
                 ],
             }
-
-        case "landTransfer":
-            return {
-                title: "Land Transfer",
-                description: "Request to transfer ownership of your land to another party.",
-                sections: [
-                    {
-                        title: "Request Details",
-                        fields: [
-                            {
-                                id: "plot",
-                                label: "Plot",
-                                type: "select",
-                                required: true,
-                                options: ["Plot 1", "Plot 2", "Plot 3"],
-                            },
-                            {
-                                id: "plotSize",
-                                label: "Plot Size",
-                                type: "text",
-                                required: true,
-                                placeholder: "1230",
-                            },
-                            {
-                                id: "agreement",
-                                label: "Agreement",
-                                type: "text",
-                                required: true,
-                            },
-                            {
-                                id: "landTransferType",
-                                label: "Land Transfer Type",
-                                type: "select",
-                                required: true,
-                                options: ["Type A", "Type B", "Type C"],
-                            },
-                            {
-                                id: "comments",
-                                label: "Comments (Optional)",
-                                type: "textarea",
-                                required: false,
-                                placeholder: "Enter any additional comments",
-                                min: 3,
-                                max: 200
-                            },
-                        ],
-                    },
-                    {
-                        title: "New Company Information",
-                        fields: [
-                            {
-                                id: "companyCR",
-                                label: "Company CR Number",
-                                type: "text",
-                                required: true,
-                                placeholder: "Enter CR number",
-                            },
-                            {
-                                id: "companyNameAR",
-                                label: "Company Name (AR)",
-                                type: "text",
-                                required: true,
-                                placeholder: "Enter company name in Arabic",
-                            },
-                            {
-                                id: "poBox",
-                                label: "PO Box",
-                                type: "text",
-                                required: true,
-                                placeholder: "Enter PO Box",
-                            },
-                            {
-                                id: "companyNameEN",
-                                label: "Company Name (EN)",
-                                type: "text",
-                                required: true,
-                                placeholder: "Enter company name in English",
-                            },
-                        ],
-                    },
-                ],
-            }
         case "certifiedCopyOfAgreement":
             return {
                 title: "Certified Copy of Agreement Form",
@@ -299,20 +151,27 @@ export function getServiceFormConfig(formType: string): FormConfig {
                         title: "Request Details",
                         fields: [
                             {
-                                id: "agreement",
-                                label: "Agreement",
-                                type: "text",
+                                id: "company",
+                                label: "Company",
+                                type: "select",
                                 required: true,
-                                dependsOn: "plot",
-                                disabled: true
+                                options: [],
                             },
                             {
                                 id: "plot",
                                 label: "Plot",
                                 type: "select",
                                 required: true,
-                                options: [],
+                                options: [{ id: "loading", name: "Fetching plots...", disabled: true }],
                                 dependsOn: "agreement",
+                            },
+                            {
+                                id: "agreement",
+                                label: "Agreement",
+                                type: "text",
+                                required: true,
+                                dependsOn: "plot",
+                                disabled: true
                             },
                             {
                                 id: "comments",
@@ -337,20 +196,27 @@ export function getServiceFormConfig(formType: string): FormConfig {
                         title: "Request Details",
                         fields: [
                             {
-                                id: "agreement",
-                                label: "Agreement",
-                                type: "text",
+                                id: "company",
+                                label: "Company",
+                                type: "select",
                                 required: true,
-                                dependsOn: "plot",
-                                disabled: true
+                                options: [],
                             },
                             {
                                 id: "plot",
                                 label: "Plot",
                                 type: "select",
                                 required: true,
-                                options: [],
+                                options: [{ id: "loading", name: "Fetching plots...", disabled: true }],
                                 dependsOn: "agreement",
+                            },
+                            {
+                                id: "agreement",
+                                label: "Agreement",
+                                type: "text",
+                                required: true,
+                                dependsOn: "plot",
+                                disabled: true
                             },
                             {
                                 id: "comments",
@@ -375,11 +241,18 @@ export function getServiceFormConfig(formType: string): FormConfig {
                         title: "Request Details",
                         fields: [
                             {
+                                id: "Company",
+                                label: "Company",
+                                type: "select",
+                                required: true,
+                                options: [],
+                            },
+                            {
                                 id: "Plot",
                                 label: "Plot",
                                 type: "select",
                                 required: true,
-                                options: [],
+                                options: [{ id: "loading", name: "Fetching plots...", disabled: true }],
                             },
                             {
                                 id: "Description",
@@ -425,20 +298,27 @@ export function getServiceFormConfig(formType: string): FormConfig {
                         title: "Request Details",
                         fields: [
                             {
-                                id: "agreement",
-                                label: "Agreement",
-                                type: "text",
+                                id: "company",
+                                label: "Company",
+                                type: "select",
                                 required: true,
-                                dependsOn: "plot",
-                                disabled: true
+                                options: [],
                             },
                             {
                                 id: "plot",
                                 label: "Plot",
                                 type: "select",
                                 required: true,
-                                options: [],
+                                options: [{ id: "loading", name: "Fetching plots...", disabled: true }],
                                 dependsOn: "agreement",
+                            },
+                            {
+                                id: "agreement",
+                                label: "Agreement",
+                                type: "text",
+                                required: true,
+                                dependsOn: "plot",
+                                disabled: true
                             },
                             {
                                 id: "buildingPermitApplicationNumber",
@@ -481,20 +361,27 @@ export function getServiceFormConfig(formType: string): FormConfig {
                         title: "Request Details",
                         fields: [
                             {
-                                id: "Agreement",
-                                label: "Agreement",
-                                type: "text",
+                                id: "Company",
+                                label: "Company",
+                                type: "select",
                                 required: true,
-                                dependsOn: "Plot",
-                                disabled: true
+                                options: [],
                             },
                             {
                                 id: "Plot",
                                 label: "Plot",
                                 type: "select",
                                 required: true,
-                                options: [],
+                                options: [{ id: "loading", name: "Fetching plots...", disabled: true }],
                                 dependsOn: "Agreement",
+                            },
+                            {
+                                id: "Agreement",
+                                label: "Agreement",
+                                type: "text",
+                                required: true,
+                                dependsOn: "Plot",
+                                disabled: true
                             },
                             {
                                 id: "RequiredUpdate",
@@ -575,20 +462,27 @@ export function getServiceFormConfig(formType: string): FormConfig {
                         title: "Request Details",
                         fields: [
                             {
-                                id: "Agreement",
-                                label: "Agreement",
-                                type: "text",
+                                id: "Company",
+                                label: "Company",
+                                type: "select",
                                 required: true,
-                                dependsOn: "Plot",
-                                disabled: true
+                                options: [],
                             },
                             {
                                 id: "Plot",
                                 label: "Plot",
                                 type: "select",
                                 required: true,
-                                options: [],
+                                options: [{ id: "loading", name: "Fetching plots...", disabled: true }],
                                 dependsOn: "Agreement",
+                            },
+                            {
+                                id: "Agreement",
+                                label: "Agreement",
+                                type: "text",
+                                required: true,
+                                dependsOn: "Plot",
+                                disabled: true
                             },
                             {
                                 id: "RequiredUpdateSet",
@@ -660,20 +554,27 @@ export function getServiceFormConfig(formType: string): FormConfig {
                         title: "Request Details",
                         fields: [
                             {
-                                id: "agreement",
-                                label: "Agreement",
-                                type: "text",
+                                id: "company",
+                                label: "Company",
+                                type: "select",
                                 required: true,
-                                dependsOn: "plot",
-                                disabled: true
+                                options: [],
                             },
                             {
                                 id: "plot",
                                 label: "Plot",
                                 type: "select",
                                 required: true,
-                                options: [],
+                                options: [{ id: "loading", name: "Fetching plots...", disabled: true }],
                                 dependsOn: "agreement",
+                            },
+                            {
+                                id: "agreement",
+                                label: "Agreement",
+                                type: "text",
+                                required: true,
+                                dependsOn: "plot",
+                                disabled: true
                             },
                             {
                                 id: "subject",

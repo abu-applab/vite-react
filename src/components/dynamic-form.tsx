@@ -8,11 +8,12 @@ import { Button } from "./ui/button"
 import FileUpload from "./file-upload"
 import { ChevronsUpDown, Trash2 } from "lucide-react"
 import pdfLogo from "../assets/images/pdf-logo.svg"
-import { cn } from "@/lib/utils"
-import type { Dispatch, SetStateAction } from "react"
+import { cn, formatFileSize, getFileName, getFileType } from "@/lib/utils"
+import { useEffect, type Dispatch, type SetStateAction } from "react"
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
 import { Command, CommandGroup, CommandItem, CommandList } from "./ui/command"
 import { Checkbox } from "./ui/checkbox"
+import { useApp } from "@/context/AppContext"
 
 interface DynamicFormProps {
   config: FormConfig
@@ -39,20 +40,17 @@ const DynamicForm = ({
   goToNextStep,
   fieldRefs,
 }: DynamicFormProps) => {
-  const getFileType = (fileName: string) => {
-    const extension = fileName?.split(".").pop()?.toLowerCase()
-    return extension === "pdf" ? "PDF" : "DOC"
-  }
+  const {setCreateNewForm, setSelectedLocation} = useApp();
 
-  const getFileName = (fileName: string) => fileName?.split(".")?.[0]
 
-  const formatFileSize = (bytes: number) => {
-    if (bytes === 0) return "0 Bytes"
-    const k = 1024
-    const sizes = ["Bytes", "KB", "MB", "GB"]
-    const i = Math.floor(Math.log(bytes) / Math.log(k))
-    return Number.parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i]
-  }
+  // handling this state to show whether it's for view or create new service 
+  useEffect(() => {
+    setCreateNewForm(true);
+    return () => {
+      setCreateNewForm(false);
+      setSelectedLocation('');
+    }
+  })
 
   const renderField = (field: FormField) => {
     const commonProps = { id: field.id, required: field.required }
@@ -126,8 +124,10 @@ const DynamicForm = ({
                 {field.options?.map((option) => {
                   const key = typeof option === "string" ? option : option.id;
                   const value = typeof option === "string" ? option : option.name;
+                  const isOptionDisabled =
+                    typeof option !== "string" && option.disabled;
                   return (
-                    <SelectItem key={key} value={key}>
+                    <SelectItem key={key} value={key} disabled={!!isOptionDisabled}>
                       {value}
                     </SelectItem>
                   )
@@ -311,7 +311,7 @@ const DynamicForm = ({
         <form onSubmit={handleSubmit} className="space-y-6">
           {config?.sections.map((section, sectionIndex) => (
             <>
-               <h4 className="md:hidden block text-maroon-100 ml-4 mb-3">{section.title}</h4>
+              <h4 className="md:hidden block text-maroon-100 ml-4 mb-3">{section.title}</h4>
               <Card key={sectionIndex}>
                 <CardHeader className="md:flex items-center justify-between hidden">
                   <CardTitle className="text-lg">{section.title}</CardTitle>

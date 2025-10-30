@@ -6,6 +6,7 @@ import DynamicForm from "../dynamic-form"
 import { useEffect, useRef, useState } from "react"
 import { newApplicationPlots } from "@/constants"
 import FormSubmitted from "../formSubmitted"
+import { useApp } from "@/context/AppContext"
 
 interface Step {
   title: string
@@ -17,11 +18,10 @@ interface Step {
 interface AddNewApplicationProps {
   selectedApplication: string
   setSelectedApplication: (value: string) => void
-  selectedLocation: string
-  setSelectedLocation: (value: string) => void
+  setCreateNewApplication: any
 }
 
-const AddNewApplication = ({ selectedApplication, setSelectedApplication }: AddNewApplicationProps) => {
+const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCreateNewApplication }: AddNewApplicationProps) => {
   const configSteps = getApplicationFormConfig(selectedApplication)
 
   const [applicationSteps, setApplicationSteps] = useState<Step[]>([])
@@ -29,6 +29,7 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication }: AddN
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [isFormSubmitted, setIsFormSubmitted] = useState(false)
 
+  const { setCreateNewForm, setSelectedLocation } = useApp();
   const fieldRefs = useRef<Record<string, HTMLElement | null>>({})
 
   useEffect(() => {
@@ -38,6 +39,16 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication }: AddN
       )
     }
   }, [selectedApplication])
+
+  // handling this state to show whether it's for view or create new service 
+  useEffect(() => {
+    setCreateNewForm(true);
+    return () => {
+      console.log('hello');
+      setCreateNewForm(false);
+      setSelectedLocation('')
+    }
+  }, [])
 
   const handleInputChange = (fieldId: string, value: any) => {
     setFormData((prev) => ({ ...prev, [fieldId]: value }))
@@ -64,21 +75,25 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication }: AddN
   }
 
   const goToPreviousStep = () => {
-    setApplicationSteps((prevSteps) => {
-      const currentIndex = prevSteps.findIndex((s) => s.active)
-      if (currentIndex <= 0) {
-        setSelectedApplication("")
-      }
-
-      return prevSteps.map((step, index) => {
-        if (index === currentIndex) {
-          return { ...step, active: false }
-        } else if (index === currentIndex - 1) {
-          return { ...step, active: true, completed: false }
+    if (applicationSteps[0].active) {
+      setCreateNewApplication(false)
+    } else {
+      setApplicationSteps((prevSteps) => {
+        const currentIndex = prevSteps.findIndex((s) => s.active)
+        if (currentIndex <= 0) {
+          setSelectedApplication("")
         }
-        return step
+
+        return prevSteps.map((step, index) => {
+          if (index === currentIndex) {
+            return { ...step, active: false }
+          } else if (index === currentIndex - 1) {
+            return { ...step, active: true, completed: false }
+          }
+          return step
+        })
       })
-    })
+    }
   }
 
   const renderActiveStep = () => {
@@ -116,7 +131,11 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication }: AddN
 
   return (
     <div>{isFormSubmitted ?
-      <FormSubmitted onGoToRequest={() => setSelectedApplication("")} /> :
+      <FormSubmitted onGoToRequest={() => {
+        setCreateNewApplication(false);
+        setSelectedApplication("")
+      }
+      } /> :
       configSteps.length > 1 ? (
         <Card className="mt-[72px] mr-4 mb-4 w-full flex flex-col bg-[#fcfaf7]">
           {configSteps.length > 1 && (

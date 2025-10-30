@@ -53,12 +53,9 @@ export function NewServiceRequestModal({ open, onOpenChange, setSelectedService 
 
   const handleDone = () => {
     if (value) {
-      console.log("Selected service:", value)
-      // Handle the selected service here
       setValue('')
       setSelectedService(value)
       onOpenChange(false)
-    //   setSelectedService("")
     }
   }
 

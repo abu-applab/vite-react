@@ -13,19 +13,20 @@ import { useEffect, useState } from "react";
 import { API_ENDPOINTS } from "@/api/apiEndpoints";
 import useNetworkRequest from "@/api/useNetworkRequest";
 import Loader from "@/components/loader";
+import { motion } from 'framer-motion'
 
 const PortalLayout = () => {
     const { isMenuOpen, setIsMenuOpen, setCompanies, setSelectedCompany } = useApp();
     const navigate = useNavigate();
     const networkRequest = useNetworkRequest();
-    const [ isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         const fetchCompanies = async () => {
             setIsLoading(true)
             const body = {
                 // hardcorded
-                contactId: 'd7323f05-356d-f011-b4cc-6045bd9e8ac7'
+                contactId: 'a2032062-a76e-f011-b4cc-6045bd9e8ac7'
             }
             try {
                 const response = await networkRequest(API_ENDPOINTS.getCompanies, {
@@ -98,7 +99,13 @@ const PortalLayout = () => {
                 <>
                     {/* Desktop Navigation */}
                     <div className="hidden md:block">
-                        <NavigationBar />
+                        <motion.div
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.2, ease: "easeIn" }}
+                        >
+                            <NavigationBar />
+                        </motion.div>
                     </div>
 
                     {/* Mobile Menu */}
@@ -110,10 +117,10 @@ const PortalLayout = () => {
             <div className="flex-1">
                 <div className="lg:px-20 md:px-6 md:mt-10 m-4">
                     {
-                     isLoading ? <Loader /> :
-                     <Outlet /> 
+                        isLoading ? <Loader /> :
+                            <Outlet />
                     }
-                </div>   
+                </div>
             </div>
             <Footer />
         </div>

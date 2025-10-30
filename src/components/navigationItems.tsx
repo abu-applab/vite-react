@@ -25,7 +25,7 @@ export function NavigationBar() {
                 <Button
                   variant="ghost"
                   className={`h-full m-0 p-0 px-4 rounded-b-none hover:text-[#852533] hover:bg-[#f6f5ef] ${
-                    !!(item.children.find( option => pathName.replace(/^\/[^/]+/, "") === option.href))  && "h-[56px] border-b-2 border-b-[#852533] text-[#852533]"
+                    !!(item.children.find( option => pathName.replace(/^\/[^/]+/, "") === option.href))  && "h-[56px] border-b-4 border-b-[#852533] text-[#852533]"
                   }`}
                 >
                   <item.icon className="h-5 w-5" />
@@ -49,7 +49,7 @@ export function NavigationBar() {
             key={item.name}
             variant="ghost"
             className={`h-full m-0 p-0 px-4 rounded-b-none hover:text-[#852533] hover:bg-[#f6f5ef] ${
-              pathName.replace(/^\/[^/]+/, "") === item.href && "h-[56px] border-b-2 border-b-[#852533] text-[#852533]"
+              pathName.replace(/^\/[^/]+/, "") === item.href && "h-[56px] border-b-4 border-b-[#852533] text-[#852533]"
             }`}
             onClick={() => navigate(item.href)}
           >
