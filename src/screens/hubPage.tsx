@@ -5,11 +5,6 @@ import { Button } from "@/components/ui/button"
 import { Plus, Search } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import alNoorLogo from "../assets/images/all-noor-logo.svg"
-import qatarBankLogo from "../assets/images/qatar-bank-logo.svg"
-import mesaieedLogo from "../assets/images/mesaieed-logo.svg"
-import ezdanHoldingLogo from "../assets/images/ezdan-holding-logo.svg"
-import { CompanyDetail } from "@/components/hubPage/company-detail"
 import UploadCrDocument from "@/components/addCompany/uploadCrDocument"
 import { Link } from "react-router-dom"
 import { useApp } from "@/context/AppContext"
@@ -20,83 +15,84 @@ import SelectCompanyDetails from "@/components/addCompany/selectCompanyDetails"
 import ReviewAndSubmit from "@/components/addCompany/reviewAndSubmit"
 import NewCompanyFormSubmission from "@/components/addCompany/newCompanyFormSubmission"
 import { useState } from "react"
+import { CardContainer } from "@/components/cardContainer"
 
-const companiesList = [
-  {
-    companyName: "Al Noor Real Estate W.L.L",
-    logo: alNoorLogo,
-    crNumber: "238297390",
-    isActive: true,
-    totalSlots: "12",
-    mainContact: "Mariam Khalid",
-    phoneNumber: "+974 2725 9273",
-    email: "mariam.k@alnoor.qa",
-    alerts: [
-      {
-        id: '1',
-        title: "Some Documents Missing",
-        type: "warning"
-      },
-      {
-        id: '2',
-        title: "Payment Overdue",
-        type: "warning"
-      }
-    ]
-  },
-  {
-    companyName: "Qatar International Islamic Bank",
-    logo: qatarBankLogo,
-    crNumber: "238297390",
-    isActive: true,
-    totalSlots: "12",
-    mainContact: "Mariam Khalid",
-    phoneNumber: "+974 2725 9273",
-    email: "mariam.k@alnoor.qa",
-    alerts: [
-      {
-        id: '1',
-        title: "Some Documents Missing",
-        type: "warning"
-      },
-    ]
-  },
-  {
-    companyName: "Mesaieed Petrochemical Holding Company",
-    logo: mesaieedLogo,
-    crNumber: "238297390",
-    isActive: false,
-    totalSlots: "12",
-    mainContact: "Mariam Khalid",
-    phoneNumber: "+974 2725 9273",
-    email: "mariam.k@alnoor.qa",
-    alerts: [
-      {
-        id: '1',
-        title: "CR Expired",
-        type: "error"
-      }
-    ]
-  },
-  {
-    companyName: "Ezdan Holding Group",
-    logo: ezdanHoldingLogo,
-    crNumber: "238297390",
-    isActive: true,
-    totalSlots: "12",
-    mainContact: "Mariam Khalid",
-    phoneNumber: "+974 2725 9273",
-    email: "mariam.k@alnoor.qa",
-    alerts: [
-      {
-        id: '1',
-        title: "CR to be expired in 2 weeks",
-        type: "warning"
-      }
-    ]
+// const companiesList = [
+//   {
+//     companyName: "Al Noor Real Estate W.L.L",
+//     logo: alNoorLogo,
+//     crNumber: "238297390",
+//     isActive: true,
+//     totalSlots: "12",
+//     mainContact: "Mariam Khalid",
+//     phoneNumber: "+974 2725 9273",
+//     email: "mariam.k@alnoor.qa",
+//     alerts: [
+//       {
+//         id: '1',
+//         title: "Some Documents Missing",
+//         type: "warning"
+//       },
+//       {
+//         id: '2',
+//         title: "Payment Overdue",
+//         type: "warning"
+//       }
+//     ]
+//   },
+//   {
+//     companyName: "Qatar International Islamic Bank",
+//     logo: qatarBankLogo,
+//     crNumber: "238297390",
+//     isActive: true,
+//     totalSlots: "12",
+//     mainContact: "Mariam Khalid",
+//     phoneNumber: "+974 2725 9273",
+//     email: "mariam.k@alnoor.qa",
+//     alerts: [
+//       {
+//         id: '1',
+//         title: "Some Documents Missing",
+//         type: "warning"
+//       },
+//     ]
+//   },
+//   {
+//     companyName: "Mesaieed Petrochemical Holding Company",
+//     logo: mesaieedLogo,
+//     crNumber: "238297390",
+//     isActive: false,
+//     totalSlots: "12",
+//     mainContact: "Mariam Khalid",
+//     phoneNumber: "+974 2725 9273",
+//     email: "mariam.k@alnoor.qa",
+//     alerts: [
+//       {
+//         id: '1',
+//         title: "CR Expired",
+//         type: "error"
+//       }
+//     ]
+//   },
+//   {
+//     companyName: "Ezdan Holding Group",
+//     logo: ezdanHoldingLogo,
+//     crNumber: "238297390",
+//     isActive: true,
+//     totalSlots: "12",
+//     mainContact: "Mariam Khalid",
+//     phoneNumber: "+974 2725 9273",
+//     email: "mariam.k@alnoor.qa",
+//     alerts: [
+//       {
+//         id: '1',
+//         title: "CR to be expired in 2 weeks",
+//         type: "warning"
+//       }
+//     ]
 
-  },
-]
+//   },
+// ]
 
 const HubPage = () => {
 
@@ -215,8 +211,8 @@ const HubPage = () => {
               <p className="text-base text-neutral-500 mt-4">Showing 4 of 4 companies</p>
             </CardContent>
           </Card>
-          <div className="mt-6 grid grid-cols-2 gap-4">
-            {/* md:grid-cols-2 lg:grid-cols-2 */}
+          <CardContainer />
+          {/* <div className="mt-6 grid grid-cols-2 gap-4">
             {
               companiesList.map(({ logo, companyName, crNumber, isActive, totalSlots, mainContact, phoneNumber, email, alerts }) => {
                 return (
@@ -235,7 +231,7 @@ const HubPage = () => {
               }
               )
             }
-          </div>
+          </div> */}
         </>
       }
     </div>

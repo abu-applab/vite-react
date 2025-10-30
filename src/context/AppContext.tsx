@@ -26,6 +26,8 @@ interface AppContextType {
     setAddCompanySteps: React.Dispatch<React.SetStateAction<StepsType[]>>;
     industrialSteps: StepsType[];
     setIndustrialSteps: React.Dispatch<React.SetStateAction<StepsType[]>>;
+    contactName: string;
+    setContactName: React.Dispatch<React.SetStateAction<string>>;
     companies: CompanyType[];
     setCompanies: React.Dispatch<React.SetStateAction<CompanyType[]>>;
     selectedCompany: CompanyType | null;
@@ -59,6 +61,8 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     
     const [industrialSteps, setIndustrialSteps] = useState(initialIndustrialSteps)
 
+    // comapnies
+    const [contactName, setContactName] = useState('')
     const [companies, setCompanies] = useState<CompanyType[]>([]);
     const [selectedCompany, setSelectedCompany] = useState<CompanyType | null>(null);
 
@@ -78,6 +82,8 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         setCompanies,
         selectedCompany,
         setSelectedCompany,
+        contactName,
+        setContactName,
         isCreateNewForm,
         setCreateNewForm,
         selectedLocation,

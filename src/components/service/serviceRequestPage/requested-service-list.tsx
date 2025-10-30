@@ -26,7 +26,7 @@ function getPointerColor(status: string) {
     switch (status.toLowerCase()) {
         case "approved":
             return "bg-green-600"
-        case "in progress":    
+        case "in progress":
         case "pending":
             return "bg-orange-600"
         case "rejected":
@@ -81,11 +81,9 @@ export const RequestedServiceList = ({ services }: RequestedServiceListProps) =>
                     <CardContent className="pt-0">
                         <div className="-mx-6 border-t border-gray-200"></div>
                         <div className="pt-4 flex flex-col md:flex-row justify-between text-sm">
-                            <div className="flex flex-col">
-                                <div className="flex flex-row items-center justify-between md:block">
-                                    <p className="text-gray-500 mb-1">Plot Number</p>
-                                    <p className="font-medium text-gray-900">{request.plotNumber}</p>
-                                </div>
+                            <div className="flex flex-row items-center justify-between md:block">
+                                <p className="text-gray-500 mb-1">Plot Number</p>
+                                <p className="font-medium text-gray-900">{request.plotNumber}</p>
                             </div>
                             <div className="text-right flex flex-row items-center justify-between md:block">
                                 <p className="text-gray-500 mb-1">Submitted Date</p>
