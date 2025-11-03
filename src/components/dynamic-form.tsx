@@ -25,6 +25,7 @@ interface DynamicFormProps {
   handlePerviousButton?: () => void
   isNewApplication?: boolean
   goToNextStep?: () => void
+  handleSave?: () => void
   fieldRefs: React.MutableRefObject<Record<string, HTMLElement | null>>
 }
 
@@ -38,9 +39,10 @@ const DynamicForm = ({
   handlePerviousButton,
   isNewApplication = false,
   goToNextStep,
+  handleSave,
   fieldRefs,
 }: DynamicFormProps) => {
-  const {setCreateNewForm, setSelectedLocation} = useApp();
+  const { setCreateNewForm, setSelectedLocation } = useApp();
 
 
   // handling this state to show whether it's for view or create new service 
@@ -347,9 +349,16 @@ const DynamicForm = ({
             <Button type="button" variant="outline" onClick={handlePerviousButton}>
               Previous
             </Button>
-            <Button type={isNewApplication ? "button" : "submit"} className="bg-maroon-100 hover:bg-[#7A1F2B]" onClick={isNewApplication ? goToNextStep : handleSubmit}>
-              {isNewApplication ? "Next" : "Submit"}
-            </Button>
+            <div className="flex flex-row items-center gap-3">
+              { isNewApplication && 
+              <Button type="submit" variant="outline" onClick={handleSave}>
+                {"Save"}
+              </Button>
+              }
+              <Button type={isNewApplication ? "button" : "submit"} className="bg-maroon-100 hover:bg-[#7A1F2B]" onClick={isNewApplication ? goToNextStep : handleSubmit}>
+                {isNewApplication ? "Next" : "Submit"}
+              </Button>
+            </div>
           </div>
         </form>
       </CardContent>

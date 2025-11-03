@@ -9,9 +9,10 @@ import { navigationItems } from "@/lib/utils"
 interface MobileMenuProps {
   isOpen: boolean
   onClose: () => void
+  switchLanguage: () => void
 }
 
-export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
+export const MobileMenu = ({ isOpen, onClose, switchLanguage }: MobileMenuProps) => {
   const navigate = useNavigate()
   const [expanded, setExpanded] = useState(false)
 
@@ -88,7 +89,7 @@ export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
           <h3 className="text-xs text-gray-500 uppercase tracking-wider mb-3">
             Language Preference
           </h3>
-          <Button className="flex items-center gap-2 border px-3 py-2">
+          <Button className="flex items-center gap-2 border px-3 py-2" onClick={switchLanguage}>
             <img src={qatarFlag} alt="Flag" className="w-5 h-5" />
             <span className="text-black text-sm">العربية</span>
           </Button>

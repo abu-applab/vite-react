@@ -10,6 +10,10 @@ import logistics from '../assets/images/logestics.svg'
 import industrial from '../assets/images/industrial.svg'
 import commercial from '../assets/images/commercial.svg'
 import openYards from '../assets/images/open-yards.svg'
+import alKhor from '../assets/images/Al-khor.svg'
+import smiZone from '../assets/images/SMI-zone.svg'
+import alKaranaa from '../assets/images/Al-Karaana.svg'
+import mesaieed from '../assets/images/Mesaieed.svg'
 import { useApp, type CompanyType } from "@/context/AppContext";
 import PageHeader from "@/components/pageHeader";
 
@@ -70,22 +74,22 @@ const investmentLocations: InvestmentType =
         {
             id: "alKhor",
             title: "Al Khor",
-            image: logistics,
+            image: alKhor,
         },
         {
             id: "smallMediumIndustriesZone",
             title: "Small Medium industries Zone",
-            image: industrial,
+            image: smiZone,
         },
         {
             id: "alKaraana",
             title: "Al Karaana",
-            image: commercial,
+            image: alKaranaa,
         },
         {
             id: "mesaieed",
             title: "Messaieed",
-            image: openYards,
+            image: mesaieed,
         },
     ]
 }
@@ -233,6 +237,7 @@ const ApplicationPage = () => {
                     selectedApplication={selectedApplication}
                     setSelectedApplication={setSelectedApplication}
                     setCreateNewApplication={setCreateNewApplication}
+                    setStep={setStep}
                 />
             ),
         },

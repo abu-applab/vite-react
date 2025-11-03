@@ -2,7 +2,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import avatar from ".././assets/images/Avatar.svg"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
-import { Plus, Search } from "lucide-react"
+import { Building2, Plus, Search } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import UploadCrDocument from "@/components/addCompany/uploadCrDocument"
@@ -15,87 +15,35 @@ import SelectCompanyDetails from "@/components/addCompany/selectCompanyDetails"
 import ReviewAndSubmit from "@/components/addCompany/reviewAndSubmit"
 import NewCompanyFormSubmission from "@/components/addCompany/newCompanyFormSubmission"
 import { useState } from "react"
-import { CardContainer } from "@/components/cardContainer"
+import ListOfCards from "@/components/listOfcards"
 
-// const companiesList = [
-//   {
-//     companyName: "Al Noor Real Estate W.L.L",
-//     logo: alNoorLogo,
-//     crNumber: "238297390",
-//     isActive: true,
-//     totalSlots: "12",
-//     mainContact: "Mariam Khalid",
-//     phoneNumber: "+974 2725 9273",
-//     email: "mariam.k@alnoor.qa",
-//     alerts: [
-//       {
-//         id: '1',
-//         title: "Some Documents Missing",
-//         type: "warning"
-//       },
-//       {
-//         id: '2',
-//         title: "Payment Overdue",
-//         type: "warning"
-//       }
-//     ]
-//   },
-//   {
-//     companyName: "Qatar International Islamic Bank",
-//     logo: qatarBankLogo,
-//     crNumber: "238297390",
-//     isActive: true,
-//     totalSlots: "12",
-//     mainContact: "Mariam Khalid",
-//     phoneNumber: "+974 2725 9273",
-//     email: "mariam.k@alnoor.qa",
-//     alerts: [
-//       {
-//         id: '1',
-//         title: "Some Documents Missing",
-//         type: "warning"
-//       },
-//     ]
-//   },
-//   {
-//     companyName: "Mesaieed Petrochemical Holding Company",
-//     logo: mesaieedLogo,
-//     crNumber: "238297390",
-//     isActive: false,
-//     totalSlots: "12",
-//     mainContact: "Mariam Khalid",
-//     phoneNumber: "+974 2725 9273",
-//     email: "mariam.k@alnoor.qa",
-//     alerts: [
-//       {
-//         id: '1',
-//         title: "CR Expired",
-//         type: "error"
-//       }
-//     ]
-//   },
-//   {
-//     companyName: "Ezdan Holding Group",
-//     logo: ezdanHoldingLogo,
-//     crNumber: "238297390",
-//     isActive: true,
-//     totalSlots: "12",
-//     mainContact: "Mariam Khalid",
-//     phoneNumber: "+974 2725 9273",
-//     email: "mariam.k@alnoor.qa",
-//     alerts: [
-//       {
-//         id: '1',
-//         title: "CR to be expired in 2 weeks",
-//         type: "warning"
-//       }
-//     ]
+const cardsConfig = {
+    icon: Building2,
+    id: "crNumber",
+    title: "englishName",
+    status: 'status',
+    fields: [
+        {
+            label: "Total Plots",
+            key: "plotNumber",
+        },
+        {
+            label: "Main Contact",
+            key: "contactName",
+        },
+        {
+            label: "Phone Number",
+            key: "phone",
+        },
+        {
+            label: "Mail",
+            key: "email",
+        },
+    ]
+}
 
-//   },
-// ]
 
 const HubPage = () => {
-
   const { addCompanySteps, setAddCompanySteps } = useApp();
   const [isAddNewCompany, setIsAddNewCompany] = useState(false)
 
@@ -211,27 +159,7 @@ const HubPage = () => {
               <p className="text-base text-neutral-500 mt-4">Showing 4 of 4 companies</p>
             </CardContent>
           </Card>
-          <CardContainer />
-          {/* <div className="mt-6 grid grid-cols-2 gap-4">
-            {
-              companiesList.map(({ logo, companyName, crNumber, isActive, totalSlots, mainContact, phoneNumber, email, alerts }) => {
-                return (
-                  <CompanyDetail
-                    logo={logo}
-                    companyName={companyName}
-                    crNumber={crNumber}
-                    isActive={isActive}
-                    totalSlots={totalSlots}
-                    mainContact={mainContact}
-                    phoneNumber={phoneNumber}
-                    email={email}
-                    alerts={alerts}
-                  />
-                )
-              }
-              )
-            }
-          </div> */}
+          <ListOfCards cardsConfig={cardsConfig} />
         </>
       }
     </div>

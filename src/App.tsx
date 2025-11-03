@@ -36,6 +36,9 @@ function App() {
      else {
       const pathLang = window.location.pathname.split('/')[1];
       i18n.changeLanguage(pathLang);
+      const html = document.documentElement;
+      html.setAttribute("lang", pathLang);
+      html.setAttribute("dir", pathLang === "ar" ? "rtl" : "ltr");
     }
   }, [])
 

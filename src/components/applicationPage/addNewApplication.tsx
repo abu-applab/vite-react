@@ -19,13 +19,14 @@ interface AddNewApplicationProps {
   selectedApplication: string
   setSelectedApplication: (value: string) => void
   setCreateNewApplication: any
+  setStep: any
 }
 
-const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCreateNewApplication }: AddNewApplicationProps) => {
+const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCreateNewApplication, setStep }: AddNewApplicationProps) => {
   const configSteps = getApplicationFormConfig(selectedApplication)
 
   const [applicationSteps, setApplicationSteps] = useState<Step[]>([])
-  const [formData, setFormData] = useState<Record<string, any>>({})
+  const [formState, setFormData] = useState<Record<string, any>>({})
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [isFormSubmitted, setIsFormSubmitted] = useState(false)
 
@@ -56,27 +57,59 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
   }
 
   const goToNextStep = () => {
+    const isEmpty = (val: any) => val === undefined || val === null || val === "";
+    let newErrors: Record<string, string> = {};
+  
     setApplicationSteps((prevSteps) => {
-      const currentIndex = prevSteps.findIndex((s) => s.active)
-      if (currentIndex === -1 || currentIndex === prevSteps.length - 1) {
-        // setSelectedApplication("")
-        setIsFormSubmitted(true)
+      const currentIndex = prevSteps.findIndex((s) => s.active);
+      console.log("currentIndex:", currentIndex);
+  
+      if (currentIndex === -1) return prevSteps;
+  
+      // ✅ Validate only if not on last step
+      if (currentIndex < configSteps.length) {
+        const stepConfig = configSteps[currentIndex];
+  
+        stepConfig.sections.forEach((section) => {
+          section.fields?.forEach((field) => {
+            const value = formState[field.id]?.trim?.() || formState[field.id];
+            if (field.required && isEmpty(value)) {
+              newErrors[field.id] = `${field.label} is required`;
+            }
+          });
+        });
+  
+        // If errors — stop navigation and show errors
+        if (Object.keys(newErrors).length > 0) {
+          setErrors(newErrors);
+          return prevSteps; // ⛔ Stop step change
+        }
       }
-
+  
+      // ✅ No errors — proceed to next step
+      // Last step = Submit
+      if (currentIndex === prevSteps.length - 1) {
+        setIsFormSubmitted(true);
+        return prevSteps;
+      }
+  
       return prevSteps.map((step, index) => {
         if (index === currentIndex) {
-          return { ...step, active: false, completed: true }
-        } else if (index === currentIndex + 1) {
-          return { ...step, active: true }
+          return { ...step, active: false, completed: true };
         }
-        return step
-      })
-    })
-  }
+        if (index === currentIndex + 1) {
+          return { ...step, active: true };
+        }
+        return step;
+      });
+    });
+  };
+  
 
   const goToPreviousStep = () => {
     if (applicationSteps[0].active) {
-      setCreateNewApplication(false)
+      setSelectedApplication("")
+      setStep(0)
     } else {
       setApplicationSteps((prevSteps) => {
         const currentIndex = prevSteps.findIndex((s) => s.active)
@@ -120,7 +153,7 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
         isNewApplication
         goToNextStep={goToNextStep}
         handlePerviousButton={goToPreviousStep}
-        formData={formData}
+        formData={formState}
         errors={errors}
         setErrors={setErrors}
         handleInputChange={handleInputChange}
@@ -152,7 +185,7 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
           isNewApplication
           goToNextStep={goToNextStep}
           handlePerviousButton={goToPreviousStep}
-          formData={formData}
+          formData={formState}
           errors={errors}
           setErrors={setErrors}
           handleInputChange={handleInputChange}

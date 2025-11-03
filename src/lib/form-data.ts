@@ -1172,7 +1172,7 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                     description: "Application to apply for an industrial project.",
                     sections: [
                         {
-                            title: "",
+                            title: "Required Documents",
                             fields: [
                                 {
                                     id: "validCommercialRegistration",
@@ -1258,6 +1258,166 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                     required: false
                                 },
 
+                            ]
+                        },
+                    ]
+                }
+            ]
+        case "openYards":
+            return [
+                {
+                    title: "Open Yard Application",
+                    description: "Application for setting up, expanding, or modifying an open yard project.",
+                    key: "instruction",
+                    sections: [
+                        {
+                            title: "Instruction for completing the form",
+                            points: [
+                                "Applicants are requested to read this form carefully and the documents for reading, to fill in the required information and to attach copies of all the required documents",
+                                "Manateq reserves the right to request more information from the applicant. There are no guarantees that this application will be approved",
+                                "Applicants shall nominate a contact person with whom all communications with Manateq will be made. The contact person nominated should ideally be the Project Manager or such as deemed as appropriate by the applicant to be able to answer any queries regarding this application.",
+                                "Applicants must provide a valid email and mobile number for all communications and SMS notifications.",
+                            ],
+                        },
+                        {
+                            title: "Important Information and Reading Materials",
+                            points: [
+                                "Open Yards Lease Agreement (Download template)", 
+                                "Important information about the Open Yards (Download file)"
+                            ],
+                        },
+                        {
+                            title: "Required Documents (Attach the following documents with the application form)",
+                            key: "requiredDocuments",
+                            points: [
+                                "A Valid Commercial Registration",
+                                "A Valid Commercial License",
+                                "The Establishment Card",
+                                "Owners' IDs",
+                                "Business Plan",
+                                "Three Years of Audited  Financial Statements (if applicable)",
+                                "Traffic Listing from MOI (if applicable)",
+                                "Photos of Materials & Equipment",
+                            ],
+                        },
+                    ],
+                },
+                {
+                    title: "Open Yard Application",
+                    description: "Application for setting up, expanding, or modifying an open yard project.",
+                    sections: [
+                        {
+                            title: "Intended Use & Business Plan",
+                            fields: [
+                                {
+                                    id: "technologyCountryOfOrigin",
+                                    label: "Land Use",
+                                    type: "select",
+                                    required: true,
+                                    options: ['Open Yards Storage'],
+                                },
+                                {
+                                    id: "cluster",
+                                    label: "Cluster",
+                                    type: "select",
+                                    required: true,
+                                    options: ['Chemicals',
+                                         'Chemicals and Fertlizer', 
+                                         'Chemicals Ind.',
+                                          'Commercial',
+                                          'Concrete and Asphalt',
+                                          'Construction',
+                                          'Construction Materials'
+                                        ],
+                                },
+                                {
+                                    id: "descriptionOfProposedBusinessActivities",
+                                    label: "Description of Proposed Business Activities",
+                                    type: "textarea",
+                                    required: false,
+                                    placeholder: "",
+                                    max: 500,
+                                }
+                            ]
+                        },
+                        {
+                            title: "Facility Requirements",
+                            fields: [
+                                {
+                                    id: "Total Requested Plot Size (m2)",
+                                    label: "Total Requested Plot Size (m2)",
+                                    type: "number",
+                                    required: true,
+                                    placeholder: '',
+                                    max: 15
+                                },
+                                {
+                                    id: "location",
+                                    label: "Preferred Location",
+                                    type: "select",
+                                    required: true,
+                                    options: ['Al Khor Industrial Zone', 'Al Karanaa Industrial Zone']
+                                },
+                            ]
+                        }    
+                    ]
+                },
+                {
+                    title: "Open Yard Application",
+                    description: "Application for setting up, expanding, or modifying an open yard project.",
+                    sections: [
+                        {
+                            title: "Required Documents",
+                            fields: [
+                                {
+                                    id: "validCommercialRegistration",
+                                    label: "A Valid Commercial Registration",
+                                    type: "file",
+                                    required: true
+                                },
+                                {
+                                    id: "validCommercialLicense",
+                                    label: "A Valid Commercial License ",
+                                    type: "file",
+                                    required: true
+                                },
+                                {
+                                    id: "ownersId",
+                                    label: "Owners ID",
+                                    type: "file",
+                                    required: true
+                                },
+                                {
+                                    id: "The Establishment Card",
+                                    label: "The Establishment Card",
+                                    type: "file",
+                                    required: true
+                                },
+                                {
+                                    id: "businessPlan",
+                                    label: "Business Plan",
+                                    type: "file",
+                                    required: true
+                                },
+
+                                {
+                                    id: "Three Years of Audited Financial Statements",
+                                    label: "Three Years of Audited Financial Statements (if applicable)",
+                                    type: "file",
+                                    required: false
+                                },
+                                {
+                                    id: "Traffic Listing from MOI",
+                                    label: "Traffic Listing from MOI (if applicable)",
+                                    type: "file",
+                                    required: false
+                                },
+                                {
+                                    id: "Photos of Materials & Equipment.",
+                                    label: "Photos of Materials & Equipment.",
+                                    type: "file",
+                                    required: true
+                                },
                             ]
                         },
                     ]

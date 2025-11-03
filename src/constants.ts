@@ -107,9 +107,8 @@ export const newApplicationPlots = {
   ],
   openYards: [
     { title: "Instruction", completed: false, active: true, stepNumber: "1" },
-    { title: "Company Details (1 of 2)", completed: false, active: false, stepNumber: "2" },
-    { title: "Company Details (2 of 2", completed: false, active: false, stepNumber: "3" },
-    { title: "Document Upload", completed: false, active: false, stepNumber: "4" },
+    { title: "Intended Use & Business Plan", completed: false, active: false, stepNumber: "2" },
+    { title: "Document Upload", completed: false, active: false, stepNumber: "3" },
   ],
   smi: [
     { title: "Instruction", completed: false, active: true, stepNumber: "1" },

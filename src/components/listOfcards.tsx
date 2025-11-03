@@ -1,10 +1,26 @@
-import { Building2, CircleAlert, Eye, MoreVertical } from "lucide-react"
+import { CircleAlert, Eye, MoreVertical } from "lucide-react"
 import { Button } from "./ui/button"
 import { Card, CardContent, CardHeader } from "./ui/card"
 import { Badge } from "./ui/badge"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { useApp } from "@/context/AppContext"
 import { cn } from "@/lib/utils"
+import type { ElementType } from "react"
+
+interface CardConfig {
+    icon: ElementType,
+    id: string,
+    title: string,
+    status: string,
+    fields: {
+        label: string
+        key: string
+    }[]
+}
+
+interface ListOfCardsProps {
+    cardsConfig: CardConfig
+}
 
 function getStatusColor(status: string) {
     switch (status.toLowerCase()) {
@@ -36,31 +52,6 @@ function getPointerColor(status: string) {
     }
 }
 
-export const cardContainerConfig = {
-    icon: Building2,
-    id: "accountID",
-    title: "englishName",
-    status: 'status',
-    fields: [
-        {
-            label: "Total Plots",
-            key: "plotNumber",
-        },
-        {
-            label: "Main Contact",
-            key: "contactName",
-        },
-        {
-            label: "Phone Number",
-            key: "phone",
-        },
-        {
-            label: "Mail",
-            key: "email",
-        },
-    ]
-}
-
 const alerts= [
     {
       id: '1',
@@ -72,10 +63,10 @@ const alerts= [
         title: "Payment Overdue",
         type: "warning"
       }
-  ]
+  ]  
 
 
-export const CardContainer = () => {
+const ListOFCards = ({cardsConfig}: ListOfCardsProps) => {
     const { contactName, companies } = useApp();
     console.log('companies: ', companies);
     console.log('contactName: ', contactName);
@@ -83,27 +74,27 @@ export const CardContainer = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
             {companies.map((company) => (
-                <Card key={company[cardContainerConfig.id as keyof typeof company]} className="relative">
+                <Card key={company[cardsConfig.id as keyof typeof company]} className="relative">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0">
                         <div className="flex items-center gap-3">
                             <div className="w-12 h-12 border border-[#E4E4E7] rounded-[8px] bg-white flex items-center justify-center">
-                                <cardContainerConfig.icon className="w-5 h-5 text-black" />
+                                <cardsConfig.icon className="w-5 h-5 text-black" />
                             </div>
                             <div className="flex flex-col">
                                 <div className="flex items-center justify-start gap-2">
-                                    <span className="text-lg leading-7 font-medium text-gray-800">{company[cardContainerConfig.title as keyof typeof company]}</span>
-                                    <Badge className={`${getStatusColor(company[cardContainerConfig.status as keyof typeof company] ?? '')} md:hidden border-0 text-xs flex items-center justify-center rounded-2xl px-2 py-1`}>
-                                        <span className={`size-1.5 ${getPointerColor(company[cardContainerConfig.status as keyof typeof company] ?? '')} rounded-full mr-1`}></span>
-                                        <span className="text-xs leading-4 font-medium">{company[cardContainerConfig.status as keyof typeof company]}</span>
+                                    <span className="text-lg leading-7 font-medium text-gray-800">{company[cardsConfig.title as keyof typeof company]}</span>
+                                    <Badge className={`${getStatusColor(company[cardsConfig.status as keyof typeof company] ?? '')} md:hidden border-0 text-xs flex items-center justify-center rounded-2xl px-2 py-1`}>
+                                        <span className={`size-1.5 ${getPointerColor(company[cardsConfig.status as keyof typeof company] ?? '')} rounded-full mr-1`}></span>
+                                        <span className="text-xs leading-4 font-medium">{company[cardsConfig.status as keyof typeof company]}</span>
                                     </Badge>
                                 </div>
-                                <h3 className="font-medium text-base text-gray-500">{company[cardContainerConfig.id as keyof typeof company]}</h3>
+                                <h3 className="font-medium text-base text-gray-500">{company[cardsConfig.id as keyof typeof company]}</h3>
                             </div>
                         </div>
                         <div className="flex items-center">
-                            <Badge className={`${getStatusColor(company[cardContainerConfig.status as keyof typeof company] ?? '')} border-0 text-xs md:flex items-center justify-center rounded-2xl px-2 py-1 hidden`}>
-                                <span className={`size-1.5 ${getPointerColor(company[cardContainerConfig.status as keyof typeof company] ?? '')} rounded-full mr-1`}></span>
-                                <span className="text-xs leading-4 font-medium">{company[cardContainerConfig.status as keyof typeof company]}</span>
+                            <Badge className={`${getStatusColor(company[cardsConfig.status as keyof typeof company] ?? '')} border-0 text-xs md:flex items-center justify-center rounded-2xl px-2 py-1 hidden`}>
+                                <span className={`size-1.5 ${getPointerColor(company[cardsConfig.status as keyof typeof company] ?? '')} rounded-full mr-1`}></span>
+                                <span className="text-xs leading-4 font-medium">{company[cardsConfig.status as keyof typeof company]}</span>
                             </Badge>
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
@@ -125,7 +116,7 @@ export const CardContainer = () => {
                         <div className="-mx-6 border-t border-gray-200"></div>
                         <div className="pt-4 flex flex-col md:flex-wrap md:flex-row justify-between text-sm">
                             {
-                                cardContainerConfig.fields.map((field, index) => {
+                                cardsConfig.fields.map((field, index) => {
                                     const isOdd = index % 2 === 0;
                                     return (
                                         <div className={cn("flex flex-row items-center justify-between md:block md:w-1/2 md:mb-3", { "text-right": !isOdd })}>
@@ -156,3 +147,6 @@ export const CardContainer = () => {
         </div>
     )
 }
+
+export default ListOFCards;
+
