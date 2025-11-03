@@ -11,6 +11,8 @@ export interface FormField {
     pattern?: string;
     dependsOn?: string
     showIfSelected?: string
+    showStage?: 1 | 2 
+
 }
 
 export interface FormSection {
@@ -329,15 +331,6 @@ export function getServiceFormConfig(formType: string): FormConfig {
                                 max: 10
                             },
                             {
-                                id: "description",
-                                label: "Description",
-                                type: "text",
-                                required: true,
-                                placeholder: "Enter description",
-                                min: 3,
-                                max: 100
-                            },
-                            {
                                 id: "comments",
                                 label: "Comments (Optional)",
                                 type: "textarea",
@@ -366,6 +359,7 @@ export function getServiceFormConfig(formType: string): FormConfig {
                                 type: "select",
                                 required: true,
                                 options: [],
+                                showStage: 1 
                             },
                             {
                                 id: "Plot",
@@ -374,6 +368,7 @@ export function getServiceFormConfig(formType: string): FormConfig {
                                 required: true,
                                 options: [{ id: "loading", name: "Fetching plots...", disabled: true }],
                                 dependsOn: "Agreement",
+                                showStage: 1 
                             },
                             {
                                 id: "Agreement",
@@ -381,7 +376,8 @@ export function getServiceFormConfig(formType: string): FormConfig {
                                 type: "text",
                                 required: true,
                                 dependsOn: "Plot",
-                                disabled: true
+                                disabled: true,
+                                showStage: 1 
                             },
                             {
                                 id: "RequiredUpdate",
@@ -392,6 +388,7 @@ export function getServiceFormConfig(formType: string): FormConfig {
                                     { id: "CompanyName", name: "Company Name" },
                                     { id: "Signatory", name: "Signatory" },
                                   ],
+                                showStage: 2   
                             }, 
                             {
                                 id: "NewCompanyNameEn",
@@ -402,6 +399,7 @@ export function getServiceFormConfig(formType: string): FormConfig {
                                 min: 3,
                                 max: 80,
                                 showIfSelected: 'CompanyName',
+                                showStage: 2
                             },
                             {
                                 id: "NewCompanyNameAr",
@@ -412,14 +410,16 @@ export function getServiceFormConfig(formType: string): FormConfig {
                                 min: 3,
                                 max: 80,
                                 showIfSelected: 'CompanyName',
+                                showStage: 2
                             },
                             {
                                 id: "NewSignatory",
                                 label: "New Signatory",
                                 type: "select",
                                 required: true,
-                                options: [],
+                                options: [{ id: "loading", name: "Fetching signatory...", disabled: true }],
                                 showIfSelected: 'Signatory',
+                                showStage: 2
                             },
                             {
                                 id: "Comment",
@@ -428,7 +428,8 @@ export function getServiceFormConfig(formType: string): FormConfig {
                                 required: false,
                                 placeholder: "Enter any additional comments",
                                 min: 3,
-                                max: 200
+                                max: 200,
+                                showStage: 2
                             },
                         ],
                     },

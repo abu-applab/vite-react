@@ -13,7 +13,7 @@ interface RequestSubmittedModalProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   onGoToRequest: () => void
-  referenceNumber?: string
+  referenceMessage?: string
   handleTryAgain: () => void
   errorMessage?: string
   isConfigLoaded?: boolean
@@ -23,12 +23,12 @@ export function RequestSubmittedModal({
   open,
   onOpenChange,
   onGoToRequest,
-  referenceNumber = "",
+  referenceMessage = "",
   handleTryAgain,
   errorMessage = "An unexpected error occurred.",
   isConfigLoaded = true
 }: RequestSubmittedModalProps) {
-  const isSuccess = Boolean(referenceNumber)
+  const isSuccess = Boolean(referenceMessage)
 
   const handleClose = () => onOpenChange(false)
 
@@ -39,9 +39,7 @@ export function RequestSubmittedModal({
         title: "Request Submitted Successfully",
         subtitle: (
           <>
-            We have received your request and it is being processed.
-            Your reference number is 
-            <span className="font-medium">{`${' '} ${referenceNumber}`}</span>
+            <span className="">{`${' '} ${referenceMessage}`}</span>
           </>
         ),
         buttonText: "My Request",

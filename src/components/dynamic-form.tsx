@@ -27,6 +27,7 @@ interface DynamicFormProps {
   goToNextStep?: () => void
   handleSave?: () => void
   fieldRefs: React.MutableRefObject<Record<string, HTMLElement | null>>
+  isNext?: boolean
 }
 
 const DynamicForm = ({
@@ -41,6 +42,7 @@ const DynamicForm = ({
   goToNextStep,
   handleSave,
   fieldRefs,
+  isNext = false
 }: DynamicFormProps) => {
   const { setCreateNewForm, setSelectedLocation } = useApp();
 
@@ -84,8 +86,7 @@ const DynamicForm = ({
         )
 
       case "select":
-        const isDisabled =
-          field.dependsOn && field.disabled;
+        const isDisabled = field.disabled;
         return (
           <div className="space-y-2">
             <Label htmlFor={field.id}>
@@ -355,8 +356,8 @@ const DynamicForm = ({
                 {"Save"}
               </Button>
               }
-              <Button type={isNewApplication ? "button" : "submit"} className="bg-maroon-100 hover:bg-[#7A1F2B]" onClick={isNewApplication ? goToNextStep : handleSubmit}>
-                {isNewApplication ? "Next" : "Submit"}
+              <Button type={(isNewApplication || isNext) ? "button" : "submit"} className="bg-maroon-100 hover:bg-[#7A1F2B]" onClick={(isNewApplication || isNext) ? goToNextStep : handleSubmit}>
+                {(isNewApplication || isNext) ? "Next" : "Submit"}
               </Button>
             </div>
           </div>

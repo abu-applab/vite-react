@@ -54,6 +54,30 @@ export const formatFileSize = (bytes: number) => {
 /**
  * Handles the chained request for "Update Company Information"
  */
+
+// extract first call logic
+export const createCompanyUpdateRequest = async ({ formState, networkRequest } : {formState: any, networkRequest: any}) => {
+  const body = {
+    agreement: formState.Agreement,
+    plot: formState.Plot,
+    company: formState.Company,
+    contactPerson: "a2032062-a76e-f011-b4cc-6045bd9e8ac7",
+  }
+
+  const response = await networkRequest('/createBasicCompanyUpdateRequest'
+    , {
+    method: "POST",
+    body
+  });
+
+  if (!response?.success) {
+    throw new Error("Failed to create company update request");
+  }
+
+  return response?.data?.companyUpdateRequestId;
+};
+
+
 export const submitUpdateCompanyInformation = async ({
   formState,
   urls,
@@ -61,36 +85,23 @@ export const submitUpdateCompanyInformation = async ({
   onServiceAdded,
   setReferenceMessage,
 }: SubmitCompanyUpdateProps) => {
-  // 1️⃣ First API call (JSON)
-  const firstBody = {
-    agreement: formState.Agreement,
-    plot: formState.Plot,
-    company: formState.companyId,
-    contactPerson: "a2032062-a76e-f011-b4cc-6045bd9e8ac7",
-  };
 
-  const firstResponse = await networkRequest(urls[0], {
-    method: "POST",
-    body: firstBody,
-  });
-
-  if (!firstResponse?.success)
-    throw new Error("Failed to create company update request");
-
-  const updateRequestId = firstResponse?.data?.companyUpdateRequestId;
-  if (!updateRequestId)
-    throw new Error("Missing updateRequestId from response");
-
-  // 2️⃣ Second API call (multipart/form-data)
   const secondBody = new FormData();
-  secondBody.append("RequiredUpdate", formState.RequiredUpdate);
-  secondBody.append("UpdateRequestId", updateRequestId);
+  
+  if (formState.RequiredUpdate) {
+    String(formState.RequiredUpdate)
+      .split(",")
+      .map(v => v.trim())
+      .filter(Boolean)
+      .forEach(v => secondBody.append("RequiredUpdate", v));
+  }
+  secondBody.append("UpdateRequestId", formState.updateRequestId);
   secondBody.append("NewCompanyNameEn", formState.NewCompanyNameEn || "");
   secondBody.append("NewCompanyNameAr", formState.NewCompanyNameAr || "");
   secondBody.append("NewSignatory", formState.NewSignatory || "");
   secondBody.append("Comment", formState.Comment || "");
   secondBody.append("Company", formState.companyId || "");
-  secondBody.append("ContactPerson", "d7323f05-356d-f011-b4cc-6045bd9e8ac7");
+  secondBody.append("ContactPerson", "a2032062-a76e-f011-b4cc-6045bd9e8ac7");
 
   if (formState.NewCRCopy)
     secondBody.append("NewCRCopy", formState.NewCRCopy);
@@ -105,10 +116,7 @@ export const submitUpdateCompanyInformation = async ({
   if (!secondResponse?.success)
     throw new Error("Failed to update company details");
 
-  const refNumber = Object.keys(secondResponse.data).find((k) =>
-    k.toLowerCase().endsWith("referenceid")
-  );
-  setReferenceMessage(refNumber ?? "");
+  setReferenceMessage(secondResponse.message ?? "");
 
   const serviceTitle =
     serviceOptions.find((s) => s.key === "updateCompanyInformation")?.title ??
@@ -130,22 +138,40 @@ export const prepareRequestBody = (
   formState: Record<string, any>,
   contentType: string,
 ) => {
+  const requiredUpdateKey = "RequiredUpdateSet";
+  let requiredValues: string[] = [];
+
+  if (formState[requiredUpdateKey]) {
+    requiredValues = String(formState[requiredUpdateKey])
+      .split(",")
+      .map(v => v.trim())
+      .filter(Boolean);
+  }
   if (contentType === "multipart") {
     const body = new FormData();
     Object.entries(formState).forEach(([key, val]) => {
-      body.append(key, val instanceof File || val instanceof Blob ? val : String(val));
+      if (key === requiredUpdateKey) {
+        requiredValues.forEach(v => body.append(key, v));
+      } else {
+        body.append(
+          key,
+          val instanceof File || val instanceof Blob ? val : String(val)
+        );
+      }
     });
-    // body.append("Company", companyId);
-    body.append("ContactPerson", "d7323f05-356d-f011-b4cc-6045bd9e8ac7");
+
+    body.append("ContactPerson", "a2032062-a76e-f011-b4cc-6045bd9e8ac7");
     return body;
   }
 
+  // ✅ JSON request body — send array
   return {
     ...formState,
-    // company: companyId,
-    contactPerson: "d7323f05-356d-f011-b4cc-6045bd9e8ac7",
+    [requiredUpdateKey]: requiredValues.length ? requiredValues : undefined,
+    contactPerson: "a2032062-a76e-f011-b4cc-6045bd9e8ac7",
   };
 };
+
 
 /**
  * Extracts reference number key from API response data
@@ -174,72 +200,77 @@ export const useFormConfigLoader = () => {
   const networkRequest = useNetworkRequest();
   const { selectedCompany } = useApp();
 
-  const loadServiceForm = async (baseConfig: any) => {
-    let updatedConfig = { ...baseConfig }
-    // --- Call getPlots API if needed ---
-    if (baseConfig.needsPlots) {
-      const body = {
-        accountId: selectedCompany?.accountID,
-      }
-      const plotsResponse = await networkRequest(API_ENDPOINTS.getPlots, {
-        method: "GET",
-        body,
-      });
-      const plotsData = plotsResponse?.data || []
+  // ✅ Load plots and return updatedConfig
+  const loadServicePlot = async (baseConfig: any) => {
+    let updatedConfig = { ...baseConfig };
 
-      const plotOptions = plotsData.map((item: any) => ({
-        id: item.plotID,
-        agreementId: item.agreementId,
-        name: item.plotNumber,
-      }));
+    if (!baseConfig.needsPlots) return updatedConfig;
 
-      // Step 4: Update baseConfig fields dynamically
-       updatedConfig = {
-        ...updatedConfig,
-        sections: updatedConfig.sections.map((section: any) => ({
-          ...section,
-          fields: section.fields.map((field: any) => {
-            if (field.id.toLowerCase() === "plot") {
-              return { ...field, options: plotOptions };
-            }
-            return field;
-          }),
-        })),
-      };
-    }
+    const body = { accountId: selectedCompany?.accountID };
 
-    // --- Call getSignatory API if needed ---
-    if (baseConfig.needsSignatory) {
-      const body = {
-        companyId: 'da79fca4-9a37-ef11-8409-000d3a26ab14',
-      }
-      const signatoryResponse = await networkRequest(API_ENDPOINTS.getSignatories, {
-        method: "GET",
-        body,
-      });
-      const signatoryData = signatoryResponse?.data || []
+    const response = await networkRequest(API_ENDPOINTS.getPlots, {
+      method: "GET",
+      body,
+    });
 
-      const signatoryOptions = signatoryData.map((s: any) => ({
-        id: s.id,
-        name: s.manateqID,
-      }))
+    const plots = response?.data || [];
 
-      updatedConfig = {
-        ...updatedConfig,
-        sections: updatedConfig.sections.map((section: any) => ({
-          ...section,
-          fields: section.fields.map((field: any) => {
-            if (field.id.toLowerCase() === "newsignatory") {
-              return { ...field, options: signatoryOptions};
-            }
-            return field;
-          }),
-        })),
-      };
-    }
+    const plotOptions = plots.map((item: any) => ({
+      id: item.plotID,
+      agreementId: item.agreementId,
+      name: item.plotNumber,
+    }));
 
-    return updatedConfig
-  }
+    updatedConfig = {
+      ...updatedConfig,
+      sections: updatedConfig.sections.map((section: any) => ({
+        ...section,
+        fields: section.fields.map((field: any) =>
+          field.id.toLowerCase() === "plot"
+            ? { ...field, options: plotOptions }
+            : field
+        ),
+      })),
+    };
 
-  return { loadServiceForm }
-}
+    return updatedConfig;
+  };
+
+  // ✅ Load signatories and return updatedConfig
+  const loadServiceSignatory = async (baseConfig: any) => {
+    let updatedConfig = { ...baseConfig };
+
+    if (!baseConfig.needsSignatory) return updatedConfig;
+
+    const body = { companyId: selectedCompany?.accountID };
+
+    const response = await networkRequest(API_ENDPOINTS.getSignatories, {
+      method: "GET",
+      body,
+    });
+
+    const signatories = response?.data || [];
+
+    const signatoryOptions = signatories.map((s: any) => ({
+      id: s.id,
+      name: s.nameAr,
+    }));
+
+    updatedConfig = {
+      ...updatedConfig,
+      sections: updatedConfig.sections.map((section: any) => ({
+        ...section,
+        fields: section.fields.map((field: any) =>
+          field.id.toLowerCase() === "newsignatory"
+            ? { ...field, options: signatoryOptions }
+            : field
+        ),
+      })),
+    };
+
+    return updatedConfig;
+  };
+
+  return { loadServicePlot, loadServiceSignatory };
+};
+

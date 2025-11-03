@@ -5,8 +5,7 @@ import { API_SERVICES_ENDPOINTS } from "@/api/apiEndpoints";
 import DynamicForm from "@/components/dynamic-form";
 import { RequestSubmittedModal } from "./request-submitted-modal";
 import Loader from "@/components/loader";
-import { serviceOptions } from "../serviceRequestPage/new-service-request-modal";
-import { extractReferenceNumber, parseApiError, prepareRequestBody, submitUpdateCompanyInformation, useFormConfigLoader } from "@/lib/utils";
+import { createCompanyUpdateRequest, parseApiError, prepareRequestBody, submitUpdateCompanyInformation, useFormConfigLoader } from "@/lib/utils";
 import { getServiceFormConfig } from "@/lib/form-data";
 import { useApp, type CompanyType } from "@/context/AppContext";
 
@@ -32,18 +31,19 @@ export const ServiceFormHandler = ({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmittedModalOpen, setSubmittedModal] = useState(false);
-  const [referenceNumber, setReferenceMessage] = useState("");
+  const [referenceMessage, setReferenceMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const fieldRefs = useRef<Record<string, HTMLElement | null>>({});
-  const { loadServiceForm } = useFormConfigLoader()
+  const { loadServicePlot, loadServiceSignatory } = useFormConfigLoader()
   const networkRequest = useNetworkRequest();
   const { selectedCompany, setSelectedCompany, companies } = useApp();
+  const [formStage, setFormStage] = useState(1);
 
   useEffect(() => {
     const loadFormConfig = async () => {
       const initialValues: Record<string, any> = {};
       let baseConfig = getServiceFormConfig(selectedService)
-      const companiesOptions = companies.map((company) => ({id: company.accountID, name: company.englishName}))
+      const companiesOptions = companies.map((company) => ({ id: company.accountID, name: company.englishName }))
       baseConfig = {
         ...baseConfig,
         sections: baseConfig.sections.map((section: any) => ({
@@ -64,13 +64,28 @@ export const ServiceFormHandler = ({
           }),
         })),
       };
+
+      if (selectedService === "updateCompanyInformation" && formStage === 1) {
+        const firstSection = baseConfig.sections[0];
+
+        baseConfig = {
+          ...baseConfig,
+          sections: [
+            {
+              ...firstSection,
+              fields: firstSection?.fields?.filter((f: any) => f.showStage !== 2)
+            }
+          ]
+        };
+      }
+
       setFormState((prev) => ({
         ...prev,
         ...initialValues
       }));
       setConfig(baseConfig)
       try {
-        const finalConfig = await loadServiceForm(baseConfig)
+        const finalConfig = await loadServicePlot(baseConfig)
         setConfig(finalConfig)
       }
       catch (error) {
@@ -82,10 +97,28 @@ export const ServiceFormHandler = ({
     loadFormConfig()
   }, [selectedService, selectedCompany])
 
+  useEffect(() => {
+     if(formStage === 2) {
+      const loadFormConfig = async () => {
+        try {
+          const finalConfig = await loadServiceSignatory(config)
+          setConfig(finalConfig)
+        }
+        catch (error) {
+          console.log('error: ', error);
+          setErrorMessage(parseApiError(error));
+          setSubmittedModal(true);
+        }
+      }
+      loadFormConfig();
+     }
+     return;
+  }, [formStage])
+
   const handleInputChange = (fieldId: string, value: any) => {
-    if(fieldId.toLowerCase() === 'company') {
-       const selectedValue = companies.find((company: CompanyType) => company.accountID === value)
-        selectedValue && setSelectedCompany(selectedValue)
+    if (fieldId.toLowerCase() === 'company') {
+      const selectedValue = companies.find((company: CompanyType) => company.accountID === value)
+      selectedValue && setSelectedCompany(selectedValue)
     }
     setFormState((prev) => ({ ...prev, [fieldId]: value }));
     setErrors((prev) => ({ ...prev, [fieldId]: "" }));
@@ -129,18 +162,7 @@ export const ServiceFormHandler = ({
         body,
       });
 
-      const serviceTitle =
-        serviceOptions.find((s) => s.key === selectedService)?.title ?? "Unknown Service";
-
-      onServiceAdded({
-        id: Object.values(response.data)[0] || "TEMP-ID",
-        plotNumber: Object.values(response.data)[0] || "Unknown",
-        serviceType: serviceTitle,
-        submittedDate: new Date().toLocaleDateString(),
-        status: "Pending",
-      });
-
-      if (response.success) setReferenceMessage(extractReferenceNumber(response.data));
+      if (response.success) setReferenceMessage(response.message);
 
       setSubmittedModal(true);
       setIsLoading(false);
@@ -157,25 +179,108 @@ export const ServiceFormHandler = ({
     handleSubmit();
   };
 
-  // if (!config && isLoading) return <Loader />;
+  const handleCompanyUpdateBack = () => {
+    if (selectedService === "updateCompanyInformation" && formStage === 2) {
+      const firstSection = config.sections[0];
+      const updatedSections = [
+        {
+          ...firstSection,
+          fields: firstSection.fields
+            ?.filter((f: any) => f.showStage !== 2)
+            .map((f: any) => ({
+              ...f,
+              disabled:
+              f.id === "Company" || f.id === "Plot"
+                ? false                
+                : f.disabled   
+            }))
+        }
+      ];
+      setConfig((prev: any) => ({
+        ...prev,
+        sections: updatedSections
+      }));
+  
+      setFormStage(1);
+    }
+  };
+  
 
+  const handleNext = async (e?: React.FormEvent) => {
+    e?.preventDefault();
+    e?.stopPropagation();
+    if (selectedService !== "updateCompanyInformation") return;
+    setIsLoading(true);
+    try {
+      const updateRequestId = await createCompanyUpdateRequest({
+        formState,
+        networkRequest,
+      });
+      setFormState(prev => ({
+        ...prev,
+        updateRequestId
+      }));
+
+      let baseConfig = getServiceFormConfig(selectedService);
+      setConfig((prev: any) => ({
+        ...prev,
+        ...baseConfig,
+        sections: baseConfig.sections.map((baseSection: any, i: number) => {
+          const prevSection = prev.sections?.[i] ?? {};
+      
+          return {
+            ...baseSection,
+            ...prevSection,
+            fields: baseSection.fields.map((baseField: any, j: number) => {
+              const prevField = prevSection.fields?.[j] ?? {};
+      
+              const alwaysDisableFields = ["Company", "Plot"]; // 👈 add your fixed fields here
+      
+              const shouldDisable =
+                baseField.showStage === 1 ||  
+                alwaysDisableFields.includes(baseField.id) ||   // 👈 Match by field id/name
+                prevField.disabled; // keep whatever was disabled before
+      
+              return {
+                ...baseField,
+                ...prevField,
+                disabled: shouldDisable
+              };
+            })
+          };
+        })
+      }));
+      
+
+      setFormStage(2);
+      setIsLoading(false);
+    } catch (err) {
+      setIsLoading(false);
+      console.error(err);
+    }
+  };
+
+
+  const isNext = selectedService === 'updateCompanyInformation' && formStage === 1
   return (
     <div>
-        <DynamicForm
-          config={config}
-          formData={formState}
-          errors={errors}
-          setErrors={setErrors}
-          handleInputChange={handleInputChange}
-          handleSubmit={handleSubmit}
-          handlePerviousButton={onBack}
-          fieldRefs={fieldRefs}
-        />
+      <DynamicForm
+        config={config}
+        formData={formState}
+        errors={errors}
+        setErrors={setErrors}
+        handleInputChange={handleInputChange}
+        handleSubmit={handleSubmit}
+        handlePerviousButton={formStage === 2 ? handleCompanyUpdateBack : onBack}
+        fieldRefs={fieldRefs}
+        isNext={isNext}
+        goToNextStep={handleNext}
+      />
       <RequestSubmittedModal
         open={isSubmittedModalOpen}
         onOpenChange={setSubmittedModal}
         onGoToRequest={() => setSelectedService("")}
-        referenceNumber={referenceNumber}
+        referenceMessage={referenceMessage}
         handleTryAgain={handleTryAgain}
         errorMessage={errorMessage}
         isConfigLoaded={!!config}
