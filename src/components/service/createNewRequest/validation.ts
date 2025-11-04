@@ -35,7 +35,7 @@ export const validateForm = (selectedService: string, formState: Record<string, 
         return
       }
 
-      if ((field.id.toLocaleLowerCase() === "comments" || field.id.toLocaleLowerCase() === "description")) {
+      if ((field.id.toLocaleLowerCase() === "comments" || field.id.toLocaleLowerCase() === "description") && value) {
          if (isDigitsOnly(value)) newErrors[field.id] = "This field cannot contain digits only."
          if (hasEmojiOrUnicodeSymbols(value)) newErrors[field.id] = "Emojis or special Unicode symbols are not allowed."
          if(!allowedCommentChars(value)) newErrors[field.id] = "Only letters, numbers, spaces, and . , ! ? - allowed."
