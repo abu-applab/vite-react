@@ -14,6 +14,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
 import { Command, CommandGroup, CommandItem, CommandList } from "./ui/command"
 import { Checkbox } from "./ui/checkbox"
 import { useApp } from "@/context/AppContext"
+import ProductInformation from "./productInformation"
 
 interface DynamicFormProps {
   config: FormConfig
@@ -23,11 +24,14 @@ interface DynamicFormProps {
   handleInputChange: (fieldId: string, value: any) => void
   handleSubmit?: (e: React.FormEvent) => void
   handlePerviousButton?: () => void
-  isNewApplication?: boolean
+  isCreateApplication?: boolean
   goToNextStep?: () => void
   handleSave?: () => void
   fieldRefs: React.MutableRefObject<Record<string, HTMLElement | null>>
   isNext?: boolean
+  setProducts?: any
+  products?: any
+  isLastStepActive?: boolean
 }
 
 const DynamicForm = ({
@@ -38,11 +42,14 @@ const DynamicForm = ({
   handleInputChange,
   handleSubmit,
   handlePerviousButton,
-  isNewApplication = false,
+  isCreateApplication = false,
   goToNextStep,
   handleSave,
   fieldRefs,
-  isNext = false
+  isNext = false,
+  setProducts,
+  products,
+  isLastStepActive = true,
 }: DynamicFormProps) => {
   const { setCreateNewForm, setSelectedLocation } = useApp();
 
@@ -304,7 +311,7 @@ const DynamicForm = ({
 
   return (
     <Card className={cn("lg:p-10 md:py-6 bg-white/50 border shadow max-md:border-none max-md:shadow-none max-md:bg-[#F6F5EF] p-0",
-      { "border-none shadow-none": isNewApplication }
+      { "border-none shadow-none": isCreateApplication }
     )}>
       <CardHeader className="max-md:shadow max-md:border max-md:bg-white max-md:p-4 max-md:rounded-lg">
         <CardTitle className="text-xl">{config?.title}</CardTitle>
@@ -312,52 +319,53 @@ const DynamicForm = ({
       </CardHeader>
       <CardContent className="max-md:p-0">
         <form onSubmit={handleSubmit} className="space-y-6">
-          {config?.sections.map((section, sectionIndex) => (
-            <>
-              <h4 className="md:hidden block text-maroon-100 ml-4 mb-3">{section.title}</h4>
-              <Card key={sectionIndex}>
-                <CardHeader className="md:flex items-center justify-between hidden">
-                  <CardTitle className="text-lg">{section.title}</CardTitle>
-                  {section.subTitle && <CardTitle className="text-sm leading-5 font-normal md:text-muted-foreground text-zinc-800">{section.subTitle}</CardTitle>}
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {section.fields
-                      ?.filter((field) => {
-                        // If field has showIfSelected, show it only if that value is selected in multiselect
-                        if (field.showIfSelected) {
-                          const selectedList =
-                            formData.RequiredUpdateSet ??
-                            formData.RequiredUpdate ??
-                            []; // fallback to empty array to avoid errors
-
-                          return selectedList.includes(field.showIfSelected);
-                        }
-                        return true;
-                      })
-                      ?.map((field) => (
-                        <div key={field.id} className={field.type === "textarea" || field.type === "file" ? "md:col-span-2" : ""}>
-                          {renderField(field)}
-                        </div>
-                      ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </>
-          ))}
+          {config?.sections.map((section, sectionIndex) => {
+            if(section.key === "ProductsJson") {
+              return <ProductInformation setProducts={setProducts} products={products}/>
+            }
+            return (
+              <>
+                <h4 className=" max-md:text-maroon-100 max-md:ml-4 mb-3">{section.title}</h4>
+                <Card key={sectionIndex}>
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {section.fields
+                        ?.filter((field) => {
+                          // If field has showIfSelected, show it only if that value is selected in multiselect
+                          // This for filtering and showing the check box field
+                          if (field.showIfSelected) {
+                            const selectedList =
+                              formData.RequiredUpdateSet ??
+                              formData.RequiredUpdate ??
+                              [];
+                            return selectedList.includes(field.showIfSelected);
+                          }
+                          return true;
+                        })
+                        ?.map((field) => (
+                          <div key={field.id} className={field.type === "textarea" || field.type === "file" ? "md:col-span-2" : ""}>
+                            {renderField(field)}
+                          </div>
+                        ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </>
+            )
+          })}
 
           <div className="flex items-center justify-between">
             <Button type="button" variant="outline" onClick={handlePerviousButton}>
               Previous
             </Button>
             <div className="flex flex-row items-center gap-3">
-              { isNewApplication && 
-              <Button type="submit" variant="outline" onClick={handleSave}>
-                {"Save"}
-              </Button>
+              {isCreateApplication &&
+                <Button type="submit" variant="outline" onClick={handleSave}>
+                  {"Save"}
+                </Button>
               }
-              <Button type={(isNewApplication || isNext) ? "button" : "submit"} className="bg-maroon-100 hover:bg-[#7A1F2B]" onClick={(isNewApplication || isNext) ? goToNextStep : handleSubmit}>
-                {(isNewApplication || isNext) ? "Next" : "Submit"}
+              <Button type={(!isLastStepActive || isNext) ? "button" : "submit"} className="bg-maroon-100 hover:bg-[#7A1F2B]" onClick={(!isLastStepActive || isNext) ? goToNextStep : handleSubmit}>
+                {(!isLastStepActive || isNext) ? "Next" : "Submit"}
               </Button>
             </div>
           </div>

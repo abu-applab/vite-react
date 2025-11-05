@@ -19,6 +19,12 @@ interface FieldConfig {
   
   const isEmpty = (val: any) => val === undefined || val === null || val === ""
   const isDigitsOnly = (val: string) => /^\d+$/.test(val)
+  const hasEmojiOrUnicodeSymbols = (val: string) =>
+    /[^\u0000-\u007F\u0600-\u06FF\s]/.test(val); 
+
+  const allowedCommentChars = (val: string) =>
+    /^[A-Za-z0-9\u0600-\u06FF\s.,!?-]+$/.test(val);
+
   //   const hasSpecialChars = (val: string) => /[^A-Za-z0-9\u0600-\u06FF\s]/.test(val)
   //   const isArabic = (val: string) => /[\u0600-\u06FF]/.test(val)
   //   const isEnglish = (val: string) => /[A-Za-z]/.test(val)
@@ -42,14 +48,18 @@ export const validateForm = (config : FormConfig, formState: Record<string, any>
         return
       }
 
-      if ((field.id.toLocaleLowerCase() === "comments" || field.id.toLocaleLowerCase() === "description" || field.label === "New PO Box" ) 
-        && isDigitsOnly(value))
-        newErrors[field.id] = "This field cannot contain digits only."
+      if ((field.id.toLocaleLowerCase() === "proposedbusinessactivity") && value) {
+        if (isDigitsOnly(value)) newErrors[field.id] = "This field cannot contain digits only."
+        if (hasEmojiOrUnicodeSymbols(value)) newErrors[field.id] = "Emojis or special Unicode symbols are not allowed."
+        if (!allowedCommentChars(value)) newErrors[field.id] = "Only letters, numbers, spaces, and . , ! ? - allowed."
+      }
 
       if (["text", "textarea"].includes(field.type) && value) {
         const err = validateTextLength(field, value)
         if (err) newErrors[field.id] = err
       }
+      if (field.label === "Total Requested Plot Size (m2)" && value &&  /^\d{16,}$/.test(value))
+        newErrors[field.id] = "Maximum 15 digits allowed"
     })
   })
 

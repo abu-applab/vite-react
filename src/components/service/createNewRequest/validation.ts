@@ -12,8 +12,9 @@ export const validateForm = (selectedService: string, formState: Record<string, 
   const isValidEmail = (val: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)
   const isValidPhone = (val: string) => /^\d{8}$/.test(val)
   const isValidPOBox = (val: string) => /^\d{5,8}$/.test(val);
+  const isValidBuildingPermitNumber = (val: string) => /^\d{1,10}$/.test(val);
   const hasEmojiOrUnicodeSymbols = (val: string) =>
-    /[^\u0000-\u007F\u0600-\u06FF\s]/.test(val); 
+    /[^\u0000-\u007F\u0600-\u06FF\s]/.test(val);
 
   const allowedCommentChars = (val: string) =>
     /^[A-Za-z0-9\u0600-\u06FF\s.,!?-]+$/.test(val);
@@ -28,17 +29,18 @@ export const validateForm = (selectedService: string, formState: Record<string, 
 
   config.sections.forEach((section) => {
     section.fields?.forEach((field) => {
-      const value = formState[field.id]?.trim?.() || formState[field.id]
-      const selectedList = formState.RequiredUpdateSet ?? formState.RequiredUpdate ?? []; 
+      const rawValue = formState[field.id]
+      const value = typeof rawValue === "string" ? rawValue.trim() : rawValue
+      const selectedList = formState.RequiredUpdateSet ?? formState.RequiredUpdate ?? [];
       if (field.required && isEmpty(value) && (!field.showIfSelected || (field.showIfSelected && selectedList?.includes(field.showIfSelected)))) {
         newErrors[field.id] = `${field.label} is required`
         return
       }
 
-      if ((field.id.toLocaleLowerCase() === "comments" || field.id.toLocaleLowerCase() === "description") && value) {
-         if (isDigitsOnly(value)) newErrors[field.id] = "This field cannot contain digits only."
-         if (hasEmojiOrUnicodeSymbols(value)) newErrors[field.id] = "Emojis or special Unicode symbols are not allowed."
-         if(!allowedCommentChars(value)) newErrors[field.id] = "Only letters, numbers, spaces, and . , ! ? - allowed."
+      if ((field.id.toLocaleLowerCase() === "comments" || field.id.toLocaleLowerCase() === "description" || field.id.toLocaleLowerCase() === 'subject') && value) {
+        if (isDigitsOnly(value)) newErrors[field.id] = "This field cannot contain digits only."
+        if (hasEmojiOrUnicodeSymbols(value)) newErrors[field.id] = "Emojis or special Unicode symbols are not allowed."
+        if (!allowedCommentChars(value)) newErrors[field.id] = "Only letters, numbers, spaces, and . , ! ? - allowed."
       }
 
       if (["text", "textarea"].includes(field.type) && value) {
@@ -58,16 +60,18 @@ export const validateForm = (selectedService: string, formState: Record<string, 
         newErrors[field.id] = "Must contain exactly 8 digits."
       if (field.label === "New PO Box" && value && !isValidPOBox(value))
         newErrors[field.id] = "Must contain 5 to 8 character."
+      if (field.label === "Building Permit Application Number" && value && !isValidBuildingPermitNumber(value))
+        newErrors[field.id] = "Must contain 1 to 10 character."
 
       if (field.type === "number" && value !== undefined && value !== null && value !== "") {
         const numericValue = Number(value);
         if (isNaN(numericValue)) {
           newErrors[field.id] = `${field.label} must be a valid number`;
-        } 
+        }
         else if (numericValue <= 0) {
           newErrors[field.id] = `${field.label} must be greater than 0`;
-        } 
-        else if (/^0\d+/.test(value)) { 
+        }
+        else if (/^0\d+/.test(value)) {
           newErrors[field.id] = `${field.label} cannot start with 0`;
         }
       }

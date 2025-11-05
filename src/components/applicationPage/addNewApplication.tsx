@@ -7,6 +7,10 @@ import { useEffect, useRef, useState } from "react"
 import { newApplicationPlots } from "@/constants"
 import FormSubmitted from "../formSubmitted"
 import { useApp } from "@/context/AppContext"
+import useNetworkRequest from "@/api/useNetworkRequest"
+import { API_ENDPOINTS } from "@/api/apiEndpoints"
+import { useApplicationConfigLoader } from "@/hooks/useApplicationConfigLoader"
+import { validateForm } from "./validate"
 
 interface Step {
   title: string
@@ -23,15 +27,25 @@ interface AddNewApplicationProps {
 }
 
 const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCreateNewApplication, setStep }: AddNewApplicationProps) => {
-  const configSteps = getApplicationFormConfig(selectedApplication)
 
+  const [config, setConfig] = useState<any>(getApplicationFormConfig(selectedApplication))
   const [applicationSteps, setApplicationSteps] = useState<Step[]>([])
   const [formState, setFormData] = useState<Record<string, any>>({})
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [isFormSubmitted, setIsFormSubmitted] = useState(false)
-
-  const { setCreateNewForm, setSelectedLocation } = useApp();
+  const networkRequest = useNetworkRequest()
+  const { loadApplicationConfig } = useApplicationConfigLoader();
+  const { setCreateNewForm, setSelectedLocation, selectedCompany, contactId } = useApp();
   const fieldRefs = useRef<Record<string, HTMLElement | null>>({})
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    const init = async () => {
+      const cfg = await loadApplicationConfig(selectedApplication);
+      setConfig(cfg);
+    };
+    init();
+  }, []);
 
   useEffect(() => {
     if (selectedApplication) {
@@ -45,7 +59,6 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
   useEffect(() => {
     setCreateNewForm(true);
     return () => {
-      console.log('hello');
       setCreateNewForm(false);
       setSelectedLocation('')
     }
@@ -56,43 +69,36 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
     setErrors((prev) => ({ ...prev, [fieldId]: "" }))
   }
 
-  const goToNextStep = () => {
-    const isEmpty = (val: any) => val === undefined || val === null || val === "";
+  const goToNextStep = (e?: React.FormEvent) => {
+    e?.preventDefault();
+    e?.stopPropagation();
     let newErrors: Record<string, string> = {};
-  
+
     setApplicationSteps((prevSteps) => {
       const currentIndex = prevSteps.findIndex((s) => s.active);
       console.log("currentIndex:", currentIndex);
-  
+
       if (currentIndex === -1) return prevSteps;
-  
+
       // ✅ Validate only if not on last step
-      if (currentIndex < configSteps.length) {
-        const stepConfig = configSteps[currentIndex];
-  
-        stepConfig.sections.forEach((section) => {
-          section.fields?.forEach((field) => {
-            const value = formState[field.id]?.trim?.() || formState[field.id];
-            if (field.required && isEmpty(value)) {
-              newErrors[field.id] = `${field.label} is required`;
-            }
-          });
-        });
-  
-        // If errors — stop navigation and show errors
+      if (currentIndex < config?.length) {
+        const stepConfig = config?.[currentIndex];
+
+        newErrors = validateForm(stepConfig, formState)
+
         if (Object.keys(newErrors).length > 0) {
           setErrors(newErrors);
           return prevSteps; // ⛔ Stop step change
         }
       }
-  
+
       // ✅ No errors — proceed to next step
       // Last step = Submit
       if (currentIndex === prevSteps.length - 1) {
         setIsFormSubmitted(true);
         return prevSteps;
       }
-  
+
       return prevSteps.map((step, index) => {
         if (index === currentIndex) {
           return { ...step, active: false, completed: true };
@@ -104,7 +110,7 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
       });
     });
   };
-  
+
 
   const goToPreviousStep = () => {
     if (applicationSteps[0].active) {
@@ -129,12 +135,68 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
     }
   }
 
+  const handleSave = async (e?: React.FormEvent) => {
+    e?.preventDefault();
+    e?.stopPropagation();
+    try {
+      const body = new FormData();
+      body.append('Company', selectedCompany?.accountID ?? '')
+      body.append('ContactPerson', contactId)
+      body.append('ApplicationType', 'LogisticsParks')
+      Object.entries(formState).forEach(([key, value]) => {
+        body.append(key, value instanceof File ? value : String(value ?? ""));
+      });
+
+      // ✅ Call API
+      const response = await networkRequest(API_ENDPOINTS.createApplication, {
+        method: 'POST',
+        body,
+      });
+
+      if (response?.success) {
+        console.log("Application saved as draft ✅");
+      } else {
+        console.log(response?.message || "Failed to save draft ❌");
+      }
+    } catch (err) {
+      console.error("Draft Save Error:", err);
+    }
+  };
+
+  const handleSubmit = async (e?: React.FormEvent) => {
+    e?.preventDefault();
+    e?.stopPropagation();
+    try {
+      const body = new FormData();
+      body.append('Company', selectedCompany?.accountID ?? '')
+      body.append('ContactPerson', contactId)
+      body.append('ApplicationType', 'LogisticsParks')
+      Object.entries(formState).forEach(([key, value]) => {
+        body.append(key, value instanceof File ? value : String(value ?? ""));
+      });
+
+      // ✅ Call API
+      const response = await networkRequest(API_ENDPOINTS.createApplication, {
+        method: 'POST',
+        body,
+      });
+
+      if (response?.success) {
+        console.log("Application saved as draft ✅");
+      } else {
+        console.log(response?.message || "Failed to save draft ❌");
+      }
+    } catch (err) {
+      console.error("Draft Save Error:", err);
+    }
+  };
+
   const renderActiveStep = () => {
     const activeStep = applicationSteps.find((s) => s.active)
     if (!activeStep) return null
 
     const currentIndex = Number(activeStep.stepNumber) - 1
-    const activeConfig = configSteps[currentIndex]
+    const activeConfig = config?.[currentIndex]
     if (!activeConfig) return null
 
     if (activeConfig.key === "instruction") {
@@ -150,7 +212,7 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
     return (
       <DynamicForm
         config={activeConfig}
-        isNewApplication
+        isCreateApplication
         goToNextStep={goToNextStep}
         handlePerviousButton={goToPreviousStep}
         formData={formState}
@@ -158,9 +220,17 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
         setErrors={setErrors}
         handleInputChange={handleInputChange}
         fieldRefs={fieldRefs}
+        handleSave={handleSave}
+        products={products}
+        setProducts={setProducts}
+        isLastStepActive={isLastStepActive}
+        handleSubmit={handleSubmit}
       />
     )
   }
+
+  const isLastStepActive = applicationSteps[applicationSteps.length - 1]?.active === true;
+
 
   return (
     <div>{isFormSubmitted ?
@@ -169,9 +239,9 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
         setSelectedApplication("")
       }
       } /> :
-      configSteps.length > 1 ? (
+      config?.length > 1 ? (
         <Card className="mt-[72px] mr-4 mb-4 w-full flex flex-col bg-[#fcfaf7]">
-          {configSteps.length > 1 && (
+          {config?.length > 1 && (
             <>
               <FormSteps steps={applicationSteps} />
               <div className="border-2 border-[#f6f5ef]" />
@@ -181,8 +251,8 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
         </Card>
       ) : (
         <DynamicForm
-          config={configSteps[0]}
-          isNewApplication
+          config={config?.[0]}
+          isCreateApplication
           goToNextStep={goToNextStep}
           handlePerviousButton={goToPreviousStep}
           formData={formState}
@@ -190,6 +260,8 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
           setErrors={setErrors}
           handleInputChange={handleInputChange}
           fieldRefs={fieldRefs}
+          isLastStepActive={isLastStepActive}
+          handleSubmit={handleSubmit}
         />
       )}
     </div>

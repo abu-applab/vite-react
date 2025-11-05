@@ -20,6 +20,8 @@ export interface CompanyType {
   createdOn: string;
 }
 interface AppContextType {
+    contactId: string;
+    setContactId: React.Dispatch<React.SetStateAction<string>>;
     isMenuOpen: boolean;
     setIsMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
     addCompanySteps: StepsType[];
@@ -49,6 +51,9 @@ interface AppProviderProps {
 
 // Provider
 export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
+
+    const [contactId, setContactId] = useState('a2032062-a76e-f011-b4cc-6045bd9e8ac7')
+
     const [isMenuOpen, setIsMenuOpen] = useState(false)
     const [addCompanySteps, setAddCompanySteps] = useState([
       { title: "Upload CR Document", completed: false, active: true, stepNumber: "1" },
@@ -72,6 +77,8 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
 
   return (
     <AppContext.Provider value={{ 
+        contactId, 
+        setContactId,
         isMenuOpen, 
         setIsMenuOpen, 
         addCompanySteps, 

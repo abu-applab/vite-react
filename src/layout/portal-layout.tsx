@@ -17,7 +17,7 @@ import { motion } from 'framer-motion'
 import { useTranslation } from "react-i18next";
 
 const PortalLayout = () => {
-    const { isMenuOpen, setIsMenuOpen, setCompanies, setSelectedCompany } = useApp();
+    const { isMenuOpen, setIsMenuOpen, setCompanies, setSelectedCompany, contactId } = useApp();
     const navigate = useNavigate();
     const networkRequest = useNetworkRequest();
     const [isLoading, setIsLoading] = useState(false);
@@ -29,7 +29,7 @@ const PortalLayout = () => {
             setIsLoading(true)
             const body = {
                 // hardcorded
-                contactId: 'a2032062-a76e-f011-b4cc-6045bd9e8ac7'
+                contactId: contactId
             }
             try {
                 const response = await networkRequest(API_ENDPOINTS.getCompanies, {

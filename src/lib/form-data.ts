@@ -21,6 +21,7 @@ export interface FormSection {
     subTitle?: string
     fields?: FormField[]
     points?: string[]
+    isAddNewProduct?: boolean
 }
 
 export interface FormConfig {
@@ -583,9 +584,6 @@ export function getServiceFormConfig(formType: string): FormConfig {
                                 type: "text",
                                 required: true,
                                 placeholder: "Enter subjects",
-                                min: 3,
-                                max: 80,
-
                             },
                             {
                                 id: "comments",
@@ -937,45 +935,8 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                         },
                         {
                             title: "Product Information",
-                            fields: [
-                                {
-                                    id: "nameOfProduct",
-                                    label: "Name of Product",
-                                    type: "text",
-                                    required: true
-                                },
-                                {
-                                    id: "annualProductionCapacity",
-                                    label: "Annual Production Capacity",
-                                    type: "text",
-                                    required: true
-                                },
-                                {
-                                    id: "quantity",
-                                    label: "Quantity",
-                                    type: "number",
-                                    required: true
-                                },
-                                {
-                                    id: "isicCode",
-                                    label: "ISIC Code",
-                                    type: "select",
-                                    required: true,
-                                    options: ["290512 - Alcohols (Industrial use)", "kg", "liters"]
-                                },
-                                {
-                                    id: "sourceOfRawMaterials",
-                                    label: "Source of Raw Materials",
-                                    type: "text",
-                                    required: true
-                                },
-                                {
-                                    id: "unit",
-                                    label: "Unit",
-                                    type: "text",
-                                    required: true,
-                                }
-                            ]
+                            subTitle: " Add New Product",
+                            key: "ProductsJson",
                         }
                     ]
                 },
@@ -1311,32 +1272,32 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                             title: "Intended Use & Business Plan",
                             fields: [
                                 {
-                                    id: "technologyCountryOfOrigin",
+                                    id: "LandUse",
                                     label: "Land Use",
                                     type: "select",
                                     required: true,
-                                    options: ['Open Yards Storage'],
+                                    options: [
+                                        {id: 'LogisticsWarehousing', name: 'Logistics Warehousing'},
+                                        {id: 'WorkshopsAssembly', name: 'Workshops Assembly'},
+                                        {id: 'OpenYardsStorage', name: 'Open Yards Storage'},
+                                        {id: 'Industry', name: 'Industry'},
+                                        {id: 'NonIndustry', name: 'Non Industry'},
+                                    ],
                                 },
                                 {
-                                    id: "cluster",
+                                    id: "Cluster",
                                     label: "Cluster",
                                     type: "select",
                                     required: true,
-                                    options: ['Chemicals',
-                                         'Chemicals and Fertlizer', 
-                                         'Chemicals Ind.',
-                                          'Commercial',
-                                          'Concrete and Asphalt',
-                                          'Construction',
-                                          'Construction Materials'
-                                        ],
+                                    options: [],
                                 },
                                 {
-                                    id: "descriptionOfProposedBusinessActivities",
+                                    id: "ProposedBusinessActivity",
                                     label: "Description of Proposed Business Activities",
                                     type: "textarea",
                                     required: false,
                                     placeholder: "",
+                                    min: 3,
                                     max: 500,
                                 }
                             ]
@@ -1345,7 +1306,7 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                             title: "Facility Requirements",
                             fields: [
                                 {
-                                    id: "Total Requested Plot Size (m2)",
+                                    id: "TotalRequestedPlotSize",
                                     label: "Total Requested Plot Size (m2)",
                                     type: "number",
                                     required: true,
@@ -1353,11 +1314,11 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                     max: 15
                                 },
                                 {
-                                    id: "location",
+                                    id: "Location",
                                     label: "Preferred Location",
                                     type: "select",
                                     required: true,
-                                    options: ['Al Khor Industrial Zone', 'Al Karanaa Industrial Zone']
+                                    options: []
                                 },
                             ]
                         }    
@@ -1371,50 +1332,50 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                             title: "Required Documents",
                             fields: [
                                 {
-                                    id: "validCommercialRegistration",
+                                    id: "ValidCommercialRegistration",
                                     label: "A Valid Commercial Registration",
                                     type: "file",
                                     required: true
                                 },
                                 {
-                                    id: "validCommercialLicense",
+                                    id: "ValidCommercialLicense",
                                     label: "A Valid Commercial License ",
                                     type: "file",
                                     required: true
                                 },
                                 {
-                                    id: "ownersId",
+                                    id: "OwnersIDs",
                                     label: "Owners ID",
                                     type: "file",
                                     required: true
                                 },
                                 {
-                                    id: "The Establishment Card",
+                                    id: "EstablishmentCard",
                                     label: "The Establishment Card",
                                     type: "file",
                                     required: true
                                 },
                                 {
-                                    id: "businessPlan",
+                                    id: "BusinessPlan",
                                     label: "Business Plan",
                                     type: "file",
                                     required: true
                                 },
 
                                 {
-                                    id: "Three Years of Audited Financial Statements",
+                                    id: "ThreeYearsOfAuditedFinancialStatements",
                                     label: "Three Years of Audited Financial Statements (if applicable)",
                                     type: "file",
                                     required: false
                                 },
                                 {
-                                    id: "Traffic Listing from MOI",
+                                    id: "TrafficListingFromMOI",
                                     label: "Traffic Listing from MOI (if applicable)",
                                     type: "file",
                                     required: false
                                 },
                                 {
-                                    id: "Photos of Materials & Equipment.",
+                                    id: "PhotosOfMaterialsAndEquipment",
                                     label: "Photos of Materials & Equipment.",
                                     type: "file",
                                     required: true

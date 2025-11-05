@@ -19,7 +19,8 @@ import ListOfCards from "@/components/listOfcards"
 
 const cardsConfig = {
     icon: Building2,
-    id: "crNumber",
+    id: "accountID",
+    subTitle: "crNumber",
     title: "englishName",
     status: 'status',
     fields: [
@@ -29,7 +30,7 @@ const cardsConfig = {
         },
         {
             label: "Main Contact",
-            key: "contactName",
+            key: "mainConatact",
         },
         {
             label: "Phone Number",
@@ -44,7 +45,7 @@ const cardsConfig = {
 
 
 const HubPage = () => {
-  const { addCompanySteps, setAddCompanySteps } = useApp();
+  const { addCompanySteps, setAddCompanySteps, companies } = useApp();
   const [isAddNewCompany, setIsAddNewCompany] = useState(false)
 
   const goToNextStep = () => {
@@ -70,10 +71,8 @@ const HubPage = () => {
 
       return prevSteps.map((step, index) => {
         if (index === currentIndex) {
-          // deactivate current step
           return { ...step, active: false }
         } else if (index === currentIndex - 1) {
-          // make previous step active again (keep completed true or false as you want)
           return { ...step, active: true, completed: false }
         }
         return step
@@ -159,7 +158,7 @@ const HubPage = () => {
               <p className="text-base text-neutral-500 mt-4">Showing 4 of 4 companies</p>
             </CardContent>
           </Card>
-          <ListOfCards cardsConfig={cardsConfig} />
+          <ListOfCards cardsConfig={cardsConfig} cardsData={companies} showAlerts/>
         </>
       }
     </div>

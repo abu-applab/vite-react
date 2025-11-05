@@ -4,6 +4,12 @@ export const API_ENDPOINTS = {
    getPlots: '/getPlots',
    getSignatories: '/getSignatories',
    getCompanies: '/getCompanies',
+   getClusters: '/getClusters',
+   getLocations: '/getLocations',
+   createApplication: '/createApplication',
+   updateApplication: '/updateApplication',
+   deleteApplication: '/deleteApplication',
+   submitApplication: '/submitApplication',
 }
 
 export const API_SERVICES_ENDPOINTS = {

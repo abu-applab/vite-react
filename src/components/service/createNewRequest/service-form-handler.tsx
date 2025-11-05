@@ -5,9 +5,10 @@ import { API_SERVICES_ENDPOINTS } from "@/api/apiEndpoints";
 import DynamicForm from "@/components/dynamic-form";
 import { RequestSubmittedModal } from "./request-submitted-modal";
 import Loader from "@/components/loader";
-import { createCompanyUpdateRequest, parseApiError, prepareRequestBody, submitUpdateCompanyInformation, useFormConfigLoader } from "@/lib/utils";
+import { createCompanyUpdateRequest, parseApiError, prepareRequestBody, submitUpdateCompanyInformation } from "@/lib/utils";
 import { getServiceFormConfig } from "@/lib/form-data";
 import { useApp, type CompanyType } from "@/context/AppContext";
+import { useServiceFormConfigLoader } from "@/hooks/useServiceConfigLoader";
 
 interface ServiceFormHandlerProps {
   selectedService: string;
@@ -34,9 +35,9 @@ export const ServiceFormHandler = ({
   const [referenceMessage, setReferenceMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const fieldRefs = useRef<Record<string, HTMLElement | null>>({});
-  const { loadServicePlot, loadServiceSignatory } = useFormConfigLoader()
+  const { loadServicePlot, loadServiceSignatory } = useServiceFormConfigLoader()
   const networkRequest = useNetworkRequest();
-  const { selectedCompany, setSelectedCompany, companies } = useApp();
+  const { selectedCompany, setSelectedCompany, companies, contactId } = useApp();
   const [formStage, setFormStage] = useState(1);
 
   useEffect(() => {
@@ -150,13 +151,14 @@ export const ServiceFormHandler = ({
           networkRequest,
           onServiceAdded,
           setReferenceMessage,
+          contactId
         });
         setSubmittedModal(true);
         setIsLoading(false);
         return;
       }
 
-      const body = prepareRequestBody(formState, apiConfig.contentType);
+      const body = prepareRequestBody(formState, apiConfig.contentType, contactId);
       const response = await networkRequest(apiConfig.url!, {
         method: apiConfig.method as "POST",
         body,
@@ -215,6 +217,7 @@ export const ServiceFormHandler = ({
       const updateRequestId = await createCompanyUpdateRequest({
         formState,
         networkRequest,
+        contactId
       });
       setFormState(prev => ({
         ...prev,

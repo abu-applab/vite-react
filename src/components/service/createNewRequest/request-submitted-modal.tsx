@@ -42,7 +42,7 @@ export function RequestSubmittedModal({
             <span className="">{`${' '} ${referenceMessage}`}</span>
           </>
         ),
-        buttonText: "My Request",
+        buttonText: "View My Requests",
         buttonAction: onGoToRequest,
       }
     : {

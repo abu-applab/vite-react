@@ -1,10 +1,7 @@
-import { API_ENDPOINTS } from "@/api/apiEndpoints";
-import useNetworkRequest from "@/api/useNetworkRequest";
 import { serviceOptions } from "@/constants"
 import { clsx, type ClassValue } from "clsx"
 import { AppWindow, FileText, Home, MessageSquareDot, SquareDashed, SquareLibrary, Wallet } from "lucide-react"
 import { twMerge } from "tailwind-merge"
-import { useApp } from "@/context/AppContext";
 
 interface SubmitCompanyUpdateProps {
   formState: Record<string, any>;
@@ -12,6 +9,7 @@ interface SubmitCompanyUpdateProps {
   networkRequest: any;
   onServiceAdded: (service: any) => void;
   setReferenceMessage: (msg: string) => void;
+  contactId: string
 }
 
 export function cn(...inputs: ClassValue[]) {
@@ -56,12 +54,12 @@ export const formatFileSize = (bytes: number) => {
  */
 
 // extract first call logic
-export const createCompanyUpdateRequest = async ({ formState, networkRequest } : {formState: any, networkRequest: any}) => {
+export const createCompanyUpdateRequest = async ({ formState, networkRequest, contactId } : {formState: any, networkRequest: any, contactId: string}) => {
   const body = {
     agreement: formState.Agreement,
     plot: formState.Plot,
     company: formState.Company,
-    contactPerson: "a2032062-a76e-f011-b4cc-6045bd9e8ac7",
+    contactPerson: contactId,
   }
 
   const response = await networkRequest('/createBasicCompanyUpdateRequest'
@@ -84,6 +82,7 @@ export const submitUpdateCompanyInformation = async ({
   networkRequest,
   onServiceAdded,
   setReferenceMessage,
+  contactId,
 }: SubmitCompanyUpdateProps) => {
 
   const secondBody = new FormData();
@@ -101,7 +100,7 @@ export const submitUpdateCompanyInformation = async ({
   secondBody.append("NewSignatory", formState.NewSignatory || "");
   secondBody.append("Comment", formState.Comment || "");
   secondBody.append("Company", formState.companyId || "");
-  secondBody.append("ContactPerson", "a2032062-a76e-f011-b4cc-6045bd9e8ac7");
+  secondBody.append("ContactPerson", contactId);
 
   if (formState.NewCRCopy)
     secondBody.append("NewCRCopy", formState.NewCRCopy);
@@ -137,6 +136,7 @@ export const submitUpdateCompanyInformation = async ({
 export const prepareRequestBody = (
   formState: Record<string, any>,
   contentType: string,
+  contactId: string,
 ) => {
   const requiredUpdateKey = "RequiredUpdateSet";
   let requiredValues: string[] = [];
@@ -160,7 +160,7 @@ export const prepareRequestBody = (
       }
     });
 
-    body.append("ContactPerson", "a2032062-a76e-f011-b4cc-6045bd9e8ac7");
+    body.append("ContactPerson", contactId);
     return body;
   }
 
@@ -168,7 +168,7 @@ export const prepareRequestBody = (
   return {
     ...formState,
     [requiredUpdateKey]: requiredValues.length ? requiredValues : undefined,
-    contactPerson: "a2032062-a76e-f011-b4cc-6045bd9e8ac7",
+    contactPerson: contactId,
   };
 };
 
@@ -195,82 +195,3 @@ export const parseApiError = (error: any): string => {
   if (typeof error === "string") return error;
   return "An unexpected error occurred.";
 };
-
-export const useFormConfigLoader = () => {
-  const networkRequest = useNetworkRequest();
-  const { selectedCompany } = useApp();
-
-  // ✅ Load plots and return updatedConfig
-  const loadServicePlot = async (baseConfig: any) => {
-    let updatedConfig = { ...baseConfig };
-
-    if (!baseConfig.needsPlots) return updatedConfig;
-
-    const body = { accountId: selectedCompany?.accountID };
-
-    const response = await networkRequest(API_ENDPOINTS.getPlots, {
-      method: "GET",
-      body,
-    });
-
-    const plots = response?.data || [];
-
-    const plotOptions = plots.map((item: any) => ({
-      id: item.plotID,
-      agreementId: item.agreementId,
-      name: item.plotNumber,
-    }));
-
-    updatedConfig = {
-      ...updatedConfig,
-      sections: updatedConfig.sections.map((section: any) => ({
-        ...section,
-        fields: section.fields.map((field: any) =>
-          field.id.toLowerCase() === "plot"
-            ? { ...field, options: plotOptions }
-            : field
-        ),
-      })),
-    };
-
-    return updatedConfig;
-  };
-
-  // ✅ Load signatories and return updatedConfig
-  const loadServiceSignatory = async (baseConfig: any) => {
-    let updatedConfig = { ...baseConfig };
-
-    if (!baseConfig.needsSignatory) return updatedConfig;
-
-    const body = { companyId: selectedCompany?.accountID };
-
-    const response = await networkRequest(API_ENDPOINTS.getSignatories, {
-      method: "GET",
-      body,
-    });
-
-    const signatories = response?.data || [];
-
-    const signatoryOptions = signatories.map((s: any) => ({
-      id: s.id,
-      name: s.nameAr,
-    }));
-
-    updatedConfig = {
-      ...updatedConfig,
-      sections: updatedConfig.sections.map((section: any) => ({
-        ...section,
-        fields: section.fields.map((field: any) =>
-          field.id.toLowerCase() === "newsignatory"
-            ? { ...field, options: signatoryOptions }
-            : field
-        ),
-      })),
-    };
-
-    return updatedConfig;
-  };
-
-  return { loadServicePlot, loadServiceSignatory };
-};
-
