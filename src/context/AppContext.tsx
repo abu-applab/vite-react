@@ -19,6 +19,13 @@ export interface CompanyType {
   status: string;
   createdOn: string;
 }
+
+interface SelectedInvestment {
+  application: string,
+  applicationType: string,
+  location: string,
+  locationId: string
+}
 interface AppContextType {
     contactId: string;
     setContactId: React.Dispatch<React.SetStateAction<string>>;
@@ -36,8 +43,8 @@ interface AppContextType {
     setSelectedCompany: React.Dispatch<React.SetStateAction<CompanyType | null>>;
     isCreateNewForm: boolean;
     setCreateNewForm: React.Dispatch<React.SetStateAction<boolean>>;
-    selectedLocation: string;
-    setSelectedLocation: React.Dispatch<React.SetStateAction<string>>;
+    selectedInvestment: SelectedInvestment | null;
+    setSelectedInvestment: React.Dispatch<React.SetStateAction<SelectedInvestment | null>>;
 
 }
 
@@ -72,7 +79,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     const [selectedCompany, setSelectedCompany] = useState<CompanyType | null>(null);
 
     const [isCreateNewForm, setCreateNewForm] = useState(false);
-    const [selectedLocation, setSelectedLocation] = useState('');
+    const [selectedInvestment, setSelectedInvestment] = useState<SelectedInvestment | null>(null)
 
 
   return (
@@ -93,8 +100,8 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         setContactName,
         isCreateNewForm,
         setCreateNewForm,
-        selectedLocation,
-        setSelectedLocation,
+        selectedInvestment,
+        setSelectedInvestment,
         }}>
       {children}
     </AppContext.Provider>

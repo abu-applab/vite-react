@@ -286,7 +286,6 @@ export const ServiceFormHandler = ({
         referenceMessage={referenceMessage}
         handleTryAgain={handleTryAgain}
         errorMessage={errorMessage}
-        isConfigLoaded={!!config}
       />
       {isLoading && <Loader />}
     </div>

@@ -2,7 +2,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import avatar from ".././assets/images/Avatar.svg"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
-import { Building2, Plus, Search } from "lucide-react"
+import { Building2, Eye, Pencil, Plus, Search } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import UploadCrDocument from "@/components/addCompany/uploadCrDocument"
@@ -26,7 +26,7 @@ const cardsConfig = {
     fields: [
         {
             label: "Total Plots",
-            key: "plotNumber",
+            key: "totalPlots",
         },
         {
             label: "Main Contact",
@@ -40,7 +40,23 @@ const cardsConfig = {
             label: "Mail",
             key: "email",
         },
-    ]
+    ],
+    menuOptions: [
+      {
+        label: "View Details",
+        icon: Eye,
+        onClick: () => {
+          console.log("View clicked for:")
+        },
+      },
+      {
+        label: "Edit",
+        icon: Pencil,
+        onClick: () => {
+          console.log("Edit clicked for:")
+        },
+      },
+    ]  
 }
 
 

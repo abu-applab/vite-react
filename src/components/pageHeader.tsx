@@ -13,7 +13,7 @@ interface pageHeaderProps {
 }
 
 const PageHeader = ({ header }: pageHeaderProps) => {
-    const { selectedCompany, isCreateNewForm, selectedLocation } = useApp();
+    const { selectedCompany, isCreateNewForm, selectedInvestment } = useApp();
 
     return (
         <div className="hidden md:block">
@@ -21,7 +21,7 @@ const PageHeader = ({ header }: pageHeaderProps) => {
             <div className="mb-6 text-base text-muted-foreground">
                 <Link to="/portal">{header.homeLink === 'companyName' ? selectedCompany?.englishName : 'Home'}</Link>
 
-                {!selectedLocation ?
+                {!selectedInvestment?.application ?
                     <>
                         <span className="mx-2">›</span>
                         <span className="text-maroon-100">{isCreateNewForm ? header.contentLinks[1] : header.contentLinks[0]}</span>
@@ -31,7 +31,7 @@ const PageHeader = ({ header }: pageHeaderProps) => {
                         <span className="mx-2">›</span>
                         <Link to="/portal">{isCreateNewForm ? header.contentLinks[1] : header.contentLinks[0]}</Link>
                         <span className="mx-2">›</span>
-                        <span className="text-maroon-100">{selectedLocation}</span>
+                        <span className="text-maroon-100">{selectedInvestment?.application}</span>
                     </>
                 }
             </div>

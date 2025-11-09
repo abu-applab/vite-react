@@ -37,7 +37,7 @@ export const serviceOptions = [
       key:  "kahramaa",
     },
     {
-      title: "Update Contatc Details",
+      title: "Update Contact Details",
       key: "updateContactDetails",
     },
     {

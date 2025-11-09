@@ -9,7 +9,9 @@ export const validateForm = (selectedService: string, formState: Record<string, 
   const hasSpecialChars = (val: string) => /[^A-Za-z0-9\u0600-\u06FF\s]/.test(val)
   const isArabic = (val: string) => /[\u0600-\u06FF]/.test(val)
   const isEnglish = (val: string) => /[A-Za-z]/.test(val)
-  const isValidEmail = (val: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)
+  const isValidEmail = (val: string) =>
+    /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(val);  
+  const hasArabicLetters = (val: string) => /[\u0600-\u06FF]/.test(val);
   const isValidPhone = (val: string) => /^\d{8}$/.test(val)
   const isValidPOBox = (val: string) => /^\d{5,8}$/.test(val);
   const isValidBuildingPermitNumber = (val: string) => /^\d{1,10}$/.test(val);
@@ -46,6 +48,7 @@ export const validateForm = (selectedService: string, formState: Record<string, 
       if (["text", "textarea"].includes(field.type) && value) {
         const err = validateTextLength(field, value)
         if (err) newErrors[field.id] = err
+        if (isDigitsOnly(value)) newErrors[field.id] = "This field cannot contain digits only."
       }
 
       if (field.label.includes("New Company Name") && value) {
@@ -54,8 +57,10 @@ export const validateForm = (selectedService: string, formState: Record<string, 
         if (field.label.includes("(AR)") && isEnglish(value)) newErrors[field.id] = "Must be Arabic."
       }
 
-      if (field.label === "New Email" && value && !isValidEmail(value))
-        newErrors[field.id] = "Please enter a valid email address."
+      if (field.label === "New Email" && value) {
+        if(!isValidEmail(value)) newErrors[field.id] = "Please enter a valid email address."
+        if (hasArabicLetters(value)) newErrors[field.id] = "Only English alphanumeric characters are allowed."
+      }
       if (field.label === "New Phone" && value && !isValidPhone(value))
         newErrors[field.id] = "Must contain exactly 8 digits."
       if (field.label === "New PO Box" && value && !isValidPOBox(value))

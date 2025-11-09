@@ -11,6 +11,9 @@ import useNetworkRequest from "@/api/useNetworkRequest"
 import { API_ENDPOINTS } from "@/api/apiEndpoints"
 import { useApplicationConfigLoader } from "@/hooks/useApplicationConfigLoader"
 import { validateForm } from "./validate"
+import { RequestSubmittedModal } from "../service/createNewRequest/request-submitted-modal"
+import { parseApiError } from "@/lib/utils"
+import Loader from "../loader"
 
 interface Step {
   title: string
@@ -28,24 +31,96 @@ interface AddNewApplicationProps {
 
 const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCreateNewApplication, setStep }: AddNewApplicationProps) => {
 
+  const networkRequest = useNetworkRequest()
+  const { loadApplicationConfig } = useApplicationConfigLoader();
+  const { setCreateNewForm, setSelectedInvestment, selectedCompany, contactId, selectedInvestment } = useApp();
+  const fieldRefs = useRef<Record<string, HTMLElement | null>>({})
+
   const [config, setConfig] = useState<any>(getApplicationFormConfig(selectedApplication))
   const [applicationSteps, setApplicationSteps] = useState<Step[]>([])
   const [formState, setFormData] = useState<Record<string, any>>({})
   const [errors, setErrors] = useState<Record<string, string>>({})
-  const [isFormSubmitted, setIsFormSubmitted] = useState(false)
-  const networkRequest = useNetworkRequest()
-  const { loadApplicationConfig } = useApplicationConfigLoader();
-  const { setCreateNewForm, setSelectedLocation, selectedCompany, contactId } = useApp();
-  const fieldRefs = useRef<Record<string, HTMLElement | null>>({})
+  const [isFormSubmitted, setIsFormSubmitted] = useState(false);
+  const [applicationId, setApplicationId] = useState('');
   const [products, setProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSubmittedModalOpen, setSubmittedModal] = useState(false);
+  const [referenceMessage, setReferenceMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isSaveApplication, setSaveApplication] = useState(false);
 
   useEffect(() => {
     const init = async () => {
-      const cfg = await loadApplicationConfig(selectedApplication);
+      const cfg = await loadApplicationConfig(selectedApplication, setFormData);
       setConfig(cfg);
     };
     init();
   }, []);
+
+  useEffect(() => {
+    const fetchISICCodes = async () => {
+      const sectionId = formState?.ISICSection;
+
+      // Only call when valid selection
+      if (!sectionId) return;
+
+      setConfig(() =>
+        config.map((item: any) => ({
+          ...item,
+          sections: item.sections?.map((section: any) => ({
+            ...section,
+            fields: section.fields?.map((field: any) => {
+              if (field.id === "ISICCode") {
+                return { ...field, options: [{ id: "loading", name: "Fetching ISIC Codes...", disabled: true }] };
+              }
+              return field;
+            }),
+          })),
+        }))
+      );
+
+      try {
+        const response = await networkRequest(API_ENDPOINTS.getISICCodesBySectionId, {
+          method: "GET",
+          body: {sectionId: sectionId}
+        })
+
+        const isicCodes = response?.data || [];
+
+        const isicCodeOptions = isicCodes.map((code: any) => ({
+          id: code.id,
+          name: code.descriptionEN,
+        }));
+
+        setConfig(() =>
+          config.map((item: any) => ({
+            ...item,
+            sections: item.sections?.map((section: any) => ({
+              ...section,
+              fields: section.fields?.map((field: any) => {
+                if (field.id === "ISICCode") {
+                  return { ...field, options: isicCodeOptions };
+                }
+                return field;
+              }),
+            })),
+          }))
+        );
+        
+
+        // Optional: Reset ISICCode field value when section changes
+        setFormData((prev: Record<string, any>) => ({
+          ...prev,
+          ISICCode: "",
+        }));
+      } catch (error) {
+        console.error("Failed to fetch ISIC Codes:", error);
+      }
+    };
+
+    fetchISICCodes();
+  }, [formState?.ISICSection]);
+
 
   useEffect(() => {
     if (selectedApplication) {
@@ -60,7 +135,7 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
     setCreateNewForm(true);
     return () => {
       setCreateNewForm(false);
-      setSelectedLocation('')
+      setSelectedInvestment(null)
     }
   }, [])
 
@@ -76,7 +151,7 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
 
     setApplicationSteps((prevSteps) => {
       const currentIndex = prevSteps.findIndex((s) => s.active);
-      console.log("currentIndex:", currentIndex);
+      console.log('currentIndex: ', currentIndex);
 
       if (currentIndex === -1) return prevSteps;
 
@@ -138,58 +213,141 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
   const handleSave = async (e?: React.FormEvent) => {
     e?.preventDefault();
     e?.stopPropagation();
+
+    const currentIndex = applicationSteps.findIndex((s : any) => s.active)
+    console.log('currentIndex: ', currentIndex);
+    const stepConfig = config?.[currentIndex];
+    const newErrors = validateForm(stepConfig, formState, true);
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) {
+      const firstErrorFieldId = Object.keys(newErrors)[0];
+      const el = fieldRefs.current[firstErrorFieldId];
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+        el.focus({ preventScroll: true });
+      }
+      return;
+    }
     try {
+      setIsLoading(true);
       const body = new FormData();
-      body.append('Company', selectedCompany?.accountID ?? '')
-      body.append('ContactPerson', contactId)
-      body.append('ApplicationType', 'LogisticsParks')
+      body.append('Company', selectedCompany?.accountID ?? '');
+      body.append('ContactPerson', contactId);
+      body.append('ApplicationType', selectedInvestment?.applicationType ?? '');
       Object.entries(formState).forEach(([key, value]) => {
-        body.append(key, value instanceof File ? value : String(value ?? ""));
+        body.append(key, value instanceof File ? value : String(value ?? ''));
       });
 
-      // ✅ Call API
-      const response = await networkRequest(API_ENDPOINTS.createApplication, {
-        method: 'POST',
-        body,
-      });
+      let response;
+
+      // ✅ If we already have an ID, update; otherwise create
+      if (applicationId) {
+        response = await networkRequest(`${API_ENDPOINTS.updateApplication}?id=${applicationId}`, {
+          method: 'POST',
+          body,
+        });
+      } else {
+        response = await networkRequest(API_ENDPOINTS.createApplication, {
+          method: 'POST',
+          body,
+        });
+      }
 
       if (response?.success) {
-        console.log("Application saved as draft ✅");
+        const newId = response?.data?.applicationId;
+        if (newId && !applicationId) {
+          setApplicationId(newId); // ✅ Save ID in state for future updates
+        }
+        console.log('Application saved successfully');
       } else {
-        console.log(response?.message || "Failed to save draft ❌");
+        console.error(response?.message || 'Failed to save');
       }
-    } catch (err) {
-      console.error("Draft Save Error:", err);
+      if (response.success) setReferenceMessage(response.message);
+      setSubmittedModal(true);
+      setIsLoading(false);
+      setIsLoading(false);
+    } catch (error) {
+      setErrorMessage(parseApiError(error));
+      setIsLoading(false);
+      setSaveApplication(true);
+      setSubmittedModal(true);
     }
   };
 
   const handleSubmit = async (e?: React.FormEvent) => {
     e?.preventDefault();
     e?.stopPropagation();
-    try {
-      const body = new FormData();
-      body.append('Company', selectedCompany?.accountID ?? '')
-      body.append('ContactPerson', contactId)
-      body.append('ApplicationType', 'LogisticsParks')
-      Object.entries(formState).forEach(([key, value]) => {
-        body.append(key, value instanceof File ? value : String(value ?? ""));
-      });
-
-      // ✅ Call API
-      const response = await networkRequest(API_ENDPOINTS.createApplication, {
-        method: 'POST',
-        body,
-      });
-
-      if (response?.success) {
-        console.log("Application saved as draft ✅");
-      } else {
-        console.log(response?.message || "Failed to save draft ❌");
+    const currentIndex = applicationSteps.findIndex((s : any) => s.active)
+    console.log('currentIndex: ', currentIndex);
+    const stepConfig = config?.[currentIndex];
+    const newErrors = validateForm(stepConfig, formState);
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) {
+      const firstErrorFieldId = Object.keys(newErrors)[0];
+      const el = fieldRefs.current[firstErrorFieldId];
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+        el.focus({ preventScroll: true });
       }
-    } catch (err) {
-      console.error("Draft Save Error:", err);
+      return;
+    }
+    try {
+      setIsLoading(true);
+      const body = new FormData();
+      body.append('Company', selectedCompany?.accountID ?? '');
+      body.append('ContactPerson', contactId);
+      body.append('ApplicationType', selectedInvestment?.applicationType ?? '');
+      Object.entries(formState).forEach(([key, value]) => {
+        body.append(key, value instanceof File ? value : String(value ?? ''));
+      });
+
+      let appId = applicationId;
+      let response;
+
+      // ✅ First create or update (same logic as save)
+      if (!appId) {
+        response = await networkRequest(API_ENDPOINTS.createApplication, {
+          method: 'POST',
+          body,
+        });
+        if (response?.success) {
+          appId = response?.data?.applicationId;
+          setApplicationId(appId);
+        } else {
+          console.error('Failed to create the application');
+          return;
+        }
+      } else {
+        response = await networkRequest(`${API_ENDPOINTS.updateApplication}?id=${appId}`, {
+          method: 'POST',
+          body,
+        });
+        if (!response?.success) {
+          console.error('Failed to update the application');
+          return;
+        }
+      }
+
+      // ✅ After create/update → Submit
+      const submitResponse = await networkRequest(`${API_ENDPOINTS.submitApplication}?id=${appId}`, {
+        method: 'POST',
+      });
+      if (submitResponse.success) setReferenceMessage(submitResponse.message);
+      setSubmittedModal(true);
+      setIsLoading(false);
+    } catch (error) {
+      setErrorMessage(parseApiError(error));
+      setIsLoading(false);
+      setSaveApplication(false)
+      setSubmittedModal(true);
     }
   };
+
+  const handleTryAgain = () => {
+    setSubmittedModal(false);
+    isSaveApplication ? handleSave() : handleSubmit();
+  };
+
 
   const renderActiveStep = () => {
     const activeStep = applicationSteps.find((s) => s.active)
@@ -264,6 +422,19 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
           handleSubmit={handleSubmit}
         />
       )}
+      <RequestSubmittedModal
+        open={isSubmittedModalOpen}
+        onOpenChange={setSubmittedModal}
+        onGoToRequest={() => {
+          setSelectedInvestment(null)
+          setCreateNewApplication(false)
+        }
+        }
+        referenceMessage={referenceMessage}
+        handleTryAgain={handleTryAgain}
+        errorMessage={errorMessage}
+      />
+      {isLoading && <Loader />}
     </div>
   )
 }

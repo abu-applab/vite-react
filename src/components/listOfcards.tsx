@@ -1,4 +1,4 @@
-import { CircleAlert, Eye, MoreVertical } from "lucide-react"
+import { MoreVertical } from "lucide-react"
 import { Button } from "./ui/button"
 import { Card, CardContent, CardHeader } from "./ui/card"
 import { Badge } from "./ui/badge"
@@ -15,7 +15,12 @@ interface CardConfig {
     fields: {
         label: string
         key: string
-    }[]
+    }[],
+    menuOptions?: {
+        label: string
+        icon?: ElementType
+        onClick?: (data: any) => void
+      }[]
 }
 
 interface ListOfCardsProps {
@@ -57,21 +62,8 @@ function getPointerColor(status: string) {
     }
 }
 
-const alerts = [
-    {
-        id: '1',
-        title: "Some Documents Missing",
-        type: "warning"
-    },
-    {
-        id: '2',
-        title: "Payment Overdue",
-        type: "warning"
-    }
-]
 
-
-const ListOFCards = ({ cardsConfig, cardsData, showAlerts = false, isProducts = false }: ListOfCardsProps) => {
+const ListOFCards = ({ cardsConfig, cardsData, isProducts = false }: ListOfCardsProps) => {
     return (
 
         <div className={cn("grid grid-cols-1 md:grid-cols-2 gap-4 mt-8", { 'md:grid-cols-1': isProducts })}>
@@ -98,7 +90,7 @@ const ListOFCards = ({ cardsConfig, cardsData, showAlerts = false, isProducts = 
                                 <span className={`size-1.5 ${getPointerColor(data[cardsConfig.status as keyof typeof data] ?? '')} rounded-full mr-1`}></span>
                                 <span className="text-xs leading-4 font-medium">{data[cardsConfig.status as keyof typeof data]}</span>
                             </Badge>}
-                            <DropdownMenu>
+                           {cardsConfig?.menuOptions && cardsConfig?.menuOptions?.length > 0 &&  <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                     <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
                                         <MoreVertical className="h-4 w-4" />
@@ -106,12 +98,21 @@ const ListOFCards = ({ cardsConfig, cardsData, showAlerts = false, isProducts = 
                                     </Button>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="end">
-                                    <DropdownMenuItem className="flex items-center gap-2">
-                                        <Eye className="h-4 w-4" />
-                                        View Details
-                                    </DropdownMenuItem>
+                                    {cardsConfig.menuOptions?.map((option, idx) => {
+                                        const Icon = option.icon
+                                        return (
+                                            <DropdownMenuItem
+                                                key={idx}
+                                                className="flex items-center gap-2"
+                                                onClick={() => option.onClick?.(data)}
+                                            >
+                                                {Icon && <Icon className="h-4 w-4" />}
+                                                {option.label}
+                                            </DropdownMenuItem>
+                                        )
+                                    })}
                                 </DropdownMenuContent>
-                            </DropdownMenu>
+                            </DropdownMenu>}
                         </div>
                     </CardHeader>
                     <CardContent className="pt-0">
@@ -119,10 +120,8 @@ const ListOFCards = ({ cardsConfig, cardsData, showAlerts = false, isProducts = 
                         <div className={cn("pt-4 grid grid-cols-1 md:grid-cols-2 gap-3 text-sm", { "md:grid-cols-3": isProducts })}>
                             {
                                 cardsConfig.fields.map((field) => {
-                                    const value = field.key === 'mainConatact' ?  data?.mainConatact?.name : data[field?.key]
-                                    if(value === null || value === undefined) {
-                                        return null;
-                                    }
+                                    let value = field.key === 'mainConatact' ? data?.mainConatact?.name : data[field?.key]
+                                    value = (field.key === 'totalPlots' && !value) ? 0 : value
                                     return (
                                         <div className={cn("flex flex-row items-center justify-between md:block md:mb-3")}>
                                             <p className="text-gray-500 mb-1">{field.label}</p>
@@ -132,7 +131,7 @@ const ListOFCards = ({ cardsConfig, cardsData, showAlerts = false, isProducts = 
                                 })
                             }
                         </div>
-                        {(alerts.length > 0 && showAlerts)&& (
+                        {/* {(alerts.length > 0 && showAlerts)&& (
                             <div className={`grid w-full ${alerts.length === 1 ? 'grid-cols-1' : 'grid-cols-2'} mt-1 gap-2.5`}>
                                 {
                                     alerts.map(({ title, id, type }) => {
@@ -145,7 +144,7 @@ const ListOFCards = ({ cardsConfig, cardsData, showAlerts = false, isProducts = 
                                     })
                                 }
                             </div>
-                        )}
+                        )} */}
                     </CardContent>
                 </Card>
             ))}

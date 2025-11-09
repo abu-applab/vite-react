@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Textarea } from "./ui/textarea"
 import { Button } from "./ui/button"
 import FileUpload from "./file-upload"
-import { ChevronsUpDown, Trash2 } from "lucide-react"
+import { CalendarIcon, ChevronsUpDown, Trash2 } from "lucide-react"
 import pdfLogo from "../assets/images/pdf-logo.svg"
 import { cn, formatFileSize, getFileName, getFileType } from "@/lib/utils"
 import { useEffect, type Dispatch, type SetStateAction } from "react"
@@ -51,7 +51,7 @@ const DynamicForm = ({
   products,
   isLastStepActive = true,
 }: DynamicFormProps) => {
-  const { setCreateNewForm, setSelectedLocation } = useApp();
+  const { setCreateNewForm, setSelectedInvestment } = useApp();
 
 
   // handling this state to show whether it's for view or create new service 
@@ -59,9 +59,9 @@ const DynamicForm = ({
     setCreateNewForm(true);
     return () => {
       setCreateNewForm(false);
-      setSelectedLocation('');
+      setSelectedInvestment(null)
     }
-  })
+  }, [])
 
   const renderField = (field: FormField) => {
     const commonProps = { id: field.id, required: field.required }
@@ -303,7 +303,60 @@ const DynamicForm = ({
             </div>
           </div>
         )
-
+      
+        case "datepicker": {
+          const minYear = field.minYear ?? 1900;
+          const maxYear = field.maxYear ?? new Date().getFullYear();
+        
+          return (
+            <div className="space-y-2">
+              <Label htmlFor={field.id}>
+                {field.label}
+                {field.required && <span className="text-destructive">*</span>}
+              </Label>
+        
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className={`w-full justify-start text-left font-normal ${
+                      !formData[field.id] && "text-muted-foreground"
+                    } ${errors[field.id] ? "border-red-600" : ""}`}
+                  >
+                    {formData[field.id] ? (
+                      formData[field.id]
+                    ) : (
+                      <span>Select Year</span>
+                    )}
+                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+        
+                <PopoverContent className="w-56 p-2" align="start">
+                  <div className="grid grid-cols-3 gap-2 max-h-60 overflow-y-auto">
+                    {Array.from({ length: maxYear - minYear + 1 }, (_, i) => maxYear - i).map(
+                      (year) => (
+                        <Button
+                          key={year}
+                          variant={formData[field.id] === String(year) ? "default" : "outline"}
+                          className="w-full"
+                          onClick={() => handleInputChange(field.id, String(year))}
+                        >
+                          {year}
+                        </Button>
+                      )
+                    )}
+                  </div>
+                </PopoverContent>
+              </Popover>
+        
+              {errors[field.id] && (
+                <span className="text-sm text-red-600">{errors[field.id]}</span>
+              )}
+            </div>
+          );
+        }
+        
       default:
         return null
     }

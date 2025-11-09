@@ -1,7 +1,7 @@
 export interface FormField {
     id: string;
     label: string;
-    type: "text" | "select" | "textarea" | "file" | "number" | "multiselect";
+    type: "text" | "select" | "textarea" | "file" | "number" | "multiselect" | "datepicker";
     required: boolean;
     placeholder?: string;
     options?: string[] | {id: string, name: string, agreementId?: string, disabled?: boolean}[];
@@ -11,7 +11,9 @@ export interface FormField {
     pattern?: string;
     dependsOn?: string
     showIfSelected?: string
-    showStage?: 1 | 2 
+    showStage?: 1 | 2
+    minYear?: number, 
+    maxYear?: number, 
 
 }
 
@@ -504,6 +506,7 @@ export function getServiceFormConfig(formType: string): FormConfig {
                                 required: true,
                                 placeholder: "Enter new email",
                                 showIfSelected: "Email",
+                                max: 50,
                             },
                             {
                                 id: "Phone",
@@ -647,6 +650,8 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                     type: "textarea",
                                     required: true,
                                     placeholder: "",
+                                    min: 100,
+                                    max: 500,
                                 },
                             ],
                         },
@@ -656,9 +661,9 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                 {
                                     id: "loacation",
                                     label: "Location",
-                                    type: "text",
+                                    type: "select",
                                     required: true,
-                                    placeholder: "",
+                                    options: []
                                 },
                                 {
                                     id: "category",
@@ -777,65 +782,80 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                             title: "Technology",
                             fields: [
                                 {
-                                    id: "technologyCountryOfOrigin",
+                                    id: "TechnologyCountryOfOrigin",
                                     label: "Technology Country of Origin",
                                     type: "text",
                                     required: true,
-                                    placeholder: ""
+                                    placeholder: "",
+                                    min: 2,
+                                    max: 100,
                                 },
                                 {
-                                    id: "equipmentCountryOfOrigin",
+                                    id: "EquipmentCountryOfOrigin",
                                     label: "Equipment Country of Origin",
                                     type: "text",
                                     required: true,
-                                    placeholder: ""
+                                    placeholder: "",
+                                    min: 2,
+                                    max: 100,
                                 },
                                 {
-                                    id: "equipmentYearOfProduction",
+                                    id: "EquipmentYearOfProduction",
                                     label: "Equipment Year of Production",
-                                    type: "text",
+                                    type: "datepicker",
                                     required: true,
-                                    placeholder: ""
-                                }
+                                    placeholder: "",
+                                    minYear: 2000,
+                                    maxYear: 2025, 
+                                  }
+                                  
                             ]
                         },
                         {
                             title: "Intended Use & Business Plan",
                             fields: [
                                 {
-                                    id: "landUse",
+                                    id: "LandUse",
                                     label: "Land Use",
                                     type: "select",
                                     required: true,
-                                    options: ["Industry", "Industry 2", "Industry 3"]
+                                    options: [
+                                        {id: 'LogisticsWarehousing', name: 'Logistics Warehousing'},
+                                        {id: 'WorkshopsAssembly', name: 'Workshops Assembly'},
+                                        {id: 'OpenYardsStorage', name: 'Open Yards Storage'},
+                                        {id: 'Industry', name: 'Industry'},
+                                        {id: 'NonIndustry', name: 'Non Industry'},
+                                    ],
                                 },
                                 {
-                                    id: "location",
+                                    id: "Location",
                                     label: "Location",
                                     type: "select",
                                     required: true,
-                                    options: ["Doha Industrial Area", "Plot 2", "Plot 3"]
+                                    options: []
                                 },
                                 {
-                                    id: "isicSection",
+                                    id: "ISICSection",
                                     label: "ISIC Section",
                                     type: "select",
                                     required: true,
-                                    options: ["C - Manufacturing", "Plot 2", "Plot 3"]
+                                    options: [{ id: "loading", name: "Fetching ISIC Section...", disabled: true } ]
                                 },
                                 {
-                                    id: "isicCodeDescription",
+                                    id: "ISICCode",
                                     label: "ISIC Code & Description",
                                     type: "select",
                                     required: true,
-                                    options: ["C.2011 – Manufacture of basic chemicals", "Plot 2", "Plot 3"]
+                                    options: []
                                 },
                                 {
-                                    id: "descriptionOfProposedBusinessActivities",
+                                    id: "ProposedBusinessActivity",
                                     label: "Description of Proposed Business Activities",
                                     type: "textarea",
                                     required: true,
-                                    placeholder: ""
+                                    placeholder: "",
+                                    min: 100,
+                                    max: 500,
                                 }
                             ]
                         },
@@ -843,49 +863,50 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                             title: "Estimated Requested Area (SQM)",
                             fields: [
                                 {
-                                    id: "totalRequestedPlotArea",
+                                    id: "TotalRequestedPlotSize",
                                     label: "Total Requested Plot Area (SQM)",
                                     type: "number",
-                                    required: true
+                                    required: true,
+                                    disabled: true,
                                 },
                                 {
-                                    id: "openArea",
+                                    id: "OpenArea",
                                     label: "Open Area (SQM)",
                                     type: "number",
                                     required: true
                                 },
                                 {
-                                    id: "administration",
+                                    id: "Administration",
                                     label: "Administration (SQM)",
                                     type: "number",
                                     required: true
                                 },
                                 {
-                                    id: "laboratory",
+                                    id: "Laboratory",
                                     label: "Laboratory (SQM)",
                                     type: "number",
                                     required: true
                                 },
                                 {
-                                    id: "rawMaterialStorage",
+                                    id: "RawMaterialStorage",
                                     label: "Raw Material Storage (SQM)",
                                     type: "number",
                                     required: true
                                 },
                                 {
-                                    id: "productionArea",
+                                    id: "ProductionArea",
                                     label: "Production Area (SQM)",
                                     type: "number",
                                     required: true
                                 },
                                 {
-                                    id: "finishedProductStorage",
+                                    id: "FinishedProductStorage",
                                     label: "Finished Product Storage (SQM)",
                                     type: "number",
                                     required: true
                                 },
                                 {
-                                    id: "maintenanceWorkshops",
+                                    id: "MaintenanceWorkshops",
                                     label: "Maintenance/Workshops (SQM)",
                                     type: "number",
                                     required: true
@@ -896,37 +917,37 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                             title: "Utilities",
                             fields: [
                                 {
-                                    id: "portableWater",
+                                    id: "PotableWater",
                                     label: "Portable Water (m³/day)",
                                     type: "number",
                                     required: true
                                 },
                                 {
-                                    id: "sewer",
+                                    id: "Sewer",
                                     label: "Sewer (m³/day)",
                                     type: "number",
                                     required: true
                                 },
                                 {
-                                    id: "naturalGas",
+                                    id: "NaturalGas",
                                     label: "Natural Gas (m³/year)",
                                     type: "number",
                                     required: true
                                 },
                                 {
-                                    id: "seaCoolingWater",
+                                    id: "SeaCoolingWater",
                                     label: "Sea Cooling Water (m³/H)",
                                     type: "number",
                                     required: true
                                 },
                                 {
-                                    id: "electricity",
+                                    id: "Electricity",
                                     label: "Electricity (KVA)",
                                     type: "number",
                                     required: true
                                 },
                                 {
-                                    id: "fuelProducts",
+                                    id: "FuelProducts",
                                     label: "Fuel Products (mt/year)",
                                     type: "number",
                                     required: true
@@ -948,13 +969,13 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                             title: "Employment",
                             fields: [
                                 {
-                                    id: "currentNumberOfEmployees",
+                                    id: "CurrentNumberOfEmployees",
                                     label: "Current Number of Employees",
                                     type: "number",
                                     required: true
                                 },
                                 {
-                                    id: "additionalEmploymentProjected",
+                                    id: "AdditionalEmploymentProjected",
                                     label: "Additional Employment Projected",
                                     type: "number",
                                     required: true
@@ -965,109 +986,109 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                             title: "Safety",
                             fields: [
                                 {
-                                    id: "firstAidEquipment",
+                                    id: "FirstAidEquipment",
                                     label: "First Aid Equipment",
                                     type: "text",
                                     required: true
                                 },
                                 {
-                                    id: "fireFightingSystem",
+                                    id: "FireFightingSystem",
                                     label: "Fire Fighting System",
                                     type: "text",
                                     required: true
                                 },
                                 {
-                                    id: "numberOfShifts",
+                                    id: "NumberOfShifts",
                                     label: "Number of Shifts",
                                     type: "number",
                                     required: true
                                 },
                                 {
-                                    id: "safetyEquipmentSystem",
+                                    id: "SafetyEquipmentSystem",
                                     label: "Safety Equipment/System",
                                     type: "text",
                                     required: true
                                 },
                                 {
-                                    id: "workersFacilities",
+                                    id: "WorkersFacilities",
                                     label: "Workers Facilities",
                                     type: "text",
                                     required: true
                                 },
                                 {
-                                    id: "emergencyResponsePlan",
+                                    id: "EmergencyResponsePlan",
                                     label: "Emergency Response Plan",
                                     type: "text",
                                     required: true
                                 },
                                 {
-                                    id: "gasesEmittedDustsInfo",
+                                    id: "GasesEmittedDustsInfo",
                                     label: "Gases Emitted/Dusts Info",
                                     type: "text",
                                     required: true
                                 },
                                 {
-                                    id: "stackHeight",
+                                    id: "StackHeight",
                                     label: "Stack Height (m)",
                                     type: "number",
                                     required: true
                                 },
                                 {
-                                    id: "temperature",
+                                    id: "Temperature",
                                     label: "Temperature (Celsius)",
                                     type: "number",
                                     required: true
                                 },
                                 {
-                                    id: "rateOfEmission",
+                                    id: "RateOfEmission",
                                     label: "Rate of Emission",
                                     type: "number",
                                     required: true
                                 },
                                 {
-                                    id: "wasteType",
+                                    id: "WasteType",
                                     label: "Waste Type",
                                     type: "text",
                                     required: true
                                 },
                                 {
-                                    id: "industrialWasteWater",
+                                    id: "IndustrialWasteWater",
                                     label: "Industrial Waste Water",
                                     type: "text",
                                     required: true
                                 },
                                 {
-                                    id: "hazardousWaste",
+                                    id: "HazardousNonHazardous",
                                     label: "Hazardous/Non-Hazardous",
                                     type: "text",
                                     required: true
                                 },
                                 {
-                                    id: "domesticWasteWater",
+                                    id: "DomesticWasteWater",
                                     label: "Domestic Waste Water",
                                     type: "text",
                                     required: true
                                 },
                                 {
-                                    id: "wasteQuantity",
+                                    id: "WasteQuantity",
                                     label: "Quantity (m³/year)",
                                     type: "number",
                                     required: true
                                 },
                                 {
-                                    id: "treatmentType",
+                                    id: "TreatmentType",
                                     label: "Treatment Type",
                                     type: "text",
                                     required: true
                                 },
                                 {
-                                    id: "recyclingUsagePlans",
+                                    id: "RecyclingUsagePlans",
                                     label: "Recycling & Usage Plans",
                                     type: "text",
                                     required: true
                                 },
                                 {
-                                    id: "noiseLevel",
+                                    id: "LevelOfNoiseAtPlotBoundary",
                                     label: "Level of Noise at Plot Boundary (dB)",
                                     type: "number",
                                     required: true
@@ -1078,49 +1099,49 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                             title: "Project Financial Information",
                             fields: [
                                 {
-                                    id: "constructionCost",
+                                    id: "ConstructionCost",
                                     label: "Construction Cost (QAR)",
                                     type: "number",
                                     required: true
                                 },
                                 {
-                                    id: "equity",
+                                    id: "Equity",
                                     label: "Equity (QAR)",
                                     type: "number",
                                     required: true
                                 },
                                 {
-                                    id: "costOfPlantAndMachinery",
+                                    id: "CostOfPlantMachinery",
                                     label: "Cost of Plant & Machinery (QAR)",
                                     type: "number",
                                     required: true
                                 },
                                 {
-                                    id: "debt",
+                                    id: "Debt",
                                     label: "Debt (QAR)",
                                     type: "number",
                                     required: true
                                 },
                                 {
-                                    id: "costOfOtherFixedAssets",
+                                    id: "CostOfOtherFixedAssets",
                                     label: "Cost of Other Fixed Assets (QAR)",
                                     type: "number",
                                     required: true
                                 },
                                 {
-                                    id: "workingCapital",
+                                    id: "WorkingCapital",
                                     label: "Working Capital (QAR)",
                                     type: "number",
                                     required: true
                                 },
                                 {
-                                    id: "totalCost",
+                                    id: "TotlaCost",
                                     label: "Total Cost",
                                     type: "number",
                                     required: true
                                 },
                                 {
-                                    id: "totalFunding",
+                                    id: "TotalFunding",
                                     label: "Total Funding",
                                     type: "number",
                                     required: true
@@ -1297,7 +1318,7 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                     type: "textarea",
                                     required: false,
                                     placeholder: "",
-                                    min: 3,
+                                    min: 100,
                                     max: 500,
                                 }
                             ]

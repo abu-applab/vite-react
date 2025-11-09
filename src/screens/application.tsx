@@ -23,6 +23,8 @@ interface InvestmentOptions {
     description?: string
     image: string
     disabled?: boolean
+    investments?: string[]
+    applicationType?: string
 }
 
 interface InvestmentType {
@@ -72,24 +74,30 @@ const investmentLocations: InvestmentType =
     description: 'choose from available locations for your selected investment type.',
     options: [
         {
-            id: "alKhor",
-            title: "Al Khor",
+            id: "7703413e-4094-ea11-8106-00155d0d0b8c",
+            title: "Al Khor Industrial Zone",
             image: alKhor,
+            investments: ['openYards', 'industrial']
         },
         {
-            id: "smallMediumIndustriesZone",
-            title: "Small Medium industries Zone",
-            image: smiZone,
-        },
-        {
-            id: "alKaraana",
-            title: "Al Karaana",
+            id: "b8797db0-4094-ea11-8106-00155d0d0b8c",
+            title: "Al Karaana Industrial Zone",
             image: alKaranaa,
+            investments: ['openYards', 'industrial'],
         },
         {
-            id: "mesaieed",
-            title: "Messaieed",
+            id: "40bae3c1-b36b-ed11-811e-00155d0d0b8c",
+            title: "Small Medium Ind",
+            image: smiZone,
+            investments: ['industrial'],
+            applicationType: "SMI",
+        },
+        {
+            id: "edb79af3-c0d5-e611-80d3-00155d0d0b8cc",
+            title: "Mesaieed Industrial Zone",
             image: mesaieed,
+            investments: ['industrial'],
+            applicationType: "MIZ",
         },
     ]
 }
@@ -192,7 +200,24 @@ const ApplicationPage = () => {
     const [activeTab, setActiveTab] = useState('submitted');
     const [isCreateNewApplication, setCreateNewApplication] = useState(false)
     const [selectedApplication, setSelectedApplication] = useState<string>("")
-    const { companies, selectedCompany, setSelectedCompany, setSelectedLocation } = useApp()
+    const { companies, selectedCompany, setSelectedCompany, setSelectedInvestment } = useApp()
+
+    const filteredInvestmentLocations = {
+        ...investmentLocations,
+        options: investmentLocations.options.filter(option =>
+          option?.investments?.includes(selectedApplication)
+        )
+        .map(option => {
+            // Disable Al Khor & Al Karaana when selectedApplication is 'industrial'
+            if (
+              selectedApplication === "industrial" &&
+              ["Al Khor Industrial Zone", "Al Karaana Industrial Zone"].includes(option.title)
+            ) {
+              return { ...option, disabled: true };
+            }
+            return option;
+          }),
+      };
 
 
     const steps = [
@@ -203,13 +228,7 @@ const ApplicationPage = () => {
                 <InvestmentSelector
                     handleSelectedOption={(val: string) => {
                         setSelectedApplication(val);
-
-                        // 🧠 Condition: if user selects "openYards", skip step 2
-                        if (val === "openYards") {
-                            setStep(2); // Go directly to AddNewApplication (step 3 → index 2)
-                        } else {
-                            setStep(1); // Otherwise, go to Select Location (step 2 → index 1)
-                        }
+                        setStep(1); // Otherwise, go to Select Location (step 2 → index 1)
                     }}
                     investmentContent={investmentTypes}
                 />
@@ -222,10 +241,16 @@ const ApplicationPage = () => {
                 <InvestmentSelector
                     handleSelectedOption={(val: string) => {
                         const locationName = investmentLocations.options.find((loc) => loc.id === val)
-                        setSelectedLocation(locationName?.title ?? '');
+                        const application = selectedApplication === "openYards" ? 'Open Yards' : locationName?.title
+                        setSelectedInvestment({
+                            application: application ?? '',
+                            applicationType: locationName?.applicationType ?? 'LogisticsParks',
+                            location: locationName?.title ?? '',
+                            locationId: locationName?.id ?? ''
+                        })
                         setStep(2); // Go to AddNewApplication (step 3 → index 2)
                     }}
-                    investmentContent={investmentLocations}
+                    investmentContent={filteredInvestmentLocations}
                 />
             ),
         },

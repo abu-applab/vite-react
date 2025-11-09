@@ -6,10 +6,13 @@ export const API_ENDPOINTS = {
    getCompanies: '/getCompanies',
    getClusters: '/getClusters',
    getLocations: '/getLocations',
+   getHSCodes: '/getHSCodes',
    createApplication: '/createApplication',
    updateApplication: '/updateApplication',
    deleteApplication: '/deleteApplication',
    submitApplication: '/submitApplication',
+   getISICSections: 'getISICSections',
+   getISICCodesBySectionId: '/getISICCodesBySectionId'
 }
 
 export const API_SERVICES_ENDPOINTS = {

@@ -1,22 +1,26 @@
 
 import { API_ENDPOINTS } from "@/api/apiEndpoints";
 import useNetworkRequest from "@/api/useNetworkRequest";
-// import { useApp } from "@/context/AppContext";
+import { useApp } from "@/context/AppContext";
 import { getApplicationFormConfig } from "@/lib/form-data";
+import { useEffect } from "react";
 
 export const useApplicationConfigLoader = () => {
   const networkRequest = useNetworkRequest();
-  // const { selectedCompany } = useApp();
+  const { selectedInvestment } = useApp();
+  console.log('selectedInvestment: ', selectedInvestment);
 
-  const loadApplicationConfig = async (selectedApplication: string) => {
+  const loadApplicationConfig = async (selectedApplication: string, setFormData: any) => {
     let baseConfig = getApplicationFormConfig(selectedApplication);
 
-    let [clusterRes, locationRes] = await Promise.all([
-      networkRequest(API_ENDPOINTS.getClusters, { method: "GET" }),
+    let [clusterRes, iSICSectionsRes, locationRes] = await Promise.all([
+      selectedInvestment?.applicationType === 'LogisticsParks' && networkRequest(API_ENDPOINTS.getClusters, { method: "GET" }),
+      selectedInvestment?.applicationType !== 'LogisticsParks' && networkRequest(API_ENDPOINTS.getISICSections, { method: "GET" }),
       networkRequest(API_ENDPOINTS.getLocations, { method: "GET" }),
     ]);
 
     const clusters = clusterRes?.data || [];
+    const iSICSections = iSICSectionsRes?.data || [];
     const locations = locationRes?.data || [];
 
     // map to select options
@@ -25,10 +29,24 @@ export const useApplicationConfigLoader = () => {
       name: cluster.name,
     }));
 
-    const locationOptions = locations.map((location: any) => ({
-      name: location.name,
-      id: location.id,
+    const iSICSectionOptions = iSICSections.map((cluster: any) => ({
+      id: cluster.id,
+      name: cluster.descriptionEN,
     }));
+
+    const locationOptions = locations
+      .filter((location: any) => location.name === selectedInvestment?.location)
+      .map((location: any) => ({
+        name: location.name,
+        id: location.id,
+      }));
+
+    if (locationOptions.length > 0) {
+      setFormData((prev: Record<string, any>) => ({
+        ...prev,
+        Location: locationOptions[0].id,
+      }));
+    }
 
     // inject into config
     const updatedConfig = baseConfig.map((step: any) => ({
@@ -42,6 +60,9 @@ export const useApplicationConfigLoader = () => {
           if (field.id === "Cluster") {
             return { ...field, options: clusterOptions };
           }
+          if (field.id === "ISICSection") {
+            return { ...field, options: iSICSectionOptions };
+          }
           return field;
         }),
       })),
@@ -51,4 +72,54 @@ export const useApplicationConfigLoader = () => {
   };
 
   return { loadApplicationConfig };
+};
+
+export const useISICCodeLoader = (formState: Record<string, any>, setConfig: any, setFormData: any) => {
+  const networkRequest = useNetworkRequest();
+
+  useEffect(() => {
+    const fetchISICCodes = async () => {
+      const sectionId = formState?.ISICSection;
+
+      // Only call when valid selection
+      if (!sectionId) return;
+
+      try {
+        const response = await networkRequest(API_ENDPOINTS.getISICCodesBySectionId, {
+          method: "GET",
+          body: {sectionId: sectionId}
+        })
+
+        const isicCodes = response?.data || [];
+
+        const isicCodeOptions = isicCodes.map((code: any) => ({
+          id: code.id,
+          name: code.name,
+        }));
+
+        setConfig((prevConfig: any) => ({
+          ...prevConfig,
+          sections: prevConfig.sections.map((section: any) => ({
+            ...section,
+            fields: section.fields.map((field: any) => {
+              if (field.id === "ISICCode") {
+                return { ...field, options: isicCodeOptions };
+              }
+              return field;
+            }),
+          })),
+        }));
+
+        // Optional: Reset ISICCode field value when section changes
+        setFormData((prev: Record<string, any>) => ({
+          ...prev,
+          ISICCode: "",
+        }));
+      } catch (error) {
+        console.error("Failed to fetch ISIC Codes:", error);
+      }
+    };
+
+    fetchISICCodes();
+  }, [formState?.ISICSection]);
 };

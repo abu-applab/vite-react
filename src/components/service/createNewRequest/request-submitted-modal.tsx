@@ -16,7 +16,6 @@ interface RequestSubmittedModalProps {
   referenceMessage?: string
   handleTryAgain: () => void
   errorMessage?: string
-  isConfigLoaded?: boolean
 }
 
 export function RequestSubmittedModal({
@@ -26,7 +25,6 @@ export function RequestSubmittedModal({
   referenceMessage = "",
   handleTryAgain,
   errorMessage = "An unexpected error occurred.",
-  isConfigLoaded = true
 }: RequestSubmittedModalProps) {
   const isSuccess = Boolean(referenceMessage)
 
@@ -50,8 +48,8 @@ export function RequestSubmittedModal({
         icon: failed,
         title: "Not Completed!",
         subtitle: errorMessage,
-        buttonText: isConfigLoaded? "Try Again" : "Go back",
-        buttonAction: isConfigLoaded? handleTryAgain : onGoToRequest,
+        buttonText: "Try Again",
+        buttonAction: handleTryAgain,
       }
 
   return (
