@@ -1,3 +1,4 @@
+// import FormSteps from "../addCompany/formSteps";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card"
 
@@ -5,14 +6,16 @@ interface InstructionProps {
     config: any
     goToPreviousStep: () => void
     goToNextStep: () => void
+    applicationSteps: any
 }
 
 const Instruction = ({ config, goToNextStep, goToPreviousStep }: InstructionProps) => {
     return (
-        <div className="px-10 pb-4">
-            <div className="mb-8">
+        <div className="md:px-10 pb-4">
+            <div className="mb-8 max-md:border max-md:shadow max-md:p-4 max-md:bg-white max-md:rounded-lg">
                 <h3 className="text-xl font-semibold text-foreground">{config.title}</h3>
                 <p className="text-muted-foreground text-sm font-normal">{config.description}</p>
+                {/* <FormSteps steps={applicationSteps} /> */}
             </div>
             <Card className="px-6">
                 {config.sections.map((section: any) => {

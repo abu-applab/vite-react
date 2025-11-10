@@ -1,4 +1,4 @@
-import { getApplicationFormConfig } from "@/lib/form-data"
+import { getApplicationFormConfig, TotalCalculationMap } from "@/lib/form-data"
 import { Card } from "../ui/card"
 import FormSteps from "../addCompany/formSteps"
 import Instruction from "./instruction"
@@ -82,7 +82,7 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
       try {
         const response = await networkRequest(API_ENDPOINTS.getISICCodesBySectionId, {
           method: "GET",
-          body: {sectionId: sectionId}
+          body: { sectionId: sectionId }
         })
 
         const isicCodes = response?.data || [];
@@ -106,7 +106,7 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
             })),
           }))
         );
-        
+
 
         // Optional: Reset ISICCode field value when section changes
         setFormData((prev: Record<string, any>) => ({
@@ -140,9 +140,30 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
   }, [])
 
   const handleInputChange = (fieldId: string, value: any) => {
-    setFormData((prev) => ({ ...prev, [fieldId]: value }))
-    setErrors((prev) => ({ ...prev, [fieldId]: "" }))
-  }
+    setFormData((prev) => {
+      const updated = { ...prev, [fieldId]: value };
+
+      // Loop through all total calculation groups
+      for (const [totalField, contributingFields] of Object.entries(TotalCalculationMap)) {
+        // If the changed field belongs to one of these groups
+        if (contributingFields.includes(fieldId)) {
+          // Recalculate total dynamically
+          const newTotal = contributingFields.reduce((sum, key) => {
+            const num = Number(updated[key]) || 0;
+            return sum + num;
+          }, 0);
+
+          updated[totalField] = newTotal;
+        }
+      }
+
+      return updated;
+    });
+
+    // Clear error for the changed field
+    setErrors((prev) => ({ ...prev, [fieldId]: "" }));
+  };
+
 
   const goToNextStep = (e?: React.FormEvent) => {
     e?.preventDefault();
@@ -160,7 +181,11 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
         const stepConfig = config?.[currentIndex];
 
         newErrors = validateForm(stepConfig, formState)
-
+        console.log('applicationSteps[currentIndex]: ', applicationSteps[currentIndex]);
+        if(products.length <= 0 && applicationSteps[currentIndex].title === 'Company Details (1 of 2)') {
+          console.log('here');
+          newErrors.ProductsJson = "Field is required"
+        }
         if (Object.keys(newErrors).length > 0) {
           setErrors(newErrors);
           return prevSteps; // ⛔ Stop step change
@@ -214,7 +239,7 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
     e?.preventDefault();
     e?.stopPropagation();
 
-    const currentIndex = applicationSteps.findIndex((s : any) => s.active)
+    const currentIndex = applicationSteps.findIndex((s: any) => s.active)
     console.log('currentIndex: ', currentIndex);
     const stepConfig = config?.[currentIndex];
     const newErrors = validateForm(stepConfig, formState, true);
@@ -228,18 +253,27 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
       }
       return;
     }
+    setSaveApplication(true);
     try {
       setIsLoading(true);
       const body = new FormData();
       body.append('Company', selectedCompany?.accountID ?? '');
       body.append('ContactPerson', contactId);
       body.append('ApplicationType', selectedInvestment?.applicationType ?? '');
+
+      if (products.length > 0) body.append('ProductsJson',JSON.stringify(products));
+      const excludedKeys = [
+        "TotalCost",
+        "TotalFunding",
+        "TotalRequestedPlotSize",
+      ];
+
       Object.entries(formState).forEach(([key, value]) => {
-        body.append(key, value instanceof File ? value : String(value ?? ''));
+        if (!excludedKeys.includes(key)) {
+          body.append(key, value instanceof File ? value : String(value ?? ""));
+        }
       });
-
       let response;
-
       // ✅ If we already have an ID, update; otherwise create
       if (applicationId) {
         response = await networkRequest(`${API_ENDPOINTS.updateApplication}?id=${applicationId}`, {
@@ -269,7 +303,6 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
     } catch (error) {
       setErrorMessage(parseApiError(error));
       setIsLoading(false);
-      setSaveApplication(true);
       setSubmittedModal(true);
     }
   };
@@ -277,10 +310,10 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
   const handleSubmit = async (e?: React.FormEvent) => {
     e?.preventDefault();
     e?.stopPropagation();
-    const currentIndex = applicationSteps.findIndex((s : any) => s.active)
+    const currentIndex = applicationSteps.findIndex((s: any) => s.active)
     console.log('currentIndex: ', currentIndex);
     const stepConfig = config?.[currentIndex];
-    const newErrors = validateForm(stepConfig, formState);
+    let newErrors = validateForm(stepConfig, formState);
     setErrors(newErrors);
     if (Object.keys(newErrors).length > 0) {
       const firstErrorFieldId = Object.keys(newErrors)[0];
@@ -291,14 +324,23 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
       }
       return;
     }
+    setSaveApplication(false);
     try {
       setIsLoading(true);
       const body = new FormData();
       body.append('Company', selectedCompany?.accountID ?? '');
       body.append('ContactPerson', contactId);
       body.append('ApplicationType', selectedInvestment?.applicationType ?? '');
+      const excludedKeys = [
+        "TotalCost",
+        "TotalFunding",
+        "TotalRequestedPlotSize",
+      ];
+
       Object.entries(formState).forEach(([key, value]) => {
-        body.append(key, value instanceof File ? value : String(value ?? ''));
+        if (!excludedKeys.includes(key)) {
+          body.append(key, value instanceof File ? value : String(value ?? ""));
+        }
       });
 
       let appId = applicationId;
@@ -338,7 +380,6 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
     } catch (error) {
       setErrorMessage(parseApiError(error));
       setIsLoading(false);
-      setSaveApplication(false)
       setSubmittedModal(true);
     }
   };
@@ -363,6 +404,7 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
           config={activeConfig}
           goToNextStep={goToNextStep}
           goToPreviousStep={goToPreviousStep}
+          applicationSteps={applicationSteps}
         />
       )
     }
@@ -393,16 +435,19 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
   return (
     <div>{isFormSubmitted ?
       <FormSubmitted onGoToRequest={() => {
+        setStep(0)
         setCreateNewApplication(false);
         setSelectedApplication("")
       }
       } /> :
       config?.length > 1 ? (
-        <Card className="mt-[72px] mr-4 mb-4 w-full flex flex-col bg-[#fcfaf7]">
+        <Card className="md:mt-[72px] mr-4 mb-4 w-full flex flex-col bg-[#fcfaf7] max-md:border-none max-md:shadow-none max-md:bg-[#F6F5EF] ">
           {config?.length > 1 && (
             <>
+            <div className="max-md:hidden">
               <FormSteps steps={applicationSteps} />
               <div className="border-2 border-[#f6f5ef]" />
+            </div>
             </>
           )}
           {renderActiveStep()}
@@ -426,6 +471,7 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
         open={isSubmittedModalOpen}
         onOpenChange={setSubmittedModal}
         onGoToRequest={() => {
+          setStep(0)
           setSelectedInvestment(null)
           setCreateNewApplication(false)
         }
@@ -433,6 +479,7 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
         referenceMessage={referenceMessage}
         handleTryAgain={handleTryAgain}
         errorMessage={errorMessage}
+        isSaveApplication={isSaveApplication}
       />
       {isLoading && <Loader />}
     </div>

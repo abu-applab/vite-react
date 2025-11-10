@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Label } from "./ui/label";
 import ListOFCards from "./listOfcards";
 import { useProductConfigLoader } from "@/hooks/useProductConfigLoader";
+import { cn } from "@/lib/utils";
 
 const initialProduct = {
     nameOfProduct: "",
@@ -23,6 +24,7 @@ type Product = typeof initialProduct;
 interface ProductInformationProps {
     products: Product[];
     setProducts: (value: Product[]) => void;
+    isError: boolean
 }
 
 const validateProductForm = (form: Product) => {
@@ -75,7 +77,7 @@ const validateProductForm = (form: Product) => {
         errors.units = "Must be a valid number";
     } else if (form.units.length > 15) {
         errors.units = "Maximum 15 digits allowed";
-    } 
+    }
     // else if (Number(form.units) === 0) {
     //     errors.units = "Value cannot be zero";
     // }
@@ -91,13 +93,13 @@ const validateProductForm = (form: Product) => {
 
 const productFields = [
     { label: "Name of Product", key: "nameOfProduct" },
-    { label: "Annual Production Capacity", key: "annualProductionCapacity" },
+    { label: "Annual Production Capacity", key: "annualProductionCapacity", type: "number" },
     { label: "Quantity", key: "quantity", type: "number" },
     { label: "Source of Raw Material", key: "sourceOfRawMaterials" },
-    { label: "Unit", key: "units" },
+    { label: "Unit", key: "units", type: "number" },
 ]
 
-const ProductInformation = ({ products, setProducts }: ProductInformationProps) => {
+const ProductInformation = ({ products, setProducts, isError }: ProductInformationProps) => {
     const [productForm, setProductForm] = useState<Product>(initialProduct);
     const [isProductModalOpen, setIsProductModalOpen] = useState(false);
     const [editingIndex, setEditingIndex] = useState<number | null>(null);
@@ -174,7 +176,7 @@ const ProductInformation = ({ products, setProducts }: ProductInformationProps) 
             { label: "Quantity", key: "quantity" },
             { label: "HS Code", key: "hsCode" },
             { label: "Source of Raw Materials", key: "sourceOfRawMaterials" },
-            { label: "Unit", key: "units" },
+            { label: "Unit", key: "Units" },
         ],
         // 👇 dynamic menu actions
         menuOptions: [
@@ -207,24 +209,27 @@ const ProductInformation = ({ products, setProducts }: ProductInformationProps) 
             {products?.length > 0 ? (
                 <ListOFCards cardsConfig={productConfig} cardsData={products} isProducts />
             ) : (
-                <Card className="flex flex-col items-center justify-center gap-6 p-6">
-                    <h4 className="text-sm font-normal">No Product Information Found</h4>
-                    <Button variant="ghost" type="button" className="border" onClick={handleOpenModal}>
-                        <CirclePlus /> Add New Product
-                    </Button>
-                </Card>
+                <div className="">
+                    <Card className={cn("flex flex-col items-center justify-center gap-6 p-6 mb-0", { "border-red-600": isError })}>
+                        <h4 className="text-sm font-normal">No Product Information Found</h4>
+                        <Button variant="ghost" type="button" className={cn("border", {"border-red-600": isError})} onClick={handleOpenModal}>
+                            <CirclePlus /> Add New Product
+                        </Button>
+                    </Card>
+                    {isError && <span className="text-sm text-red-600">Atleast One Product Information is required</span>}
+                </div>
             )}
 
             {/* Product Dialog */}
             <Dialog open={isProductModalOpen} onOpenChange={setIsProductModalOpen}>
-                <DialogContent className="min-w-[650px] overflow-y-auto p-0 gap-0">
+                <DialogContent className="md:min-w-[650px] md:max-w-md max-h-[80vh] overflow-y-auto p-0 gap-0">
                     <DialogHeader className="border-b px-5 py-3 flex flex-row items-center justify-between">
                         <DialogTitle className="text-lg font-medium text-foreground">
                             {editingIndex === null ? "Add Product" : "Edit Product"}
                         </DialogTitle>
                     </DialogHeader>
 
-                    <div className="grid grid-cols-2 gap-4 p-6">
+                    <div className="grid md:grid-cols-2 grid-cols-1 gap-4 p-6">
                         {productFields.map(({ label, key, type }) => (
                             <div key={key} className="flex flex-col gap-2">
                                 <Label>{label}</Label>
@@ -232,8 +237,16 @@ const ProductInformation = ({ products, setProducts }: ProductInformationProps) 
                                     type={type || "text"}
                                     value={productForm[key as keyof Product]}
                                     onChange={(e) => {
-                                        setProductForm({ ...productForm, [key]: e.target.value });
-                                        setErrors({ ...errors, [key]: "" }); // clear error on change
+                                        const value =
+                                            type === "number" ? Number(e.target.value) || 0 : e.target.value;
+                                        setProductForm({
+                                            ...productForm,
+                                            [key]: value,
+                                        });
+                                        setErrors({
+                                            ...errors,
+                                            [key]: "",
+                                        }); // clear error on change
                                     }}
                                     placeholder={label}
                                     className={errors[key as keyof Product] ? "border-red-500" : ""}
@@ -255,13 +268,13 @@ const ProductInformation = ({ products, setProducts }: ProductInformationProps) 
                                 disabled={isLoading}
                             >
                                 <SelectTrigger
-                                    className={errors.hsCode ? "border-red-500" : ""}
+                                    className={cn("w-full", {"border-red-500" : errors.hsCode })}
                                 >
                                     <SelectValue placeholder={isLoading ? "Loading..." : "Select HS Code"} />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {hsCodes.map((item) => (
-                                        <SelectItem key={item.id} value={item.value}>
+                                        <SelectItem key={item.id} value={item.id}>
                                             {item.value}
                                         </SelectItem>
                                     ))}

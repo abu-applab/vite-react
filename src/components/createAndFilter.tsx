@@ -8,7 +8,8 @@ import { useApp, type CompanyType } from "@/context/AppContext"
 interface FilterKeys {
   title: string,
   createNewRequest: string,
-  filterTypes: {id: string, value: string}[]
+  filterTypes: { id: string, value: string }[]
+  applicationFilter?: { id: string, value: string, icon: any }[]
 }
 
 interface CreateAndFilterProps {
@@ -17,7 +18,7 @@ interface CreateAndFilterProps {
 }
 
 export const CreateAndFilter = ({ onNewRequest, filterConfig }: CreateAndFilterProps) => {
-  const {companies, selectedCompany, setSelectedCompany} = useApp()
+  const { companies, selectedCompany, setSelectedCompany } = useApp()
   return (
     <div className="">
 
@@ -40,13 +41,27 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig }: CreateAndFilterP
             size="icon"
             className="bg-white text-black hover:bg-zinc-50 rounded-md border cursor-pointer"
           >
-            <ListFilter  className="h-5 w-5" />
+            <ListFilter className="h-5 w-5" />
           </Button>
         </div>
 
         {/* Company Dropdown */}
+        <div className="flex flex-row gap-3">
+        {filterConfig?.applicationFilter && filterConfig?.applicationFilter?.length > 0 && <Select>
+            <SelectTrigger className="bg-background data-[placeholder]:text-foreground flex-1 min-w-[100px]">
+              <SelectValue placeholder="Application type" />
+            </SelectTrigger>
+            <SelectContent>
+              {filterConfig.applicationFilter.map((application: { id: string, value: string, icon: any }) => (
+                <SelectItem value={application.id}>
+                  <application.icon className="text-maroon-100" />
+                  {application.value}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>}
         <Select defaultValue={selectedCompany?.accountID}>
-          <SelectTrigger className="bg-background w-full">
+          <SelectTrigger className="bg-background flex-1 min-w-[100px]">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -57,6 +72,7 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig }: CreateAndFilterP
             ))}
           </SelectContent>
         </Select>
+        </div>
       </Card>
 
       {/* Desktop View */}
@@ -73,15 +89,28 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig }: CreateAndFilterP
             <CirclePlus className="h-4 w-4 mr-2" />
             {filterConfig.createNewRequest}
           </Button>
-          <Select 
+          {filterConfig?.applicationFilter && filterConfig?.applicationFilter?.length > 0 && <Select defaultValue="">
+            <SelectTrigger className="bg-background data-[placeholder]:text-foreground">
+              <SelectValue placeholder="Application type" />
+            </SelectTrigger>
+            <SelectContent>
+              {filterConfig.applicationFilter.map((application: { id: string, value: string, icon: any }) => (
+                <SelectItem value={application.id}>
+                  <application.icon className="text-maroon-100" />
+                  {application.value}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>}
+          <Select
             value={selectedCompany?.accountID || ''}
             onValueChange={(value) => {
               const selectedValue = companies.find((company: CompanyType) => company.accountID === value)
               selectedValue && setSelectedCompany(selectedValue)
             }}
-            >
+          >
             <SelectTrigger className="bg-background">
-             <Building2 className="h-4 w-4 mr-2 text-foreground" />
+              <Building2 className="h-4 w-4 mr-2 text-foreground" />
               <SelectValue placeholder="" />
             </SelectTrigger>
             <SelectContent>
@@ -97,7 +126,7 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig }: CreateAndFilterP
               <SelectValue placeholder="Status" />
             </SelectTrigger>
             <SelectContent>
-              {filterConfig.filterTypes.map((filterType : {id: string, value: string}) => (
+              {filterConfig.filterTypes.map((filterType: { id: string, value: string }) => (
                 <SelectItem value={filterType.id}>{filterType.value}</SelectItem>
               ))}
             </SelectContent>

@@ -16,6 +16,7 @@ interface RequestSubmittedModalProps {
   referenceMessage?: string
   handleTryAgain: () => void
   errorMessage?: string
+  isSaveApplication?: boolean
 }
 
 export function RequestSubmittedModal({
@@ -25,6 +26,7 @@ export function RequestSubmittedModal({
   referenceMessage = "",
   handleTryAgain,
   errorMessage = "An unexpected error occurred.",
+  isSaveApplication = false,
 }: RequestSubmittedModalProps) {
   const isSuccess = Boolean(referenceMessage)
 
@@ -63,7 +65,7 @@ export function RequestSubmittedModal({
             variant="ghost"
             size="icon"
             className="h-6 w-6 text-gray-500 hover:text-black hover:bg-transparent cursor-pointer"
-            onClick={isSuccess ? onGoToRequest : handleClose}
+            onClick={(isSuccess && !isSaveApplication) ? onGoToRequest : handleClose}
           >
             <X className="h-4 w-4" />
           </Button>

@@ -1,4 +1,3 @@
-import { serviceOptions } from "@/constants"
 import { clsx, type ClassValue } from "clsx"
 import { AppWindow, FileText, Home, MessageSquareDot, SquareDashed, SquareLibrary, Wallet } from "lucide-react"
 import { twMerge } from "tailwind-merge"
@@ -7,7 +6,6 @@ interface SubmitCompanyUpdateProps {
   formState: Record<string, any>;
   urls: string[];
   networkRequest: any;
-  onServiceAdded: (service: any) => void;
   setReferenceMessage: (msg: string) => void;
   contactId: string
 }
@@ -80,7 +78,6 @@ export const submitUpdateCompanyInformation = async ({
   formState,
   urls,
   networkRequest,
-  onServiceAdded,
   setReferenceMessage,
   contactId,
 }: SubmitCompanyUpdateProps) => {
@@ -116,18 +113,6 @@ export const submitUpdateCompanyInformation = async ({
     throw new Error("Failed to update company details");
 
   setReferenceMessage(secondResponse.message ?? "");
-
-  const serviceTitle =
-    serviceOptions.find((s) => s.key === "updateCompanyInformation")?.title ??
-    "Update Company Information";
-
-  onServiceAdded({
-    id: Object.values(secondResponse.data)[0] || "TEMP-ID",
-    plotNumber: Object.values(secondResponse.data)[0] || "Unknown",
-    serviceType: serviceTitle,
-    submittedDate: new Date().toLocaleDateString(),
-    status: "Pending",
-  });
 };
 
 /**

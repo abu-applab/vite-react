@@ -14,6 +14,7 @@ export interface FormField {
     showStage?: 1 | 2
     minYear?: number, 
     maxYear?: number, 
+    subTitle?: string
 
 }
 
@@ -863,13 +864,6 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                             title: "Estimated Requested Area (SQM)",
                             fields: [
                                 {
-                                    id: "TotalRequestedPlotSize",
-                                    label: "Total Requested Plot Area (SQM)",
-                                    type: "number",
-                                    required: true,
-                                    disabled: true,
-                                },
-                                {
                                     id: "OpenArea",
                                     label: "Open Area (SQM)",
                                     type: "number",
@@ -910,7 +904,14 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                     label: "Maintenance/Workshops (SQM)",
                                     type: "number",
                                     required: true
-                                }
+                                },
+                                {
+                                    id: "TotalRequestedPlotSize",
+                                    label: "Total Requested Plot Area (SQM)",
+                                    type: "number",
+                                    required: true,
+                                    disabled: true,
+                                },
                             ]
                         },
                         {
@@ -989,13 +990,15 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                     id: "FirstAidEquipment",
                                     label: "First Aid Equipment",
                                     type: "text",
-                                    required: true
+                                    required: true,
+                                    max: 100,
                                 },
                                 {
                                     id: "FireFightingSystem",
                                     label: "Fire Fighting System",
                                     type: "text",
-                                    required: true
+                                    required: true,
+                                    max: 100,
                                 },
                                 {
                                     id: "NumberOfShifts",
@@ -1007,93 +1010,111 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                     id: "SafetyEquipmentSystem",
                                     label: "Safety Equipment/System",
                                     type: "text",
-                                    required: true
+                                    required: true,
+                                    max: 100,
                                 },
                                 {
                                     id: "WorkersFacilities",
                                     label: "Workers Facilities",
                                     type: "text",
-                                    required: true
+                                    required: true,
+                                    max: 100,
                                 },
                                 {
                                     id: "EmergencyResponsePlan",
                                     label: "Emergency Response Plan",
                                     type: "text",
-                                    required: true
+                                    required: true,
+                                    max: 100,
                                 },
-                                {
-                                    id: "GasesEmittedDustsInfo",
-                                    label: "Gases Emitted/Dusts Info",
-                                    type: "text",
-                                    required: true
-                                },
-                                {
-                                    id: "StackHeight",
-                                    label: "Stack Height (m)",
-                                    type: "number",
-                                    required: true
-                                },
-                                {
-                                    id: "Temperature",
-                                    label: "Temperature (Celsius)",
-                                    type: "number",
-                                    required: true
-                                },
-                                {
-                                    id: "RateOfEmission",
-                                    label: "Rate of Emission",
-                                    type: "number",
-                                    required: true
-                                },
-                                {
-                                    id: "WasteType",
-                                    label: "Waste Type",
-                                    type: "text",
-                                    required: true
-                                },
-                                {
-                                    id: "IndustrialWasteWater",
-                                    label: "Industrial Waste Water",
-                                    type: "text",
-                                    required: true
-                                },
-                                {
-                                    id: "HazardousNonHazardous",
-                                    label: "Hazardous/Non-Hazardous",
-                                    type: "text",
-                                    required: true
-                                },
-                                {
-                                    id: "DomesticWasteWater",
-                                    label: "Domestic Waste Water",
-                                    type: "text",
-                                    required: true
-                                },
-                                {
-                                    id: "WasteQuantity",
-                                    label: "Quantity (m³/year)",
-                                    type: "number",
-                                    required: true
-                                },
-                                {
-                                    id: "TreatmentType",
-                                    label: "Treatment Type",
-                                    type: "text",
-                                    required: true
-                                },
-                                {
-                                    id: "RecyclingUsagePlans",
-                                    label: "Recycling & Usage Plans",
-                                    type: "text",
-                                    required: true
-                                },
-                                {
-                                    id: "LevelOfNoiseAtPlotBoundary",
-                                    label: "Level of Noise at Plot Boundary (dB)",
-                                    type: "number",
-                                    required: true
-                                }
                             ]
+                        },
+                        {
+                           title: "Environmental Information",
+                           fields: [
+                            {
+                                id: "GasesEmittedDustsInfo",
+                                label: "Gases Emitted/Dusts Info",
+                                type: "text",
+                                required: true,
+                                max: 100,
+                                subTitle: "Air Gases Type"
+                            },
+                            {
+                                id: "StackHeight",
+                                label: "Stack Height (m)",
+                                type: "number",
+                                required: true
+                            },
+                            {
+                                id: "Temperature",
+                                label: "Temperature (Celsius)",
+                                type: "number",
+                                required: true
+                            },
+                            {
+                                id: "RateOfEmission",
+                                label: "Rate of Emission",
+                                type: "number",
+                                required: true
+                            },
+                            {
+                                id: "WasteType",
+                                label: "Waste Type",
+                                type: "text",
+                                required: true,
+                                max: 100,
+                                subTitle: "Waste",
+                            },
+                            {
+                                id: "IndustrialWasteWater",
+                                label: "Industrial Waste Water",
+                                type: "text",
+                                required: true,
+                                max: 100,
+                            },
+                            {
+                                id: "HazardousNonHazardous",
+                                label: "Hazardous/Non-Hazardous",
+                                type: "text",
+                                required: true,
+                                max: 100,
+                            },
+                            {
+                                id: "DomesticWasteWater",
+                                label: "Domestic Waste Water",
+                                type: "text",
+                                required: true,
+                                max: 100,
+                            },
+                            {
+                                id: "WasteQuantity",
+                                label: "Quantity (m³/year)",
+                                type: "number",
+                                required: true
+                            },
+                            {
+                                id: "TreatmentType",
+                                label: "Treatment Type",
+                                type: "text",
+                                required: true,
+                                max: 100,
+                            },
+                            {
+                                id: "RecyclingUsagePlans",
+                                label: "Recycling & Usage Plans",
+                                type: "text",
+                                required: true,
+                                max: 100
+                            },
+                            {
+                                id: "LevelOfNoiseAtPlotBoundary",
+                                label: "Level of Noise at Plot Boundary (dB)",
+                                type: "number",
+                                required: true,
+                                subTitle: "Noise",
+                            }
+                           ]
                         },
                         {
                             title: "Project Financial Information",
@@ -1102,23 +1123,12 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                     id: "ConstructionCost",
                                     label: "Construction Cost (QAR)",
                                     type: "number",
-                                    required: true
-                                },
-                                {
-                                    id: "Equity",
-                                    label: "Equity (QAR)",
-                                    type: "number",
-                                    required: true
+                                    required: true,
+                                    subTitle: "Cost of Project",
                                 },
                                 {
                                     id: "CostOfPlantMachinery",
                                     label: "Cost of Plant & Machinery (QAR)",
-                                    type: "number",
-                                    required: true
-                                },
-                                {
-                                    id: "Debt",
-                                    label: "Debt (QAR)",
                                     type: "number",
                                     required: true
                                 },
@@ -1129,14 +1139,28 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                     required: true
                                 },
                                 {
-                                    id: "WorkingCapital",
-                                    label: "Working Capital (QAR)",
+                                    id: "TotalCost",
+                                    label: "Total Cost",
+                                    type: "number",
+                                    required: true,
+                                    disabled: true,
+                                },
+                                {
+                                    id: "Equity",
+                                    label: "Equity (QAR)",
+                                    type: "number",
+                                    required: true,
+                                    subTitle: "Total Cost",
+                                },
+                                {
+                                    id: "Debt",
+                                    label: "Debt (QAR)",
                                     type: "number",
                                     required: true
                                 },
                                 {
-                                    id: "TotlaCost",
-                                    label: "Total Cost",
+                                    id: "WorkingCapital",
+                                    label: "Working Capital (QAR)",
                                     type: "number",
                                     required: true
                                 },
@@ -1144,7 +1168,8 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                     id: "TotalFunding",
                                     label: "Total Funding",
                                     type: "number",
-                                    required: true
+                                    required: true,
+                                    disabled: true,
                                 }
                             ]
                         }
@@ -1535,3 +1560,17 @@ export function getCommonFormConfig(formType: string): FormConfig {
             throw new Error(`Unknown form type: ${formType}`)
     }
 }
+
+export const TotalCalculationMap: Record<string, string[]> = {
+    TotalCost: ["ConstructionCost", "CostOfPlantMachinery", "CostOfOtherFixedAssets"],
+    TotalFunding: ["Equity", "Debt", "WorkingCapital"],
+    TotalRequestedPlotSize: [
+        "OpenArea",
+        "Administration",
+        "Laboratory",
+        "RawMaterialStorage",
+        "ProductionArea",
+        "FinishedProductStorage",
+        "MaintenanceWorkshops",
+      ],
+  };

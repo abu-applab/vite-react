@@ -1,8 +1,5 @@
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Search, Building2, Plus, Truck, Building, Factory, LandPlot } from "lucide-react"
+import { Truck, Building, Factory, LandPlot } from "lucide-react"
 import { TabsContent } from "@/components/applicationPage/tab-content";
 import AddNewApplication from "@/components/applicationPage/addNewApplication";
 import { InvestmentSelector } from "@/components/applicationPage/investmentSelector";
@@ -14,8 +11,9 @@ import alKhor from '../assets/images/Al-khor.svg'
 import smiZone from '../assets/images/SMI-zone.svg'
 import alKaranaa from '../assets/images/Al-Karaana.svg'
 import mesaieed from '../assets/images/Mesaieed.svg'
-import { useApp, type CompanyType } from "@/context/AppContext";
+import { useApp } from "@/context/AppContext";
 import PageHeader from "@/components/pageHeader";
+import { CreateAndFilter } from "@/components/createAndFilter";
 
 interface InvestmentOptions {
     id: string
@@ -152,38 +150,6 @@ const draftedApplications = [
     },
 ];
 
-const applicationTypes = [
-    {
-        title: 'Logistics',
-        icon: Truck
-    },
-    {
-        title: 'Industrial',
-        icon: Factory
-    },
-    {
-        title: 'Commercial',
-        icon: Building
-    },
-    {
-        title: 'Open Yards',
-        icon: LandPlot
-    },
-];
-
-const statuses = [
-    'Draft',
-    'Submitted',
-    'Review in progress',
-    'Pending',
-    'Approved',
-    'Rejected',
-    'Pending submit transfer',
-    'On Hold',
-    'Cancelled',
-    'Terminated'
-];
-
 const tabs = [
     { id: 'submitted', label: 'Submitted Applications' },
     { id: 'drafted', label: 'Drafted Applications' },
@@ -193,31 +159,54 @@ const header = {
     title: "Applications",
     homeLink: 'companyName',
     contentLinks: ['View Applications', 'Create New Applications'],
-  }
+}
+
+const filterKeys = {
+    title: 'Applocations',
+    createNewRequest: 'View Application',
+    filterTypes: [
+        { id: 'darft', value: 'Darft' },
+        { id: 'submitted', value: 'Submitted' },
+        { id: 'reviewInProgress', value: 'Review In Progress' },
+        { id: 'approved', value: 'Approved' },
+        { id: 'rejected', value: 'Rejected' },
+        { id: 'pending', value: 'Pending Submit Transfer' },
+        { id: 'onHold', value: 'On Hold' },
+        { id: 'rejected', value: 'Rejected' },
+        { id: 'Cancelled', value: 'Cancelled' },
+        { id: 'Terminated', value: 'Terminated' },
+    ],
+    applicationFilter: [
+        { id: 'Logistics Park', value: 'Logistics Park', icon: Truck },
+        { id: 'Industrial', value: 'Industrial', icon: Factory },
+        { id: 'Commercial', value: 'Commercial', icon: Building },
+        { id: 'Open Yards', value: 'Open Yards', icon: LandPlot },
+    ]
+}
 
 const ApplicationPage = () => {
     const [step, setStep] = useState(0);
     const [activeTab, setActiveTab] = useState('submitted');
     const [isCreateNewApplication, setCreateNewApplication] = useState(false)
     const [selectedApplication, setSelectedApplication] = useState<string>("")
-    const { companies, selectedCompany, setSelectedCompany, setSelectedInvestment } = useApp()
+    const { setSelectedInvestment } = useApp()
 
     const filteredInvestmentLocations = {
         ...investmentLocations,
         options: investmentLocations.options.filter(option =>
-          option?.investments?.includes(selectedApplication)
+            option?.investments?.includes(selectedApplication)
         )
-        .map(option => {
-            // Disable Al Khor & Al Karaana when selectedApplication is 'industrial'
-            if (
-              selectedApplication === "industrial" &&
-              ["Al Khor Industrial Zone", "Al Karaana Industrial Zone"].includes(option.title)
-            ) {
-              return { ...option, disabled: true };
-            }
-            return option;
-          }),
-      };
+            .map(option => {
+                // Disable Al Khor & Al Karaana when selectedApplication is 'industrial'
+                if (
+                    selectedApplication === "industrial" &&
+                    ["Al Khor Industrial Zone", "Al Karaana Industrial Zone"].includes(option.title)
+                ) {
+                    return { ...option, disabled: true };
+                }
+                return option;
+            }),
+    };
 
 
     const steps = [
@@ -228,7 +217,7 @@ const ApplicationPage = () => {
                 <InvestmentSelector
                     handleSelectedOption={(val: string) => {
                         setSelectedApplication(val);
-                        setStep(1); // Otherwise, go to Select Location (step 2 → index 1)
+                        setStep(1);
                     }}
                     investmentContent={investmentTypes}
                 />
@@ -272,67 +261,12 @@ const ApplicationPage = () => {
     return (
         <div className="">
             {/* Header */}
-            <PageHeader header={header}/>
+            <PageHeader header={header} />
 
             {(!isCreateNewApplication) ? (
                 <div>
-                    <div className="flex flex-wrap gap-3 items-center mb-6">
-                    <div className="relative flex-1">
-                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-maroon-100" />
-                        <Input placeholder="Search..." className="pl-10 max-w-md bg-background" />
-                    </div>
-                    <Button variant="outline" onClick={() => setCreateNewApplication(true)}>
-                        <Plus className="h-4 w-4 mr-2" />
-                        Create New Application
-                    </Button>
-                    <Select>
-                        <SelectTrigger className="bg-background data-[placeholder]:text-foreground">
-                            <SelectValue placeholder="Application Type" />
-                        </SelectTrigger>
-                        <SelectContent className="w-[233px]">
-                            {applicationTypes.map((application, index) => (
-                                <SelectItem key={index} value={application.title}>
-                                    <application.icon className="text-maroon-100" />
-                                    {application.title}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                    <div className="relative">
-                        <Building2 className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4" />
-                        <Select
-                            value={selectedCompany?.accountID || ''}
-                            onValueChange={(value) => {
-                                const selectedValue = companies.find((company: CompanyType) => company.accountID === value)
-                                selectedValue && setSelectedCompany(selectedValue)
-                            }}
-                        >
-                            <SelectTrigger className="bg-background pl-10">
-                                <SelectValue placeholder="" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {companies.map((company) => (
-                                    <SelectItem key={company.accountID} value={company.accountID}>
-                                        {company.englishName}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                    </div>
-                    <Select>
-                        <SelectTrigger className="bg-background data-[placeholder]:text-foreground">
-                            <SelectValue placeholder="Status" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {statuses.map((status, index) => (
-                                <SelectItem key={index} value={status}>
-                                    {status}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                </div>
-                    <div className="w-full h-fit">
+                    <CreateAndFilter onNewRequest={() => setCreateNewApplication(true)} filterConfig={filterKeys} />
+                    <div className="w-full h-fit mt-6">
                         <div className="flex items-center bg-white h-[56px] rounded-lg shadow-md gap-[8px]">
                             {tabs.map((tab) => (
                                 <button key={tab.id} className={`py-[10px] h-full ml-[40px] text-sm font-medium ${activeTab === tab.id ? 'text-maroon-100 border-b-2 border-maroon-100' : 'text-black hover:text-gray-500'} focus:outline-none focus:text-maroon-100 `} onClick={() => setActiveTab(tab.id)} > {tab.label}

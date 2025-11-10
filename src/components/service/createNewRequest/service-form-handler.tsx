@@ -14,7 +14,6 @@ interface ServiceFormHandlerProps {
   selectedService: string;
   setSelectedService: Dispatch<SetStateAction<string>>;
   onBack: () => void;
-  onServiceAdded: (service: any) => void;
 }
 
 type ApiConfig =
@@ -24,7 +23,6 @@ type ApiConfig =
 export const ServiceFormHandler = ({
   selectedService,
   onBack,
-  onServiceAdded,
   setSelectedService,
 }: ServiceFormHandlerProps) => {
   const [config, setConfig] = useState<any>(null);
@@ -149,7 +147,6 @@ export const ServiceFormHandler = ({
           formState,
           urls: apiConfig.urls,
           networkRequest,
-          onServiceAdded,
           setReferenceMessage,
           contactId
         });

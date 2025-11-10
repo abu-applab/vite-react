@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card"
 import { ArrowRight, ArrowUpRight, Building2 } from "lucide-react"
 import { useApp, type CompanyType } from "@/context/AppContext"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
+import { cn } from "@/lib/utils"
 
 
 interface InvestmentTypeProps {
@@ -39,11 +40,11 @@ export function InvestmentSelector({ handleSelectedOption, investmentContent }: 
     })
 
   return (
-    <Card className="w-full p-10">
+    <Card className="w-full md:p-10 p-6">
       <div className="">
         {/* Header Section */}
-        <div className="flex flex-row justify-between">
-          <div className="mb-8">
+        <div className="flex md:flex-row flex-col justify-between">
+          <div className="md:mb-8 mb-4">
             <h1 className="text-xl leading-7 font-semibold text--card-foreground">
               {investmentContent.title}
             </h1>
@@ -58,7 +59,7 @@ export function InvestmentSelector({ handleSelectedOption, investmentContent }: 
               selectedValue && setSelectedCompany(selectedValue)
             }}
           >
-            <SelectTrigger className="bg-background">
+            <SelectTrigger className="bg-background max-md:mb-4 max-md:w-full">
             <Building2 className="h-4 w-4 mr-2 text-foreground" />
               <SelectValue />
             </SelectTrigger>
@@ -76,7 +77,7 @@ export function InvestmentSelector({ handleSelectedOption, investmentContent }: 
           {investmentContent.options.map((option) => (
             <div
               key={option.id}
-              className="overflow-hidden transition-shadow duration-300 flex flex-col h-full border rounded-2xl"
+              className={cn("overflow-hidden transition-shadow duration-300 flex flex-col h-full border rounded-2xl", {"opacity-60": option.disabled})}
               onMouseEnter={() => setHoveredCard(option.id)}
               onMouseLeave={() => {
                 setHoveredCard(null)
@@ -91,12 +92,12 @@ export function InvestmentSelector({ handleSelectedOption, investmentContent }: 
                 <img
                   src={option.image}
                   alt={option.title}
-                  className={`w-full h-full object-cover transition-transform duration-300 ${hoveredCard === option.id ? "scale-110" : "scale-100"
+                  className={`w-full h-full object-cover transition-transform duration-300 ${(hoveredCard === option.id && !option.disabled) ? "scale-110" : "scale-100"
                     }`}
                 />
 
                 {/* Apply Button - Shows on Image Hover */}
-                {hoveredCard === option.id && (
+                {(hoveredCard === option.id && !option.disabled)&& (
                   <div className="absolute inset-0 flex items-center justify-center bg-black/40 transition-all duration-300">
                     <button
                       onMouseEnter={() => setHoveredButton(option.id)}

@@ -12,7 +12,8 @@ export const API_ENDPOINTS = {
    deleteApplication: '/deleteApplication',
    submitApplication: '/submitApplication',
    getISICSections: 'getISICSections',
-   getISICCodesBySectionId: '/getISICCodesBySectionId'
+   getISICCodesBySectionId: '/getISICCodesBySectionId',
+   getAllServiceRequests: "/getAllServiceRequests"
 }
 
 export const API_SERVICES_ENDPOINTS = {

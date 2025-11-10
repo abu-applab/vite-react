@@ -25,12 +25,20 @@ interface FieldConfig {
   const allowedCommentChars = (val: string) =>
     /^[A-Za-z0-9\u0600-\u06FF\s.,!?-]+$/.test(val);
 
+  const isValidEmployeeCount = (value: string) => /^[0-9]{1,6}$/.test(value);
+
+
   //   const hasSpecialChars = (val: string) => /[^A-Za-z0-9\u0600-\u06FF\s]/.test(val)
   //   const isArabic = (val: string) => /[\u0600-\u06FF]/.test(val)
   //   const isEnglish = (val: string) => /[A-Za-z]/.test(val)
 
   export const validateForm = (config: FormConfig, formState: Record<string, any>, isSave = false) => {
     let newErrors: Record<string, string> = {};
+    const excludedKeys = [
+      "TotalCost",
+      "TotalFunding",
+      "TotalRequestedPlotSize",
+    ];
   
     const validateTextLength = (field: any, value: string) => {
       if (field.max && value.length > field.max)
@@ -43,7 +51,7 @@ interface FieldConfig {
       section.fields?.forEach((field: any) => {
         const value = formState[field.id]?.toString().trim?.() || formState[field.id];
   
-        if (field.required && isEmpty(value) && !isSave) {
+        if (field.required && isEmpty(value) && !isSave && (!excludedKeys.includes(field.id))) {
           newErrors[field.id] = `${field.label} is required`;
           return;
         }
@@ -63,19 +71,16 @@ interface FieldConfig {
           "SeaCoolingWater",
           "Electricity",
           "FuelProducts",
+          "StackHeight",
+          "Temperature",
+          "RateOfEmission",
+          "WasteQuantity",
+          "LevelOfNoiseAtPlotBoundary",
         ];
   
-        if (numericFields.includes(field.id)) {
-          if (isEmpty(value) && !isSave) {
-            newErrors[field.id] = `${field.label} is required`;
-            return;
-          }
-  
-          if (!/^\d+$/.test(value)) {
-            newErrors[field.id] = `${field.label} must contain digits only`;
-            return;
-          }
-  
+        if (numericFields.includes(field.id) && value) {
+          console.log('field.id: ', field.id);
+
           if (parseInt(value, 10) === 0) {
             newErrors[field.id] = `${field.label} cannot be 0`;
             return;
@@ -99,8 +104,21 @@ interface FieldConfig {
           if (err) newErrors[field.id] = err;
           if (isDigitsOnly(value)) newErrors[field.id] = "This field cannot contain digits only.";
         }
-        if (field.label === "Total Requested Plot Size (m2)" && value &&  /^\d{16,}$/.test(value))
+        const maximum15digits = [
+          "TotalRequestedPlotSize",
+          "ConstructionCost", 
+          "CostOfPlantMachinery", 
+          "CostOfOtherFixedAssets", 
+          "Equity", 
+          "Debt",
+          "WorkingCapital",
+        ]
+        if (maximum15digits.includes(field.id) && value &&  /^\d{16,}$/.test(value))
             newErrors[field.id] = "Maximum 15 digits allowed"
+
+        if (!isValidEmployeeCount(value) && value && (field.id === 'CurrentNumberOfEmployees' || field.id === 'AdditionalEmploymentProjected')) {
+          newErrors[field.id] = "Please enter a valid number (1–6 digits)";
+        }
       });
     });
   

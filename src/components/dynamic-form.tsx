@@ -303,67 +303,66 @@ const DynamicForm = ({
             </div>
           </div>
         )
-      
-        case "datepicker": {
-          const minYear = field.minYear ?? 1900;
-          const maxYear = field.maxYear ?? new Date().getFullYear();
-        
-          return (
-            <div className="space-y-2">
-              <Label htmlFor={field.id}>
-                {field.label}
-                {field.required && <span className="text-destructive">*</span>}
-              </Label>
-        
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className={`w-full justify-start text-left font-normal ${
-                      !formData[field.id] && "text-muted-foreground"
+
+      case "datepicker": {
+        const minYear = field.minYear ?? 1900;
+        const maxYear = field.maxYear ?? new Date().getFullYear();
+
+        return (
+          <div className="space-y-2">
+            <Label htmlFor={field.id}>
+              {field.label}
+              {field.required && <span className="text-destructive">*</span>}
+            </Label>
+
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className={`w-full justify-start text-left font-normal ${!formData[field.id] && "text-muted-foreground"
                     } ${errors[field.id] ? "border-red-600" : ""}`}
-                  >
-                    {formData[field.id] ? (
-                      formData[field.id]
-                    ) : (
-                      <span>Select Year</span>
-                    )}
-                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                  </Button>
-                </PopoverTrigger>
-        
-                <PopoverContent className="w-56 p-2" align="start">
-                  <div className="grid grid-cols-3 gap-2 max-h-60 overflow-y-auto">
-                    {Array.from({ length: maxYear - minYear + 1 }, (_, i) => maxYear - i).map(
-                      (year) => (
-                        <Button
-                          key={year}
-                          variant={formData[field.id] === String(year) ? "default" : "outline"}
-                          className="w-full"
-                          onClick={() => handleInputChange(field.id, String(year))}
-                        >
-                          {year}
-                        </Button>
-                      )
-                    )}
-                  </div>
-                </PopoverContent>
-              </Popover>
-        
-              {errors[field.id] && (
-                <span className="text-sm text-red-600">{errors[field.id]}</span>
-              )}
-            </div>
-          );
-        }
-        
+                >
+                  {formData[field.id] ? (
+                    formData[field.id]
+                  ) : (
+                    <span>Select Year</span>
+                  )}
+                  <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                </Button>
+              </PopoverTrigger>
+
+              <PopoverContent className="w-56 p-2" align="start">
+                <div className="grid grid-cols-3 gap-2 max-h-60 overflow-y-auto">
+                  {Array.from({ length: maxYear - minYear + 1 }, (_, i) => maxYear - i).map(
+                    (year) => (
+                      <Button
+                        key={year}
+                        variant={formData[field.id] === String(year) ? "default" : "outline"}
+                        className="w-full"
+                        onClick={() => handleInputChange(field.id, String(year))}
+                      >
+                        {year}
+                      </Button>
+                    )
+                  )}
+                </div>
+              </PopoverContent>
+            </Popover>
+
+            {errors[field.id] && (
+              <span className="text-sm text-red-600">{errors[field.id]}</span>
+            )}
+          </div>
+        );
+      }
+
       default:
         return null
     }
   }
 
   return (
-    <Card className={cn("lg:p-10 md:py-6 bg-white/50 border shadow max-md:border-none max-md:shadow-none max-md:bg-[#F6F5EF] p-0",
+    <Card className={cn("lg:p-10 md:py-6 bg-white/50 md:border md:shadow border-none shadow-none max-md:bg-[#F6F5EF] p-0",
       { "border-none shadow-none": isCreateApplication }
     )}>
       <CardHeader className="max-md:shadow max-md:border max-md:bg-white max-md:p-4 max-md:rounded-lg">
@@ -373,8 +372,8 @@ const DynamicForm = ({
       <CardContent className="max-md:p-0">
         <form onSubmit={handleSubmit} className="space-y-6">
           {config?.sections.map((section, sectionIndex) => {
-            if(section.key === "ProductsJson") {
-              return <ProductInformation setProducts={setProducts} products={products}/>
+            if (section.key === "ProductsJson") {
+              return <ProductInformation setProducts={setProducts} products={products} isError={!!errors.ProductsJson} />
             }
             return (
               <>
@@ -396,9 +395,12 @@ const DynamicForm = ({
                           return true;
                         })
                         ?.map((field) => (
-                          <div key={field.id} className={field.type === "textarea" || field.type === "file" ? "md:col-span-2" : ""}>
-                            {renderField(field)}
-                          </div>
+                          <>
+                            {field.subTitle && <h4 className=" text-maroon-100 max-md:ml-4 mb-3 col-span-full">{section.title}</h4>}
+                            <div key={field.id} className={field.type === "textarea" || field.type === "file" ? "md:col-span-2" : ""}>
+                              {renderField(field)}
+                            </div>
+                          </>
                         ))}
                     </div>
                   </CardContent>
