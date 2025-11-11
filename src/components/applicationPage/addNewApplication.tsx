@@ -425,6 +425,7 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
         setProducts={setProducts}
         isLastStepActive={isLastStepActive}
         handleSubmit={handleSubmit}
+        applicationSteps={applicationSteps}
       />
     )
   }
@@ -465,6 +466,7 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
           fieldRefs={fieldRefs}
           isLastStepActive={isLastStepActive}
           handleSubmit={handleSubmit}
+          applicationSteps={applicationSteps}
         />
       )}
       <RequestSubmittedModal

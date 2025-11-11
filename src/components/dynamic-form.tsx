@@ -1,5 +1,5 @@
 import type { FormConfig, FormField } from "@/lib/form-data"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card"
+import { Card, CardContent, CardDescription, CardTitle } from "./ui/card"
 import { Input } from "./ui/input"
 import { Label } from "./ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select"
@@ -15,6 +15,7 @@ import { Command, CommandGroup, CommandItem, CommandList } from "./ui/command"
 import { Checkbox } from "./ui/checkbox"
 import { useApp } from "@/context/AppContext"
 import ProductInformation from "./productInformation"
+import FormSteps from "./addCompany/formSteps"
 
 interface DynamicFormProps {
   config: FormConfig
@@ -32,6 +33,7 @@ interface DynamicFormProps {
   setProducts?: any
   products?: any
   isLastStepActive?: boolean
+  applicationSteps?: any
 }
 
 const DynamicForm = ({
@@ -50,6 +52,7 @@ const DynamicForm = ({
   setProducts,
   products,
   isLastStepActive = true,
+  applicationSteps,
 }: DynamicFormProps) => {
   const { setCreateNewForm, setSelectedInvestment } = useApp();
 
@@ -365,10 +368,15 @@ const DynamicForm = ({
     <Card className={cn("lg:p-10 md:py-6 bg-white/50 md:border md:shadow border-none shadow-none max-md:bg-[#F6F5EF] p-0",
       { "border-none shadow-none": isCreateApplication }
     )}>
-      <CardHeader className="max-md:shadow max-md:border max-md:bg-white max-md:p-4 max-md:rounded-lg">
+      <div className="max-md:shadow max-md:border max-md:bg-white max-md:p-4 max-md:rounded-lg md:px-6">
         <CardTitle className="text-xl">{config?.title}</CardTitle>
         <CardDescription>{config?.description}</CardDescription>
-      </CardHeader>
+        {isCreateApplication && (
+          <div className="md:hidden">
+              <FormSteps steps={applicationSteps} />
+          </div>
+        )}
+      </div>
       <CardContent className="max-md:p-0">
         <form onSubmit={handleSubmit} className="space-y-6">
           {config?.sections.map((section, sectionIndex) => {

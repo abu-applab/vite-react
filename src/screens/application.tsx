@@ -163,7 +163,7 @@ const header = {
 
 const filterKeys = {
     title: 'Applocations',
-    createNewRequest: 'View Application',
+    createNewRequest: 'Create New Application',
     filterTypes: [
         { id: 'darft', value: 'Darft' },
         { id: 'submitted', value: 'Submitted' },
