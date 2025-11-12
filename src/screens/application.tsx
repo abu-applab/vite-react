@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Truck, Building, Factory, LandPlot } from "lucide-react"
+import { useEffect, useState } from "react";
+import { Truck, Building, Factory, LandPlot, FileSpreadsheet, Eye } from "lucide-react"
 import { TabsContent } from "@/components/applicationPage/tab-content";
 import AddNewApplication from "@/components/applicationPage/addNewApplication";
 import { InvestmentSelector } from "@/components/applicationPage/investmentSelector";
@@ -14,6 +14,11 @@ import mesaieed from '../assets/images/Mesaieed.svg'
 import { useApp } from "@/context/AppContext";
 import PageHeader from "@/components/pageHeader";
 import { CreateAndFilter } from "@/components/createAndFilter";
+import useNetworkRequest from "@/api/useNetworkRequest";
+import { API_ENDPOINTS } from "@/api/apiEndpoints";
+import ListOFCards from "@/components/listOfcards";
+import CustomPagination from "@/components/customPagination";
+import Loader from "@/components/loader";
 
 interface InvestmentOptions {
     id: string
@@ -30,6 +35,14 @@ interface InvestmentType {
     description: string,
     options: InvestmentOptions[]
 }
+
+interface Params {
+    Page: number
+    PageSize: number
+    AccountId: string
+    Status?: string
+}
+
 
 const investmentTypes: InvestmentType =
 {
@@ -100,36 +113,32 @@ const investmentLocations: InvestmentType =
     ]
 }
 
-const submittedApplications = [
-    {
-        id: "INDUSTAPP00000056115",
-        title: "Industrial",
-        location: "Al Wakrah",
-        date: "10-08-2025",
-        status: "Approved",
-    },
-    {
-        id: "INDUSTAPP00000056116",
-        title: "Industrial",
-        location: "Doha",
-        date: "10-08-2025",
-        status: "Pending",
-    },
-    {
-        id: "LOGPRKAPP00000056115",
-        title: "Logistics Parks",
-        location: "Doha",
-        date: "10-08-2025",
-        status: "Pending",
-    },
-    {
-        id: "INDUSTAPP",
-        title: "Open Yards",
-        location: "Al Wakrah",
-        date: "10-08-2025",
-        status: "Approved",
-    },
-];
+const cardsConfig = {
+    icon: FileSpreadsheet,
+    id: "applicationId",
+    subTitle: "locationNameEn",
+    title: "referenceNumber",
+    status: 'status',
+    fields: [
+        {
+            label: "Location",
+            key: "locationNameEn",
+        },
+        {
+            label: "Submitted Date",
+            key: "submissionDate",
+        },
+    ],
+    menuOptions: [
+        {
+            label: "View Details",
+            icon: Eye,
+            onClick: () => {
+                console.log("View clicked for:")
+            },
+        },
+    ]
+}
 
 const draftedApplications = [
     {
@@ -183,13 +192,60 @@ const filterKeys = {
         { id: 'Open Yards', value: 'Open Yards', icon: LandPlot },
     ]
 }
+const PAGE_SIZE = 4
 
 const ApplicationPage = () => {
     const [step, setStep] = useState(0);
     const [activeTab, setActiveTab] = useState('submitted');
-    const [isCreateNewApplication, setCreateNewApplication] = useState(false)
-    const [selectedApplication, setSelectedApplication] = useState<string>("")
-    const { setSelectedInvestment } = useApp()
+    const [isCreateNewApplication, setCreateNewApplication] = useState(false);
+    const [selectedApplication, setSelectedApplication] = useState<string>("");
+    const { setSelectedInvestment, setApplicationFilter, applicationFilter, selectedCompany } = useApp();
+    const [loading, setLoading] = useState(false);
+    const networkRequest = useNetworkRequest();
+    const [applicationData, setApplicationData] = useState([])
+    const [totalRecords, setTotalRecords] = useState(0)
+    // const [darfTotalRecords, setDarftTotalRecords] = useState(0)
+
+    useEffect(() => {
+        const fetchRequests = async () => {
+            console.log('selectedCompany?.accountID: ', selectedCompany?.accountID);
+            setLoading(true)
+            try {
+                const params: Params = {
+                    Page: applicationFilter?.page ?? 1,
+                    PageSize: PAGE_SIZE,
+                    AccountId: selectedCompany?.accountID ?? ''
+                }
+                if (applicationFilter?.status) params["Status"] = applicationFilter?.status
+
+                const response = await networkRequest(API_ENDPOINTS.getApplicationsList, { method: "GET", body: params })
+
+                if (response?.success) {
+                    setApplicationData(response.data.data)
+                    setTotalRecords(response.data.totalRecords)
+                }
+            } catch (error) {
+                console.error("Error fetching service requests:", error)
+            } finally {
+                setLoading(false)
+            }
+        }
+        if (selectedCompany?.accountID && !isCreateNewApplication) {
+            fetchRequests()
+        }
+    }, [applicationFilter, selectedCompany?.accountID, isCreateNewApplication])
+
+    const currentPage = applicationFilter?.page ?? 1
+    const totalPages = Math.ceil(totalRecords / PAGE_SIZE)
+
+    const handlePageChange = (newPage: number) => {
+        if (newPage > 0 && newPage <= totalPages) {
+          setApplicationFilter((prev: any) => ({
+            ...prev,
+            page: newPage,
+          }))
+        }
+      }
 
     const filteredInvestmentLocations = {
         ...investmentLocations,
@@ -265,7 +321,12 @@ const ApplicationPage = () => {
 
             {(!isCreateNewApplication) ? (
                 <div>
-                    <CreateAndFilter onNewRequest={() => setCreateNewApplication(true)} filterConfig={filterKeys} />
+                    <CreateAndFilter
+                        onNewRequest={() => setCreateNewApplication(true)}
+                        filterConfig={filterKeys}
+                        setAppliedFilter={setApplicationFilter}
+                        appliedFilter={applicationFilter}
+                    />
                     <div className="w-full h-fit mt-6">
                         <div className="flex items-center bg-white h-[56px] rounded-lg shadow-md gap-[8px]">
                             {tabs.map((tab) => (
@@ -274,10 +335,16 @@ const ApplicationPage = () => {
                             ))}
                         </div>
                         <div className="mt-4 w-full min-h-[35vh] rounded-b-lg">
-                            {activeTab === 'submitted' && <TabsContent applications={submittedApplications} />}
+                            {activeTab === 'submitted' &&
+                                <>
+                                <ListOFCards cardsConfig={cardsConfig} cardsData={applicationData} />
+                                <CustomPagination handlePageChange={handlePageChange} currentPage={currentPage} totalPages={totalPages} />
+                                </>
+                            }
                             {activeTab === 'drafted' && <TabsContent applications={draftedApplications} />}
                         </div>
                     </div>
+                    {loading && <Loader />}
                 </div>
             ) :
                 <div>{steps[step].component}</div>

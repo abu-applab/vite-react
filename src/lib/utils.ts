@@ -180,3 +180,22 @@ export const parseApiError = (error: any): string => {
   if (typeof error === "string") return error;
   return "An unexpected error occurred.";
 };
+
+// valiadtion utils
+
+export const isEmpty = (val: any) => val === undefined || val === null || val === ""
+export const isDigitsOnly = (val: string) => /^\d+$/.test(val)
+export const hasSpecialChars = (val: string) => /[^A-Za-z0-9\u0600-\u06FF\s]/.test(val)
+export const isArabic = (val: string) => /[\u0600-\u06FF]/.test(val)
+export const isEnglish = (val: string) => /[A-Za-z]/.test(val)
+export const isValidEmail = (val: string) =>
+  /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(val);  
+export const hasArabicLetters = (val: string) => /[\u0600-\u06FF]/.test(val);
+export const isValidPhone = (val: string) => /^\d{8}$/.test(val)
+export const isValidPOBox = (val: string) => /^\d{5,8}$/.test(val);
+export const isValidBuildingPermitNumber = (val: string) => /^\d{1,10}$/.test(val);
+export const hasEmojiOrUnicodeSymbols = (val: string) =>
+  /[^\u0000-\u007F\u0600-\u06FF\s]/.test(val);
+
+export const allowedCommentChars = (val: string) =>
+  /^[A-Za-z0-9\u0600-\u06FF\s.,!?-]+$/.test(val);

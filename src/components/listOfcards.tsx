@@ -20,7 +20,7 @@ interface CardConfig {
         label: string
         icon?: ElementType
         onClick?: (data: any) => void
-      }[]
+    }[]
 }
 
 interface ListOfCardsProps {
@@ -61,7 +61,7 @@ function getPointerColor(status: string) {
         case "inactive":
             return "bg-red-600"
         default:
-           return "bg-orange-100 text-orange-600 hover:bg-orange-100"
+            return "bg-orange-100 text-orange-600 hover:bg-orange-100"
     }
 }
 
@@ -93,7 +93,7 @@ const ListOFCards = ({ cardsConfig, cardsData, isProducts = false }: ListOfCards
                                 <span className={`size-1.5 ${getPointerColor(data[cardsConfig.status as keyof typeof data] ?? '')} rounded-full mr-1`}></span>
                                 <span className="text-xs leading-4 font-medium">{data[cardsConfig.status as keyof typeof data]}</span>
                             </Badge>}
-                           {cardsConfig?.menuOptions && cardsConfig?.menuOptions?.length > 0 &&  <DropdownMenu>
+                            {cardsConfig?.menuOptions && cardsConfig?.menuOptions?.length > 0 && <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                     <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
                                         <MoreVertical className="h-4 w-4" />
@@ -125,6 +125,9 @@ const ListOFCards = ({ cardsConfig, cardsData, isProducts = false }: ListOfCards
                                 cardsConfig.fields.map((field) => {
                                     let value = field.key === 'mainConatact' ? data?.mainConatact?.name : data[field?.key]
                                     value = (field.key === 'totalPlots' && !value) ? 0 : value
+                                    if (field.key === 'submissionDate' || field.key === 'submittedDate') {
+                                        value = new Date(value).toLocaleDateString("en-US");
+                                    }
                                     return (
                                         <div className={cn("flex flex-row items-center justify-between md:block md:mb-3")}>
                                             <p className="text-gray-500 mb-1">{field.label}</p>

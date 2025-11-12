@@ -149,7 +149,7 @@ const HubPage = () => {
                     <p className="text-sm text-gray-600">Stay informed and manage your investments seamlessly</p>
                   </div>
                 </div>
-                <Button className="bg-[#83764F] hover: text-white" onClick={() => setIsAddNewCompany(true)}>
+                <Button className="bg-maroon-100 hover: text-white" onClick={() => setIsAddNewCompany(true)}>
                   <Plus className="h-4 w-4 mr-2" />
                   Add New Company
                 </Button>

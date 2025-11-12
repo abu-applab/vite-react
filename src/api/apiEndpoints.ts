@@ -13,7 +13,11 @@ export const API_ENDPOINTS = {
    submitApplication: '/submitApplication',
    getISICSections: 'getISICSections',
    getISICCodesBySectionId: '/getISICCodesBySectionId',
-   getAllServiceRequests: "/getAllServiceRequests"
+   getAllServiceRequests: "/getAllServiceRequests",
+   logIn: "/logIn",
+   signUp: "/signUp",
+   resetPassword: "resetPassword",
+   getApplicationsList: '/getApplicationsList'
 }
 
 export const API_SERVICES_ENDPOINTS = {

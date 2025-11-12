@@ -119,3 +119,30 @@ export const newApplicationPlots = {
 }
 
 export type ServiceKey = "" | "logisticsPark" | 'industrial' | "commercial" | "openYards" | "smi"
+
+// components/AuthForm/constant.js
+
+// constants/authFields.ts
+export const loginFields = [
+  { id: "email", label: "Email", type: "text", placeholder: "Enter your email", icon: "Mail" },
+  { id: "password", label: "Password", type: "password", placeholder: "Enter your password", icon: "Lock" },
+];
+
+export const signUpFields = [
+  { id: "firstName", label: "First Name", type: "text", placeholder: "" },
+  { id: "lastName", label: "Last Name", type: "text", placeholder: "" },
+  { id: "email", label: "Email", type: "text", placeholder: "" },
+  { id: "landlineNumber", label: "Landline Number", type: "number", placeholder: "" },
+  { id: "mobileNumber", label: "Mobile Number", type: "number", placeholder: "" },
+  { id: "password", label: "Password", type: "password", placeholder: "" },
+  { id: "confirmPassword", label: "Confirm Password", type: "password", placeholder: "Confirm your password" },
+];
+
+export const forgotPasswordFields = [
+  { id: "email", label: "Email", type: "email", placeholder: "Enter your registered email" },
+];
+
+export const resetPasswordFields = [
+  { id: "password", label: "New Password", type: "password", placeholder: "Enter new password" },
+  { id: "confirmPassword", label: "Confirm Password", type: "password", placeholder: "Confirm new password" },
+];

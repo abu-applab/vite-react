@@ -1,25 +1,9 @@
 import { getServiceFormConfig } from "@/lib/form-data"
+import { allowedCommentChars, hasArabicLetters, hasEmojiOrUnicodeSymbols, hasSpecialChars, isArabic, isDigitsOnly, isEmpty, isEnglish, isValidBuildingPermitNumber, isValidEmail, isValidPhone, isValidPOBox } from "@/lib/utils"
 
 export const validateForm = (selectedService: string, formState: Record<string, any>) => {
   const config = getServiceFormConfig(selectedService)
   let newErrors: Record<string, string> = {}
-
-  const isEmpty = (val: any) => val === undefined || val === null || val === ""
-  const isDigitsOnly = (val: string) => /^\d+$/.test(val)
-  const hasSpecialChars = (val: string) => /[^A-Za-z0-9\u0600-\u06FF\s]/.test(val)
-  const isArabic = (val: string) => /[\u0600-\u06FF]/.test(val)
-  const isEnglish = (val: string) => /[A-Za-z]/.test(val)
-  const isValidEmail = (val: string) =>
-    /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(val);  
-  const hasArabicLetters = (val: string) => /[\u0600-\u06FF]/.test(val);
-  const isValidPhone = (val: string) => /^\d{8}$/.test(val)
-  const isValidPOBox = (val: string) => /^\d{5,8}$/.test(val);
-  const isValidBuildingPermitNumber = (val: string) => /^\d{1,10}$/.test(val);
-  const hasEmojiOrUnicodeSymbols = (val: string) =>
-    /[^\u0000-\u007F\u0600-\u06FF\s]/.test(val);
-
-  const allowedCommentChars = (val: string) =>
-    /^[A-Za-z0-9\u0600-\u06FF\s.,!?-]+$/.test(val);
 
 
   const validateTextLength = (field: any, value: string) => {

@@ -15,9 +15,15 @@ interface FilterKeys {
 interface CreateAndFilterProps {
   onNewRequest: () => void
   filterConfig: FilterKeys
+  appliedFilter: {
+    page: number,
+    status?: string,
+    applicationType?: string
+  }
+  setAppliedFilter: any
 }
 
-export const CreateAndFilter = ({ onNewRequest, filterConfig }: CreateAndFilterProps) => {
+export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, setAppliedFilter }: CreateAndFilterProps) => {
   const { companies, selectedCompany, setSelectedCompany } = useApp()
   return (
     <div className="">
@@ -47,7 +53,7 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig }: CreateAndFilterP
 
         {/* Company Dropdown */}
         <div className="flex flex-row gap-3">
-        {filterConfig?.applicationFilter && filterConfig?.applicationFilter?.length > 0 && <Select>
+          {filterConfig?.applicationFilter && filterConfig?.applicationFilter?.length > 0 && <Select>
             <SelectTrigger className="bg-background data-[placeholder]:text-foreground flex-1 min-w-[100px]">
               <SelectValue placeholder="Application type" />
             </SelectTrigger>
@@ -60,18 +66,18 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig }: CreateAndFilterP
               ))}
             </SelectContent>
           </Select>}
-        <Select defaultValue={selectedCompany?.accountID}>
-          <SelectTrigger className="bg-background flex-1 min-w-[100px]">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {companies.map((company) => (
-              <SelectItem key={company.accountID} value={company.accountID}>
-                {company.englishName}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+          <Select defaultValue={selectedCompany?.accountID}>
+            <SelectTrigger className="bg-background flex-1 min-w-[100px]">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {companies.map((company) => (
+                <SelectItem key={company.accountID} value={company.accountID}>
+                  {company.englishName}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </Card>
 
@@ -121,7 +127,13 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig }: CreateAndFilterP
               ))}
             </SelectContent>
           </Select>
-          <Select defaultValue="">
+          <Select 
+            defaultValue=""
+            value={appliedFilter?.status || ''}
+            onValueChange={(value) => {
+              setAppliedFilter({...appliedFilter, status: value})
+            }}
+            >
             <SelectTrigger className="bg-background data-[placeholder]:text-foreground">
               <SelectValue placeholder="Status" />
             </SelectTrigger>

@@ -30,6 +30,11 @@ interface ServiceFilter {
   page: number,
   status?: string,
 }
+interface ApplicationFilter {
+  page: number,
+  status?: string,
+  applicationType?: string
+}
 interface AppContextType {
     contactId: string;
     setContactId: React.Dispatch<React.SetStateAction<string>>;
@@ -49,6 +54,8 @@ interface AppContextType {
     setSelectedInvestment: React.Dispatch<React.SetStateAction<SelectedInvestment | null>>;
     serviceFilter: ServiceFilter;
     setServiceFilter: React.Dispatch<React.SetStateAction<ServiceFilter>>;
+    applicationFilter: ApplicationFilter;
+    setApplicationFilter: React.Dispatch<React.SetStateAction<ApplicationFilter>>;
 }
 
 // Create context
@@ -89,6 +96,9 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     //services
     const [serviceFilter, setServiceFilter] = useState<ServiceFilter>({page: 1})
 
+    //services
+    const [applicationFilter, setApplicationFilter] = useState<ServiceFilter>({page: 1})
+
 
   return (
     <AppContext.Provider value={{ 
@@ -110,6 +120,8 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         setSelectedInvestment,
         serviceFilter,
         setServiceFilter,
+        applicationFilter,
+        setApplicationFilter,
         }}>
       {children}
     </AppContext.Provider>

@@ -5,13 +5,13 @@ import { NewServiceRequestModal } from "@/components/service/serviceRequestPage/
 import { EmptyRequest } from "@/components/service/serviceRequestPage/empty-request"
 import PageHeader from "@/components/pageHeader"
 import { CreateAndFilter } from "@/components/createAndFilter"
-import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination"
 import useNetworkRequest from "@/api/useNetworkRequest"
 import { API_ENDPOINTS } from "@/api/apiEndpoints"
 import { useApp } from "@/context/AppContext"
 import ListOFCards from "@/components/listOfcards"
 import { Eye, MessageSquareDot } from "lucide-react"
 import Loader from "@/components/loader"
+import CustomPagination from "@/components/customPagination"
 
 interface Params {
   Page: number
@@ -48,20 +48,12 @@ const cardsConfig = {
   status: 'status',
   fields: [
       {
-          label: "Total Plots",
-          key: "totalPlots",
+          label: "Plot Number",
+          key: "plotNumber",
       },
       {
-          label: "Main Contact",
-          key: "mainConatact",
-      },
-      {
-          label: "Phone Number",
-          key: "phone",
-      },
-      {
-          label: "Mail",
-          key: "email",
+          label: "Submitted Date",
+          key: "submittedDate",
       },
   ],
   menuOptions: [
@@ -83,7 +75,7 @@ const Service = () => {
   const [loading, setLoading] = useState(false)
   const [totalRecords, setTotalRecords] = useState(0)
   const [serviceData, setServiceData] = useState<any[]>([])
-  const { serviceFilter, setServiceFilter } = useApp();
+  const { serviceFilter, setServiceFilter, selectedCompany } = useApp();
   const networkRequest = useNetworkRequest();
 
   const currentPage = serviceFilter?.page ?? 1
@@ -91,12 +83,13 @@ const Service = () => {
 
   useEffect(() => {
     const fetchRequests = async () => {
+      console.log('selectedCompany?.accountID: ', selectedCompany?.accountID);
       setLoading(true)
       try {
         const params: Params = {
           Page: serviceFilter?.page ?? 1,
           PageSize: PAGE_SIZE,
-          AccountId: '314cd4d3-097c-ef11-ac20-000d3a246e53'
+          AccountId: selectedCompany?.accountID ?? ''
         }
         if (serviceFilter?.status) params["Status"] = serviceFilter?.status
 
@@ -112,8 +105,10 @@ const Service = () => {
         setLoading(false)
       }
     }
-    fetchRequests()
-  }, [serviceFilter])
+    if(selectedCompany?.accountID && !selectedService) {
+      fetchRequests()
+    }
+  }, [serviceFilter, selectedCompany?.accountID, selectedService])
 
   const handlePageChange = (newPage: number) => {
     if (newPage > 0 && newPage <= totalPages) {
@@ -132,57 +127,11 @@ const Service = () => {
         <div>
           {(serviceData.length != 0) ?
             <>
-              <CreateAndFilter onNewRequest={() => setIsModalOpen(true)} filterConfig={filterKeys} />
+              <CreateAndFilter onNewRequest={() => setIsModalOpen(true)} filterConfig={filterKeys} setAppliedFilter={setServiceFilter} appliedFilter={serviceFilter} />
               {/* <RequestedServiceList services={requestedServices} /> */}
               <ListOFCards cardsConfig={cardsConfig} cardsData={serviceData} />
               {totalPages > 1 && (
-                <Pagination className="mt-6 flex justify-center">
-                  <PaginationContent>
-                    <PaginationItem>
-                      <PaginationPrevious
-                        onClick={() => handlePageChange(currentPage - 1)}
-                        aria-disabled={currentPage === 1}
-                        className={currentPage === 1 ? "opacity-50 pointer-events-none" : ""}
-                      />
-                    </PaginationItem>
-                    {(() => {
-                      const pagesToShow: (number | string)[] = []
-                      const maxVisible = 5 
-                      if (totalPages <= maxVisible) {
-                        for (let i = 1; i <= totalPages; i++) pagesToShow.push(i)
-                      } else {
-                        pagesToShow.push(1)
-                        if (currentPage > 3) pagesToShow.push("...")
-                        const start = Math.max(2, currentPage - 1)
-                        const end = Math.min(totalPages - 1, currentPage + 1)
-                        for (let i = start; i <= end; i++) pagesToShow.push(i)
-                        if (currentPage < totalPages - 2) pagesToShow.push("...")
-                        pagesToShow.push(totalPages)
-                      }
-                      return pagesToShow.map((page, idx) => (
-                        <PaginationItem key={idx}>
-                          {page === "..." ? (
-                            <span className="px-2 text-gray-400">…</span>
-                          ) : (
-                            <PaginationLink
-                              onClick={() => handlePageChange(Number(page))}
-                              isActive={currentPage === page}
-                            >
-                              {page}
-                            </PaginationLink>
-                          )}
-                        </PaginationItem>
-                      ))
-                    })()}
-                    <PaginationItem>
-                      <PaginationNext
-                        onClick={() => handlePageChange(currentPage + 1)}
-                        aria-disabled={currentPage === totalPages}
-                        className={currentPage === totalPages ? "opacity-50 pointer-events-none" : ""}
-                      />
-                    </PaginationItem>
-                  </PaginationContent>
-                </Pagination>
+                <CustomPagination handlePageChange={handlePageChange} currentPage={currentPage} totalPages={totalPages} />
               )}
 
             </> :

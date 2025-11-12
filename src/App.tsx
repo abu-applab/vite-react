@@ -57,7 +57,7 @@ function App() {
       <Routes>
         <Route path="/" element={<LoginLayout />}>
           <Route index element={<Login />} />
-          <Route path="add-company" element={<AddCompany />} />
+          <Route path="/add-company" element={<AddCompany />} />
         </Route>
       </Routes>
       <Routes>
