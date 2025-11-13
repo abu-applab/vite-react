@@ -64,6 +64,7 @@ function App() {
         <Route path="/portal" element={<PortalLayout />}>
           <Route index element={<HubPage />} />
           <Route path="/portal/application" element={<ApplicationPage />} />
+          <Route path="/portal/application/:id" element={<ApplicationPage />} />
           <Route path="/portal/payments" element={<PaymentScreen />} />
           <Route path="/portal/allocated-plots" element={<AllocatedPlotsPage />} />
           <Route path="/portal/agreements" element={<Agreements />} />

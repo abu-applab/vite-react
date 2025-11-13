@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { Truck, Building, Factory, LandPlot, FileSpreadsheet, Eye } from "lucide-react"
-import { TabsContent } from "@/components/applicationPage/tab-content";
 import AddNewApplication from "@/components/applicationPage/addNewApplication";
 import { InvestmentSelector } from "@/components/applicationPage/investmentSelector";
 import logistics from '../assets/images/logestics.svg'
@@ -19,6 +18,8 @@ import { API_ENDPOINTS } from "@/api/apiEndpoints";
 import ListOFCards from "@/components/listOfcards";
 import CustomPagination from "@/components/customPagination";
 import Loader from "@/components/loader";
+import { useNavigate, useParams } from "react-router-dom";
+import { EmptyRequest } from "@/components/service/serviceRequestPage/empty-request";
 
 interface InvestmentOptions {
     id: string
@@ -57,7 +58,7 @@ const investmentTypes: InvestmentType =
             disabled: true
         },
         {
-            id: "industrial",
+            id: "Industrial",
             title: "Industrial",
             description: "Heavy industrial hub for large-scale manufacturing.",
             image: industrial,
@@ -70,7 +71,7 @@ const investmentTypes: InvestmentType =
             disabled: true,
         },
         {
-            id: "openYards",
+            id: "Logistics",
             title: "Open Yards",
             description: "Plots and facilities for business growth environment.",
             image: openYards,
@@ -88,32 +89,32 @@ const investmentLocations: InvestmentType =
             id: "7703413e-4094-ea11-8106-00155d0d0b8c",
             title: "Al Khor Industrial Zone",
             image: alKhor,
-            investments: ['openYards', 'industrial']
+            investments: ['Logistics', 'Industrial']
         },
         {
             id: "b8797db0-4094-ea11-8106-00155d0d0b8c",
             title: "Al Karaana Industrial Zone",
             image: alKaranaa,
-            investments: ['openYards', 'industrial'],
+            investments: ['Logistics', 'Industrial'],
         },
         {
             id: "40bae3c1-b36b-ed11-811e-00155d0d0b8c",
             title: "Small Medium Ind",
             image: smiZone,
-            investments: ['industrial'],
+            investments: ['Industrial'],
             applicationType: "SMI",
         },
         {
             id: "edb79af3-c0d5-e611-80d3-00155d0d0b8cc",
             title: "Mesaieed Industrial Zone",
             image: mesaieed,
-            investments: ['industrial'],
+            investments: ['Industrial'],
             applicationType: "MIZ",
         },
     ]
 }
 
-const cardsConfig = {
+const cardsConfigBase = {
     icon: FileSpreadsheet,
     id: "applicationId",
     subTitle: "locationNameEn",
@@ -133,31 +134,10 @@ const cardsConfig = {
         {
             label: "View Details",
             icon: Eye,
-            onClick: () => {
-                console.log("View clicked for:")
-            },
+            actionKey: "view"
         },
     ]
 }
-
-const draftedApplications = [
-    {
-        id: "INDUSTAPP00000056115",
-        title: "Commercial",
-        status: "Draft",
-        location: "Al Wakrah",
-        date: "10-08-2025",
-        completion: 75,
-    },
-    {
-        id: "#APP-2025-0099",
-        title: "Commercial",
-        status: "Draft",
-        location: "Doha",
-        date: "15-08-2025",
-        completion: 80,
-    },
-];
 
 const tabs = [
     { id: 'submitted', label: 'Submitted Applications' },
@@ -174,16 +154,14 @@ const filterKeys = {
     title: 'Applocations',
     createNewRequest: 'Create New Application',
     filterTypes: [
-        { id: 'darft', value: 'Darft' },
-        { id: 'submitted', value: 'Submitted' },
-        { id: 'reviewInProgress', value: 'Review In Progress' },
-        { id: 'approved', value: 'Approved' },
-        { id: 'rejected', value: 'Rejected' },
-        { id: 'pending', value: 'Pending Submit Transfer' },
-        { id: 'onHold', value: 'On Hold' },
-        { id: 'rejected', value: 'Rejected' },
-        { id: 'Cancelled', value: 'Cancelled' },
-        { id: 'Terminated', value: 'Terminated' },
+        { id: '939330000', value: 'Submitted' },
+        { id: '939330001', value: 'Review In Progress' },
+        { id: '939330002', value: 'Approved' },
+        { id: '939330003', value: 'Rejected' },
+        { id: '939330005', value: 'Pending Submit Transfer' },
+        { id: '939330006', value: 'On Hold' },
+        { id: '939330007', value: 'Cancelled' },
+        { id: '939330008', value: 'Terminated' },
     ],
     applicationFilter: [
         { id: 'Logistics Park', value: 'Logistics Park', icon: Truck },
@@ -199,16 +177,67 @@ const ApplicationPage = () => {
     const [activeTab, setActiveTab] = useState('submitted');
     const [isCreateNewApplication, setCreateNewApplication] = useState(false);
     const [selectedApplication, setSelectedApplication] = useState<string>("");
-    const { setSelectedInvestment, setApplicationFilter, applicationFilter, selectedCompany } = useApp();
+    const { setSelectedInvestment, setApplicationFilter, applicationDraftFilter, setApplicationDarftFilter, applicationFilter, selectedCompany } = useApp();
     const [loading, setLoading] = useState(false);
     const networkRequest = useNetworkRequest();
     const [applicationData, setApplicationData] = useState([])
-    const [totalRecords, setTotalRecords] = useState(0)
-    // const [darfTotalRecords, setDarftTotalRecords] = useState(0)
+    const [applicationDraftData, setApplicationDarftData] = useState([])
+    const navigate = useNavigate();
+    const { id } = useParams();
+
+    const cardActions = {
+        view: (card: any) => {
+            console.log("Viewing:", card.typeOfApplication);
+            const locationName = investmentLocations.options.find((loc) => loc.title === card.locationNameEn)
+            setSelectedApplication(card.typeOfApplication);
+            setStep(2)
+            setCreateNewApplication(true);
+            setSelectedInvestment(() => ({
+                application: '',
+                location: locationName?.title,
+                locationId: locationName?.id,
+                applicationType: card?.applicationType?.replace(/\s+/g, "") ?? '',
+                status: card?.status ?? ''
+            }));
+            navigate(`/portal/application/${card.applicationId}`);
+        },
+    };
+
+    const cardsConfig = {
+        ...cardsConfigBase,
+        menuOptions: cardsConfigBase.menuOptions.map((option) => ({
+            ...option,
+            onClick: (card: any) => {
+                const handler = cardActions[option.actionKey as keyof typeof cardActions];
+                if (handler) handler(card);
+            },
+        })),
+    };
+
+    useEffect(() => {
+        if (!id) {
+            setCreateNewApplication(false);
+            setStep(0);
+            setSelectedApplication("");
+        }
+    }, [id]);
+
+    useLayoutEffect(() => {
+        // Run this only once — not on id changes
+        const navType =
+            (performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming | undefined)?.type ||
+            (performance.navigation?.type === 1 ? "reload" : "");
+
+
+        if (id && navType === "reload") {
+            navigate("/portal/application", { replace: true });
+        }
+        // 👇 Empty dependency ensures this runs only once on page load
+    }, []);
+
 
     useEffect(() => {
         const fetchRequests = async () => {
-            console.log('selectedCompany?.accountID: ', selectedCompany?.accountID);
             setLoading(true)
             try {
                 const params: Params = {
@@ -221,8 +250,12 @@ const ApplicationPage = () => {
                 const response = await networkRequest(API_ENDPOINTS.getApplicationsList, { method: "GET", body: params })
 
                 if (response?.success) {
+                    const totalPages = Math.ceil(response.data.totalRecords / PAGE_SIZE)
                     setApplicationData(response.data.data)
-                    setTotalRecords(response.data.totalRecords)
+                    setApplicationFilter((prev) => ({
+                        ...prev,
+                        totalPages: totalPages
+                    }))
                 }
             } catch (error) {
                 console.error("Error fetching service requests:", error)
@@ -233,19 +266,60 @@ const ApplicationPage = () => {
         if (selectedCompany?.accountID && !isCreateNewApplication) {
             fetchRequests()
         }
-    }, [applicationFilter, selectedCompany?.accountID, isCreateNewApplication])
+    }, [
+        applicationFilter?.status,
+        applicationFilter?.applicationType,
+        applicationFilter?.page,
+        selectedCompany?.accountID,
+        isCreateNewApplication
+    ])
 
-    const currentPage = applicationFilter?.page ?? 1
-    const totalPages = Math.ceil(totalRecords / PAGE_SIZE)
+    useEffect(() => {
+        const fetchDraftRequests = async () => {
+            setLoading(true)
+            try {
+                const params: Params = {
+                    Page: applicationDraftFilter?.page ?? 1,
+                    PageSize: PAGE_SIZE,
+                    AccountId: selectedCompany?.accountID ?? ''
+                }
+                if (applicationDraftFilter?.status) params["Status"] = applicationDraftFilter?.status
 
-    const handlePageChange = (newPage: number) => {
-        if (newPage > 0 && newPage <= totalPages) {
-          setApplicationFilter((prev: any) => ({
-            ...prev,
-            page: newPage,
-          }))
+                const response = await networkRequest(API_ENDPOINTS.getApplicationsList, { method: "GET", body: params })
+
+                if (response?.success) {
+                    const totalPages = Math.ceil(response.data.totalRecords / PAGE_SIZE)
+                    setApplicationDarftData(response.data.data)
+                    setApplicationDarftFilter((prev) => ({
+                        ...prev,
+                        totalPages: totalPages
+                    }))
+                }
+            } catch (error) {
+                console.error("Error fetching service requests:", error)
+            } finally {
+                setLoading(false)
+            }
         }
-      }
+        if (selectedCompany?.accountID && !isCreateNewApplication) {
+            fetchDraftRequests()
+        }
+    }, [
+        applicationDraftFilter?.applicationType,
+        applicationDraftFilter?.page,
+        selectedCompany?.accountID,
+        isCreateNewApplication
+    ])
+
+
+    const handlePageChange = (newPage: number, totalPages: number, setFilter: any) => {
+        if (newPage > 0 && newPage <= totalPages) {
+            setFilter((prev: any) => ({
+                ...prev,
+                page: newPage,
+            }))
+        }
+    }
 
     const filteredInvestmentLocations = {
         ...investmentLocations,
@@ -255,7 +329,7 @@ const ApplicationPage = () => {
             .map(option => {
                 // Disable Al Khor & Al Karaana when selectedApplication is 'industrial'
                 if (
-                    selectedApplication === "industrial" &&
+                    selectedApplication === "Industrial" &&
                     ["Al Khor Industrial Zone", "Al Karaana Industrial Zone"].includes(option.title)
                 ) {
                     return { ...option, disabled: true };
@@ -286,7 +360,7 @@ const ApplicationPage = () => {
                 <InvestmentSelector
                     handleSelectedOption={(val: string) => {
                         const locationName = investmentLocations.options.find((loc) => loc.id === val)
-                        const application = selectedApplication === "openYards" ? 'Open Yards' : locationName?.title
+                        const application = selectedApplication === "Logistics" ? 'Open Yards' : locationName?.title
                         setSelectedInvestment({
                             application: application ?? '',
                             applicationType: locationName?.applicationType ?? 'LogisticsParks',
@@ -336,12 +410,23 @@ const ApplicationPage = () => {
                         </div>
                         <div className="mt-4 w-full min-h-[35vh] rounded-b-lg">
                             {activeTab === 'submitted' &&
-                                <>
-                                <ListOFCards cardsConfig={cardsConfig} cardsData={applicationData} />
-                                <CustomPagination handlePageChange={handlePageChange} currentPage={currentPage} totalPages={totalPages} />
-                                </>
+                                ((applicationData.length > 0 && (applicationFilter?.totalPages ?? 0) > 0) ?
+                                    <>
+                                        <ListOFCards cardsConfig={cardsConfig} cardsData={applicationData} />
+                                        <CustomPagination handlePageChange={(page) => handlePageChange(page, applicationFilter?.totalPages ?? 0, setApplicationFilter)} currentPage={applicationFilter?.page ?? 1} totalPages={applicationFilter?.totalPages ?? 0} />
+                                    </>
+                                    : !loading && <EmptyRequest hideButton={true} />)
                             }
-                            {activeTab === 'drafted' && <TabsContent applications={draftedApplications} />}
+                            {activeTab === 'drafted' &&
+                                ((applicationDraftData.length > 0 && (applicationDraftFilter?.totalPages ?? 0) > 0) ?
+                                    <>
+                                        <ListOFCards cardsConfig={cardsConfig} cardsData={applicationDraftData} />
+                                        {(applicationDraftFilter?.totalPages ?? 0) > 1 && (
+                                            <CustomPagination handlePageChange={(page) => handlePageChange(page, applicationDraftFilter?.totalPages ?? 0, setApplicationDarftFilter)} currentPage={applicationDraftFilter?.page ?? 1} totalPages={applicationDraftFilter?.totalPages ?? 0} />
+                                        )}
+                                    </>
+                                    : !loading && <EmptyRequest hideButton={true} />)
+                            }
                         </div>
                     </div>
                     {loading && <Loader />}

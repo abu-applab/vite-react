@@ -79,7 +79,7 @@ export const serviceOptions = [
   },
   {
       title: "Industrial",
-      key: "industrial"
+      key: "Industrial"
   },
   {
       title: "Commercial",
@@ -87,13 +87,13 @@ export const serviceOptions = [
   },
   {
       title: "Open Yards",
-      key: "openYards"
+      key: "Logistics"
   },
 ]
 
 export const newApplicationPlots = {
   logisticsPark: [],
-  industrial: [
+  Industrial: [
     { title: "Instruction", completed: false, active: true, stepNumber: "1" },
     { title: "Company Details (1 of 2)", completed: false, active: false, stepNumber: "2" },
     { title: "Company Details (2 of 2", completed: false, active: false, stepNumber: "3" },
@@ -105,7 +105,7 @@ export const newApplicationPlots = {
     { title: "Company Details (2 of 2", completed: false, active: false, stepNumber: "3" },
     { title: "Document Upload", completed: false, active: false, stepNumber: "4" },
   ],
-  openYards: [
+  Logistics: [
     { title: "Instruction", completed: false, active: true, stepNumber: "1" },
     { title: "Intended Use & Business Plan", completed: false, active: false, stepNumber: "2" },
     { title: "Document Upload", completed: false, active: false, stepNumber: "3" },
@@ -118,7 +118,7 @@ export const newApplicationPlots = {
   ],
 }
 
-export type ServiceKey = "" | "logisticsPark" | 'industrial' | "commercial" | "openYards" | "smi"
+export type ServiceKey = "" | "logisticsPark" | 'Industrial' | "commercial" | "Logistics" | "smi"
 
 // components/AuthForm/constant.js
 

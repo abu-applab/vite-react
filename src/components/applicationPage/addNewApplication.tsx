@@ -14,8 +14,10 @@ import { validateForm } from "./validate"
 import { RequestSubmittedModal } from "../service/createNewRequest/request-submitted-modal"
 import { parseApiError } from "@/lib/utils"
 import Loader from "../loader"
+import { useNavigate, useParams } from "react-router-dom"
+import SubmittedFormSteps from "../submittedFormSteps"
 
-interface Step {
+export interface Step {
   title: string
   completed: boolean
   active: boolean
@@ -35,19 +37,41 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
   const { loadApplicationConfig } = useApplicationConfigLoader();
   const { setCreateNewForm, setSelectedInvestment, selectedCompany, contactId, selectedInvestment } = useApp();
   const fieldRefs = useRef<Record<string, HTMLElement | null>>({})
+  const { id } = useParams();
 
   const [config, setConfig] = useState<any>(getApplicationFormConfig(selectedApplication))
   const [applicationSteps, setApplicationSteps] = useState<Step[]>([])
   const [formState, setFormData] = useState<Record<string, any>>({})
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
-  const [applicationId, setApplicationId] = useState('');
+  const [applicationId, setApplicationId] = useState<string>('');
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmittedModalOpen, setSubmittedModal] = useState(false);
   const [referenceMessage, setReferenceMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [isSaveApplication, setSaveApplication] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await networkRequest(API_ENDPOINTS.getApplication, {
+        method: 'GET',
+        body: {
+          applicationId: id,
+        }
+      })
+      console.log('response: ', response);
+      if (response.success) {
+        setFormData(response.data)
+        response.data.products && setProducts(response.data.products)
+      }
+    }
+    if (id) {
+      fetchData();
+      setApplicationId(id)
+    }
+  }, [id])
 
   useEffect(() => {
     const init = async () => {
@@ -59,7 +83,7 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
 
   useEffect(() => {
     const fetchISICCodes = async () => {
-      const sectionId = formState?.ISICSection;
+      const sectionId = formState?.isicSection;
 
       // Only call when valid selection
       if (!sectionId) return;
@@ -70,7 +94,7 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
           sections: item.sections?.map((section: any) => ({
             ...section,
             fields: section.fields?.map((field: any) => {
-              if (field.id === "ISICCode") {
+              if (field.id === "isicCode") {
                 return { ...field, options: [{ id: "loading", name: "Fetching ISIC Codes...", disabled: true }] };
               }
               return field;
@@ -98,7 +122,7 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
             sections: item.sections?.map((section: any) => ({
               ...section,
               fields: section.fields?.map((field: any) => {
-                if (field.id === "ISICCode") {
+                if (field.id === "isicCode") {
                   return { ...field, options: isicCodeOptions };
                 }
                 return field;
@@ -111,7 +135,7 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
         // Optional: Reset ISICCode field value when section changes
         setFormData((prev: Record<string, any>) => ({
           ...prev,
-          ISICCode: "",
+          isicCode: "",
         }));
       } catch (error) {
         console.error("Failed to fetch ISIC Codes:", error);
@@ -119,7 +143,7 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
     };
 
     fetchISICCodes();
-  }, [formState?.ISICSection]);
+  }, [formState?.isicSection]);
 
 
   useEffect(() => {
@@ -127,8 +151,16 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
       setApplicationSteps(
         newApplicationPlots[selectedApplication as keyof typeof newApplicationPlots] ?? []
       )
+      if (id && (selectedInvestment?.status && selectedInvestment?.status?.toLowerCase() !== "draft")) {
+        setApplicationSteps((prev) => {
+          const data = prev
+            .filter((d) => d.title !== "Instruction")
+            .map((cn, index) => index === 0 ? { ...cn, active: true } : { ...cn })
+          return data
+        })
+      }
     }
-  }, [selectedApplication])
+  }, [selectedApplication, id, selectedInvestment?.status])
 
   // handling this state to show whether it's for view or create new service 
   useEffect(() => {
@@ -182,7 +214,7 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
 
         newErrors = validateForm(stepConfig, formState)
         console.log('applicationSteps[currentIndex]: ', applicationSteps[currentIndex]);
-        if(products.length <= 0 && applicationSteps[currentIndex].title === 'Company Details (1 of 2)') {
+        if (products.length <= 0 && applicationSteps[currentIndex].title === 'Company Details (1 of 2)') {
           console.log('here');
           newErrors.ProductsJson = "Field is required"
         }
@@ -214,8 +246,12 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
 
   const goToPreviousStep = () => {
     if (applicationSteps[0].active) {
-      setSelectedApplication("")
-      setStep(0)
+      if (id) {
+        navigate("/portal/application", { replace: true });
+      } else {
+        setSelectedApplication("")
+        setStep(0)
+      }
     } else {
       setApplicationSteps((prevSteps) => {
         const currentIndex = prevSteps.findIndex((s) => s.active)
@@ -261,7 +297,7 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
       body.append('ContactPerson', contactId);
       body.append('ApplicationType', selectedInvestment?.applicationType ?? '');
 
-      if (products.length > 0) body.append('ProductsJson',JSON.stringify(products));
+      if (products.length > 0) body.append('ProductsJson', JSON.stringify(products));
       const excludedKeys = [
         "TotalCost",
         "TotalFunding",
@@ -389,6 +425,11 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
     isSaveApplication ? handleSave() : handleSubmit();
   };
 
+  const isLastStepActive = applicationSteps[applicationSteps.length - 1]?.active === true;
+
+  const isSubmittedApplication = Boolean(
+    id && (selectedInvestment?.status && selectedInvestment?.status?.toLowerCase() !== "draft")
+  );
 
   const renderActiveStep = () => {
     const activeStep = applicationSteps.find((s) => s.active)
@@ -426,11 +467,10 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
         isLastStepActive={isLastStepActive}
         handleSubmit={handleSubmit}
         applicationSteps={applicationSteps}
+        isSubmittedApplication={isSubmittedApplication}
       />
     )
   }
-
-  const isLastStepActive = applicationSteps[applicationSteps.length - 1]?.active === true;
 
 
   return (
@@ -445,10 +485,11 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
         <Card className="md:mt-[72px] mr-4 mb-4 w-full flex flex-col bg-[#fcfaf7] max-md:border-none max-md:shadow-none max-md:bg-[#F6F5EF] ">
           {config?.length > 1 && (
             <>
-            <div className="max-md:hidden">
-              <FormSteps steps={applicationSteps} />
-              <div className="border-2 border-[#f6f5ef]" />
-            </div>
+              <div className="max-md:hidden">
+                {!isSubmittedApplication ? <FormSteps steps={applicationSteps} /> :
+                  <SubmittedFormSteps setApplicationSteps={setApplicationSteps} applicationSteps={applicationSteps} />}
+                <div className="border-2 border-[#f6f5ef]" />
+              </div>
             </>
           )}
           {renderActiveStep()}

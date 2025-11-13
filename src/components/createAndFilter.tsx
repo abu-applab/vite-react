@@ -113,6 +113,7 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, set
             onValueChange={(value) => {
               const selectedValue = companies.find((company: CompanyType) => company.accountID === value)
               selectedValue && setSelectedCompany(selectedValue)
+              setAppliedFilter({...appliedFilter, page: 1})
             }}
           >
             <SelectTrigger className="bg-background">
@@ -131,7 +132,7 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, set
             defaultValue=""
             value={appliedFilter?.status || ''}
             onValueChange={(value) => {
-              setAppliedFilter({...appliedFilter, status: value})
+              setAppliedFilter({...appliedFilter, status: value, page: 1})
             }}
             >
             <SelectTrigger className="bg-background data-[placeholder]:text-foreground">

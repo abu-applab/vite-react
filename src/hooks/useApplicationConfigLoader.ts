@@ -54,13 +54,13 @@ export const useApplicationConfigLoader = () => {
       sections: step.sections?.map((section: any) => ({
         ...section,
         fields: section.fields?.map((field: any) => {
-          if (field.id === "Location") {
+          if (field.id === "location") {
             return { ...field, options: locationOptions };
           }
-          if (field.id === "Cluster") {
+          if (field.id === "cluster") {
             return { ...field, options: clusterOptions };
           }
-          if (field.id === "ISICSection") {
+          if (field.id === "isicSection") {
             return { ...field, options: iSICSectionOptions };
           }
           return field;
@@ -79,7 +79,7 @@ export const useISICCodeLoader = (formState: Record<string, any>, setConfig: any
 
   useEffect(() => {
     const fetchISICCodes = async () => {
-      const sectionId = formState?.ISICSection;
+      const sectionId = formState?.isicSection;
 
       // Only call when valid selection
       if (!sectionId) return;
@@ -102,7 +102,7 @@ export const useISICCodeLoader = (formState: Record<string, any>, setConfig: any
           sections: prevConfig.sections.map((section: any) => ({
             ...section,
             fields: section.fields.map((field: any) => {
-              if (field.id === "ISICCode") {
+              if (field.id === "isicCode") {
                 return { ...field, options: isicCodeOptions };
               }
               return field;
@@ -113,7 +113,7 @@ export const useISICCodeLoader = (formState: Record<string, any>, setConfig: any
         // Optional: Reset ISICCode field value when section changes
         setFormData((prev: Record<string, any>) => ({
           ...prev,
-          ISICCode: "",
+          isicCode: "",
         }));
       } catch (error) {
         console.error("Failed to fetch ISIC Codes:", error);
@@ -121,5 +121,5 @@ export const useISICCodeLoader = (formState: Record<string, any>, setConfig: any
     };
 
     fetchISICCodes();
-  }, [formState?.ISICSection]);
+  }, [formState?.isicSection]);
 };

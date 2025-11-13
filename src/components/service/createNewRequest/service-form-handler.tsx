@@ -234,7 +234,7 @@ export const ServiceFormHandler = ({
             fields: baseSection.fields.map((baseField: any, j: number) => {
               const prevField = prevSection.fields?.[j] ?? {};
       
-              const alwaysDisableFields = ["Company", "Plot"]; // 👈 add your fixed fields here
+              const alwaysDisableFields = ["company", "plot"]; // 👈 add your fixed fields here
       
               const shouldDisable =
                 baseField.showStage === 1 ||  

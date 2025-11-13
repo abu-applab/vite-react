@@ -34,6 +34,7 @@ interface DynamicFormProps {
   products?: any
   isLastStepActive?: boolean
   applicationSteps?: any
+  isSubmittedApplication?: boolean
 }
 
 const DynamicForm = ({
@@ -90,6 +91,11 @@ const DynamicForm = ({
               className={`${errors[field.id] ? "border-red-600" : ""} placeholder:text-sm`}
               {...(field.type === "number" ? { onWheel: (e) => e.currentTarget.blur() } : {})}
               disabled={field.disabled}
+              onKeyDown={(e) => {
+                if(field.type === 'number' && ['e', 'E', '+', '-', '.'].includes(e.key)) {
+                  e.preventDefault();
+                }
+              }}
             />
             {errors[field.id] && <span className="text-sm text-red-600">{errors[field.id]}</span>}
           </div>
@@ -365,7 +371,7 @@ const DynamicForm = ({
   }
 
   return (
-    <Card className={cn("lg:p-10 md:py-6 bg-white/50 md:border md:shadow border-none shadow-none max-md:bg-[#F6F5EF] p-0",
+    <Card className={cn("lg:p-10 md:py-6 bg-[#F6F5EF]] border-none shadow-none max-md:bg-[#F6F5EF] p-0",
       { "border-none shadow-none": isCreateApplication }
     )}>
       <div className="max-md:shadow max-md:border max-md:bg-white max-md:p-4 max-md:rounded-lg md:px-6">
@@ -395,8 +401,8 @@ const DynamicForm = ({
                           // This for filtering and showing the check box field
                           if (field.showIfSelected) {
                             const selectedList =
-                              formData.RequiredUpdateSet ??
-                              formData.RequiredUpdate ??
+                              formData.requiredUpdateSet ??
+                              formData.requiredUpdate ??
                               [];
                             return selectedList.includes(field.showIfSelected);
                           }

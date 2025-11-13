@@ -48,22 +48,22 @@ export function getServiceFormConfig(formType: string): FormConfig {
                         title: "Request Details",
                         fields: [
                             {
-                                id: "Company",
+                                id: "company",
                                 label: "Company",
                                 type: "select",
                                 required: true,
                                 options: [],
                             },
                             {
-                                id: "Plot",
+                                id: "plot",
                                 label: "Plot",
                                 type: "select",
                                 required: true,
                                 options: [{ id: "loading", name: "Fetching plots...", disabled: true }],
-                                dependsOn: "Agreement",
+                                dependsOn: "agreement",
                             },
                             {
-                                id: "Agreement",
+                                id: "agreement",
                                 label: "Agreement",
                                 type: "text",
                                 required: true,
@@ -71,7 +71,7 @@ export function getServiceFormConfig(formType: string): FormConfig {
                                 disabled: true
                             },
                             {
-                                id: "Duration",
+                                id: "duration",
                                 label: "Duration",
                                 type: "number",
                                 required: true,
@@ -80,14 +80,14 @@ export function getServiceFormConfig(formType: string): FormConfig {
                                 min: 1,
                             },
                             {
-                                id: "Amount",
+                                id: "amount",
                                 label: "Amount",
                                 type: "number",
                                 required: true,
                                 placeholder: "Enter Amount",
                             },
                             {
-                                id: "Comments",
+                                id: "comments",
                                 label: "Comments (Optional)",
                                 type: "textarea",
                                 required: false,
@@ -247,21 +247,21 @@ export function getServiceFormConfig(formType: string): FormConfig {
                         title: "Request Details",
                         fields: [
                             {
-                                id: "Company",
+                                id: "company",
                                 label: "Company",
                                 type: "select",
                                 required: true,
                                 options: [],
                             },
                             {
-                                id: "Plot",
+                                id: "plot",
                                 label: "Plot",
                                 type: "select",
                                 required: true,
                                 options: [{ id: "loading", name: "Fetching plots...", disabled: true }],
                             },
                             {
-                                id: "Description",
+                                id: "description",
                                 label: "Description",
                                 type: "text",
                                 required: true,
@@ -270,7 +270,7 @@ export function getServiceFormConfig(formType: string): FormConfig {
                                 max: 100
                             },
                             {
-                                id: "Comments",
+                                id: "comments",
                                 label: "Comments (Optional)",
                                 type: "textarea",
                                 required: false,
@@ -358,7 +358,7 @@ export function getServiceFormConfig(formType: string): FormConfig {
                         title: "Request Details",
                         fields: [
                             {
-                                id: "Company",
+                                id: "company",
                                 label: "Company",
                                 type: "select",
                                 required: true,
@@ -366,16 +366,16 @@ export function getServiceFormConfig(formType: string): FormConfig {
                                 showStage: 1 
                             },
                             {
-                                id: "Plot",
+                                id: "plot",
                                 label: "Plot",
                                 type: "select",
                                 required: true,
                                 options: [{ id: "loading", name: "Fetching plots...", disabled: true }],
-                                dependsOn: "Agreement",
+                                dependsOn: "agreement",
                                 showStage: 1 
                             },
                             {
-                                id: "Agreement",
+                                id: "agreement",
                                 label: "Agreement",
                                 type: "text",
                                 required: true,
@@ -384,49 +384,49 @@ export function getServiceFormConfig(formType: string): FormConfig {
                                 showStage: 1 
                             },
                             {
-                                id: "RequiredUpdate",
+                                id: "requiredUpdate",
                                 label: "Required Update",
                                 type: "multiselect",
                                 required: true,
                                 options: [
-                                    { id: "CompanyName", name: "Company Name" },
-                                    { id: "Signatory", name: "Signatory" },
+                                    { id: "companyName", name: "Company Name" },
+                                    { id: "signatory", name: "Signatory" },
                                   ],
                                 showStage: 2   
                             }, 
                             {
-                                id: "NewCompanyNameEn",
+                                id: "newCompanyNameEn",
                                 label: "New Company Name (EN)",
                                 type: "text",
                                 required: true,
                                 placeholder: "Enter new company name in English",
                                 min: 3,
                                 max: 80,
-                                showIfSelected: 'CompanyName',
+                                showIfSelected: 'companyName',
                                 showStage: 2
                             },
                             {
-                                id: "NewCompanyNameAr",
+                                id: "newCompanyNameAr",
                                 label: "New Company Name (AR)",
                                 type: "text",
                                 required: true,
                                 placeholder: "Enter new company name in Arabic",
                                 min: 3,
                                 max: 80,
-                                showIfSelected: 'CompanyName',
+                                showIfSelected: 'companyName',
                                 showStage: 2
                             },
                             {
-                                id: "NewSignatory",
+                                id: "newSignatory",
                                 label: "New Signatory",
                                 type: "select",
                                 required: true,
                                 options: [{ id: "loading", name: "Fetching signatory...", disabled: true }],
-                                showIfSelected: 'Signatory',
+                                showIfSelected: 'signatory',
                                 showStage: 2
                             },
                             {
-                                id: "Comment",
+                                id: "comment",
                                 label: "Comments (Optional)",
                                 type: "textarea",
                                 required: false,
@@ -467,22 +467,22 @@ export function getServiceFormConfig(formType: string): FormConfig {
                         title: "Request Details",
                         fields: [
                             {
-                                id: "Company",
+                                id: "company",
                                 label: "Company",
                                 type: "select",
                                 required: true,
                                 options: [],
                             },
                             {
-                                id: "Plot",
+                                id: "plot",
                                 label: "Plot",
                                 type: "select",
                                 required: true,
                                 options: [{ id: "loading", name: "Fetching plots...", disabled: true }],
-                                dependsOn: "Agreement",
+                                dependsOn: "agreement",
                             },
                             {
-                                id: "Agreement",
+                                id: "agreement",
                                 label: "Agreement",
                                 type: "text",
                                 required: true,
@@ -490,7 +490,7 @@ export function getServiceFormConfig(formType: string): FormConfig {
                                 disabled: true
                             },
                             {
-                                id: "RequiredUpdateSet",
+                                id: "requiredUpdateSet",
                                 label: "Required Update",
                                 type: "multiselect",
                                 required: true,
@@ -501,7 +501,7 @@ export function getServiceFormConfig(formType: string): FormConfig {
                                 ],
                             },                              
                             {
-                                id: "Email",
+                                id: "email",
                                 label: "New Email",
                                 type: "text",
                                 required: true,
@@ -510,7 +510,7 @@ export function getServiceFormConfig(formType: string): FormConfig {
                                 max: 50,
                             },
                             {
-                                id: "Phone",
+                                id: "phone",
                                 label: "New Phone",
                                 type: "number",
                                 required: true,
@@ -518,7 +518,7 @@ export function getServiceFormConfig(formType: string): FormConfig {
                                 showIfSelected: "Phone",
                             },
                             {
-                                id: "POBox",
+                                id: "pOBox",
                                 label: "New PO Box",
                                 type: "number",
                                 required: true,
@@ -526,7 +526,7 @@ export function getServiceFormConfig(formType: string): FormConfig {
                                 showIfSelected: "POBox",
                             },
                             {
-                                id: "Comments",
+                                id: "comments",
                                 label: "Comments (Optional)",
                                 type: "textarea",
                                 required: false,
@@ -737,7 +737,7 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                     ],
                 }
             ]
-        case "industrial":
+        case "Industrial":
             return [
                 {
                     title: "Industrial Application",
@@ -783,7 +783,7 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                             title: "Technology",
                             fields: [
                                 {
-                                    id: "TechnologyCountryOfOrigin",
+                                    id: "technologyCountryOfOrigin",
                                     label: "Technology Country of Origin",
                                     type: "text",
                                     required: true,
@@ -792,7 +792,7 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                     max: 100,
                                 },
                                 {
-                                    id: "EquipmentCountryOfOrigin",
+                                    id: "equipmentCountryOfOrigin",
                                     label: "Equipment Country of Origin",
                                     type: "text",
                                     required: true,
@@ -801,7 +801,7 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                     max: 100,
                                 },
                                 {
-                                    id: "EquipmentYearOfProduction",
+                                    id: "equipmentYearOfProduction",
                                     label: "Equipment Year of Production",
                                     type: "datepicker",
                                     required: true,
@@ -816,7 +816,7 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                             title: "Intended Use & Business Plan",
                             fields: [
                                 {
-                                    id: "LandUse",
+                                    id: "landUse",
                                     label: "Land Use",
                                     type: "select",
                                     required: true,
@@ -829,28 +829,28 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                     ],
                                 },
                                 {
-                                    id: "Location",
+                                    id: "location",
                                     label: "Location",
                                     type: "select",
                                     required: true,
                                     options: []
                                 },
                                 {
-                                    id: "ISICSection",
+                                    id: "isicSection",
                                     label: "ISIC Section",
                                     type: "select",
                                     required: true,
                                     options: [{ id: "loading", name: "Fetching ISIC Section...", disabled: true } ]
                                 },
                                 {
-                                    id: "ISICCode",
+                                    id: "isicCode",
                                     label: "ISIC Code & Description",
                                     type: "select",
                                     required: true,
                                     options: []
                                 },
                                 {
-                                    id: "ProposedBusinessActivity",
+                                    id: "proposedBusinessActivity",
                                     label: "Description of Proposed Business Activities",
                                     type: "textarea",
                                     required: true,
@@ -864,43 +864,43 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                             title: "Estimated Requested Area (SQM)",
                             fields: [
                                 {
-                                    id: "OpenArea",
+                                    id: "openArea",
                                     label: "Open Area (SQM)",
                                     type: "number",
                                     required: true
                                 },
                                 {
-                                    id: "Administration",
+                                    id: "administration",
                                     label: "Administration (SQM)",
                                     type: "number",
                                     required: true
                                 },
                                 {
-                                    id: "Laboratory",
+                                    id: "laboratory",
                                     label: "Laboratory (SQM)",
                                     type: "number",
                                     required: true
                                 },
                                 {
-                                    id: "RawMaterialStorage",
+                                    id: "rawMaterialStorage",
                                     label: "Raw Material Storage (SQM)",
                                     type: "number",
                                     required: true
                                 },
                                 {
-                                    id: "ProductionArea",
+                                    id: "productionArea",
                                     label: "Production Area (SQM)",
                                     type: "number",
                                     required: true
                                 },
                                 {
-                                    id: "FinishedProductStorage",
+                                    id: "finishedProductStorage",
                                     label: "Finished Product Storage (SQM)",
                                     type: "number",
                                     required: true
                                 },
                                 {
-                                    id: "MaintenanceWorkshops",
+                                    id: "maintenanceWorkshops",
                                     label: "Maintenance/Workshops (SQM)",
                                     type: "number",
                                     required: true
@@ -918,37 +918,37 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                             title: "Utilities",
                             fields: [
                                 {
-                                    id: "PotableWater",
+                                    id: "potableWater",
                                     label: "Portable Water (m³/day)",
                                     type: "number",
                                     required: true
                                 },
                                 {
-                                    id: "Sewer",
+                                    id: "sewer",
                                     label: "Sewer (m³/day)",
                                     type: "number",
                                     required: true
                                 },
                                 {
-                                    id: "NaturalGas",
+                                    id: "naturalGas",
                                     label: "Natural Gas (m³/year)",
                                     type: "number",
                                     required: true
                                 },
                                 {
-                                    id: "SeaCoolingWater",
+                                    id: "seaCoolingWater",
                                     label: "Sea Cooling Water (m³/H)",
                                     type: "number",
                                     required: true
                                 },
                                 {
-                                    id: "Electricity",
+                                    id: "electricity",
                                     label: "Electricity (KVA)",
                                     type: "number",
                                     required: true
                                 },
                                 {
-                                    id: "FuelProducts",
+                                    id: "fuelProducts",
                                     label: "Fuel Products (mt/year)",
                                     type: "number",
                                     required: true
@@ -970,13 +970,13 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                             title: "Employment",
                             fields: [
                                 {
-                                    id: "CurrentNumberOfEmployees",
+                                    id: "currentNumberOfEmployees",
                                     label: "Current Number of Employees",
                                     type: "number",
                                     required: true
                                 },
                                 {
-                                    id: "AdditionalEmploymentProjected",
+                                    id: "additionalEmploymentProjected",
                                     label: "Additional Employment Projected",
                                     type: "number",
                                     required: true
@@ -987,41 +987,41 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                             title: "Safety",
                             fields: [
                                 {
-                                    id: "FirstAidEquipment",
+                                    id: "firstAidEquipment",
                                     label: "First Aid Equipment",
                                     type: "text",
                                     required: true,
                                     max: 100,
                                 },
                                 {
-                                    id: "FireFightingSystem",
+                                    id: "fireFightingSystem",
                                     label: "Fire Fighting System",
                                     type: "text",
                                     required: true,
                                     max: 100,
                                 },
                                 {
-                                    id: "NumberOfShifts",
+                                    id: "numberOfShifts",
                                     label: "Number of Shifts",
                                     type: "number",
                                     required: true
                                 },
                                 {
-                                    id: "SafetyEquipmentSystem",
+                                    id: "safetyEquipmentSystem",
                                     label: "Safety Equipment/System",
                                     type: "text",
                                     required: true,
                                     max: 100,
                                 },
                                 {
-                                    id: "WorkersFacilities",
+                                    id: "workersFacilities",
                                     label: "Workers Facilities",
                                     type: "text",
                                     required: true,
                                     max: 100,
                                 },
                                 {
-                                    id: "EmergencyResponsePlan",
+                                    id: "emergencyResponsePlan",
                                     label: "Emergency Response Plan",
                                     type: "text",
                                     required: true,
@@ -1033,7 +1033,7 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                            title: "Environmental Information",
                            fields: [
                             {
-                                id: "GasesEmittedDustsInfo",
+                                id: "gasesEmittedDustsInfo",
                                 label: "Gases Emitted/Dusts Info",
                                 type: "text",
                                 required: true,
@@ -1041,25 +1041,25 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                 subTitle: "Air Gases Type"
                             },
                             {
-                                id: "StackHeight",
+                                id: "stackHeight",
                                 label: "Stack Height (m)",
                                 type: "number",
                                 required: true
                             },
                             {
-                                id: "Temperature",
+                                id: "temperature",
                                 label: "Temperature (Celsius)",
                                 type: "number",
                                 required: true
                             },
                             {
-                                id: "RateOfEmission",
+                                id: "rateOfEmission",
                                 label: "Rate of Emission",
                                 type: "number",
                                 required: true
                             },
                             {
-                                id: "WasteType",
+                                id: "wasteType",
                                 label: "Waste Type",
                                 type: "text",
                                 required: true,
@@ -1067,48 +1067,48 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                 subTitle: "Waste",
                             },
                             {
-                                id: "IndustrialWasteWater",
+                                id: "industrialWasteWater",
                                 label: "Industrial Waste Water",
                                 type: "text",
                                 required: true,
                                 max: 100,
                             },
                             {
-                                id: "HazardousNonHazardous",
+                                id: "hazardousNonHazardous",
                                 label: "Hazardous/Non-Hazardous",
                                 type: "text",
                                 required: true,
                                 max: 100,
                             },
                             {
-                                id: "DomesticWasteWater",
+                                id: "domesticWasteWater",
                                 label: "Domestic Waste Water",
                                 type: "text",
                                 required: true,
                                 max: 100,
                             },
                             {
-                                id: "WasteQuantity",
+                                id: "wasteQuantity",
                                 label: "Quantity (m³/year)",
                                 type: "number",
                                 required: true
                             },
                             {
-                                id: "TreatmentType",
+                                id: "treatmentType",
                                 label: "Treatment Type",
                                 type: "text",
                                 required: true,
                                 max: 100,
                             },
                             {
-                                id: "RecyclingUsagePlans",
+                                id: "recyclingUsagePlans",
                                 label: "Recycling & Usage Plans",
                                 type: "text",
                                 required: true,
                                 max: 100
                             },
                             {
-                                id: "LevelOfNoiseAtPlotBoundary",
+                                id: "levelOfNoiseAtPlotBoundary",
                                 label: "Level of Noise at Plot Boundary (dB)",
                                 type: "number",
                                 required: true,
@@ -1120,20 +1120,20 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                             title: "Project Financial Information",
                             fields: [
                                 {
-                                    id: "ConstructionCost",
+                                    id: "constructionCost",
                                     label: "Construction Cost (QAR)",
                                     type: "number",
                                     required: true,
                                     subTitle: "Cost of Project",
                                 },
                                 {
-                                    id: "CostOfPlantMachinery",
+                                    id: "costOfPlantMachinery",
                                     label: "Cost of Plant & Machinery (QAR)",
                                     type: "number",
                                     required: true
                                 },
                                 {
-                                    id: "CostOfOtherFixedAssets",
+                                    id: "costOfOtherFixedAssets",
                                     label: "Cost of Other Fixed Assets (QAR)",
                                     type: "number",
                                     required: true
@@ -1146,20 +1146,20 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                     disabled: true,
                                 },
                                 {
-                                    id: "Equity",
+                                    id: "equity",
                                     label: "Equity (QAR)",
                                     type: "number",
                                     required: true,
                                     subTitle: "Total Cost",
                                 },
                                 {
-                                    id: "Debt",
+                                    id: "debt",
                                     label: "Debt (QAR)",
                                     type: "number",
                                     required: true
                                 },
                                 {
-                                    id: "WorkingCapital",
+                                    id: "workingCapital",
                                     label: "Working Capital (QAR)",
                                     type: "number",
                                     required: true
@@ -1271,7 +1271,7 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                     ]
                 }
             ]
-        case "openYards":
+        case "Logistics":
             return [
                 {
                     title: "Open Yard Application",
@@ -1318,7 +1318,7 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                             title: "Intended Use & Business Plan",
                             fields: [
                                 {
-                                    id: "LandUse",
+                                    id: "landUse",
                                     label: "Land Use",
                                     type: "select",
                                     required: true,
@@ -1331,14 +1331,14 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                     ],
                                 },
                                 {
-                                    id: "Cluster",
+                                    id: "cluster",
                                     label: "Cluster",
                                     type: "select",
                                     required: true,
                                     options: [],
                                 },
                                 {
-                                    id: "ProposedBusinessActivity",
+                                    id: "proposedBusinessActivity",
                                     label: "Description of Proposed Business Activities",
                                     type: "textarea",
                                     required: false,
@@ -1352,7 +1352,7 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                             title: "Facility Requirements",
                             fields: [
                                 {
-                                    id: "TotalRequestedPlotSize",
+                                    id: "totalRequestedPlotSize",
                                     label: "Total Requested Plot Size (m2)",
                                     type: "number",
                                     required: true,
@@ -1360,7 +1360,7 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                     max: 15
                                 },
                                 {
-                                    id: "Location",
+                                    id: "location",
                                     label: "Preferred Location",
                                     type: "select",
                                     required: true,

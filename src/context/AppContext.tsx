@@ -22,18 +22,21 @@ export interface CompanyType {
 interface SelectedInvestment {
   application: string,
   applicationType: string,
-  location: string,
-  locationId: string
+  location?: string,
+  locationId?: string,
+  status?: string,
 }
 
 interface ServiceFilter {
   page: number,
   status?: string,
+  totalPages?: number
 }
 interface ApplicationFilter {
   page: number,
   status?: string,
   applicationType?: string
+  totalPages?: number
 }
 interface AppContextType {
     contactId: string;
@@ -56,6 +59,8 @@ interface AppContextType {
     setServiceFilter: React.Dispatch<React.SetStateAction<ServiceFilter>>;
     applicationFilter: ApplicationFilter;
     setApplicationFilter: React.Dispatch<React.SetStateAction<ApplicationFilter>>;
+    applicationDraftFilter: ApplicationFilter;
+    setApplicationDarftFilter: React.Dispatch<React.SetStateAction<ApplicationFilter>>;
 }
 
 // Create context
@@ -96,8 +101,9 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     //services
     const [serviceFilter, setServiceFilter] = useState<ServiceFilter>({page: 1})
 
-    //services
-    const [applicationFilter, setApplicationFilter] = useState<ServiceFilter>({page: 1})
+    //application
+    const [applicationFilter, setApplicationFilter] = useState<ApplicationFilter>({page: 1})
+    const [applicationDraftFilter, setApplicationDarftFilter] = useState<ApplicationFilter>({page: 1, status: '939330004'})
 
 
   return (
@@ -122,6 +128,8 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         setServiceFilter,
         applicationFilter,
         setApplicationFilter,
+        applicationDraftFilter,
+        setApplicationDarftFilter
         }}>
       {children}
     </AppContext.Provider>

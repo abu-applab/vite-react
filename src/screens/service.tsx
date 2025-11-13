@@ -30,41 +30,40 @@ const filterKeys = {
   title: 'Service Request',
   createNewRequest: 'New Service Request',
   filterTypes: [
-    { id: 'approved', value: 'Approved' },
-    { id: 'in-progress', value: 'In Progress' },
-    { id: 'pending', value: 'Pending Request Fees' },
-    { id: 'cancelled', value: 'Cancelled' },
-    { id: 'rejected', value: 'Rejected' },
-    { id: 'pendingWork', value: 'Pending Work' },
-    { id: 'pendingInvestorUpdate', value: 'Pending Investor Update' },
+    { id: '939330000', value: 'Approved' },
+    { id: '939330005', value: 'Pre-Approved' },
+    { id: '939330001', value: 'Rejected' },
+    { id: '1', value: 'In Progress' },
+    { id: '939330003', value: 'Cancelled' },
+    { id: '2', value: 'Pending Work' },
+    { id: '939330002', value: 'Pending Investor Update' },
+    { id: '939330004', value: 'Pending Request Fees' },
   ]
 }
 
-const cardsConfig = {
+const cardsConfigBase = {
   icon: MessageSquareDot,
   id: "requestId",
   subTitle: "serviceType",
   title: "referenceNumber",
   status: 'status',
   fields: [
-      {
-          label: "Plot Number",
-          key: "plotNumber",
-      },
-      {
-          label: "Submitted Date",
-          key: "submittedDate",
-      },
+    {
+      label: "Plot Number",
+      key: "plotNumber",
+    },
+    {
+      label: "Submitted Date",
+      key: "submittedDate",
+    },
   ],
   menuOptions: [
     {
       label: "View Details",
       icon: Eye,
-      onClick: () => {
-        console.log("View clicked for:")
-      },
+      actionKey: "view"
     },
-  ]  
+  ]
 }
 
 const PAGE_SIZE = 4
@@ -73,13 +72,29 @@ const Service = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedService, setSelectedService] = useState<string>("")
   const [loading, setLoading] = useState(false)
-  const [totalRecords, setTotalRecords] = useState(0)
   const [serviceData, setServiceData] = useState<any[]>([])
   const { serviceFilter, setServiceFilter, selectedCompany } = useApp();
   const networkRequest = useNetworkRequest();
 
-  const currentPage = serviceFilter?.page ?? 1
-  const totalPages = Math.ceil(totalRecords / PAGE_SIZE)
+  const cardActions = {
+    view: (card: any) => {
+      console.log("Viewing:", card.requestId);
+      setSelectedService(card.requestId);
+    },
+  };
+
+  const cardsConfig = {
+    ...cardsConfigBase,
+    menuOptions: cardsConfigBase.menuOptions.map((option) => ({
+      ...option,
+      onClick: (card: any) => {
+        const handler = cardActions[option.actionKey as keyof typeof cardActions];
+        if (handler) handler(card);
+      },
+    })),
+  };
+
+
 
   useEffect(() => {
     const fetchRequests = async () => {
@@ -96,8 +111,12 @@ const Service = () => {
         const response = await networkRequest(API_ENDPOINTS.getAllServiceRequests, { method: "GET", body: params })
 
         if (response?.success) {
+          const totalPages = Math.ceil(response.data.totalRecords / PAGE_SIZE)
           setServiceData(response.data.data)
-          setTotalRecords(response.data.totalRecords)
+          setServiceFilter((prev) => ({
+            ...prev,
+            totalPages: totalPages
+          }))
         }
       } catch (error) {
         console.error("Error fetching service requests:", error)
@@ -105,13 +124,17 @@ const Service = () => {
         setLoading(false)
       }
     }
-    if(selectedCompany?.accountID && !selectedService) {
+    if (selectedCompany?.accountID && !selectedService) {
       fetchRequests()
     }
-  }, [serviceFilter, selectedCompany?.accountID, selectedService])
+  }, [serviceFilter?.page,
+  serviceFilter?.status,
+  selectedCompany?.accountID,
+    selectedService
+  ])
 
   const handlePageChange = (newPage: number) => {
-    if (newPage > 0 && newPage <= totalPages) {
+    if (newPage > 0 && newPage <= (serviceFilter?.totalPages ?? 0)) {
       setServiceFilter((prev: any) => ({
         ...prev,
         page: newPage,
@@ -128,12 +151,13 @@ const Service = () => {
           {(serviceData.length != 0) ?
             <>
               <CreateAndFilter onNewRequest={() => setIsModalOpen(true)} filterConfig={filterKeys} setAppliedFilter={setServiceFilter} appliedFilter={serviceFilter} />
-              {/* <RequestedServiceList services={requestedServices} /> */}
-              <ListOFCards cardsConfig={cardsConfig} cardsData={serviceData} />
-              {totalPages > 1 && (
-                <CustomPagination handlePageChange={handlePageChange} currentPage={currentPage} totalPages={totalPages} />
-              )}
-
+              { (serviceFilter?.totalPages ?? 0) > 0 ? (
+                <>
+                  <ListOFCards cardsConfig={cardsConfig} cardsData={serviceData} />
+                  <CustomPagination handlePageChange={handlePageChange} currentPage={serviceFilter?.page} totalPages={serviceFilter?.totalPages ?? 0} />
+                </>) :
+                    <EmptyRequest hideButton={true} />
+              }
             </> :
             (!loading && <EmptyRequest onNewRequest={() => setIsModalOpen(true)} />)
           }

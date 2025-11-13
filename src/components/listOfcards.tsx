@@ -32,15 +32,27 @@ interface ListOfCardsProps {
 
 function getStatusColor(status: string) {
     switch (status.toLowerCase().trim()) {
-        case "approved":
+        case '939330004': //Draft
+        case 'draft':
+            return "bg-zinc-200 text-zinc-600 hover:bg-zinc-200"
+        case '939330001': //Review In progress
+        case 'review in progress': //Review In progress
+        case '939330005': //Pending submit transfer
+        case '939330006': //On hold
+        case 'submitted': //submitted
+            return "bg-orange-100 text-orange-600 hover:bg-orange-200"
+        case "939330002": // approved
         case "active":
+        case "approved":
             return "bg-green-100 text-green-600 hover:bg-green-100"
         case "in progress":
         case "pending":
         case "In Progress - قيد الإجراء":
         case "Pending Work -في إنتظار السحب":
             return "bg-orange-100 text-orange-600 hover:bg-orange-100"
-        case "rejected":
+        case "939330003": // rejected
+        case "939330007": // cancelled
+        case "939330008": // Terminated
         case "inactive":
             return "bg-red-100 text-red-600 hover:bg-red-100"
         default:
@@ -50,18 +62,30 @@ function getStatusColor(status: string) {
 
 function getPointerColor(status: string) {
     switch (status.toLowerCase()) {
-        case "approved":
+        case '939330004': //Draft
+        case 'draft': //Draft
+            return "bg-zinc-600"
+        case '939330001': //Review In progress
+        case 'review in progress': //Review In progress
+        case '939330005': //Pending submit transfer
+        case '939330006': //On hold
+        case 'submitted': //submitted
+            return "bg-orange-600"
+        case "939330002":  //approved
         case "active":
+        case "approved":
             return "bg-green-600"
         case "in progress":
         case "pending":
         case "In Progress - قيد الإجراء":
             return "bg-orange-600"
-        case "rejected":
+        case "939330003": // rejected
+        case "939330007": // cancelled
+        case "939330008": // Terminated
         case "inactive":
             return "bg-red-600"
         default:
-            return "bg-orange-100 text-orange-600 hover:bg-orange-100"
+            return "bg-orange-600"
     }
 }
 

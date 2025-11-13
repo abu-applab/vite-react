@@ -54,9 +54,9 @@ export const formatFileSize = (bytes: number) => {
 // extract first call logic
 export const createCompanyUpdateRequest = async ({ formState, networkRequest, contactId } : {formState: any, networkRequest: any, contactId: string}) => {
   const body = {
-    agreement: formState.Agreement,
-    plot: formState.Plot,
-    company: formState.Company,
+    agreement: formState.agreement,
+    plot: formState.plot,
+    company: formState.company,
     contactPerson: contactId,
   }
 
@@ -84,21 +84,20 @@ export const submitUpdateCompanyInformation = async ({
 
   const secondBody = new FormData();
   
-  if (formState.RequiredUpdate) {
-    String(formState.RequiredUpdate)
+  if (formState.requiredUpdate) {
+    String(formState.requiredUpdate)
       .split(",")
       .map(v => v.trim())
       .filter(Boolean)
-      .forEach(v => secondBody.append("RequiredUpdate", v));
+      .forEach(v => secondBody.append("requiredUpdate", v));
   }
-  secondBody.append("UpdateRequestId", formState.updateRequestId);
-  secondBody.append("NewCompanyNameEn", formState.NewCompanyNameEn || "");
-  secondBody.append("NewCompanyNameAr", formState.NewCompanyNameAr || "");
-  secondBody.append("NewSignatory", formState.NewSignatory || "");
-  secondBody.append("Comment", formState.Comment || "");
-  secondBody.append("Company", formState.companyId || "");
-  secondBody.append("ContactPerson", contactId);
-
+  secondBody.append("updateRequestId", formState.updateRequestId);
+  secondBody.append("newCompanyNameEn", formState.newCompanyNameEn || "");
+  secondBody.append("newCompanyNameAr", formState.newCompanyNameAr || "");
+  secondBody.append("newSignatory", formState.newSignatory || "");
+  secondBody.append("comment", formState.comment || "");
+  secondBody.append("company", formState.company || "");
+  secondBody.append("contactPerson", contactId);
   if (formState.NewCRCopy)
     secondBody.append("NewCRCopy", formState.NewCRCopy);
   if (formState.NOCToWhomItMayConcern)

@@ -17,7 +17,8 @@ export const API_ENDPOINTS = {
    logIn: "/logIn",
    signUp: "/signUp",
    resetPassword: "resetPassword",
-   getApplicationsList: '/getApplicationsList'
+   getApplicationsList: '/getApplicationsList',
+   getApplication: '/getApplication',
 }
 
 export const API_SERVICES_ENDPOINTS = {

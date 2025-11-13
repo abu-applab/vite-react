@@ -61,13 +61,14 @@ const LoginForm = ({ onSwitch }: LoginFormProps) => {
     // Password validation
     if (!password) {
       errors.password = "Password is required.";
-    } else {
-      const passwordRegex =
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]).{8,}$/;
-      if (!passwordRegex.test(password)) {
-        errors.password = "Please enter a valid password.";
-      }
-    }
+    } 
+    // else {
+    //   const passwordRegex =
+    //     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]).{8,}$/;
+    //   if (!passwordRegex.test(password)) {
+    //     errors.password = "Please enter a valid password.";
+    //   }
+    // }
 
     setFieldErrors(errors);
     // return true when no field errors

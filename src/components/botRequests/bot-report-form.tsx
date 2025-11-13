@@ -7,7 +7,7 @@ const tabs = [
     { id: 'warehouses', label: 'Warehouses' },
     { id: 'retail', label: 'Retail Outlets/Shops' },
     { id: 'accomadations', label: 'Accommodations' },
-    { id: 'openYards', label: 'Open Yards' },
+    { id: 'Logistics', label: 'Open Yards' },
 ];
 
 
@@ -109,7 +109,7 @@ const BotReportForm = () => {
                 {activeTab === 'warehouses' && <AreaForm />}
                 {activeTab === 'retail' && <AreaForm />}
                 {activeTab === 'accomadations' && <AreaForm />}
-                {activeTab === 'openYards' && <AreaForm />}
+                {activeTab === 'Logistics' && <AreaForm />}
             </>
         </div>
     </div>
