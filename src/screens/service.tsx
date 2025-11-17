@@ -148,7 +148,7 @@ const Service = () => {
         <div>
           {
             (serviceData.length === 0 && !serviceFilter?.searchTerm && !serviceFilter?.status && !loading) ?
-             <EmptyRequest title='No Service Requests Yet' description="You haven’t submitted any service requests yet." />
+             <EmptyRequest title='No Service Requests Yet' description="You haven’t submitted any service requests yet." buttonText="Submit New Request" />
             : (
               <>
                 <CreateAndFilter onNewRequest={() => setIsModalOpen(true)} filterConfig={filterKeys} setAppliedFilter={setServiceFilter} appliedFilter={serviceFilter} />

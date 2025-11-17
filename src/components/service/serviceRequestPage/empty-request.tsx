@@ -21,7 +21,7 @@ export const EmptyRequest = ({ onNewRequest, hideButton = false, title = '', des
       <div className='mt-4 my-10'>
         <h3 className='text-2xl font-semibold'>{title}</h3>
         {!hideButton && <p className='text-sm leading-5 font-normal text-muted-foreground'>
-          You haven’t submitted any service requests yet.
+          {description}
         </p>}
       </div>
       {!hideButton && (<div className='flex flex-col gap-3'>
@@ -30,7 +30,7 @@ export const EmptyRequest = ({ onNewRequest, hideButton = false, title = '', des
           className='py-2 px-4 bg-maroon-100 hover:bg-[#7A1F2B] h-10 text-sm font-medium text-primary-foreground cursor-pointer'
           onClick={() => onNewRequest!()}
         >
-          Submit New Service Reques
+          {buttonText}
         </Button>
         <Button
           type='button'
