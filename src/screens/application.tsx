@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useState } from "react";
-import { Truck, Building, Factory, LandPlot, FileSpreadsheet, Eye } from "lucide-react"
+import { Factory, FileSpreadsheet, Eye, Truck, CircleArrowRight, Trash2 } from "lucide-react"
 import AddNewApplication from "@/components/applicationPage/addNewApplication";
 import { InvestmentSelector } from "@/components/applicationPage/investmentSelector";
 import logistics from '../assets/images/logestics.svg'
@@ -36,14 +36,6 @@ interface InvestmentType {
     description: string,
     options: InvestmentOptions[]
 }
-
-interface Params {
-    Page: number
-    PageSize: number
-    AccountId: string
-    Status?: string
-}
-
 
 const investmentTypes: InvestmentType =
 {
@@ -139,6 +131,36 @@ const cardsConfigBase = {
     ]
 }
 
+const cardsDraftConfigBase = {
+    icon: FileSpreadsheet,
+    id: "applicationId",
+    subTitle: "locationNameEn",
+    title: "referenceNumber",
+    status: 'status',
+    fields: [
+        {
+            label: "Location",
+            key: "locationNameEn",
+        },
+        {
+            label: "Submitted Date",
+            key: "submissionDate",
+        },
+    ],
+    menuOptions: [
+        {
+            label: "Continue",
+            icon: CircleArrowRight,
+            actionKey: "view"
+        },
+        {
+            label: "Delete",
+            icon: Trash2,
+            actionKey: "delete"
+        },
+    ]
+}
+
 const tabs = [
     { id: 'submitted', label: 'Submitted Applications' },
     { id: 'drafted', label: 'Drafted Applications' },
@@ -164,10 +186,8 @@ const filterKeys = {
         { id: '939330008', value: 'Terminated' },
     ],
     applicationFilter: [
-        { id: 'Logistics Park', value: 'Logistics Park', icon: Truck },
-        { id: 'Industrial', value: 'Industrial', icon: Factory },
-        { id: 'Commercial', value: 'Commercial', icon: Building },
-        { id: 'Open Yards', value: 'Open Yards', icon: LandPlot },
+        { id: '100000000', value: 'Industrial', icon: Factory },
+        { id: '100000001', value: 'Logistics', icon: Truck },
     ]
 }
 const PAGE_SIZE = 4
@@ -182,6 +202,7 @@ const ApplicationPage = () => {
     const networkRequest = useNetworkRequest();
     const [applicationData, setApplicationData] = useState([])
     const [applicationDraftData, setApplicationDarftData] = useState([])
+    const [refreshDraft, setRefreshDraft] = useState(false);
     const navigate = useNavigate();
     const { id } = useParams();
 
@@ -201,11 +222,38 @@ const ApplicationPage = () => {
             }));
             navigate(`/portal/application/${card.applicationId}`);
         },
+        delete: async (card: any) => {
+            setLoading(true);
+            try {
+              const response = await networkRequest(
+                `${API_ENDPOINTS.deleteApplication}?id=${card.applicationId}`,
+                { method: "POST" }
+              );
+        
+              if (response.success) {
+                setRefreshDraft(prev => !prev);
+                console.log("Deleted successfully", card.applicationId);
+              }
+            } catch (error) {
+              console.error("Delete failed:", error);
+            }
+          },
     };
 
     const cardsConfig = {
         ...cardsConfigBase,
         menuOptions: cardsConfigBase.menuOptions.map((option) => ({
+            ...option,
+            onClick: (card: any) => {
+                const handler = cardActions[option.actionKey as keyof typeof cardActions];
+                if (handler) handler(card);
+            },
+        })),
+    };
+
+    const cardsDraftConfig = {
+        ...cardsDraftConfigBase,
+        menuOptions: cardsDraftConfigBase.menuOptions.map((option) => ({
             ...option,
             onClick: (card: any) => {
                 const handler = cardActions[option.actionKey as keyof typeof cardActions];
@@ -240,12 +288,23 @@ const ApplicationPage = () => {
         const fetchRequests = async () => {
             setLoading(true)
             try {
-                const params: Params = {
-                    Page: applicationFilter?.page ?? 1,
-                    PageSize: PAGE_SIZE,
-                    AccountId: selectedCompany?.accountID ?? ''
+                const params = new URLSearchParams();
+
+                params.append("AccountId", selectedCompany?.accountID ?? "");
+                params.append("Page", (applicationFilter?.page ?? 1).toString());
+                params.append("PageSize", PAGE_SIZE.toString());
+                applicationFilter?.searchTerm && params.append("SearchTerm", (applicationFilter?.searchTerm));
+                applicationFilter?.typeOfApplication && params.append("TypeOfApplication", (applicationFilter?.typeOfApplication));
+
+                if (applicationFilter?.status) {
+                    applicationFilter.status.split(",").forEach(val => {
+                        params.append("StatusArray", val);
+                    });
+                } else {
+                    filterKeys.filterTypes.forEach((val) => {
+                        params.append("StatusArray", val.id);
+                    })
                 }
-                if (applicationFilter?.status) params["Status"] = applicationFilter?.status
 
                 const response = await networkRequest(API_ENDPOINTS.getApplicationsList, { method: "GET", body: params })
 
@@ -268,7 +327,8 @@ const ApplicationPage = () => {
         }
     }, [
         applicationFilter?.status,
-        applicationFilter?.applicationType,
+        applicationFilter?.searchTerm,
+        applicationFilter?.typeOfApplication,
         applicationFilter?.page,
         selectedCompany?.accountID,
         isCreateNewApplication
@@ -278,12 +338,13 @@ const ApplicationPage = () => {
         const fetchDraftRequests = async () => {
             setLoading(true)
             try {
-                const params: Params = {
-                    Page: applicationDraftFilter?.page ?? 1,
-                    PageSize: PAGE_SIZE,
-                    AccountId: selectedCompany?.accountID ?? ''
-                }
-                if (applicationDraftFilter?.status) params["Status"] = applicationDraftFilter?.status
+                const params = new URLSearchParams();
+                params.append("AccountId", selectedCompany?.accountID ?? "");
+                params.append("Page", (applicationFilter?.page ?? 1).toString());
+                params.append("PageSize", PAGE_SIZE.toString());
+                params.append("status", '939330004')
+                applicationFilter?.searchTerm && params.append("SearchTerm", (applicationFilter?.searchTerm));
+                applicationFilter?.typeOfApplication && params.append("TypeOfApplication", (applicationFilter?.typeOfApplication));
 
                 const response = await networkRequest(API_ENDPOINTS.getApplicationsList, { method: "GET", body: params })
 
@@ -305,10 +366,12 @@ const ApplicationPage = () => {
             fetchDraftRequests()
         }
     }, [
-        applicationDraftFilter?.applicationType,
         applicationDraftFilter?.page,
+        applicationFilter?.searchTerm,
+        applicationFilter?.typeOfApplication,
         selectedCompany?.accountID,
-        isCreateNewApplication
+        isCreateNewApplication,
+        refreshDraft
     ])
 
 
@@ -420,7 +483,7 @@ const ApplicationPage = () => {
                             {activeTab === 'drafted' &&
                                 ((applicationDraftData.length > 0 && (applicationDraftFilter?.totalPages ?? 0) > 0) ?
                                     <>
-                                        <ListOFCards cardsConfig={cardsConfig} cardsData={applicationDraftData} />
+                                        <ListOFCards cardsConfig={cardsDraftConfig} cardsData={applicationDraftData} />
                                         {(applicationDraftFilter?.totalPages ?? 0) > 1 && (
                                             <CustomPagination handlePageChange={(page) => handlePageChange(page, applicationDraftFilter?.totalPages ?? 0, setApplicationDarftFilter)} currentPage={applicationDraftFilter?.page ?? 1} totalPages={applicationDraftFilter?.totalPages ?? 0} />
                                         )}

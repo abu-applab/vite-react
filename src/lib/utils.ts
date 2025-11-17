@@ -1,6 +1,7 @@
 import { clsx, type ClassValue } from "clsx"
 import { AppWindow, FileText, Home, MessageSquareDot, SquareDashed, SquareLibrary, Wallet } from "lucide-react"
 import { twMerge } from "tailwind-merge"
+import { TotalCalculationMap } from "./form-data";
 
 interface SubmitCompanyUpdateProps {
   formState: Record<string, any>;
@@ -198,3 +199,33 @@ export const hasEmojiOrUnicodeSymbols = (val: string) =>
 
 export const allowedCommentChars = (val: string) =>
   /^[A-Za-z0-9\u0600-\u06FF\s.,!?-]+$/.test(val);
+
+
+
+export const calculateTotals = (data: any) => {
+  const updated = { ...data };
+
+  // Loop through all total calculation groups
+  for (const [totalField, contributingFields] of Object.entries(TotalCalculationMap)) {
+    const newTotal = contributingFields.reduce((sum, key) => {
+      const num = Number(updated[key]) || 0;
+      return sum + num;
+    }, 0);
+
+    updated[totalField] = newTotal;
+  }
+
+  return updated;
+};
+
+export const removeEmptyValues = (data: any) => {
+  const cleaned: any = {};
+
+  Object.entries(data).forEach(([key, value]) => {
+    if (value !== 0 && value !== "") {
+      cleaned[key] = value;
+    }
+  });
+
+  return cleaned;
+};

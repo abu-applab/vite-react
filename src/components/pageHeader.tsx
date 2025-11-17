@@ -1,4 +1,5 @@
 import { useApp } from "@/context/AppContext";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom"
 
 
@@ -10,10 +11,13 @@ interface Header {
 
 interface pageHeaderProps {
     header: Header
+    selectedForm?: string
 }
 
-const PageHeader = ({ header }: pageHeaderProps) => {
+const PageHeader = ({ header, selectedForm }: pageHeaderProps) => {
+    const { t } = useTranslation();
     const { selectedCompany, isCreateNewForm, selectedInvestment } = useApp();
+    const subTitle = selectedForm ? (`create_${selectedForm}`) :  header.contentLinks[1]
 
     return (
         <div className="hidden md:block">
@@ -24,7 +28,7 @@ const PageHeader = ({ header }: pageHeaderProps) => {
                 {!selectedInvestment?.application ?
                     <>
                         <span className="mx-2">›</span>
-                        <span className="text-maroon-100">{isCreateNewForm ? header.contentLinks[1] : header.contentLinks[0]}</span>
+                        <span className="text-maroon-100">{isCreateNewForm ? t(subTitle) : header.contentLinks[0]}</span>
                     </>
                     :
                     <>

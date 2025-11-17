@@ -16,6 +16,7 @@ import { Checkbox } from "./ui/checkbox"
 import { useApp } from "@/context/AppContext"
 import ProductInformation from "./productInformation"
 import FormSteps from "./addCompany/formSteps"
+import { useTranslation } from "react-i18next"
 
 interface DynamicFormProps {
   config: FormConfig
@@ -54,8 +55,10 @@ const DynamicForm = ({
   products,
   isLastStepActive = true,
   applicationSteps,
+  isSubmittedApplication = false
 }: DynamicFormProps) => {
   const { setCreateNewForm, setSelectedInvestment } = useApp();
+  const {t} = useTranslation()
 
 
   // handling this state to show whether it's for view or create new service 
@@ -76,7 +79,7 @@ const DynamicForm = ({
         return (
           <div className="space-y-2">
             <Label htmlFor={field.id} className="gap-0">
-              {field.label}
+              {t(field.label)}
               {field.required && <div className="text-destructive">*</div>}
             </Label>
             <Input
@@ -86,11 +89,11 @@ const DynamicForm = ({
               }}
               type={field.type}
               placeholder={field.placeholder}
-              value={formData[field.id] || ""}
+              value={formData[field.id] || ''}
               onChange={(e) => handleInputChange(field.id, e.target.value)}
               className={`${errors[field.id] ? "border-red-600" : ""} placeholder:text-sm`}
               {...(field.type === "number" ? { onWheel: (e) => e.currentTarget.blur() } : {})}
-              disabled={field.disabled}
+              disabled={field.disabled || isSubmittedApplication}
               onKeyDown={(e) => {
                 if(field.type === 'number' && ['e', 'E', '+', '-', '.'].includes(e.key)) {
                   e.preventDefault();
@@ -106,7 +109,7 @@ const DynamicForm = ({
         return (
           <div className="space-y-2">
             <Label htmlFor={field.id}>
-              {field.label}
+              {t(field.label)}
               {field.required && <span className="text-destructive">*</span>}
             </Label>
             <Select
@@ -129,7 +132,7 @@ const DynamicForm = ({
                   handleInputChange(field.id, value);
                 }
               }}
-              disabled={!!isDisabled}
+              disabled={!!isDisabled || isSubmittedApplication}
             >
               <SelectTrigger
                 className={`w-full ${errors[field.id] ? "border-red-600" : ""}`}
@@ -137,12 +140,15 @@ const DynamicForm = ({
                   fieldRefs.current[field.id] = el
                 }}
               >
-                <SelectValue placeholder={`Select ${field.label.toLowerCase()}`} />
+                <SelectValue placeholder={`Select ${t(field.label).toLowerCase()}`} />
               </SelectTrigger>
               <SelectContent>
                 {field.options?.map((option) => {
+                  console.log('option: ', option);
                   const key = typeof option === "string" ? option : option.id;
+                  console.log('key: ', key);
                   const value = typeof option === "string" ? option : option.name;
+                  console.log('value: ', value);
                   const isOptionDisabled =
                     typeof option !== "string" && option.disabled;
                   return (
@@ -161,7 +167,7 @@ const DynamicForm = ({
         return (
           <div className="space-y-2">
             <Label htmlFor={field.id}>
-              {field.label}
+              {t(field.label)}
               {field.required && <span className="text-destructive">*</span>}
             </Label>
             <Textarea
@@ -174,6 +180,7 @@ const DynamicForm = ({
               onChange={(e) => handleInputChange(field.id, e.target.value)}
               rows={4}
               className={`${errors[field.id] ? "border-red-600" : ""} placeholder:text-sm`}
+              disabled={field.disabled || isSubmittedApplication}
             />
             {errors[field.id] && <span className="text-sm text-red-600">{errors[field.id]}</span>}
           </div>
@@ -183,7 +190,7 @@ const DynamicForm = ({
         return (
           <div className="space-y-2" key={field.id}>
             <Label htmlFor={field.id}>
-              {field.label}
+              {t(field.label)}
               {field.required && <span className="text-destructive">*</span>}
             </Label>
 
@@ -282,7 +289,7 @@ const DynamicForm = ({
                       [field.id]: uploadError
                     }))}
                     isServiceForm
-                    fileLabel={field.label}
+                    fileLabel={t(field.label)}
                   />
                   {errors[field.id] && <span className="text-sm text-red-600">{errors[field.id]}</span>}
                 </>
@@ -299,14 +306,14 @@ const DynamicForm = ({
                       </p>
                     </div>
                   </div>
-                  <Button
+                  {!isSubmittedApplication && <Button
                     className="border-2 h-8 w-8 p-2"
                     type="button"
                     variant="ghost"
                     onClick={() => handleInputChange(field.id, null)}
                   >
                     <Trash2 className="h-4 w-4 text-[#82764f]" />
-                  </Button>
+                  </Button>}
                 </Card>
               )}
             </div>
@@ -320,7 +327,7 @@ const DynamicForm = ({
         return (
           <div className="space-y-2">
             <Label htmlFor={field.id}>
-              {field.label}
+              {t(field.label)}
               {field.required && <span className="text-destructive">*</span>}
             </Label>
 
@@ -375,8 +382,8 @@ const DynamicForm = ({
       { "border-none shadow-none": isCreateApplication }
     )}>
       <div className="max-md:shadow max-md:border max-md:bg-white max-md:p-4 max-md:rounded-lg md:px-6">
-        <CardTitle className="text-xl">{config?.title}</CardTitle>
-        <CardDescription>{config?.description}</CardDescription>
+        <CardTitle className="text-xl">{t(config?.title)}</CardTitle>
+        <CardDescription>{t(config?.description)}</CardDescription>
         {isCreateApplication && (
           <div className="md:hidden">
               <FormSteps steps={applicationSteps} />
@@ -387,11 +394,16 @@ const DynamicForm = ({
         <form onSubmit={handleSubmit} className="space-y-6">
           {config?.sections.map((section, sectionIndex) => {
             if (section.key === "ProductsJson") {
-              return <ProductInformation setProducts={setProducts} products={products} isError={!!errors.ProductsJson} />
+              return <ProductInformation 
+                setProducts={setProducts} 
+                products={products} 
+                isError={!!errors.ProductsJson}
+                isSubmittedApplication={isSubmittedApplication}
+                 />
             }
             return (
               <>
-                <h4 className=" max-md:text-maroon-100 max-md:ml-4 mb-3">{section.title}</h4>
+                <h4 className=" max-md:text-maroon-100 max-md:ml-4 mb-3">{t(section.title)}</h4>
                 <Card key={sectionIndex}>
                   <CardContent className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -410,7 +422,7 @@ const DynamicForm = ({
                         })
                         ?.map((field) => (
                           <>
-                            {field.subTitle && <h4 className=" text-maroon-100 max-md:ml-4 mb-3 col-span-full">{section.title}</h4>}
+                            {field.subTitle && <h4 className=" text-maroon-100 max-md:ml-4 mb-3 col-span-full">{t(section.title)}</h4>}
                             <div key={field.id} className={field.type === "textarea" || field.type === "file" ? "md:col-span-2" : ""}>
                               {renderField(field)}
                             </div>
@@ -423,21 +435,21 @@ const DynamicForm = ({
             )
           })}
 
-          <div className="flex items-center justify-between">
+          {!isSubmittedApplication && (<div className="flex items-center justify-between">
             <Button type="button" variant="outline" onClick={handlePerviousButton}>
-              Previous
+              {t('previous')}
             </Button>
             <div className="flex flex-row items-center gap-3">
               {isCreateApplication &&
                 <Button type="submit" variant="outline" onClick={handleSave}>
-                  {"Save"}
+                  {t("save")}
                 </Button>
               }
               <Button type={(!isLastStepActive || isNext) ? "button" : "submit"} className="bg-maroon-100 hover:bg-[#7A1F2B]" onClick={(!isLastStepActive || isNext) ? goToNextStep : handleSubmit}>
-                {(!isLastStepActive || isNext) ? "Next" : "Submit"}
+                {(!isLastStepActive || isNext) ? t("next") : t("submit")}
               </Button>
             </div>
-          </div>
+          </div>)}
         </form>
       </CardContent>
     </Card>

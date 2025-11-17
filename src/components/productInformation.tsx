@@ -25,6 +25,7 @@ interface ProductInformationProps {
     products: Product[];
     setProducts: (value: Product[]) => void;
     isError: boolean
+    isSubmittedApplication: boolean
 }
 
 const validateProductForm = (form: Product) => {
@@ -99,7 +100,7 @@ const productFields = [
     { label: "Unit", key: "units", type: "number" },
 ]
 
-const ProductInformation = ({ products, setProducts, isError }: ProductInformationProps) => {
+const ProductInformation = ({ products, setProducts, isError, isSubmittedApplication = false }: ProductInformationProps) => {
     const [productForm, setProductForm] = useState<Product>(initialProduct);
     const [isProductModalOpen, setIsProductModalOpen] = useState(false);
     const [editingIndex, setEditingIndex] = useState<number | null>(null);
@@ -176,7 +177,7 @@ const ProductInformation = ({ products, setProducts, isError }: ProductInformati
             { label: "Quantity", key: "quantity" },
             { label: "HS Code", key: "hsCode" },
             { label: "Source of Raw Materials", key: "sourceOfRawMaterials" },
-            { label: "Unit", key: "Units" },
+            { label: "Unit", key: "units" },
         ],
         // 👇 dynamic menu actions
         menuOptions: [
@@ -201,7 +202,7 @@ const ProductInformation = ({ products, setProducts, isError }: ProductInformati
         <>
             <div className="flex flex-row justify-between items-center">
                 <h4 className="max-md:text-maroon-100 max-md:ml-4 mb-3">Product Information</h4>
-                {products?.length > 0 && <Button type="button" variant="ghost" className="border" onClick={handleOpenModal}>
+                {(products?.length > 0 && !isSubmittedApplication) && <Button type="button" variant="ghost" className="border" onClick={handleOpenModal}>
                     <Plus />
                     Add New Product
                 </Button>}

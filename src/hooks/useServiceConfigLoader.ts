@@ -26,16 +26,29 @@ export const useServiceFormConfigLoader = () => {
         agreementId: item.agreementId,
         name: item.plotNumber,
       }));
+
+      const agreementOptions = plots.map((item: any) => ({
+        id: item.agreementId,
+        name: item.agreementNumber,
+      }));
   
       updatedConfig = {
         ...updatedConfig,
         sections: updatedConfig.sections.map((section: any) => ({
           ...section,
-          fields: section.fields.map((field: any) =>
-            field.id.toLowerCase() === "plot"
-              ? { ...field, options: plotOptions }
-              : field
-          ),
+          fields: section.fields.map((field: any) => {
+            const fieldId = field.id.toLowerCase();
+      
+            if (fieldId === "plot") {
+              return { ...field, options: plotOptions };
+            }
+      
+            if (fieldId === "agreement") {
+              return { ...field, options: agreementOptions };
+            }
+            
+            return field;
+          }),
         })),
       };
   

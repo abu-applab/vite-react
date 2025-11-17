@@ -133,7 +133,7 @@ const ListOFCards = ({ cardsConfig, cardsData, isProducts = false }: ListOfCards
                                                 className="flex items-center gap-2"
                                                 onClick={() => option.onClick?.(data)}
                                             >
-                                                {Icon && <Icon className="h-4 w-4" />}
+                                                {Icon && <Icon className="h-4 w-4 text-maroon-100" />}
                                                 {option.label}
                                             </DropdownMenuItem>
                                         )
@@ -155,7 +155,7 @@ const ListOFCards = ({ cardsConfig, cardsData, isProducts = false }: ListOfCards
                                     return (
                                         <div className={cn("flex flex-row items-center justify-between md:block md:mb-3")}>
                                             <p className="text-gray-500 mb-1">{field.label}</p>
-                                            <p className="font-medium text-gray-900">{value}</p>
+                                            <p className="font-medium text-gray-900">{value ?? 'N/A'}</p>
                                         </div>
                                     )
                                 })

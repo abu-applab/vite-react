@@ -31,12 +31,15 @@ interface ServiceFilter {
   page: number,
   status?: string,
   totalPages?: number
+  searchTerm?: string
+  typeOfApplication?: string
 }
 interface ApplicationFilter {
   page: number,
   status?: string,
-  applicationType?: string
   totalPages?: number
+  typeOfApplication?: string
+  searchTerm?: string
 }
 interface AppContextType {
     contactId: string;

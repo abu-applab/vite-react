@@ -1,7 +1,7 @@
 import { getServiceFormConfig } from "@/lib/form-data"
 import { allowedCommentChars, hasArabicLetters, hasEmojiOrUnicodeSymbols, hasSpecialChars, isArabic, isDigitsOnly, isEmpty, isEnglish, isValidBuildingPermitNumber, isValidEmail, isValidPhone, isValidPOBox } from "@/lib/utils"
 
-export const validateForm = (selectedService: string, formState: Record<string, any>) => {
+export const validateForm = (selectedService: string, formState: Record<string, any>, t: any) => {
   const config = getServiceFormConfig(selectedService)
   let newErrors: Record<string, string> = {}
 
@@ -19,7 +19,7 @@ export const validateForm = (selectedService: string, formState: Record<string, 
       const value = typeof rawValue === "string" ? rawValue.trim() : rawValue
       const selectedList = formState.RequiredUpdateSet ?? formState.RequiredUpdate ?? [];
       if (field.required && isEmpty(value) && (!field.showIfSelected || (field.showIfSelected && selectedList?.includes(field.showIfSelected)))) {
-        newErrors[field.id] = `${field.label} is required`
+        newErrors[field.id] = `${t(field.label)} is required`
         return
       }
 
@@ -35,33 +35,33 @@ export const validateForm = (selectedService: string, formState: Record<string, 
         if (isDigitsOnly(value)) newErrors[field.id] = "This field cannot contain digits only."
       }
 
-      if (field.label.includes("New Company Name") && value) {
+      if (field.label.includes("new_company_name") && value) {
         if (hasSpecialChars(value)) newErrors[field.id] = "Special characters not allowed."
-        if (field.label.includes("(EN)") && isArabic(value)) newErrors[field.id] = "Must be English."
-        if (field.label.includes("(AR)") && isEnglish(value)) newErrors[field.id] = "Must be Arabic."
+        if (field.label.includes("en") && isArabic(value)) newErrors[field.id] = "Must be English."
+        if (field.label.includes("ar") && isEnglish(value)) newErrors[field.id] = "Must be Arabic."
       }
 
-      if (field.label === "New Email" && value) {
+      if (field.label === "new_email" && value) {
         if(!isValidEmail(value)) newErrors[field.id] = "Please enter a valid email address."
         if (hasArabicLetters(value)) newErrors[field.id] = "Only English alphanumeric characters are allowed."
       }
-      if (field.label === "New Phone" && value && !isValidPhone(value))
+      if (field.label === "new_phone" && value && !isValidPhone(value))
         newErrors[field.id] = "Must contain exactly 8 digits."
-      if (field.label === "New PO Box" && value && !isValidPOBox(value))
+      if (field.label === "new_po_box" && value && !isValidPOBox(value))
         newErrors[field.id] = "Must contain 5 to 8 character."
-      if (field.label === "Building Permit Application Number" && value && !isValidBuildingPermitNumber(value))
+      if (field.label === "building_permit_application_number" && value && !isValidBuildingPermitNumber(value))
         newErrors[field.id] = "Must contain 1 to 10 character."
 
       if (field.type === "number" && value !== undefined && value !== null && value !== "") {
         const numericValue = Number(value);
         if (isNaN(numericValue)) {
-          newErrors[field.id] = `${field.label} must be a valid number`;
+          newErrors[field.id] = `${t(field.label)} must be a valid number`;
         }
         else if (numericValue <= 0) {
-          newErrors[field.id] = `${field.label} must be greater than 0`;
+          newErrors[field.id] = `${t(field.label)} must be greater than 0`;
         }
         else if (/^0\d+/.test(value)) {
-          newErrors[field.id] = `${field.label} cannot start with 0`;
+          newErrors[field.id] = `${t(field.label)} cannot start with 0`;
         }
       }
     })

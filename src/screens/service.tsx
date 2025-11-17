@@ -13,13 +13,6 @@ import { Eye, MessageSquareDot } from "lucide-react"
 import Loader from "@/components/loader"
 import CustomPagination from "@/components/customPagination"
 
-interface Params {
-  Page: number
-  PageSize: number
-  AccountId: string
-  Status?: string
-}
-
 const header = {
   title: "Service Request",
   homeLink: 'companyName',
@@ -74,11 +67,11 @@ const Service = () => {
   const [loading, setLoading] = useState(false)
   const [serviceData, setServiceData] = useState<any[]>([])
   const { serviceFilter, setServiceFilter, selectedCompany } = useApp();
+  // const [isCreateNewService, setCreateNewService] = useState(false);
   const networkRequest = useNetworkRequest();
 
   const cardActions = {
     view: (card: any) => {
-      console.log("Viewing:", card.requestId);
       setSelectedService(card.requestId);
     },
   };
@@ -98,16 +91,20 @@ const Service = () => {
 
   useEffect(() => {
     const fetchRequests = async () => {
-      console.log('selectedCompany?.accountID: ', selectedCompany?.accountID);
       setLoading(true)
       try {
-        const params: Params = {
-          Page: serviceFilter?.page ?? 1,
-          PageSize: PAGE_SIZE,
-          AccountId: selectedCompany?.accountID ?? ''
-        }
-        if (serviceFilter?.status) params["Status"] = serviceFilter?.status
+        const params = new URLSearchParams();
 
+        params.append("AccountId", selectedCompany?.accountID ?? "");
+        params.append("Page", (serviceFilter?.page ?? 1).toString());
+        params.append("PageSize", PAGE_SIZE.toString());
+        serviceFilter?.searchTerm && params.append("SearchTerm", (serviceFilter?.searchTerm));
+
+        if (serviceFilter?.status) {
+          serviceFilter.status.split(",").forEach(val => {
+            params.append("StatusArray", val);
+          });
+        }
         const response = await networkRequest(API_ENDPOINTS.getAllServiceRequests, { method: "GET", body: params })
 
         if (response?.success) {
@@ -128,9 +125,10 @@ const Service = () => {
       fetchRequests()
     }
   }, [serviceFilter?.page,
-  serviceFilter?.status,
-  selectedCompany?.accountID,
-    selectedService
+     serviceFilter?.status,
+     serviceFilter?.searchTerm,
+     selectedCompany?.accountID,
+     selectedService
   ])
 
   const handlePageChange = (newPage: number) => {
@@ -145,22 +143,19 @@ const Service = () => {
 
   return (
     <Fragment>
-      <PageHeader header={header} />
+      <PageHeader header={header} selectedForm={selectedService} />
       {!selectedService ? (
         <div>
-          {(serviceData.length != 0) ?
-            <>
-              <CreateAndFilter onNewRequest={() => setIsModalOpen(true)} filterConfig={filterKeys} setAppliedFilter={setServiceFilter} appliedFilter={serviceFilter} />
-              { (serviceFilter?.totalPages ?? 0) > 0 ? (
-                <>
-                  <ListOFCards cardsConfig={cardsConfig} cardsData={serviceData} />
-                  <CustomPagination handlePageChange={handlePageChange} currentPage={serviceFilter?.page} totalPages={serviceFilter?.totalPages ?? 0} />
-                </>) :
-                    <EmptyRequest hideButton={true} />
-              }
-            </> :
-            (!loading && <EmptyRequest onNewRequest={() => setIsModalOpen(true)} />)
-          }
+          <>
+            <CreateAndFilter onNewRequest={() => setIsModalOpen(true)} filterConfig={filterKeys} setAppliedFilter={setServiceFilter} appliedFilter={serviceFilter} />
+            {(serviceData.length != 0) && (serviceFilter?.totalPages ?? 0) > 0 ? (
+              <>
+                <ListOFCards cardsConfig={cardsConfig} cardsData={serviceData} />
+                <CustomPagination handlePageChange={handlePageChange} currentPage={serviceFilter?.page} totalPages={serviceFilter?.totalPages ?? 0} />
+              </>) :
+              !loading && <EmptyRequest hideButton={true} /> 
+            }
+          </>
         </div>
       ) : (
         <ServiceFormHandler

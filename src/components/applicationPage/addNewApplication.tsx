@@ -12,10 +12,11 @@ import { API_ENDPOINTS } from "@/api/apiEndpoints"
 import { useApplicationConfigLoader } from "@/hooks/useApplicationConfigLoader"
 import { validateForm } from "./validate"
 import { RequestSubmittedModal } from "../service/createNewRequest/request-submitted-modal"
-import { parseApiError } from "@/lib/utils"
+import { calculateTotals, parseApiError, removeEmptyValues } from "@/lib/utils"
 import Loader from "../loader"
 import { useNavigate, useParams } from "react-router-dom"
 import SubmittedFormSteps from "../submittedFormSteps"
+import { useTranslation } from "react-i18next"
 
 export interface Step {
   title: string
@@ -52,26 +53,38 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
   const [errorMessage, setErrorMessage] = useState("");
   const [isSaveApplication, setSaveApplication] = useState(false);
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await networkRequest(API_ENDPOINTS.getApplication, {
-        method: 'GET',
-        body: {
-          applicationId: id,
+      try {
+        setIsLoading(true);
+        const response = await networkRequest(API_ENDPOINTS.getApplication, {
+          method: "GET",
+          body: { applicationId: id },
+        });
+  
+        if (response.success) {
+          const cleanedData = removeEmptyValues(response.data);
+          const updatedData = calculateTotals(cleanedData);
+          setFormData(updatedData);
+
+          if (response.data.products) {
+            setProducts(response.data.products);
+          }
+        } else {
+          console.error("API Error:", response.message);
         }
-      })
-      console.log('response: ', response);
-      if (response.success) {
-        setFormData(response.data)
-        response.data.products && setProducts(response.data.products)
+      } catch (error) {
+        console.error("Fetch failed:", error);
+      } finally {
+        setIsLoading(false);
       }
-    }
-    if (id) {
-      fetchData();
-      setApplicationId(id)
-    }
-  }, [id])
+    };
+  
+    fetchData();
+  }, [id]);
+  
 
   useEffect(() => {
     const init = async () => {
@@ -85,9 +98,6 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
     const fetchISICCodes = async () => {
       const sectionId = formState?.isicSection;
 
-      // Only call when valid selection
-      if (!sectionId) return;
-
       setConfig(() =>
         config.map((item: any) => ({
           ...item,
@@ -95,7 +105,13 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
             ...section,
             fields: section.fields?.map((field: any) => {
               if (field.id === "isicCode") {
-                return { ...field, options: [{ id: "loading", name: "Fetching ISIC Codes...", disabled: true }] };
+                if (sectionId) {
+                  return { ...field, options: [{ id: "loading", name: "Fetching ISIC Codes...", disabled: true }] };
+                } else if (formState?.isicCodeName) {
+                  return { ...field, options: [{ id: formState.isicCode, name: formState?.isicCodeName, disabled: true }] };
+                } else {
+                  return { ...field }
+                }
               }
               return field;
             }),
@@ -103,47 +119,50 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
         }))
       );
 
-      try {
-        const response = await networkRequest(API_ENDPOINTS.getISICCodesBySectionId, {
-          method: "GET",
-          body: { sectionId: sectionId }
-        })
+      if (sectionId) {
+        try {
+          const response = await networkRequest(API_ENDPOINTS.getISICCodesBySectionId, {
+            method: "GET",
+            body: { sectionId: sectionId }
+          })
 
-        const isicCodes = response?.data || [];
+          const isicCodes = response?.data || [];
 
-        const isicCodeOptions = isicCodes.map((code: any) => ({
-          id: code.id,
-          name: code.descriptionEN,
-        }));
+          const isicCodeOptions = isicCodes.map((code: any) => ({
+            id: code.id,
+            name: code.descriptionEN,
+          }));
 
-        setConfig(() =>
-          config.map((item: any) => ({
-            ...item,
-            sections: item.sections?.map((section: any) => ({
-              ...section,
-              fields: section.fields?.map((field: any) => {
-                if (field.id === "isicCode") {
-                  return { ...field, options: isicCodeOptions };
-                }
-                return field;
-              }),
-            })),
-          }))
-        );
+          setConfig(() =>
+            config.map((item: any) => ({
+              ...item,
+              sections: item.sections?.map((section: any) => ({
+                ...section,
+                fields: section.fields?.map((field: any) => {
+                  if (field.id === "isicCode") {
+                    return { ...field, options: isicCodeOptions };
+                  }
+                  return field;
+                }),
+              })),
+            }))
+          );
 
 
-        // Optional: Reset ISICCode field value when section changes
-        setFormData((prev: Record<string, any>) => ({
-          ...prev,
-          isicCode: "",
-        }));
-      } catch (error) {
-        console.error("Failed to fetch ISIC Codes:", error);
+          // Optional: Reset ISICCode field value when section changes
+          setFormData((prev: Record<string, any>) => ({
+            ...prev,
+            isicCode: "",
+          }));
+        } catch (error) {
+          console.error("Failed to fetch ISIC Codes:", error);
+        }
       }
+
     };
 
     fetchISICCodes();
-  }, [formState?.isicSection]);
+  }, [formState?.isicSection, formState?.isicCodeName]);
 
 
   useEffect(() => {
@@ -204,7 +223,6 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
 
     setApplicationSteps((prevSteps) => {
       const currentIndex = prevSteps.findIndex((s) => s.active);
-      console.log('currentIndex: ', currentIndex);
 
       if (currentIndex === -1) return prevSteps;
 
@@ -212,10 +230,9 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
       if (currentIndex < config?.length) {
         const stepConfig = config?.[currentIndex];
 
-        newErrors = validateForm(stepConfig, formState)
+        newErrors = validateForm(stepConfig, formState, t)
         console.log('applicationSteps[currentIndex]: ', applicationSteps[currentIndex]);
         if (products.length <= 0 && applicationSteps[currentIndex].title === 'Company Details (1 of 2)') {
-          console.log('here');
           newErrors.ProductsJson = "Field is required"
         }
         if (Object.keys(newErrors).length > 0) {
@@ -276,9 +293,8 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
     e?.stopPropagation();
 
     const currentIndex = applicationSteps.findIndex((s: any) => s.active)
-    console.log('currentIndex: ', currentIndex);
     const stepConfig = config?.[currentIndex];
-    const newErrors = validateForm(stepConfig, formState, true);
+    const newErrors = validateForm(stepConfig, formState, t, true);
     setErrors(newErrors);
     if (Object.keys(newErrors).length > 0) {
       const firstErrorFieldId = Object.keys(newErrors)[0];
@@ -326,7 +342,7 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
       if (response?.success) {
         const newId = response?.data?.applicationId;
         if (newId && !applicationId) {
-          setApplicationId(newId); // ✅ Save ID in state for future updates
+          setApplicationId(newId);
         }
         console.log('Application saved successfully');
       } else {
@@ -347,9 +363,8 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
     e?.preventDefault();
     e?.stopPropagation();
     const currentIndex = applicationSteps.findIndex((s: any) => s.active)
-    console.log('currentIndex: ', currentIndex);
     const stepConfig = config?.[currentIndex];
-    let newErrors = validateForm(stepConfig, formState);
+    let newErrors = validateForm(stepConfig, formState, t);
     setErrors(newErrors);
     if (Object.keys(newErrors).length > 0) {
       const firstErrorFieldId = Object.keys(newErrors)[0];
@@ -367,6 +382,8 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
       body.append('Company', selectedCompany?.accountID ?? '');
       body.append('ContactPerson', contactId);
       body.append('ApplicationType', selectedInvestment?.applicationType ?? '');
+
+      if (products.length > 0) body.append('ProductsJson', JSON.stringify(products));
       const excludedKeys = [
         "TotalCost",
         "TotalFunding",

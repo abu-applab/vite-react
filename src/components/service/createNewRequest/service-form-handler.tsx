@@ -9,6 +9,7 @@ import { createCompanyUpdateRequest, parseApiError, prepareRequestBody, submitUp
 import { getServiceFormConfig } from "@/lib/form-data";
 import { useApp, type CompanyType } from "@/context/AppContext";
 import { useServiceFormConfigLoader } from "@/hooks/useServiceConfigLoader";
+import { useTranslation } from "react-i18next";
 
 interface ServiceFormHandlerProps {
   selectedService: string;
@@ -37,6 +38,7 @@ export const ServiceFormHandler = ({
   const networkRequest = useNetworkRequest();
   const { selectedCompany, setSelectedCompany, companies, contactId } = useApp();
   const [formStage, setFormStage] = useState(1);
+  const {t} = useTranslation();
 
   useEffect(() => {
     const loadFormConfig = async () => {
@@ -126,7 +128,7 @@ export const ServiceFormHandler = ({
   const handleSubmit = async (e?: React.FormEvent) => {
     e?.preventDefault();
     try {
-      const newErrors = validateForm(selectedService, formState);
+      const newErrors = validateForm(selectedService, formState, t);
       setErrors(newErrors);
 
       if (Object.keys(newErrors).length > 0) {
