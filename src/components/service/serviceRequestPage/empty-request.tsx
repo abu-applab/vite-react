@@ -1,24 +1,28 @@
 import { Button } from '@/components/ui/button'
 import documentsLogo from '../../../assets/images/documents.svg'
 import { useNavigate } from 'react-router-dom';
+import { cn } from '@/lib/utils';
 
 interface EmptyRequestProps {
   onNewRequest?: () => void
   hideButton?: boolean
+  title?: string
+  description?: string
+  buttonText?: string
 }
 
-export const EmptyRequest = ({ onNewRequest, hideButton = false }: EmptyRequestProps) => {
+export const EmptyRequest = ({ onNewRequest, hideButton = false, title = '', description = '', buttonText = '' }: EmptyRequestProps) => {
   const navigate = useNavigate();
   return (
-    <div className='w-full h-full flex flex-col items-center justify-center text-center'>
+    <div className={cn('w-full h-full flex flex-col items-center justify-center text-center', {'mt-20': hideButton})}>
       <div className='w-[150px] h-[140px] mr-3'>
         <img src={documentsLogo} alt='' />
       </div>
       <div className='mt-4 my-10'>
-        <h3 className='text-2xl font-semibold'>No Service Requests Yet</h3>
-        <p className='text-sm leading-5 font-normal text-muted-foreground'>
+        <h3 className='text-2xl font-semibold'>{title}</h3>
+        {!hideButton && <p className='text-sm leading-5 font-normal text-muted-foreground'>
           You haven’t submitted any service requests yet.
-        </p>
+        </p>}
       </div>
       {!hideButton && (<div className='flex flex-col gap-3'>
         <Button

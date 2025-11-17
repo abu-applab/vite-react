@@ -342,7 +342,7 @@ const ApplicationPage = () => {
                 params.append("AccountId", selectedCompany?.accountID ?? "");
                 params.append("Page", (applicationFilter?.page ?? 1).toString());
                 params.append("PageSize", PAGE_SIZE.toString());
-                params.append("status", '939330004')
+                params.append("StatusArray", '939330004');
                 applicationFilter?.searchTerm && params.append("SearchTerm", (applicationFilter?.searchTerm));
                 applicationFilter?.typeOfApplication && params.append("TypeOfApplication", (applicationFilter?.typeOfApplication));
 
@@ -478,7 +478,7 @@ const ApplicationPage = () => {
                                         <ListOFCards cardsConfig={cardsConfig} cardsData={applicationData} />
                                         <CustomPagination handlePageChange={(page) => handlePageChange(page, applicationFilter?.totalPages ?? 0, setApplicationFilter)} currentPage={applicationFilter?.page ?? 1} totalPages={applicationFilter?.totalPages ?? 0} />
                                     </>
-                                    : !loading && <EmptyRequest hideButton={true} />)
+                                    : !loading && <EmptyRequest hideButton={true} title={'No application found'} />)
                             }
                             {activeTab === 'drafted' &&
                                 ((applicationDraftData.length > 0 && (applicationDraftFilter?.totalPages ?? 0) > 0) ?
@@ -488,7 +488,7 @@ const ApplicationPage = () => {
                                             <CustomPagination handlePageChange={(page) => handlePageChange(page, applicationDraftFilter?.totalPages ?? 0, setApplicationDarftFilter)} currentPage={applicationDraftFilter?.page ?? 1} totalPages={applicationDraftFilter?.totalPages ?? 0} />
                                         )}
                                     </>
-                                    : !loading && <EmptyRequest hideButton={true} />)
+                                    : !loading && <EmptyRequest hideButton={true} title={'No application found'} />)
                             }
                         </div>
                     </div>

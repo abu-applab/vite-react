@@ -125,10 +125,10 @@ const Service = () => {
       fetchRequests()
     }
   }, [serviceFilter?.page,
-     serviceFilter?.status,
-     serviceFilter?.searchTerm,
-     selectedCompany?.accountID,
-     selectedService
+  serviceFilter?.status,
+  serviceFilter?.searchTerm,
+  selectedCompany?.accountID,
+    selectedService
   ])
 
   const handlePageChange = (newPage: number) => {
@@ -146,16 +146,22 @@ const Service = () => {
       <PageHeader header={header} selectedForm={selectedService} />
       {!selectedService ? (
         <div>
-          <>
-            <CreateAndFilter onNewRequest={() => setIsModalOpen(true)} filterConfig={filterKeys} setAppliedFilter={setServiceFilter} appliedFilter={serviceFilter} />
-            {(serviceData.length != 0) && (serviceFilter?.totalPages ?? 0) > 0 ? (
+          {
+            (serviceData.length === 0 && !serviceFilter?.searchTerm && !serviceFilter?.status && !loading) ?
+             <EmptyRequest title='No Service Requests Yet' description="You haven’t submitted any service requests yet." />
+            : (
               <>
-                <ListOFCards cardsConfig={cardsConfig} cardsData={serviceData} />
-                <CustomPagination handlePageChange={handlePageChange} currentPage={serviceFilter?.page} totalPages={serviceFilter?.totalPages ?? 0} />
-              </>) :
-              !loading && <EmptyRequest hideButton={true} /> 
-            }
-          </>
+                <CreateAndFilter onNewRequest={() => setIsModalOpen(true)} filterConfig={filterKeys} setAppliedFilter={setServiceFilter} appliedFilter={serviceFilter} />
+                {(serviceData.length != 0) && (serviceFilter?.totalPages ?? 0) > 0 ? (
+                  <>
+                    <ListOFCards cardsConfig={cardsConfig} cardsData={serviceData} />
+                    <CustomPagination handlePageChange={handlePageChange} currentPage={serviceFilter?.page} totalPages={serviceFilter?.totalPages ?? 0} />
+                  </>) :
+                  !loading && <EmptyRequest hideButton={true} title={'No requests found'} />}
+              </>
+
+            )
+          }
         </div>
       ) : (
         <ServiceFormHandler

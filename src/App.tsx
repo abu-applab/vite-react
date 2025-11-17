@@ -26,7 +26,6 @@ function App() {
   
   useEffect(() => {
     const defaultLanguage = localStorage.getItem("lang") || "en";
-    console.log(' localStorage.getItem("lang"): ',  localStorage.getItem("lang"));
     const currentPath = window.location.pathname;
     const hasLanguage = currentPath.startsWith('/en') || currentPath.startsWith('/ar');
     if (!hasLanguage) {

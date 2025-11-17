@@ -22,7 +22,6 @@ export default function useNetworkRequest() {
             responseType = "json"
         }: NetworkRequestOptions = {}
     ) => {
-        console.log('body: ', body);
 
         try {
             const headers: Record<string, string> = {

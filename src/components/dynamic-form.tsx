@@ -124,7 +124,6 @@ const DynamicForm = ({
                       typeof val !== "string" && val.id === value
                   );
                   if (!selectedOption) return;
-                  console.log('selectedOption: ', selectedOption);
 
                   handleInputChange(field.id, value);
                   handleInputChange(field.dependsOn, selectedOption?.agreementId);
@@ -144,11 +143,8 @@ const DynamicForm = ({
               </SelectTrigger>
               <SelectContent>
                 {field.options?.map((option) => {
-                  console.log('option: ', option);
                   const key = typeof option === "string" ? option : option.id;
-                  console.log('key: ', key);
                   const value = typeof option === "string" ? option : option.name;
-                  console.log('value: ', value);
                   const isOptionDisabled =
                     typeof option !== "string" && option.disabled;
                   return (
