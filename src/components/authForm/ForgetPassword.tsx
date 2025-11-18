@@ -8,7 +8,7 @@ interface ForgotPasswordProps {
   onSwitch: (view: any) => void;
 }
 
-const ForgotPassword = ({ onSwitch }: ForgotPasswordProps) => {
+const ForgotPasswordForm = ({ onSwitch }: ForgotPasswordProps) => {
   const [formData, setFormData] = useState({ email: "" });
 
   const handleChange = (e: any) =>
@@ -44,7 +44,7 @@ const ForgotPassword = ({ onSwitch }: ForgotPasswordProps) => {
       </Button>
 
       <p className="text-sm text-gray-700 mt-4 flex items-center justify-center">
-        Remember password? Go back to{" "}
+        {"Remember password? Go back to\u00a0"}
         <span
           onClick={() => onSwitch("login")}
           className="text-[#971B2F] font-medium cursor-pointer"
@@ -56,4 +56,4 @@ const ForgotPassword = ({ onSwitch }: ForgotPasswordProps) => {
   );
 };
 
-export default ForgotPassword;
+export default ForgotPasswordForm;

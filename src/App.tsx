@@ -1,6 +1,6 @@
 import './App.css'
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Login from './screens/login';
+import Login from './screens/authentication/login';
 import LoginLayout from './layout/login-layout';
 import AddCompany from './screens/addCompany';
 import PortalLayout from './layout/portal-layout';
@@ -20,10 +20,12 @@ import MyProfile from './screens/myProfile';
 import Notifications from './screens/notifications';
 // import Settings from './screens/settings'
 import CompanyProfile from './screens/companyProfile';
+import SignUp from './screens/authentication/signUp';
+import ForgotPassword from './screens/authentication/forgotPassword';
 
 function App() {
   const { i18n } = useTranslation();
-  
+
   useEffect(() => {
     const defaultLanguage = localStorage.getItem("lang") || "en";
     const currentPath = window.location.pathname;
@@ -32,7 +34,7 @@ function App() {
       const newPath = `/${defaultLanguage}${currentPath}`
       window.location.pathname = newPath;
     }
-     else {
+    else {
       const pathLang = window.location.pathname.split('/')[1];
       i18n.changeLanguage(pathLang);
       const html = document.documentElement;
@@ -55,7 +57,9 @@ function App() {
     <Router basename={getBaseName()}>
       <Routes>
         <Route path="/" element={<LoginLayout />}>
-          <Route index element={<Login />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/forgotpassword" element={<ForgotPassword />} />
           <Route path="/add-company" element={<AddCompany />} />
         </Route>
       </Routes>

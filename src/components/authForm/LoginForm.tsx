@@ -61,7 +61,7 @@ const LoginForm = ({ onSwitch }: LoginFormProps) => {
     // Password validation
     if (!password) {
       errors.password = "Password is required.";
-    } 
+    }
     // else {
     //   const passwordRegex =
     //     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]).{8,}$/;
@@ -88,7 +88,7 @@ const LoginForm = ({ onSwitch }: LoginFormProps) => {
       //   body,
       // });
 
-      const response ={
+      const response = {
         success: true,
         message: '',
         body: body
@@ -144,7 +144,7 @@ const LoginForm = ({ onSwitch }: LoginFormProps) => {
 
         <div className="text-right mb-4">
           <span
-            onClick={() => onSwitch("forgotPassword")}
+            onClick={() => onSwitch("forgotpassword")}
             className="text-muted-foreground underline text-sm font-normal cursor-pointer"
           >
             Forgot Password?

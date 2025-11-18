@@ -1,18 +1,17 @@
-import building from '../assets/images/manateqBuilding.png'
-import manateqLoginLogo from '../assets/images/manateq-login-logo.svg'
-import isolationMode from '../assets/images/Isolation-Mode.svg'
+import React from 'react'
+import building from '../../../assets/images/manateqBuilding.png'
+import manateqLoginLogo from '../../../assets/images/manateq-login-logo.svg'
+import isolationMode from '../../../assets/images/Isolation-Mode.svg'
 import { motion } from 'framer-motion'
 import { useMediaQuery } from 'react-responsive'
-import AuthForm from '@/components/authForm/AuthForm'
 import { useSearchParams } from 'react-router-dom'
 
-const Login = () => {
+export default function AuthLayout({ children }: { children: React.ReactNode }) {
     const isDesktop = useMediaQuery({ minWidth: 768 })
     const [searchParams] = useSearchParams();
     const token = searchParams.get("token");
 
     const addMotion = isDesktop && !token
-
     return (
         <div className='flex h-screen w-full overflow-hidden flex-col md:flex-row'>
             <motion.div
@@ -39,16 +38,13 @@ const Login = () => {
                 animate={addMotion ? { x: 0 } : false}
                 transition={addMotion ? { duration: 0.8, ease: 'easeOut' } : {}}
             >
-                {/* Logo */}
                 <img
                     src={manateqLoginLogo}
                     alt="Manateq Logo"
                     className="w-14 h-14 mb-6"
                 />
-                <AuthForm />
+                {children}
             </motion.div>
         </div>
     )
 }
-
-export default Login

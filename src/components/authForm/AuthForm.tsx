@@ -5,8 +5,10 @@ import SignUpForm from "./SignUpForm";
 import ResetPassword from "./ResetPassword";
 import ForgotPassword from "./ForgetPassword";
 import { useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const AuthForm = () => {
+    const navigate = useNavigate()
     const [authView, setAuthView] = useState({
         login: true,
         signup: false,
@@ -19,14 +21,15 @@ const AuthForm = () => {
     const token = searchParams.get("token");
 
     const handleSwitch = (view: keyof typeof authView) => {
-        setAuthView({
-            login: false,
-            signup: false,
-            forgotPassword: false,
-            resetPassword: false,
-            otpVerification: false,
-            [view]: true,
-        });
+        navigate(`/${view}`)
+        // setAuthView({
+        //     login: false,
+        //     signup: false,
+        //     forgotPassword: false,
+        //     resetPassword: false,
+        //     otpVerification: false,
+        //     [view]: true,
+        // });
     };
 
     useEffect(() => {
