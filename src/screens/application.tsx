@@ -143,8 +143,8 @@ const cardsDraftConfigBase = {
             key: "locationNameEn",
         },
         {
-            label: "Submitted Date",
-            key: "submissionDate",
+            label: "Created Date",
+            key: "createdOn",
         },
     ],
     menuOptions: [
@@ -225,19 +225,19 @@ const ApplicationPage = () => {
         delete: async (card: any) => {
             setLoading(true);
             try {
-              const response = await networkRequest(
-                `${API_ENDPOINTS.deleteApplication}?id=${card.applicationId}`,
-                { method: "POST" }
-              );
-        
-              if (response.success) {
-                setRefreshDraft(prev => !prev);
-                console.log("Deleted successfully", card.applicationId);
-              }
+                const response = await networkRequest(
+                    `${API_ENDPOINTS.deleteApplication}?id=${card.applicationId}`,
+                    { method: "POST" }
+                );
+
+                if (response.success) {
+                    setRefreshDraft(prev => !prev);
+                    console.log("Deleted successfully", card.applicationId);
+                }
             } catch (error) {
-              console.error("Delete failed:", error);
+                console.error("Delete failed:", error);
             }
-          },
+        },
     };
 
     const cardsConfig = {
@@ -457,46 +457,49 @@ const ApplicationPage = () => {
             <PageHeader header={header} />
 
             {(!isCreateNewApplication) ? (
-                <div>
-                    <CreateAndFilter
-                        onNewRequest={() => setCreateNewApplication(true)}
-                        filterConfig={filterKeys}
-                        setAppliedFilter={setApplicationFilter}
-                        appliedFilter={applicationFilter}
-                    />
-                    <div className="w-full h-fit mt-6">
-                        <div className="flex items-center bg-white h-[56px] rounded-lg shadow-md gap-[8px]">
-                            {tabs.map((tab) => (
-                                <button key={tab.id} className={`py-[10px] h-full ml-[40px] text-sm font-medium ${activeTab === tab.id ? 'text-maroon-100 border-b-2 border-maroon-100' : 'text-black hover:text-gray-500'} focus:outline-none focus:text-maroon-100 `} onClick={() => setActiveTab(tab.id)} > {tab.label}
-                                </button>
-                            ))}
-                        </div>
-                        <div className="mt-4 w-full min-h-[35vh] rounded-b-lg">
-                            {activeTab === 'submitted' &&
-                                ((applicationData.length > 0 && (applicationFilter?.totalPages ?? 0) > 0) ?
-                                    <>
-                                        <ListOFCards cardsConfig={cardsConfig} cardsData={applicationData} />
-                                        <CustomPagination handlePageChange={(page) => handlePageChange(page, applicationFilter?.totalPages ?? 0, setApplicationFilter)} currentPage={applicationFilter?.page ?? 1} totalPages={applicationFilter?.totalPages ?? 0} />
-                                    </>
-                                    : !loading && <EmptyRequest hideButton={true} title={'No application found'} />)
-                            }
-                            {activeTab === 'drafted' &&
-                                ((applicationDraftData.length > 0 && (applicationDraftFilter?.totalPages ?? 0) > 0) ?
-                                    <>
-                                        <ListOFCards cardsConfig={cardsDraftConfig} cardsData={applicationDraftData} />
-                                        {(applicationDraftFilter?.totalPages ?? 0) > 1 && (
-                                            <CustomPagination handlePageChange={(page) => handlePageChange(page, applicationDraftFilter?.totalPages ?? 0, setApplicationDarftFilter)} currentPage={applicationDraftFilter?.page ?? 1} totalPages={applicationDraftFilter?.totalPages ?? 0} />
-                                        )}
-                                    </>
-                                    : !loading && <EmptyRequest hideButton={true} title={'No application found'} />)
-                            }
+                (applicationData.length === 0 && applicationDraftData.length === 0 && !applicationFilter?.searchTerm && !applicationFilter?.typeOfApplication && !applicationFilter?.status && !loading) ?
+                    <EmptyRequest title='No Applications Found' description="You haven’t submitted any service requests yet." buttonText="Submit New Applications" />
+                    :
+                    <div>
+                        <CreateAndFilter
+                            onNewRequest={() => setCreateNewApplication(true)}
+                            filterConfig={filterKeys}
+                            setAppliedFilter={setApplicationFilter}
+                            appliedFilter={applicationFilter}
+                        />
+                        <div className="w-full h-fit mt-6">
+                            <div className="flex items-center bg-white h-[56px] rounded-lg shadow-md gap-[8px]">
+                                {tabs.map((tab) => (
+                                    <button key={tab.id} className={`py-[10px] h-full ml-[40px] text-sm font-medium ${activeTab === tab.id ? 'text-maroon-100 border-b-2 border-maroon-100' : 'text-black hover:text-gray-500'} focus:outline-none focus:text-maroon-100 `} onClick={() => setActiveTab(tab.id)} > {tab.label}
+                                    </button>
+                                ))}
+                            </div>
+                            <div className="mt-4 w-full min-h-[35vh] rounded-b-lg">
+                                {activeTab === 'submitted' &&
+                                    ((applicationData.length > 0 && (applicationFilter?.totalPages ?? 0) > 0) ?
+                                        <>
+                                            <ListOFCards cardsConfig={cardsConfig} cardsData={applicationData} />
+                                            <CustomPagination handlePageChange={(page) => handlePageChange(page, applicationFilter?.totalPages ?? 0, setApplicationFilter)} currentPage={applicationFilter?.page ?? 1} totalPages={applicationFilter?.totalPages ?? 0} />
+                                        </>
+                                        : !loading && <EmptyRequest hideButton={true} title={'No Applications found'} />)
+                                }
+                                {activeTab === 'drafted' &&
+                                    ((applicationDraftData.length > 0 && (applicationDraftFilter?.totalPages ?? 0) > 0) ?
+                                        <>
+                                            <ListOFCards cardsConfig={cardsDraftConfig} cardsData={applicationDraftData} />
+                                            {(applicationDraftFilter?.totalPages ?? 0) > 1 && (
+                                                <CustomPagination handlePageChange={(page) => handlePageChange(page, applicationDraftFilter?.totalPages ?? 0, setApplicationDarftFilter)} currentPage={applicationDraftFilter?.page ?? 1} totalPages={applicationDraftFilter?.totalPages ?? 0} />
+                                            )}
+                                        </>
+                                        : !loading && <EmptyRequest hideButton={true} title={'No Applications found'} />)
+                                }
+                            </div>
                         </div>
                     </div>
-                    {loading && <Loader />}
-                </div>
             ) :
                 <div>{steps[step].component}</div>
             }
+            {loading && <Loader />}
         </div>
     )
 }

@@ -157,7 +157,7 @@ const Service = () => {
                     <ListOFCards cardsConfig={cardsConfig} cardsData={serviceData} />
                     <CustomPagination handlePageChange={handlePageChange} currentPage={serviceFilter?.page} totalPages={serviceFilter?.totalPages ?? 0} />
                   </>) :
-                  !loading && <EmptyRequest hideButton={true} title={'No requests found'} />}
+                  !loading && <EmptyRequest hideButton={true} title={'No Requests Found'} />}
               </>
 
             )
