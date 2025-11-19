@@ -2,7 +2,10 @@ import { useState } from "react";
 import { Label } from "@radix-ui/react-label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
+import { AlertCircle } from "lucide-react";
 import { signUpFields } from "@/constants";
+import outlook from "../../assets/images/outlook-icon.svg";
+import google from "../../assets/images/google-icon.svg";
 import { cn } from "@/lib/utils";
 import useNetworkRequest from "@/api/useNetworkRequest";
 import { API_ENDPOINTS } from "@/api/apiEndpoints";
@@ -57,16 +60,16 @@ const SignUpForm = ({ onSwitch }: SignUpFormProps) => {
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
-  
+
     signUpFields.forEach((field) => {
       const value = formData[field.id as keyof typeof formData];
-  
+
       // Required check
       if (!value) {
         newErrors[field.id] = `${field.label} is required`;
         return;
       }
-  
+
       // Dynamic validations using if/else
       if (field.id === "email") {
         if (!/\S+@\S+\.\S+/.test(value)) {
@@ -89,11 +92,11 @@ const SignUpForm = ({ onSwitch }: SignUpFormProps) => {
         }
       }
     });
-  
+
     setFieldErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-  
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -103,8 +106,16 @@ const SignUpForm = ({ onSwitch }: SignUpFormProps) => {
     try {
       setLoading(true);
 
-      const body = { ...formData };
-      const response = await networkRequest(API_ENDPOINTS.signUp, {
+      const body = {
+        "firstName": formData?.firstName,
+        "lastName": formData?.lastName,
+        "email": formData?.email,
+        "mobilePhone": formData?.mobileNumber,
+        "landline": formData?.landlineNumber,
+        "password": formData?.password,
+        "confirmPassword": formData?.confirmPassword
+      };
+      const response = await networkRequest(API_ENDPOINTS?.signUp, {
         method: "POST",
         body,
       });
@@ -154,14 +165,17 @@ const SignUpForm = ({ onSwitch }: SignUpFormProps) => {
                 <p className="text-xs text-red-500 mt-1">{fieldErrors[fieldKey]}</p>
               )}
 
-              {/* API error (only show below confirm password) */}
-              {isConfirmPassword && apiError && !showError && (
-                <p className="text-xs text-red-500 mt-1">{apiError}</p>
-              )}
             </div>
           );
         })}
       </div>
+
+      {apiError && (
+        <div className="w-full mb-3 flex items-center justify-center rounded-lg bg-white py-2 text-sm text-red-600 border border-red-200">
+          <AlertCircle className="w-4 h-4 mr-2" />
+          <span>{apiError}</span>
+        </div>
+      )}
 
       <Button
         type="submit"
@@ -170,6 +184,26 @@ const SignUpForm = ({ onSwitch }: SignUpFormProps) => {
       >
         {loading ? "Signing Up..." : "Sign Up"}
       </Button>
+      <div className="flex items-center my-4">
+        <hr className="flex-grow border-gray-200" />
+        <span className="mx-3 text-gray-500 text-xs">Or Sign Up With</span>
+        <hr className="flex-grow border-gray-200" />
+      </div>
+
+      <div className="flex gap-3">
+        <button
+          type="button"
+          className="flex-1 flex items-center justify-center gap-2 border border-gray-200 rounded-md py-2 text-sm hover:bg-gray-50"
+        >
+          <img src={outlook} alt="Outlook" className="w-4 h-4" /> Outlook
+        </button>
+        <button
+          type="button"
+          className="flex-1 flex items-center justify-center gap-2 border border-gray-200 rounded-md py-2 text-sm hover:bg-gray-50"
+        >
+          <img src={google} alt="Google" className="w-4 h-4" /> Google
+        </button>
+      </div>
 
       <p className="text-sm text-gray-700 mt-4 flex items-center justify-center">
         Already a member?{" "}

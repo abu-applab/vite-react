@@ -15,6 +15,7 @@ import useNetworkRequest from "@/api/useNetworkRequest";
 import Loader from "@/components/loader";
 import { motion } from 'framer-motion'
 import { useTranslation } from "react-i18next";
+import { clearAllLocalStorage } from "@/lib/utils";
 
 const PortalLayout = () => {
     const { isMenuOpen, setIsMenuOpen, setCompanies, setSelectedCompany, contactId } = useApp();
@@ -69,8 +70,18 @@ const PortalLayout = () => {
 
         window.location.pathname = updatedPath;
     };
-
-
+    const handleLogOut = async () => {
+        try {
+            await networkRequest(
+                API_ENDPOINTS.logOut,
+                {
+                    method: 'POST'
+                }
+            );
+        } catch (error) {
+            console.error('Logout failed:', error);
+        }
+    }
     return (
         <div className='bg-[#f6f5ef] w-screen min-h-screen flex flex-col'>
             <div className="flex flex-row items-center justify-between w-full h-[88px] lg:px-20 md:px-6 px-4 md:border-b-2">
@@ -110,7 +121,7 @@ const PortalLayout = () => {
                                     <Settings className="w-5 h-5  text-black" />
                                     Settings
                                 </DropdownMenuItem>
-                                <DropdownMenuItem className="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 cursor-pointer font-medium text-xs">
+                                <DropdownMenuItem onClick={() => { handleLogOut() }} className="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 cursor-pointer font-medium text-xs">
                                     <LogOut className="w-5 h-5 text-black" />
                                     Log Out
                                 </DropdownMenuItem>

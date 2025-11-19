@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Label } from "@radix-ui/react-label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
+import { AlertCircle } from "lucide-react";
 import { resetPasswordFields } from "@/constants";
 import { useSearchParams } from "react-router-dom";
 import useNetworkRequest from "@/api/useNetworkRequest";
@@ -21,7 +22,7 @@ const passwordRules = [
     { id: "special", label: "At least one special character", test: (pw: string) => /[\W_]/.test(pw) },
 ];
 
-const ResetPassword = ({ onSwitch }: ResetPasswordProps) => {
+const ResetPasswordForm = ({ onSwitch }: ResetPasswordProps) => {
     const [searchParams] = useSearchParams();
     const token = searchParams.get("token");
     const networkRequest = useNetworkRequest();
@@ -71,7 +72,13 @@ const ResetPassword = ({ onSwitch }: ResetPasswordProps) => {
             }
 
             if (field.id === "password") {
-                const allRulesPassed = Object.values(passwordValidation).every((v) => v);
+                // Recompute password validation on submit to ensure rules are applied
+                const currentValidation: Record<string, boolean> = {};
+                passwordRules.forEach((rule) => {
+                    currentValidation[rule.id] = rule.test(password);
+                });
+                setPasswordValidation(currentValidation);
+                const allRulesPassed = Object.values(currentValidation).every((v) => v);
                 if (!allRulesPassed) newErrors[field.id] = "Password does not meet requirements";
             }
 
@@ -129,7 +136,7 @@ const ResetPassword = ({ onSwitch }: ResetPasswordProps) => {
                     </div>
                 ))}
                 {/* Password validation checklist outside input map */}
-                {formData.password && (
+                {(formData.password || errors.password) && (
                     <div className="mt-1 space-y-1">
                         {passwordRules.map((rule) => (
                             <p
@@ -142,7 +149,12 @@ const ResetPassword = ({ onSwitch }: ResetPasswordProps) => {
                         ))}
                     </div>
                 )}
-                {apiError && <p className="text-xs text-red-500 text-center">{apiError}</p>}
+                {apiError && (
+                    <div className="w-full mb-3 flex items-center justify-center rounded-lg bg-white py-2 text-sm text-red-600 border border-red-200">
+                        <AlertCircle className="w-4 h-4 mr-2" />
+                        <span>{apiError}</span>
+                    </div>
+                )}
 
                 <Button
                     type="submit"
@@ -165,4 +177,4 @@ const ResetPassword = ({ onSwitch }: ResetPasswordProps) => {
     );
 };
 
-export default ResetPassword;
+export default ResetPasswordForm;

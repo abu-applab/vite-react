@@ -74,20 +74,20 @@ export const initialIndustrialSteps = [
 
 export const serviceOptions = [
   {
-      title: "Logistics Park",
-      key: "logisticsPark"
+    title: "Logistics Park",
+    key: "logisticsPark"
   },
   {
-      title: "Industrial",
-      key: "Industrial"
+    title: "Industrial",
+    key: "Industrial"
   },
   {
-      title: "Commercial",
-      key: "commercial"
+    title: "Commercial",
+    key: "commercial"
   },
   {
-      title: "Open Yards",
-      key: "Logistics"
+    title: "Open Yards",
+    key: "Logistics"
   },
 ]
 
@@ -129,12 +129,12 @@ export const loginFields = [
 ];
 
 export const signUpFields = [
-  { id: "firstName", label: "First Name", type: "text", placeholder: "" },
-  { id: "lastName", label: "Last Name", type: "text", placeholder: "" },
-  { id: "email", label: "Email", type: "text", placeholder: "" },
-  { id: "landlineNumber", label: "Landline Number", type: "number", placeholder: "" },
-  { id: "mobileNumber", label: "Mobile Number", type: "number", placeholder: "" },
-  { id: "password", label: "Password", type: "password", placeholder: "" },
+  { id: "firstName", label: "First Name", type: "text", placeholder: "Type your first name" },
+  { id: "lastName", label: "Last Name", type: "text", placeholder: "Type your last name" },
+  { id: "email", label: "Email", type: "text", placeholder: "Type your email" },
+  { id: "landlineNumber", label: "Landline Number", type: "number", placeholder: "Type your landline number" },
+  { id: "mobileNumber", label: "Mobile Number", type: "number", placeholder: "Type your mobile number" },
+  { id: "password", label: "Password", type: "password", placeholder: "Type your password" },
   { id: "confirmPassword", label: "Confirm Password", type: "password", placeholder: "Confirm your password" },
 ];
 

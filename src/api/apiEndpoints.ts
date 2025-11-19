@@ -1,73 +1,76 @@
 // /network/apiEndpoints.js
 
 export const API_ENDPOINTS = {
-   getPlots: '/getPlots',
-   getSignatories: '/getSignatories',
-   getCompanies: '/getCompanies',
-   getClusters: '/getClusters',
-   getLocations: '/getLocations',
-   getHSCodes: '/getHSCodes',
-   createApplication: '/createApplication',
-   updateApplication: '/updateApplication',
-   deleteApplication: '/deleteApplication',
-   submitApplication: '/submitApplication',
-   getISICSections: 'getISICSections',
-   getISICCodesBySectionId: '/getISICCodesBySectionId',
-   getAllServiceRequests: "/getAllServiceRequests",
-   logIn: "/logIn",
-   signUp: "/signUp",
-   resetPassword: "resetPassword",
-   getApplicationsList: '/getApplicationsList',
-   getApplication: '/getApplication',
+  getPlots: '/Proxy/WebApp/getPlots',
+  getSignatories: '/Proxy/WebApp/getSignatories',
+  getCompanies: '/Proxy/WebApp/getCompanies',
+  getClusters: '/Proxy/WebApp/getClusters',
+  getLocations: '/Proxy/WebApp/getLocations',
+  getHSCodes: '/Proxy/WebApp/getHSCodes',
+  createApplication: '/Proxy/WebApp/createApplication',
+  updateApplication: '/Proxy/WebApp/updateApplication',
+  deleteApplication: '/Proxy/WebApp/deleteApplication',
+  submitApplication: '/Proxy/WebApp/submitApplication',
+  getISICSections: '/Proxy/WebApp/getISICSections',
+  getISICCodesBySectionId: '/Proxy/WebApp/getISICCodesBySectionId',
+  getAllServiceRequests: "/Proxy/WebApp/getAllServiceRequests",
+  logIn: "/RegistationAndLogin/login",
+  logOut: "/RegistationAndLogin/logout",
+  signUp: "/RegistationAndLogin/signup",
+
+  forgotpassword: "/RegistationAndLogin/requestPasswordReset",
+  resetPassword: "resetPassword",
+  getApplicationsList: '/getApplicationsList',
+  getApplication: '/getApplication',
 }
 
 export const API_SERVICES_ENDPOINTS = {
-    rentalRelationship: {
-      url: "/createRentalRelationRequest",
-      method: "POST",
-      contentType: "multipart", 
-    },
-    landTransfer: {
-      url: "/createLandTransfer",
-      method: "POST",
-      contentType: "multipart", 
-    },
-    certifiedCopyOfAgreement: {
-      url: "/createCertifiedCopyOfAgreementRequest",
-      method: "POST",
-      contentType: "json", 
-    },
-    demarcationLetter: {
-      url: "/createDemarcationLetterRequest",
-      method: "POST",
-      contentType: "json", 
-    },
-    complaint: {
-      url: "/createComplaintRequest",
-      method: "POST",
-      contentType: "multipart", 
-    },
-    technicalQueries: {
-        url: "/createTechnicalQueriesRequest",
-        method: "POST",
-        contentType: "json", 
-    },
-    kahramaa: {
-        url: "/createKahramaRequest",
-        method: "POST",
-        contentType: "json", 
-    },
-    updateContactDetails: {
-      url: "/createUpdateContactDetailRequest",
-      method: "POST",
-      contentType: "multipart", 
-    },
-    updateCompanyInformation: {
-      urls: [
-        "/createBasicCompanyUpdateRequest", 
-        "/updateCompanyUpdateRequestDetails"
-      ],
-      method: "POST",
-      contentType: "multipart", 
-    },
+  rentalRelationship: {
+    url: "/Proxy/WebApp/createRentalRelationRequest",
+    method: "POST",
+    contentType: "multipart",
+  },
+  landTransfer: {
+    url: "/Proxy/WebApp/createLandTransfer",
+    method: "POST",
+    contentType: "multipart",
+  },
+  certifiedCopyOfAgreement: {
+    url: "/Proxy/WebApp/createCertifiedCopyOfAgreementRequest",
+    method: "POST",
+    contentType: "json",
+  },
+  demarcationLetter: {
+    url: "/Proxy/WebApp/createDemarcationLetterRequest",
+    method: "POST",
+    contentType: "json",
+  },
+  complaint: {
+    url: "/Proxy/WebApp/createComplaintRequest",
+    method: "POST",
+    contentType: "multipart",
+  },
+  technicalQueries: {
+    url: "/Proxy/WebApp/createTechnicalQueriesRequest",
+    method: "POST",
+    contentType: "json",
+  },
+  kahramaa: {
+    url: "/Proxy/WebApp/createKahramaRequest",
+    method: "POST",
+    contentType: "json",
+  },
+  updateContactDetails: {
+    url: "/Proxy/WebApp/createUpdateContactDetailRequest",
+    method: "POST",
+    contentType: "multipart",
+  },
+  updateCompanyInformation: {
+    urls: [
+      "/Proxy/WebApp/createBasicCompanyUpdateRequest",
+      "/Proxy/WebApp/updateCompanyUpdateRequestDetails"
+    ],
+    method: "POST",
+    contentType: "multipart",
+  },
 };

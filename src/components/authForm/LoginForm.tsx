@@ -2,13 +2,14 @@ import { useState } from "react";
 import { Label } from "@radix-ui/react-label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { Mail, Lock } from "lucide-react";
+import { Mail, Lock, AlertCircle } from "lucide-react";
 import outlook from "../../assets/images/outlook-icon.svg";
 import google from "../../assets/images/google-icon.svg";
 import { loginFields } from "@/constants";
-// import useNetworkRequest from "@/api/useNetworkRequest";
-// import { API_ENDPOINTS } from "@/api/apiEndpoints";
+import useNetworkRequest from "@/api/useNetworkRequest";
+import { API_ENDPOINTS } from "@/api/apiEndpoints";
 import { useNavigate } from "react-router-dom";
+import { setLocalStorageItem } from "@/lib/utils";
 
 const icons = { Mail, Lock };
 
@@ -26,7 +27,7 @@ const LoginForm = ({ onSwitch }: LoginFormProps) => {
   const [fieldErrors, setFieldErrors] = useState<Partial<Record<keyof FormData, string>>>({});
   const [authError, setAuthError] = useState<string>("");
   const [loading, setLoading] = useState(false);
-  // const networkRequest = useNetworkRequest();
+  const networkRequest = useNetworkRequest();
   const navigate = useNavigate()
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -82,20 +83,14 @@ const LoginForm = ({ onSwitch }: LoginFormProps) => {
 
     try {
       setLoading(true);
-      const body = { email: formData.email.trim(), password: formData.password };
-      // const response = await networkRequest(API_ENDPOINTS.logIn, {
-      //   method: "POST",
-      //   body,
-      // });
-
-      const response = {
-        success: true,
-        message: '',
-        body: body
-      }
-
+      const body = { email: formData.email.trim(), encryptedPassword: formData.password };
+      const response = await networkRequest(API_ENDPOINTS.logIn, {
+        method: "POST",
+        body,
+      });
       if (response?.success) {
-        navigate('/portal')
+        setLocalStorageItem('auth_txn', response?.data?.session?.token);
+        onSwitch('portal')
       } else {
         setAuthError(response?.message || "Incorrect email or password.");
       }
@@ -135,9 +130,9 @@ const LoginForm = ({ onSwitch }: LoginFormProps) => {
                 <p className="text-xs text-red-500 mt-1">{fieldErrors[fieldKey]}</p>
               )}
 
-              {isPasswordField && authError && (
+              {/* {isPasswordField && authError && (
                 <p className="text-xs text-red-500 mt-1">{authError}</p>
-              )}
+              )} */}
             </div>
           );
         })}
@@ -150,7 +145,12 @@ const LoginForm = ({ onSwitch }: LoginFormProps) => {
             Forgot Password?
           </span>
         </div>
-
+        {authError && (
+          <div className="w-full mb-3 flex items-center justify-center rounded-lg bg-white py-2 text-sm text-red-600 border border-red-200">
+            <AlertCircle className="w-4 h-4 mr-2" />
+            <span>{authError}</span>
+          </div>
+        )}
         <Button
           type="submit"
           disabled={loading}

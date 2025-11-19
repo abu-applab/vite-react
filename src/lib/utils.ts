@@ -53,7 +53,7 @@ export const formatFileSize = (bytes: number) => {
  */
 
 // extract first call logic
-export const createCompanyUpdateRequest = async ({ formState, networkRequest, contactId } : {formState: any, networkRequest: any, contactId: string}) => {
+export const createCompanyUpdateRequest = async ({ formState, networkRequest, contactId }: { formState: any, networkRequest: any, contactId: string }) => {
   const body = {
     agreement: formState.agreement,
     plot: formState.plot,
@@ -63,9 +63,9 @@ export const createCompanyUpdateRequest = async ({ formState, networkRequest, co
 
   const response = await networkRequest('/createBasicCompanyUpdateRequest'
     , {
-    method: "POST",
-    body
-  });
+      method: "POST",
+      body
+    });
 
   if (!response?.success) {
     throw new Error("Failed to create company update request");
@@ -84,7 +84,7 @@ export const submitUpdateCompanyInformation = async ({
 }: SubmitCompanyUpdateProps) => {
 
   const secondBody = new FormData();
-  
+
   if (formState.requiredUpdate) {
     String(formState.requiredUpdate)
       .split(",")
@@ -165,7 +165,7 @@ export const extractReferenceNumber = (data: Record<string, any>): string => {
   console.log('data: ', data);
   const refKey = Object.keys(data).find((k) =>
     k.toLowerCase().endsWith("referenceid")
-);
+  );
   console.log('refKey: ', refKey);
   const refValue = refKey ? data[refKey] : "";
   return refValue;
@@ -189,7 +189,7 @@ export const hasSpecialChars = (val: string) => /[^A-Za-z0-9\u0600-\u06FF\s]/.te
 export const isArabic = (val: string) => /[\u0600-\u06FF]/.test(val)
 export const isEnglish = (val: string) => /[A-Za-z]/.test(val)
 export const isValidEmail = (val: string) =>
-  /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(val);  
+  /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(val);
 export const hasArabicLetters = (val: string) => /[\u0600-\u06FF]/.test(val);
 export const isValidPhone = (val: string) => /^\d{8}$/.test(val)
 export const isValidPOBox = (val: string) => /^\d{5,8}$/.test(val);
@@ -229,3 +229,32 @@ export const removeEmptyValues = (data: any) => {
 
   return cleaned;
 };
+
+export const setLocalStorageItem = (key: string, value: any) => {
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch (error) {
+    console.error(`Failed to set localStorage item for key: ${key}`, error);
+  }
+};
+
+export const getLocalStorageItem = (key: string) => {
+  try {
+    const item = localStorage.getItem(key);
+    return item ? JSON.parse(item) : null;
+  } catch (error) {
+    console.error(`Failed to get localStorage item for key: ${key}`, error);
+    return null;
+  }
+};
+
+export const clearAllLocalStorage = () => {
+  try {
+    localStorage.clear();
+  } catch (error) {
+    console.error('Failed to clear localStorage', error);
+  }
+};
+
+
+
