@@ -8,13 +8,18 @@ import google from "../../assets/images/google-icon.svg";
 import { loginFields } from "@/constants";
 import useNetworkRequest from "@/api/useNetworkRequest";
 import { API_ENDPOINTS } from "@/api/apiEndpoints";
-import { useNavigate } from "react-router-dom";
-import { setLocalStorageItem } from "@/lib/utils";
+import { useGoogleLogin } from "@react-oauth/google";
+import PasswordInput from "../ui/passwordInput";
+import { cn, setLocalStorageItem } from "@/lib/utils";
+import { useMsal } from "@azure/msal-react";
+import { loginRequest } from "@/lib/auth/authConfig";
+import { useApp } from "@/context/AppContext";
 
 const icons = { Mail, Lock };
 
 interface LoginFormProps {
-  onSwitch: (view: any) => void;
+  onSwitch: (view: any, data?: any) => void;
+  phone?: string;
 }
 
 type FormData = {
@@ -28,7 +33,8 @@ const LoginForm = ({ onSwitch }: LoginFormProps) => {
   const [authError, setAuthError] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const networkRequest = useNetworkRequest();
-  const navigate = useNavigate()
+  const { instance } = useMsal();
+  const { setContactId } = useApp();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -89,8 +95,9 @@ const LoginForm = ({ onSwitch }: LoginFormProps) => {
         body,
       });
       if (response?.success) {
-        setLocalStorageItem('auth_txn', response?.data?.session?.token);
-        onSwitch('portal')
+        setContactId(response?.data?.contact?.id);
+        setLocalStorageItem("contactId", response?.data?.contact?.id);
+        onSwitch('otpverification', response?.data?.otpResponse?.phoneNumber);
       } else {
         setAuthError(response?.message || "Incorrect email or password.");
       }
@@ -101,7 +108,47 @@ const LoginForm = ({ onSwitch }: LoginFormProps) => {
       setLoading(false);
     }
   };
+  const googleLogin = useGoogleLogin({
+    onSuccess: (tokenResponse) => {
+      console.log("Google login success", tokenResponse);
+      // TODO: send tokenResponse.access_token or id_token to your backend for verification/login
+    },
+    onError: (errorResponse) => {
+      console.error("Google login error", errorResponse);
+      setAuthError("Google sign-in failed. Please try again.");
+    },
+  });
+  const handleSocialSignIn = async (key: string) => {
+    if (key === "google") {
+      googleLogin();
+    } else {
+      try {
+        setLoading(true);
+        const result = await instance.loginPopup(loginRequest);
 
+        // Access tokens / ID token
+        const account = result.account;
+        const idToken = result.idToken;
+        const accessToken = result.accessToken;
+
+        console.log("Outlook login success", { account, idToken, accessToken });
+
+        // TODO: send token to backend for login/SSO
+        // await networkRequest(API_ENDPOINTS.microsoftLogin, {
+        //   method: "POST",
+        //   body: { idToken, accessToken },
+        // });
+
+        // Example: navigate to dashboard
+        // navigate("/dashboard");
+      } catch (error) {
+        console.error("Outlook (Azure AD) login error", error);
+        setAuthError("Outlook sign-in failed. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
   return (
     <div>
       <form onSubmit={handleSubmit} className="w-full max-w-sm rounded-xl px-6">
@@ -115,15 +162,28 @@ const LoginForm = ({ onSwitch }: LoginFormProps) => {
             <div key={id} className="space-y-2 mb-4 min-w-[360px]">
               <Label className="text-sm font-medium">{label}</Label>
               <div className="relative">
-                {Icon && <Icon className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />}
-                <Input
-                  name={id}
-                  type={type}
-                  placeholder={placeholder}
-                  value={formData[fieldKey] || ""}
-                  onChange={handleChange}
-                  className={`pl-10 text-sm ${showFieldError ? "ring-1 ring-red-500" : ""}`}
-                />
+                {Icon && fieldKey !== "password" && (
+                  <Icon className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+                )}
+
+                {isPasswordField ? (
+                  <PasswordInput
+                    name={id}
+                    placeholder={placeholder}
+                    value={String(formData[fieldKey] || "")}
+                    onChange={handleChange}
+                    showError={showFieldError}
+                  />
+                ) : (
+                  <Input
+                    name={id}
+                    type={type}
+                    placeholder={placeholder}
+                    value={formData[fieldKey] || ""}
+                    onChange={handleChange}
+                    className={cn("pl-10 text-sm", { "ring-1 ring-red-500": showFieldError })}
+                  />
+                )}
               </div>
 
               {showFieldError && (
@@ -168,12 +228,14 @@ const LoginForm = ({ onSwitch }: LoginFormProps) => {
         <div className="flex gap-3">
           <button
             type="button"
+            onClick={() => handleSocialSignIn("outlook")}
             className="flex-1 flex items-center justify-center gap-2 border border-gray-200 rounded-md py-2 text-sm hover:bg-gray-50"
           >
             <img src={outlook} alt="Outlook" className="w-4 h-4" /> Outlook
           </button>
           <button
             type="button"
+            onClick={() => handleSocialSignIn("google")}
             className="flex-1 flex items-center justify-center gap-2 border border-gray-200 rounded-md py-2 text-sm hover:bg-gray-50"
           >
             <img src={google} alt="Google" className="w-4 h-4" /> Google

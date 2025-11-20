@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Label } from "@radix-ui/react-label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, Eye, EyeOff } from "lucide-react";
 import { signUpFields } from "@/constants";
 import outlook from "../../assets/images/outlook-icon.svg";
 import google from "../../assets/images/google-icon.svg";
@@ -11,6 +11,8 @@ import useNetworkRequest from "@/api/useNetworkRequest";
 import { API_ENDPOINTS } from "@/api/apiEndpoints";
 import checkCircle from "../../assets/images/check-circle.svg";
 import circleX from "../../assets/images/circle-x.svg";
+import PasswordInput from "../ui/passwordInput";
+import { useGoogleLogin } from "@react-oauth/google";
 
 interface SignUpFormProps {
   onSwitch: (view: any) => void;
@@ -26,6 +28,8 @@ type FormData = {
   confirmPassword: string;
 };
 
+
+
 const SignUpForm = ({ onSwitch }: SignUpFormProps) => {
   const [formData, setFormData] = useState<FormData>({
     firstName: "",
@@ -39,6 +43,7 @@ const SignUpForm = ({ onSwitch }: SignUpFormProps) => {
 
   const [fieldErrors, setFieldErrors] = useState<Partial<Record<keyof FormData, string>>>({});
   const [apiError, setApiError] = useState<string>("");
+  const [successMessage, setSuccessMessage] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [passwordValidation, setPasswordValidation] = useState<Record<string, boolean>>({
     length: false,
@@ -126,6 +131,7 @@ const SignUpForm = ({ onSwitch }: SignUpFormProps) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setApiError("");
+    setSuccessMessage("");
     if (!validateForm()) return;
 
     try {
@@ -147,6 +153,7 @@ const SignUpForm = ({ onSwitch }: SignUpFormProps) => {
 
       if (response?.success) {
         console.log("Signup successful:", response);
+        setSuccessMessage(response?.message || "Signup successful.");
         // You can auto-switch to login after success
         // onSwitch("login");
       } else {
@@ -159,6 +166,22 @@ const SignUpForm = ({ onSwitch }: SignUpFormProps) => {
       setLoading(false);
     }
   };
+  const googleLogin = useGoogleLogin({
+    onSuccess: (tokenResponse) => {
+      console.log("Google login success", tokenResponse);
+      // TODO: send tokenResponse.access_token or id_token to your backend for verification/login
+    },
+    onError: (errorResponse) => {
+      console.error("Google login error", errorResponse);
+    },
+  });
+  const handleSocialSignUp = (key: string) => {
+    if (key === "google") {
+      googleLogin();
+    }
+    else if (key === "outlook") {
+    }
+  }
 
   return (
     <form onSubmit={handleSubmit} className="w-full px-40 space-y-4">
@@ -166,7 +189,6 @@ const SignUpForm = ({ onSwitch }: SignUpFormProps) => {
         {signUpFields.map(({ id, label, type, placeholder }) => {
           const fieldKey = id as keyof FormData;
           const showError = Boolean(fieldErrors[fieldKey]);
-          const isConfirmPassword = fieldKey === "confirmPassword";
 
           return (
             <div
@@ -176,16 +198,26 @@ const SignUpForm = ({ onSwitch }: SignUpFormProps) => {
               })}
             >
               <Label className="text-sm font-medium">{label}</Label>
-              <Input
-                name={id}
-                type={type}
-                placeholder={placeholder}
-                value={formData[fieldKey] || ""}
-                onChange={handleChange}
-                inputMode={id === "landlineNumber" || id === "mobileNumber" ? "numeric" : undefined}
-                maxLength={id === "landlineNumber" || id === "mobileNumber" ? 8 : undefined}
-                className={cn("text-sm", { "ring-1 ring-red-500": showError })}
-              />
+              {fieldKey === "password" || fieldKey === "confirmPassword" ? (
+                <PasswordInput
+                  name={id}
+                  placeholder={placeholder}
+                  value={String(formData[fieldKey] || "")}
+                  onChange={handleChange}
+                  showError={showError}
+                />
+              ) : (
+                <Input
+                  name={id}
+                  type={type}
+                  placeholder={placeholder}
+                  value={formData[fieldKey] || ""}
+                  onChange={handleChange}
+                  inputMode={id === "landlineNumber" || id === "mobileNumber" ? "numeric" : undefined}
+                  maxLength={id === "landlineNumber" || id === "mobileNumber" ? 8 : undefined}
+                  className={cn("text-sm", { "ring-1 ring-red-500": showError })}
+                />
+              )}
 
               {/* field-level validation error */}
               {showError && (
@@ -225,6 +257,13 @@ const SignUpForm = ({ onSwitch }: SignUpFormProps) => {
         </div>
       )}
 
+      {successMessage && (
+        <div className="w-full mb-3 flex items-center justify-center rounded-lg bg-white py-2 text-sm text-green-600 border border-green-200">
+          <AlertCircle className="w-4 h-4 mr-2 text-green-600" />
+          <span>{successMessage}</span>
+        </div>
+      )}
+
       <Button
         type="submit"
         disabled={loading}
@@ -241,12 +280,14 @@ const SignUpForm = ({ onSwitch }: SignUpFormProps) => {
       <div className="flex gap-3">
         <button
           type="button"
+          onClick={() => handleSocialSignUp("outlook")}
           className="flex-1 flex items-center justify-center gap-2 border border-gray-200 rounded-md py-2 text-sm hover:bg-gray-50"
         >
           <img src={outlook} alt="Outlook" className="w-4 h-4" /> Outlook
         </button>
         <button
           type="button"
+          onClick={() => handleSocialSignUp("google")}
           className="flex-1 flex items-center justify-center gap-2 border border-gray-200 rounded-md py-2 text-sm hover:bg-gray-50"
         >
           <img src={google} alt="Google" className="w-4 h-4" /> Google

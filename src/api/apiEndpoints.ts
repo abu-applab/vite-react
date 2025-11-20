@@ -17,6 +17,8 @@ export const API_ENDPOINTS = {
   logIn: "/RegistationAndLogin/login",
   logOut: "/RegistationAndLogin/logout",
   signUp: "/RegistationAndLogin/signup",
+  validateApi: "/RegistationAndLogin/validate-otp",
+  resendOtp: "/RegistationAndLogin/resend-otp",
 
   forgotpassword: "/RegistationAndLogin/requestPasswordReset",
   resetPassword: "resetPassword",

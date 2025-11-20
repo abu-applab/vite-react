@@ -16,6 +16,7 @@ const ForgotPasswordForm = ({ onSwitch }: ForgotPasswordProps) => {
   const [formData, setFormData] = useState({ email: "" });
   const [fieldErrors, setFieldErrors] = useState<{ email?: string }>({});
   const [submitError, setSubmitError] = useState<string>("");
+  const [successMessage, setSuccessMessage] = useState<string>("");
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -64,8 +65,15 @@ const ForgotPasswordForm = ({ onSwitch }: ForgotPasswordProps) => {
       });
       console.log("Forgot password response:", response);
 
-      // Optionally check response here if needed, then:
-      onSwitch("otpverification");
+      if (response?.success) {
+        setSuccessMessage(
+          response?.message || "OTP has been sent to your email address."
+        );
+        setSubmitError("");
+      } else {
+        setSuccessMessage("");
+        setSubmitError(response?.message || "Failed to send OTP. Please try again.");
+      }
     } catch (err: any) {
       console.error("Forgot password error:", err);
       setSubmitError(
@@ -99,6 +107,12 @@ const ForgotPasswordForm = ({ onSwitch }: ForgotPasswordProps) => {
         <div className="w-full mb-3 flex items-center justify-center rounded-lg bg-white py-2 text-sm text-red-600 border border-red-200">
           <AlertCircle className="w-4 h-4 mr-2" />
           <span>{submitError}</span>
+        </div>
+      )}
+
+      {successMessage && (
+        <div className="w-full p-4 mb-3 flex items-center justify-center rounded-lg bg-white py-2 text-sm text-green-600 border border-green-200">
+          <span>{successMessage}</span>
         </div>
       )}
 

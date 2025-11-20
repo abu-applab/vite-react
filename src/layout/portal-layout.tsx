@@ -42,7 +42,7 @@ const PortalLayout = () => {
                 companyList.length > 0 && setSelectedCompany(companyList[0])
                 setIsLoading(false)
             } catch (error) {
-                setIsLoading(true)
+                setIsLoading(false)
                 console.error("Failed to fetch companies:", error);
             }
         };
@@ -72,12 +72,14 @@ const PortalLayout = () => {
     };
     const handleLogOut = async () => {
         try {
+            clearAllLocalStorage()
             await networkRequest(
                 API_ENDPOINTS.logOut,
                 {
                     method: 'POST'
                 }
             );
+
         } catch (error) {
             console.error('Logout failed:', error);
         }

@@ -251,6 +251,7 @@ export const getLocalStorageItem = (key: string) => {
 export const clearAllLocalStorage = () => {
   try {
     localStorage.clear();
+    window.location.href = "/login";
   } catch (error) {
     console.error('Failed to clear localStorage', error);
   }
@@ -261,5 +262,6 @@ export const passwordRules = [
   { id: "number", label: "At least one numeric", test: (pw: string) => /\d/.test(pw) },
   { id: "special", label: "At least one special character", test: (pw: string) => /[\W_]/.test(pw) },
 ];
+
 
 

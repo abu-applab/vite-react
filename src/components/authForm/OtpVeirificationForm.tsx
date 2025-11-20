@@ -3,22 +3,29 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { AlertCircle } from "lucide-react";
 import checkCircle from "../../assets/images/check-circle.svg";
+import { setLocalStorageItem } from "@/lib/utils";
+import useNetworkRequest from "@/api/useNetworkRequest";
+import { API_ENDPOINTS } from "@/api/apiEndpoints";
 
 
 interface OtpVerificationFormProps {
     onSwitch: (view: string) => void;
+    phoneNumber: string;
 }
 
 const OTP_LENGTH = 6;
 
 export default function OtpVeirificationForm({
     onSwitch,
+    phoneNumber
 }: OtpVerificationFormProps) {
     const [otp, setOtp] = useState<string[]>(Array(OTP_LENGTH).fill(""));
     const [error, setError] = useState<string>("");
     const [success, setSuccess] = useState<boolean>(false);
     const [submitting, setSubmitting] = useState<boolean>(false);
-
+    const [resending, setResending] = useState<boolean>(false);
+    const [resendMessage, setResendMessage] = useState<string>("");
+    const networkRequest = useNetworkRequest();
     const inputsRef = useRef<Array<HTMLInputElement | null>>([]);
 
     const handleChange = (index: number, value: string) => {
@@ -48,12 +55,12 @@ export default function OtpVeirificationForm({
         }
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
         const code = otp.join("");
 
-        // Basic validation: require 6 digits, then show a clear message if OTP is not correct
+        // Basic validation: require 6 digits
         if (code.length !== OTP_LENGTH) {
             setError("Please enter the 6-digit code sent to your phone.");
             setSuccess(false);
@@ -66,14 +73,61 @@ export default function OtpVeirificationForm({
             return;
         }
 
-        setSubmitting(true);
-        setError("");
-        setSuccess(true);
+        try {
+            setSubmitting(true);
+            setError("");
+            setSuccess(false);
 
-        // Simulate success and redirect to reset password
-        setTimeout(() => {
-            onSwitch("resetpassword");
-        }, 1500);
+            const body = {
+                otpCode: code,
+                phoneNumber,
+            };
+
+            const response = await networkRequest(API_ENDPOINTS.validateApi, {
+                method: "POST",
+                body,
+            });
+
+            if (response?.success) {
+                setLocalStorageItem("auth_txn", response?.data?.session?.token);
+                setSuccess(true);
+                onSwitch("portal");
+            } else {
+                setError(response?.message || "OTP verification failed.");
+                setSuccess(false);
+            }
+        } catch (err) {
+            console.error("OTP verify error:", err);
+            setError("OTP verification failed.");
+            setSuccess(false);
+        } finally {
+            setSubmitting(false);
+        }
+    };
+    const handleResendOtp = async () => {
+        try {
+            setResending(true);
+            setResendMessage("");
+            setError("");
+
+            const body = { phoneNumber };
+
+            const response = await networkRequest(API_ENDPOINTS.resendOtp, {
+                method: "POST",
+                body,
+            });
+
+            if (response?.success) {
+                setResendMessage("A new OTP has been sent to your phone.");
+            } else {
+                setError(response?.message || "Failed to resend OTP.");
+            }
+        } catch (err) {
+            console.error("Resend OTP error:", err);
+            setError("Failed to resend OTP.");
+        } finally {
+            setResending(false);
+        }
     };
 
     return (
@@ -112,6 +166,21 @@ export default function OtpVeirificationForm({
                 >
                     {submitting ? "Verifying..." : "Verify OTP"}
                 </Button>
+
+                <div className="mt-3 flex flex-col items-center space-y-1">
+                    <button
+                        type="button"
+                        onClick={handleResendOtp}
+                        disabled={resending}
+                        className="text-xs text-[#971B2F] font-medium underline disabled:opacity-60"
+                    >
+                        {resending ? "Resending OTP..." : "Resend OTP"}
+                    </button>
+
+                    {/* {resendMessage && (
+                        <p className="text-xs text-green-600 text-center">{resendMessage}</p>
+                    )} */}
+                </div>
 
                 {success && (
                     <p className="flex items-center justify-center gap-2 text-sm text-green-600">
