@@ -255,6 +255,11 @@ export const clearAllLocalStorage = () => {
     console.error('Failed to clear localStorage', error);
   }
 };
-
+export const passwordRules = [
+  { id: "length", label: "Minimum 8 characters", test: (pw: string) => pw.length >= 8 },
+  { id: "upperLower", label: "One uppercase and one lowercase character", test: (pw: string) => /[A-Z]/.test(pw) && /[a-z]/.test(pw) },
+  { id: "number", label: "At least one numeric", test: (pw: string) => /\d/.test(pw) },
+  { id: "special", label: "At least one special character", test: (pw: string) => /[\W_]/.test(pw) },
+];
 
 

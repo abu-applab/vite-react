@@ -79,7 +79,7 @@ const ForgotPasswordForm = ({ onSwitch }: ForgotPasswordProps) => {
   return (
     <form onSubmit={handleSubmit} className="w-full max-w-sm rounded-xl px-6">
       {forgotPasswordFields.map(({ id, label, type, placeholder }) => (
-        <div key={id} className="space-y-2 mb-4 min-w-[360px]">
+        <div key={id} className="space-y-2 mb-4">
           <Label className="text-sm font-medium">{label}</Label>
           <Input
             name={id}
@@ -107,7 +107,7 @@ const ForgotPasswordForm = ({ onSwitch }: ForgotPasswordProps) => {
         disabled={loading}
         className="w-full bg-[#971B2F] hover:bg-[#7A1F2B] text-white font-medium text-sm py-2 rounded-md"
       >
-        {loading ? "Sending OTP..." : "Send OTP"}
+        {loading ? "Sending..." : "Send"}
       </Button>
 
       <p className="text-sm text-gray-700 mt-4 flex items-center justify-center">

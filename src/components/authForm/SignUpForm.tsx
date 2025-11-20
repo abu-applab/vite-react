@@ -6,9 +6,11 @@ import { AlertCircle } from "lucide-react";
 import { signUpFields } from "@/constants";
 import outlook from "../../assets/images/outlook-icon.svg";
 import google from "../../assets/images/google-icon.svg";
-import { cn } from "@/lib/utils";
+import { cn, passwordRules } from "@/lib/utils";
 import useNetworkRequest from "@/api/useNetworkRequest";
 import { API_ENDPOINTS } from "@/api/apiEndpoints";
+import checkCircle from "../../assets/images/check-circle.svg";
+import circleX from "../../assets/images/circle-x.svg";
 
 interface SignUpFormProps {
   onSwitch: (view: any) => void;
@@ -38,13 +40,27 @@ const SignUpForm = ({ onSwitch }: SignUpFormProps) => {
   const [fieldErrors, setFieldErrors] = useState<Partial<Record<keyof FormData, string>>>({});
   const [apiError, setApiError] = useState<string>("");
   const [loading, setLoading] = useState(false);
+  const [passwordValidation, setPasswordValidation] = useState<Record<string, boolean>>({
+    length: false,
+    upperLower: false,
+    number: false,
+    special: false,
+  });
   const networkRequest = useNetworkRequest();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
+
+    let nextValue: string | boolean = type === "checkbox" ? checked : value;
+
+    // For phone fields, allow only digits
+    if (name === "landlineNumber" || name === "mobileNumber") {
+      nextValue = value.replace(/\D/g, "");
+    }
+
     setFormData((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: nextValue,
     }));
 
     // Clear field-level error while typing
@@ -54,6 +70,15 @@ const SignUpForm = ({ onSwitch }: SignUpFormProps) => {
       delete updated[name as keyof FormData];
       return updated;
     });
+
+    // Update live password validation when password changes
+    if (name === "password") {
+      const newValidation: Record<string, boolean> = {};
+      passwordRules.forEach((rule) => {
+        newValidation[rule.id] = rule.test(String(nextValue));
+      });
+      setPasswordValidation(newValidation);
+    }
 
     if (apiError) setApiError("");
   };
@@ -129,7 +154,7 @@ const SignUpForm = ({ onSwitch }: SignUpFormProps) => {
       }
     } catch (err) {
       console.error("Signup error:", err);
-      setApiError("Signup failed. Please try again.");
+      setApiError(err instanceof Error ? err.message : "Signup failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -157,6 +182,8 @@ const SignUpForm = ({ onSwitch }: SignUpFormProps) => {
                 placeholder={placeholder}
                 value={formData[fieldKey] || ""}
                 onChange={handleChange}
+                inputMode={id === "landlineNumber" || id === "mobileNumber" ? "numeric" : undefined}
+                maxLength={id === "landlineNumber" || id === "mobileNumber" ? 8 : undefined}
                 className={cn("text-sm", { "ring-1 ring-red-500": showError })}
               />
 
@@ -165,6 +192,27 @@ const SignUpForm = ({ onSwitch }: SignUpFormProps) => {
                 <p className="text-xs text-red-500 mt-1">{fieldErrors[fieldKey]}</p>
               )}
 
+              {fieldKey === "password" && (
+                <div className="mt-2 space-y-1 mt-6">
+                  {passwordRules.map((rule) => (
+                    <div key={rule.id} className="flex items-center my-2">
+                      <img
+                        src={passwordValidation[rule.id] ? checkCircle : circleX}
+                        alt={passwordValidation[rule.id] ? "Check" : "Cross"}
+                        className="w-3.5 h-3.5 mr-2"
+                      />
+                      <span
+                        className={cn("text-xs", {
+                          "text-green-600": passwordValidation[rule.id],
+                          "text-gray-500": !passwordValidation[rule.id],
+                        })}
+                      >
+                        {rule.label}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           );
         })}

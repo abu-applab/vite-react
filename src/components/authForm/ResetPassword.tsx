@@ -9,18 +9,13 @@ import useNetworkRequest from "@/api/useNetworkRequest";
 import { API_ENDPOINTS } from "@/api/apiEndpoints";
 import checkCircle from "../../assets/images/check-circle.svg"
 import circleX from "../../assets/images/circle-x.svg"
+import { passwordRules } from "@/lib/utils";
 
 interface ResetPasswordProps {
     onSwitch: (view: any) => void;
 }
 
-// Password rules for live validation
-const passwordRules = [
-    { id: "length", label: "Minimum 8 characters", test: (pw: string) => pw.length >= 8 },
-    { id: "upperLower", label: "One uppercase and one lowercase character", test: (pw: string) => /[A-Z]/.test(pw) && /[a-z]/.test(pw) },
-    { id: "number", label: "At least one numeric", test: (pw: string) => /\d/.test(pw) },
-    { id: "special", label: "At least one special character", test: (pw: string) => /[\W_]/.test(pw) },
-];
+
 
 const ResetPasswordForm = ({ onSwitch }: ResetPasswordProps) => {
     const [searchParams] = useSearchParams();
@@ -164,10 +159,10 @@ const ResetPasswordForm = ({ onSwitch }: ResetPasswordProps) => {
                     {loading ? "Resetting..." : "Reset Password"}
                 </Button>
                 <p className="text-sm text-gray-700 mt-4 flex items-center justify-center">
-                    Remember password? Go back to{" "}
+                    {"Remember password? Go back to "}
                     <span
                         onClick={() => onSwitch("login")}
-                        className="text-[#971B2F] font-medium cursor-pointer"
+                        className="text-[#971B2F] font-medium cursor-pointer ml-1"
                     >
                         {`${''} Sign In`}
                     </span>

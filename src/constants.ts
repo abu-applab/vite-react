@@ -132,8 +132,8 @@ export const signUpFields = [
   { id: "firstName", label: "First Name", type: "text", placeholder: "Type your first name" },
   { id: "lastName", label: "Last Name", type: "text", placeholder: "Type your last name" },
   { id: "email", label: "Email", type: "text", placeholder: "Type your email" },
-  { id: "landlineNumber", label: "Landline Number", type: "number", placeholder: "Type your landline number" },
-  { id: "mobileNumber", label: "Mobile Number", type: "number", placeholder: "Type your mobile number" },
+  { id: "landlineNumber", label: "Landline Number", type: "text", placeholder: "Type your landline number" },
+  { id: "mobileNumber", label: "Mobile Number", type: "text", placeholder: "Type your mobile number" },
   { id: "password", label: "Password", type: "password", placeholder: "Type your password" },
   { id: "confirmPassword", label: "Confirm Password", type: "password", placeholder: "Confirm your password" },
 ];
