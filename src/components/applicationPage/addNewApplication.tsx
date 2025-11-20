@@ -17,6 +17,7 @@ import Loader from "../loader"
 import { useNavigate, useParams } from "react-router-dom"
 import SubmittedFormSteps from "../submittedFormSteps"
 import { useTranslation } from "react-i18next"
+import { ConfirmationModal } from "../confirmationModal"
 
 export interface Step {
   title: string
@@ -52,26 +53,57 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
   const [referenceMessage, setReferenceMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [isSaveApplication, setSaveApplication] = useState(false);
+  const [isConfirmSubmitOpen, setConfirmSubmitOpen] = useState(false);
   const navigate = useNavigate();
   const { t } = useTranslation();
 
   useEffect(() => {
     const fetchData = async () => {
+      const formConfig = getApplicationFormConfig(selectedApplication)
+      const lastIndex = formConfig.length - 1;
       try {
         setIsLoading(true);
+
         const response = await networkRequest(API_ENDPOINTS.getApplication, {
           method: "GET",
           body: { applicationId: id },
         });
-  
+
         if (response.success) {
-          const cleanedData = removeEmptyValues(response.data);
-          const updatedData = calculateTotals(cleanedData);
+          const cleanedData = removeEmptyValues(response.data.applicationData);
+          let updatedData = calculateTotals(cleanedData);
+          const documentSection =
+            formConfig[lastIndex]?.sections[0]?.fields ?? [];
+          const apiDocuments = response?.data?.documentList?.documents || {};
+          const mappedDocuments: Record<string, string> = {};
+
+          documentSection.forEach((field) => {
+            const fieldKey = field.id;
+            const matchName = field.fileName;
+
+            let matchedFile = null;
+
+            Object.keys(apiDocuments).forEach((apiKey) => {
+              const doc = apiDocuments[apiKey];
+
+              if (doc.fileName?.startsWith(matchName)) {
+                matchedFile = { ...doc };
+              }
+            });
+
+            mappedDocuments[fieldKey] = matchedFile || ''
+          });
+
+          updatedData = {
+            ...updatedData,
+            ...mappedDocuments,
+          };
           setFormData(updatedData);
 
-          if (response.data.products) {
-            setProducts(response.data.products);
+          if (response.data.applicationData.products) {
+            setProducts(response.data.applicationData.products);
           }
+
         } else {
           console.error("API Error:", response.message);
         }
@@ -81,10 +113,13 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
         setIsLoading(false);
       }
     };
-  
-    fetchData();
+
+    if (id) {
+      fetchData();
+    }
   }, [id]);
-  
+
+
 
   useEffect(() => {
     const init = async () => {
@@ -148,8 +183,6 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
             }))
           );
 
-
-          // Optional: Reset ISICCode field value when section changes
           setFormData((prev: Record<string, any>) => ({
             ...prev,
             isicCode: "",
@@ -191,6 +224,7 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
   }, [])
 
   const handleInputChange = (fieldId: string, value: any) => {
+    console.log('called here');
     setFormData((prev) => {
       const updated = { ...prev, [fieldId]: value };
 
@@ -231,7 +265,6 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
         const stepConfig = config?.[currentIndex];
 
         newErrors = validateForm(stepConfig, formState, t)
-        console.log('applicationSteps[currentIndex]: ', applicationSteps[currentIndex]);
         if (products.length <= 0 && applicationSteps[currentIndex].title === 'Company Details (1 of 2)') {
           newErrors.ProductsJson = "Field is required"
         }
@@ -306,6 +339,7 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
       return;
     }
     setSaveApplication(true);
+    setReferenceMessage('');
     try {
       setIsLoading(true);
       const body = new FormData();
@@ -344,7 +378,6 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
         if (newId && !applicationId) {
           setApplicationId(newId);
         }
-        console.log('Application saved successfully');
       } else {
         console.error(response?.message || 'Failed to save');
       }
@@ -376,6 +409,7 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
       return;
     }
     setSaveApplication(false);
+    setReferenceMessage('');
     try {
       setIsLoading(true);
       const body = new FormData();
@@ -442,6 +476,11 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
     isSaveApplication ? handleSave() : handleSubmit();
   };
 
+  const executeSubmit = async () => {
+    setConfirmSubmitOpen(false);
+    await handleSubmit();   // your original function runs untouched
+  };
+
   const isLastStepActive = applicationSteps[applicationSteps.length - 1]?.active === true;
 
   const isSubmittedApplication = Boolean(
@@ -482,8 +521,9 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
         products={products}
         setProducts={setProducts}
         isLastStepActive={isLastStepActive}
-        handleSubmit={handleSubmit}
+        handleSubmit={() => setConfirmSubmitOpen(true)}
         applicationSteps={applicationSteps}
+        setApplicationSteps={setApplicationSteps}
         isSubmittedApplication={isSubmittedApplication}
       />
     )
@@ -523,7 +563,8 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
           handleInputChange={handleInputChange}
           fieldRefs={fieldRefs}
           isLastStepActive={isLastStepActive}
-          handleSubmit={handleSubmit}
+          handleSubmit={() => setConfirmSubmitOpen(true)}
+          setApplicationSteps={setApplicationSteps}
           applicationSteps={applicationSteps}
         />
       )}
@@ -540,6 +581,12 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
         handleTryAgain={handleTryAgain}
         errorMessage={errorMessage}
         isSaveApplication={isSaveApplication}
+        buttonText="View My Applocation"
+      />
+      <ConfirmationModal
+        open={isConfirmSubmitOpen}
+        onOpenChange={setConfirmSubmitOpen}
+        onConfirm={executeSubmit}
       />
       {isLoading && <Loader />}
     </div>

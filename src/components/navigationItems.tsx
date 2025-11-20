@@ -12,7 +12,7 @@ export function NavigationBar() {
   const pathName = window.location.pathname;
 
   return (
-    <div className="flex flex-row justify-between h-[56px] lg:px-20 md:px-6 w-full border-b-2 overflow-auto">
+    <div className="flex flex-row justify-between h-[56px] lg:px-[68px] md:px-6 w-full border-b-2 overflow-auto">
       {navigationItems.map((item) => {
         if (item.children) {
           return (

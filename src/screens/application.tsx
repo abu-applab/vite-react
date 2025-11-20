@@ -20,6 +20,7 @@ import CustomPagination from "@/components/customPagination";
 import Loader from "@/components/loader";
 import { useNavigate, useParams } from "react-router-dom";
 import { EmptyRequest } from "@/components/service/serviceRequestPage/empty-request";
+import { PAGE_SIZE } from "@/constants";
 
 interface InvestmentOptions {
     id: string
@@ -190,7 +191,6 @@ const filterKeys = {
         { id: '100000001', value: 'Logistics', icon: Truck },
     ]
 }
-const PAGE_SIZE = 4
 
 const ApplicationPage = () => {
     const [step, setStep] = useState(0);
@@ -467,7 +467,7 @@ const ApplicationPage = () => {
                             setAppliedFilter={setApplicationFilter}
                             appliedFilter={applicationFilter}
                         />
-                        <div className="w-full h-fit mt-6">
+                        <div className="w-full min-h-[55vh] mt-6">
                             <div className="flex items-center bg-white h-[56px] rounded-lg shadow-md gap-[8px]">
                                 {tabs.map((tab) => (
                                     <button key={tab.id} className={`py-[10px] h-full ml-[40px] text-sm font-medium ${activeTab === tab.id ? 'text-maroon-100 border-b-2 border-maroon-100' : 'text-black hover:text-gray-500'} focus:outline-none focus:text-maroon-100 `} onClick={() => setActiveTab(tab.id)} > {tab.label}
@@ -479,7 +479,9 @@ const ApplicationPage = () => {
                                     ((applicationData.length > 0 && (applicationFilter?.totalPages ?? 0) > 0) ?
                                         <>
                                             <ListOFCards cardsConfig={cardsConfig} cardsData={applicationData} />
-                                            <CustomPagination handlePageChange={(page) => handlePageChange(page, applicationFilter?.totalPages ?? 0, setApplicationFilter)} currentPage={applicationFilter?.page ?? 1} totalPages={applicationFilter?.totalPages ?? 0} />
+                                            {(applicationFilter?.totalPages ?? 0) > 1 && (
+                                                <CustomPagination handlePageChange={(page) => handlePageChange(page, applicationFilter?.totalPages ?? 0, setApplicationFilter)} currentPage={applicationFilter?.page ?? 1} totalPages={applicationFilter?.totalPages ?? 0} />
+                                            )}
                                         </>
                                         : !loading && <EmptyRequest hideButton={true} title={'No Applications found'} />)
                                 }

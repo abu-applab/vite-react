@@ -17,6 +17,7 @@ interface RequestSubmittedModalProps {
   handleTryAgain: () => void
   errorMessage?: string
   isSaveApplication?: boolean
+  buttonText: string
 }
 
 export function RequestSubmittedModal({
@@ -27,6 +28,7 @@ export function RequestSubmittedModal({
   handleTryAgain,
   errorMessage = "An unexpected error occurred.",
   isSaveApplication = false,
+  buttonText = ''
 }: RequestSubmittedModalProps) {
   const isSuccess = Boolean(referenceMessage)
 
@@ -42,7 +44,7 @@ export function RequestSubmittedModal({
             <span className="">{`${' '} ${referenceMessage}`}</span>
           </>
         ),
-        buttonText: "View My Requests",
+        buttonText: buttonText ? buttonText:  "View My Requests",
         buttonAction: onGoToRequest,
       }
     : {
@@ -80,6 +82,7 @@ export function RequestSubmittedModal({
           <Button
             className="bg-[#862634] hover:bg-[#7A1F2B] text-white px-4 py-2 rounded-md text-sm leading-5 font-medium"
             onClick={status.buttonAction}
+            type="button"
           >
             {status.buttonText}
           </Button>

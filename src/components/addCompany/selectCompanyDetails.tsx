@@ -31,7 +31,6 @@ function SelectCompanyDetails({goToNextStep, goToPreviousStep}: SelectCompanyDet
   // 🔹 Handle form submit
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    console.log("Submitted Data:", formData)
     goToNextStep();
 
     // Example: validation

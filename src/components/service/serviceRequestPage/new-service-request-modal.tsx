@@ -98,13 +98,14 @@ export function NewServiceRequestModal({ open, onOpenChange, setSelectedService 
         </div>
 
         <div className="flex justify-between space-x-3 px-5 py-3 border-t border-border h-[56px]">
-          <Button variant="outline" onClick={handleCancel} className="px-6 bg-transparent">
+          <Button variant="outline" onClick={handleCancel} className="px-6 bg-transparent" type="button">
             Cancel
           </Button>
           <Button
             onClick={handleDone}
             disabled={!value}
             className="px-6 bg-maroon-100 hover:bg-[#7A1F2B] text-white cursor-pointer"
+            type="button"
           >
             Done
           </Button>
