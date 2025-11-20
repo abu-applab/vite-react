@@ -8,6 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../../ui/dialog"
+import { useTranslation } from "react-i18next"
 
 interface RequestSubmittedModalProps {
   open: boolean
@@ -30,18 +31,19 @@ export function RequestSubmittedModal({
   isSaveApplication = false,
   buttonText = ''
 }: RequestSubmittedModalProps) {
+  const {t} = useTranslation();
   const isSuccess = Boolean(referenceMessage)
 
   const handleClose = () => onOpenChange(false)
 
   const status = isSuccess
     ? {
-        heading: 'Request Submitted',
+        heading: isSaveApplication ? 'Application Saved' : 'Request Submitted',
         icon: successfull,
-        title: "Request Submitted Successfully",
+        title: isSaveApplication ? "Application Saved as Draft" : "Request Submitted Successfully",
         subtitle: (
           <>
-            <span className="">{`${' '} ${referenceMessage}`}</span>
+            <span className="">{`${' '} ${t(referenceMessage)}`}</span>
           </>
         ),
         buttonText: buttonText ? buttonText:  "View My Requests",
@@ -76,7 +78,7 @@ export function RequestSubmittedModal({
         <div className="flex flex-col items-center justify-start min-h-[260px] gap-6 px-6 pt-4 pb-8">
           <img src={status.icon} alt="status" className="w-[80px] h-[80px]" />
           <div className="text-center">
-            <h1 className="text-2xl font-semibold text-black">{status.title}</h1>
+            <h1 className="text-2xl font-semibold text-black">{t(status.title)}</h1>
             <p className="text-sm text-zinc-500 leading-relaxed">{status.subtitle}</p>
           </div>
           <Button

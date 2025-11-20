@@ -24,6 +24,7 @@ const PortalLayout = () => {
     const [isLoading, setIsLoading] = useState(false);
     const { i18n } = useTranslation();
     const lang = localStorage.getItem('lang') ?? 'en'
+    const {t} = useTranslation();
 
     useEffect(() => {
         const fetchCompanies = async () => {
@@ -111,15 +112,15 @@ const PortalLayout = () => {
                                 </DropdownMenuLabel>
                                 <DropdownMenuItem className="flex items-center mt-2 gap-3 px-4 py-2 hover:bg-gray-50 cursor-pointer font-medium text-xs" onClick={() => navigate('/portal/my-profile')}>
                                     <User className="w-5 h-5  text-black" />
-                                    My Profile
+                                    {t('my_profile')}
                                 </DropdownMenuItem>
                                 <DropdownMenuItem onClick={() => navigate('/portal/settings')} className="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 cursor-pointer font-medium text-xs">
                                     <Settings className="w-5 h-5  text-black" />
-                                    Settings
+                                    {t('settings')}
                                 </DropdownMenuItem>
                                 <DropdownMenuItem className="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 cursor-pointer font-medium text-xs">
                                     <LogOut className="w-5 h-5 text-black" />
-                                    Log Out
+                                    {t('log_out')}
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>

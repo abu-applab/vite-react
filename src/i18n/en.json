@@ -1,4 +1,9 @@
 {
+    "my_profile": "My Profile",
+    "settings": "Settings",
+    "log_out": "Log Out",
+
+
     "upload_crd": "Upload Commercial Registration Document",
     "upload_crd_desc": "Submit your Commercial Registration to auto-fill company info.",
     "upload_crd_existing_user": "Add Commercial Registration Document",

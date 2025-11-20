@@ -378,10 +378,10 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
         if (newId && !applicationId) {
           setApplicationId(newId);
         }
+        setReferenceMessage('You can continue editing it anytime from the Applications page.');
       } else {
         console.error(response?.message || 'Failed to save');
       }
-      if (response.success) setReferenceMessage(response.message);
       setSubmittedModal(true);
       setIsLoading(false);
       setIsLoading(false);
