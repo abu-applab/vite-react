@@ -1099,7 +1099,7 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                 },
                                 {
                                     id: "wasteQuantity",
-                                    label: "quantity",
+                                    label: "quantity_m3",
                                     type: "number",
                                     required: true
                                 },

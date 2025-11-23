@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom"
 import qatarFlag from "@/assets/images/qatar-flag.svg"
 import manateqLogo2 from "@/assets/images/manateq-hub-logo.svg"
 import { navigationItems } from "@/lib/utils"
+import { useTranslation } from "react-i18next"
 
 interface MobileMenuProps {
   isOpen: boolean
@@ -15,6 +16,7 @@ interface MobileMenuProps {
 export const MobileMenu = ({ isOpen, onClose, switchLanguage }: MobileMenuProps) => {
   const navigate = useNavigate()
   const [expanded, setExpanded] = useState(false)
+  const {t} = useTranslation();
 
   return (
     <div
@@ -37,7 +39,7 @@ export const MobileMenu = ({ isOpen, onClose, switchLanguage }: MobileMenuProps)
       {/* Menu Items */}
       <div className="p-4 flex flex-col gap-6">
         <h3 className="text-xs leading-4 text-neutral-500 uppercase font-normal">
-          Discover
+          {('discover')}
         </h3>
 
         {navigationItems.map((item) => (
@@ -51,7 +53,7 @@ export const MobileMenu = ({ isOpen, onClose, switchLanguage }: MobileMenuProps)
                   onClose()
                 }}
               >
-                {item.name}
+                {t(item.name)}
               </Button>
             ) : (
               <>
@@ -75,7 +77,7 @@ export const MobileMenu = ({ isOpen, onClose, switchLanguage }: MobileMenuProps)
                           onClose()
                         }}
                       >
-                        {sub.name}
+                        {t(sub.name)}
                       </Button>
                     ))}
                   </div>
@@ -87,7 +89,7 @@ export const MobileMenu = ({ isOpen, onClose, switchLanguage }: MobileMenuProps)
 
         <div className="mt-8">
           <h3 className="text-xs text-gray-500 uppercase tracking-wider mb-3">
-            Language Preference
+          {t('language_preference')}
           </h3>
           <Button className="flex items-center gap-2 border px-3 py-2" onClick={switchLanguage}>
             <img src={qatarFlag} alt="Flag" className="w-5 h-5" />

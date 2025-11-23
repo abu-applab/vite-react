@@ -28,8 +28,8 @@ const WelcomeHeader = ({ setIsAddNewCompany, totalCompanies, currentCompanies }:
     return (
         <Card className="w-full">
             <CardContent className="p-6">
-                <div className="flex items-center justify-between mb-6">
-                    <div className="flex items-center gap-4">
+                <div className="flex items-center justify-between mb-6 max-md:flex-col max-md:items-start">
+                    <div className="flex items-center gap-4 max-md:flex-row max-md:items-start">
                         <Avatar className="h-12 w-12">
                             <AvatarImage src={avatar} alt="Mushthtofa Ahmad Kamal" />
                             <AvatarFallback>MK</AvatarFallback>
@@ -39,7 +39,7 @@ const WelcomeHeader = ({ setIsAddNewCompany, totalCompanies, currentCompanies }:
                             <p className="text-sm text-gray-600">Stay informed and manage your investments seamlessly</p>
                         </div>
                     </div>
-                    <Button className="bg-maroon-100 hover: text-white" onClick={() => setIsAddNewCompany(true)}>
+                    <Button className="bg-maroon-100 hover:text-white max-md:w-full" onClick={() => setIsAddNewCompany(true)}>
                         <Plus className="h-4 w-4 mr-2" />
                         Add New Company
                     </Button>

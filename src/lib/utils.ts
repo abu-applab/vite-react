@@ -16,18 +16,18 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export const navigationItems = [
-  { name: "Home", icon: Home, href: "/portal" },
-  { name: "Application", icon: AppWindow, href: "/portal/application" },
-  { name: "Payments", icon: Wallet, href: "/portal/payments" },
-  { name: "Allocated Plots", icon: SquareDashed, href: "/portal/allocated-plots" },
-  { name: "Agreements", icon: FileText, href: "/portal/agreements" },
+  { name: "home", icon: Home, href: "/portal" },
+  { name: "application", icon: AppWindow, href: "/portal/application" },
+  { name: "payments", icon: Wallet, href: "/portal/payments" },
+  { name: "allocated_plots", icon: SquareDashed, href: "/portal/allocated-plots" },
+  { name: "agreements", icon: FileText, href: "/portal/agreements" },
   {
     name: "Service Request",
     icon: MessageSquareDot,
     children: [
-      { name: "General Service Request", href: "/portal/service" },
-      { name: "Bot Requests", href: "/portal/bot-requests" },
-      { name: "Bot Reports", href: "/portal/bot-reports" },
+      { name: "general_service_request", href: "/portal/service" },
+      { name: "bot_requests", href: "/portal/bot-requests" },
+      { name: "bot_reports", href: "/portal/bot-reports" },
     ],
   },
   { name: "HSE Findings", icon: SquareLibrary, href: "/portal/violations" },

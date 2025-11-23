@@ -2,10 +2,10 @@ import { useNavigate } from 'react-router-dom'
 import OtpVeirificationForm from '@/components/authForm/OtpVeirificationForm'
 
 interface OtpVerificationProps {
-    phoneNumber: string;
+    phoneNumber?: string;
 }
 
-const OtpVerification = ({ phoneNumber }: OtpVerificationProps) => {
+const OtpVerification = ({ phoneNumber = '' }: OtpVerificationProps) => {
     const navigate = useNavigate()
     return (
         <div className="w-full max-w-md mx-auto text-center space-y-4">

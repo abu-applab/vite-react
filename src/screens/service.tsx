@@ -15,23 +15,23 @@ import CustomPagination from "@/components/customPagination"
 import { PAGE_SIZE } from "@/constants"
 
 const header = {
-  title: "Service Request",
+  title: "service_request",
   homeLink: 'companyName',
-  contentLinks: ['All Service Requests', 'New Service Request'],
+  contentLinks: ['all_service_requests', 'new_service_request'],
 }
 
 const filterKeys = {
   title: 'Service Request',
   createNewRequest: 'New Service Request',
   filterTypes: [
-    { id: '939330000', value: 'Approved' },
-    { id: '939330005', value: 'Pre-Approved' },
-    { id: '939330001', value: 'Rejected' },
-    { id: '1', value: 'In Progress' },
-    { id: '939330003', value: 'Cancelled' },
-    { id: '2', value: 'Pending Work' },
-    { id: '939330002', value: 'Pending Investor Update' },
-    { id: '939330004', value: 'Pending Request Fees' },
+    { id: '939330000', value: 'approved' },
+    { id: '939330005', value: 'pre_approved' },
+    { id: '939330001', value: 'rejected' },
+    { id: '1', value: 'in_progress' },
+    { id: '939330003', value: 'cancelled' },
+    { id: '2', value: 'pending_work' },
+    { id: '939330002', value: 'pending_investor_update' },
+    { id: '939330004', value: 'pending_request_fees' },
   ]
 }
 
@@ -41,19 +41,20 @@ const cardsConfigBase = {
   subTitle: "serviceType",
   title: "referenceNumber",
   status: 'status',
+  showBelow: true,
   fields: [
     {
-      label: "Plot Number",
+      label: "plot_number",
       key: "plotNumber",
     },
     {
-      label: "Submitted Date",
+      label: "submitted_date",
       key: "submittedDate",
     },
   ],
   menuOptions: [
     {
-      label: "View Details",
+      label: "view_details",
       icon: Eye,
       actionKey: "view"
     },
@@ -147,14 +148,14 @@ const Service = () => {
       <div className="min-h-[55vh]">
           {
             (serviceData.length === 0 && !serviceFilter?.searchTerm && !serviceFilter?.status && !loading) ?
-              <EmptyRequest title='No Service Requests Yet' description="You haven’t submitted any service requests yet." buttonText="Submit New Request" />
+              <EmptyRequest title='no_service_requests_yet' description="havent_submitted_request_yet." buttonText="submit_new_request" />
               : (
                 <>
                   <CreateAndFilter onNewRequest={() => setIsModalOpen(true)} filterConfig={filterKeys} setAppliedFilter={setServiceFilter} appliedFilter={serviceFilter} />
                   <div className="">
                         <ListOFCards cardsConfig={cardsConfig} cardsData={serviceData} />
-                        {!!(serviceFilter?.totalPages  && serviceFilter.totalPages > 2 && serviceData.length > 3) && <CustomPagination handlePageChange={handlePageChange} currentPage={serviceFilter?.page} totalPages={serviceFilter?.totalPages ?? 0} />}
-                      {!loading && serviceData.length === 0 && <EmptyRequest hideButton={true} title={'No Requests Found'} />}
+                        {!!(serviceFilter?.totalPages  && serviceFilter.totalPages > 1) && <CustomPagination handlePageChange={handlePageChange} currentPage={serviceFilter?.page} totalPages={serviceFilter?.totalPages ?? 0} />}
+                      {!loading && serviceData.length === 0 && <EmptyRequest hideButton={true} title={'no_requests_found'} />}
 
                   </div>
                 </>

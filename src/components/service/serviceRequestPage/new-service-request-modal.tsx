@@ -4,6 +4,7 @@ import { RadioGroup, RadioGroupItem } from "../../ui/radio-group"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../ui/dialog"
 import { Label } from "../../ui/label"
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
 
 interface NewServiceRequestModalProps {
   open: boolean
@@ -13,35 +14,35 @@ interface NewServiceRequestModalProps {
 
 export const serviceOptions = [
     {
-      title: "Rental Relationship",
+      title: "rental_relationship",
       key: "rentalRelationship"
     },
     {
-      title: "Certified Copy of Agreement",
+      title: "certified_copy_of_agreement",
       key:  "certifiedCopyOfAgreement",
     },
     {
-      title: "Demarcation Letter",
+      title: "demarcation_letter",
       key: "demarcationLetter"
     },
     {
-      title: "Complaint",
+      title: "complaint",
       key: "complaint",
     },
     {
-      title: "Technical Queries",
+      title: "technical_queries",
       key: "technicalQueries",
     },
     {
-      title: "Kharamaa",
+      title: "kahramaa",
       key:  "kahramaa",
     },
     {
-      title: "Update Contact Details",
+      title: "update_contact_details",
       key: "updateContactDetails",
     },
     {
-      title: "Update Company Information",
+      title: "update_company_information",
       key:  "updateCompanyInformation",
     },
   ]
@@ -50,6 +51,7 @@ export const serviceOptions = [
 export function NewServiceRequestModal({ open, onOpenChange, setSelectedService }: NewServiceRequestModalProps) {
 
   const [value, setValue] = useState('')
+  const { t } = useTranslation();
 
   const handleDone = () => {
     if (value) {
@@ -70,7 +72,7 @@ export function NewServiceRequestModal({ open, onOpenChange, setSelectedService 
       <DialogContent className="md:max-w-md max-h-[80vh] overflow-y-auto p-0 gap-0" showCloseButton={false}>
         <DialogHeader className="border-b px-5 py-3 flex flex-row items-center justify-between">
           <DialogTitle className="text-lg font-medium text-foreground text-left">
-            Select the type of service you want to request.
+            {t('select_type_of_service')}
           </DialogTitle>
           <Button
             variant="ghost"
@@ -89,7 +91,7 @@ export function NewServiceRequestModal({ open, onOpenChange, setSelectedService 
                 <div key={key} className="flex items-center space-x-3">
                   <RadioGroupItem value={key} id={key} className="border-border text-primary" />
                   <Label htmlFor={key} className="text-sm font-normal text-foreground cursor-pointer flex-1">
-                    {title}
+                    {t(title)}
                   </Label>
                 </div>
               ))}
@@ -99,7 +101,7 @@ export function NewServiceRequestModal({ open, onOpenChange, setSelectedService 
 
         <div className="flex justify-between space-x-3 px-5 py-3 border-t border-border h-[56px]">
           <Button variant="outline" onClick={handleCancel} className="px-6 bg-transparent" type="button">
-            Cancel
+            {t('cancel')}
           </Button>
           <Button
             onClick={handleDone}
@@ -107,7 +109,7 @@ export function NewServiceRequestModal({ open, onOpenChange, setSelectedService 
             className="px-6 bg-maroon-100 hover:bg-[#7A1F2B] text-white cursor-pointer"
             type="button"
           >
-            Done
+            {t('done')}
           </Button>
         </div>
       </DialogContent>

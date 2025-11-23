@@ -292,13 +292,15 @@ export const ServiceFormHandler = ({
         referenceMessage={referenceMessage}
         handleTryAgain={handleTryAgain}
         errorMessage={errorMessage}
-        buttonText="View My Requests"
+        buttonText="view_my_requests"
+        title="request_submitted_successfully"
+        heading="request_submitted"
       />
       <ConfirmationModal 
         open={isConfirmSubmitOpen}  
         onOpenChange={setConfirmSubmitOpen} 
         onConfirm={executeSubmit}
-        description="This action will submit your service request for review. You won’t be able to make further edits after this."
+        description="confirmation_request_desc"
       />
       {isLoading && <Loader />}
     </div>

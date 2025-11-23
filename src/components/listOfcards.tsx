@@ -1,10 +1,10 @@
 import { MoreVertical } from "lucide-react"
 import { Button } from "./ui/button"
 import { Card, CardContent, CardHeader } from "./ui/card"
-import { Badge } from "./ui/badge"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { cn } from "@/lib/utils"
 import type { ElementType } from "react"
+import { useTranslation } from "react-i18next"
 
 interface CardConfig {
     icon: ElementType,
@@ -12,6 +12,7 @@ interface CardConfig {
     subTitle?: string,
     title: string,
     status?: string,
+    showBelow?: boolean,
     fields: {
         label: string
         key: string
@@ -86,6 +87,7 @@ function getPointerColor(status: string) {
 
 
 const ListOFCards = ({ cardsConfig, cardsData, isProducts = false }: ListOfCardsProps) => {
+    const {t} = useTranslation();
     return (
 
         <div className={cn("grid grid-cols-1 md:grid-cols-2 gap-4 mt-8", { 'md:grid-cols-1': isProducts })}>
@@ -99,19 +101,27 @@ const ListOFCards = ({ cardsConfig, cardsData, isProducts = false }: ListOfCards
                             <div className="flex flex-col">
                                 <div className="flex items-center justify-start gap-2">
                                     <span className="text-lg leading-7 font-medium text-gray-800">{data[cardsConfig.title as keyof typeof data]}</span>
-                                    {cardsConfig.status && <Badge className={`${getStatusColor(data[cardsConfig.status as keyof typeof data] ?? '')} md:hidden border-0 text-xs flex items-center justify-center rounded-2xl px-2 py-1`}>
+                                    {cardsConfig.status && <div className={`${getStatusColor(data[cardsConfig.status as keyof typeof data] ?? '')} md:hidden border-0 text-xs flex items-center justify-center rounded-2xl px-2 py-1 h-fit ${(!cardsConfig.showBelow) ? 'hidden' : ''}`}>
                                         <span className={`size-1.5 ${getPointerColor(data[cardsConfig.status as keyof typeof data] ?? '')} rounded-full mr-1`}></span>
                                         <span className="text-xs leading-4 font-medium">{data[cardsConfig.status as keyof typeof data]}</span>
-                                    </Badge>}
+                                    </div>}
                                 </div>
-                                {cardsConfig.subTitle && <h3 className="font-medium text-base text-gray-500">{data[cardsConfig.subTitle as keyof typeof data]}</h3>}
+                                {cardsConfig.subTitle && 
+                                <div className="flex flex-row gap-2">
+                                    <h3 className="font-medium text-base text-gray-500">{data[cardsConfig.subTitle as keyof typeof data]}</h3>
+                                    {cardsConfig.status && <div className={`${getStatusColor(data[cardsConfig.status as keyof typeof data] ?? '')} md:hidden border-0 text-xs flex items-center justify-center rounded-2xl px-2 py-1 h-fit ${(!!cardsConfig.showBelow) ? 'hidden' : ''}`}>
+                                        <span className={`size-1.5 ${getPointerColor(data[cardsConfig.status as keyof typeof data] ?? '')} rounded-full mr-1`}></span>
+                                        <span className="text-xs leading-4 font-medium">{data[cardsConfig.status as keyof typeof data]}</span>
+                                    </div>}
+                                </div>    
+                                }
                             </div>
                         </div>
                         <div className="flex items-center">
-                            {cardsConfig.status && <Badge className={`${getStatusColor(data[cardsConfig.status as keyof typeof data] ?? '')} border-0 text-xs md:flex items-center justify-center rounded-2xl px-2 py-1 hidden`}>
+                            {cardsConfig.status && <div className={`${getStatusColor(data[cardsConfig.status as keyof typeof data] ?? '')} border-0 text-xs md:flex items-center justify-center rounded-2xl px-2 py-1 hidden h-fit`}>
                                 <span className={`size-1.5 ${getPointerColor(data[cardsConfig.status as keyof typeof data] ?? '')} rounded-full mr-1`}></span>
                                 <span className="text-xs leading-4 font-medium">{data[cardsConfig.status as keyof typeof data]}</span>
-                            </Badge>}
+                            </div>}
                             {cardsConfig?.menuOptions && cardsConfig?.menuOptions?.length > 0 && <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                     <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
@@ -149,7 +159,7 @@ const ListOFCards = ({ cardsConfig, cardsData, isProducts = false }: ListOfCards
                                     }
                                     return (
                                         <div className={cn("flex flex-row items-center justify-between md:block md:mb-3")}>
-                                            <p className="text-gray-500 mb-1">{field.label}</p>
+                                            <p className="text-gray-500 mb-1">{t(field.label)}</p>
                                             <p className="font-medium text-gray-900">{value ?? 'N/A'}</p>
                                         </div>
                                     )

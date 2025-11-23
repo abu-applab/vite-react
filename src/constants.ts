@@ -94,27 +94,27 @@ export const serviceOptions = [
 export const newApplicationPlots = {
   logisticsPark: [],
   Industrial: [
-    { title: "Instruction", completed: false, active: true, stepNumber: "1" },
-    { title: "Company Details (1 of 2)", completed: false, active: false, stepNumber: "2" },
-    { title: "Company Details (2 of 2", completed: false, active: false, stepNumber: "3" },
-    { title: "Document Upload", completed: false, active: false, stepNumber: "4" },
+    { title: "instruction", completed: false, active: true, stepNumber: "1" },
+    { title: "company_details_1", completed: false, active: false, stepNumber: "2" },
+    { title: "company_details_2", completed: false, active: false, stepNumber: "3" },
+    { title: "document_upload", completed: false, active: false, stepNumber: "4" },
   ],
   commercial: [
-    { title: "Instruction", completed: false, active: true, stepNumber: "1" },
-    { title: "Company Details (1 of 2)", completed: false, active: false, stepNumber: "2" },
-    { title: "Company Details (2 of 2", completed: false, active: false, stepNumber: "3" },
-    { title: "Document Upload", completed: false, active: false, stepNumber: "4" },
+    { title: "instruction", completed: false, active: true, stepNumber: "1" },
+    { title: "company_details_2", completed: false, active: false, stepNumber: "2" },
+    { title: "company_details_2", completed: false, active: false, stepNumber: "3" },
+    { title: "document_upload", completed: false, active: false, stepNumber: "4" },
   ],
   Logistics: [
-    { title: "Instruction", completed: false, active: true, stepNumber: "1" },
+    { title: "instruction", completed: false, active: true, stepNumber: "1" },
     { title: "Intended Use & Business Plan", completed: false, active: false, stepNumber: "2" },
-    { title: "Document Upload", completed: false, active: false, stepNumber: "3" },
+    { title: "document_upload", completed: false, active: false, stepNumber: "3" },
   ],
   smi: [
-    { title: "Instruction", completed: false, active: true, stepNumber: "1" },
-    { title: "Company Details (1 of 2)", completed: false, active: false, stepNumber: "2" },
-    { title: "Company Details (2 of 2", completed: false, active: false, stepNumber: "3" },
-    { title: "Document Upload", completed: false, active: false, stepNumber: "4" },
+    { title: "instruction", completed: false, active: true, stepNumber: "1" },
+    { title: "company_details_1", completed: false, active: false, stepNumber: "2" },
+    { title: "company_details_2", completed: false, active: false, stepNumber: "3" },
+    { title: "document_upload", completed: false, active: false, stepNumber: "4" },
   ],
 }
 

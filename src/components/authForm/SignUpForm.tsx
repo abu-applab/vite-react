@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Label } from "@radix-ui/react-label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { AlertCircle, Eye, EyeOff } from "lucide-react";
+import { AlertCircle } from "lucide-react";
 import { signUpFields } from "@/constants";
 import outlook from "../../assets/images/outlook-icon.svg";
 import google from "../../assets/images/google-icon.svg";

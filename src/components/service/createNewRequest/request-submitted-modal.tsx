@@ -19,6 +19,8 @@ interface RequestSubmittedModalProps {
   errorMessage?: string
   isSaveApplication?: boolean
   buttonText: string
+  title: string
+  heading: string
 }
 
 export function RequestSubmittedModal({
@@ -29,7 +31,9 @@ export function RequestSubmittedModal({
   handleTryAgain,
   errorMessage = "An unexpected error occurred.",
   isSaveApplication = false,
-  buttonText = ''
+  buttonText = '',
+  title = '',
+  heading = ''
 }: RequestSubmittedModalProps) {
   const {t} = useTranslation();
   const isSuccess = Boolean(referenceMessage)
@@ -38,23 +42,23 @@ export function RequestSubmittedModal({
 
   const status = isSuccess
     ? {
-        heading: isSaveApplication ? 'Application Saved' : 'Request Submitted',
+        heading: isSaveApplication ? 'application_saved' : heading,
         icon: successfull,
-        title: isSaveApplication ? "Application Saved as Draft" : "Request Submitted Successfully",
+        title: isSaveApplication ? "application_saved_as_draft" : title,
         subtitle: (
           <>
             <span className="">{`${' '} ${t(referenceMessage)}`}</span>
           </>
         ),
-        buttonText: buttonText ? buttonText:  "View My Requests",
+        buttonText: buttonText,
         buttonAction: onGoToRequest,
       }
     : {
-        heading: 'Request Failed',
+        heading: 'request_failed',
         icon: failed,
-        title: "Not Completed!",
+        title: "not_completed",
         subtitle: errorMessage,
-        buttonText: "Try Again",
+        buttonText: "try_again",
         buttonAction: handleTryAgain,
       }
 
@@ -63,7 +67,7 @@ export function RequestSubmittedModal({
       <DialogContent className="min-w-[600px] overflow-y-auto p-0 gap-0" showCloseButton={false}>
         <DialogHeader className="border-b px-5 py-3 flex flex-row items-center justify-between">
           <DialogTitle className="text-lg font-medium text-foreground">
-            {status.heading}
+            {t(status.heading)}
           </DialogTitle>
           <Button
             variant="ghost"
@@ -86,7 +90,7 @@ export function RequestSubmittedModal({
             onClick={status.buttonAction}
             type="button"
           >
-            {status.buttonText}
+            {t(status.buttonText)}
           </Button>
         </div>
       </DialogContent>

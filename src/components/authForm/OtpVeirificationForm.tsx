@@ -24,7 +24,7 @@ export default function OtpVeirificationForm({
     const [success, setSuccess] = useState<boolean>(false);
     const [submitting, setSubmitting] = useState<boolean>(false);
     const [resending, setResending] = useState<boolean>(false);
-    const [resendMessage, setResendMessage] = useState<string>("");
+    const [_resendMessage, setResendMessage] = useState<string>("");
     const networkRequest = useNetworkRequest();
     const inputsRef = useRef<Array<HTMLInputElement | null>>([]);
 

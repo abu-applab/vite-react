@@ -16,32 +16,32 @@ const cardsConfig = {
   status: 'status',
   fields: [
     {
-      label: "Total Plots",
+      label: "total_plots",
       key: "totalPlots",
     },
     {
-      label: "Main Contact",
+      label: "main_contact",
       key: "mainConatact",
     },
     {
-      label: "Phone Number",
+      label: "phone_number",
       key: "phone",
     },
     {
-      label: "Mail",
+      label: "mail",
       key: "email",
     },
   ],
   menuOptions: [
     {
-      label: "View Details",
+      label: "view_details",
       icon: Eye,
       onClick: () => {
         console.log("View clicked for:")
       },
     },
     {
-      label: "Edit",
+      label: "edit",
       icon: Pencil,
       onClick: () => {
         console.log("Edit clicked for:")

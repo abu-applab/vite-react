@@ -581,12 +581,15 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
         handleTryAgain={handleTryAgain}
         errorMessage={errorMessage}
         isSaveApplication={isSaveApplication}
-        buttonText="View My Applocation"
+        buttonText="view_my_application"
+        title="application_submitted_successfully"
+        heading="application_submitted"
       />
       <ConfirmationModal
         open={isConfirmSubmitOpen}
         onOpenChange={setConfirmSubmitOpen}
         onConfirm={executeSubmit}
+        description="confirmation_application_desc"
       />
       {isLoading && <Loader />}
     </div>

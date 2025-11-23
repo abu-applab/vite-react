@@ -4,6 +4,7 @@ import { ArrowRight, ArrowUpRight, Building2 } from "lucide-react"
 import { useApp, type CompanyType } from "@/context/AppContext"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
 import { cn } from "@/lib/utils"
+import { useTranslation } from "react-i18next"
 
 
 interface InvestmentTypeProps {
@@ -29,7 +30,8 @@ interface InvestmentType {
 export function InvestmentSelector({ handleSelectedOption, investmentContent }: InvestmentTypeProps) {
   const [hoveredCard, setHoveredCard] = useState<string | null>(null)
   const [hoveredButton, setHoveredButton] = useState<string | null>(null)
-  const { companies, selectedCompany, setSelectedCompany, setCreateNewForm } = useApp()
+  const { companies, selectedCompany, setSelectedCompany, setCreateNewForm } = useApp();
+  const { t } = useTranslation();
 
   // handling this state to show whether it's for view or create new service 
     useEffect(() => {
@@ -46,10 +48,10 @@ export function InvestmentSelector({ handleSelectedOption, investmentContent }: 
         <div className="flex md:flex-row flex-col justify-between">
           <div className="md:mb-8 mb-4">
             <h1 className="text-xl leading-7 font-semibold text--card-foreground">
-              {investmentContent.title}
+              {t(investmentContent.title)}
             </h1>
             <p className="text-sm leading-5 font-normal text-muted-foreground">
-              {investmentContent.description}
+              {t(investmentContent.description)}
             </p>
           </div>
           <Select
@@ -119,8 +121,8 @@ export function InvestmentSelector({ handleSelectedOption, investmentContent }: 
 
               {/* Content */}
               <div className="p-3 flex-1 flex flex-col">
-                <h3 className="text-base leading-6 font-medium text-foreground">{option.title}</h3>
-                <p className="text-sm text-zinc-500 font-normal leading-5">{option.description}</p>
+                <h3 className="text-base leading-6 font-medium text-foreground">{t(option.title)}</h3>
+                <p className="text-sm text-zinc-500 font-normal leading-5">{t(option.description ?? '')}</p>
               </div>
             </div>
           ))}
