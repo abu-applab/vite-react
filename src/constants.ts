@@ -1,6 +1,6 @@
 
 
-
+export const PAGE_SIZE = 4
 
 // Select company details
 

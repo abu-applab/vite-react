@@ -10,6 +10,7 @@ import { getServiceFormConfig } from "@/lib/form-data";
 import { useApp, type CompanyType } from "@/context/AppContext";
 import { useServiceFormConfigLoader } from "@/hooks/useServiceConfigLoader";
 import { useTranslation } from "react-i18next";
+import { ConfirmationModal } from "@/components/confirmationModal";
 
 interface ServiceFormHandlerProps {
   selectedService: string;
@@ -39,6 +40,7 @@ export const ServiceFormHandler = ({
   const { selectedCompany, setSelectedCompany, companies, contactId } = useApp();
   const [formStage, setFormStage] = useState(1);
   const {t} = useTranslation();
+  const [isConfirmSubmitOpen, setConfirmSubmitOpen] = useState(false);
 
   useEffect(() => {
     const loadFormConfig = async () => {
@@ -262,6 +264,11 @@ export const ServiceFormHandler = ({
     }
   };
 
+  const executeSubmit = async () => {
+    setConfirmSubmitOpen(false);
+    await handleSubmit(); 
+  };
+
 
   const isNext = selectedService === 'updateCompanyInformation' && formStage === 1
   return (
@@ -272,7 +279,7 @@ export const ServiceFormHandler = ({
         errors={errors}
         setErrors={setErrors}
         handleInputChange={handleInputChange}
-        handleSubmit={handleSubmit}
+        handleSubmit={() => setConfirmSubmitOpen(true)}
         handlePerviousButton={formStage === 2 ? handleCompanyUpdateBack : onBack}
         fieldRefs={fieldRefs}
         isNext={isNext}
@@ -285,6 +292,13 @@ export const ServiceFormHandler = ({
         referenceMessage={referenceMessage}
         handleTryAgain={handleTryAgain}
         errorMessage={errorMessage}
+        buttonText="View My Requests"
+      />
+      <ConfirmationModal 
+        open={isConfirmSubmitOpen}  
+        onOpenChange={setConfirmSubmitOpen} 
+        onConfirm={executeSubmit}
+        description="This action will submit your service request for review. You won’t be able to make further edits after this."
       />
       {isLoading && <Loader />}
     </div>

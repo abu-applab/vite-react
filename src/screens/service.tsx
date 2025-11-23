@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 // import { ServiceHeader } from "@/components/service/serviceRequestPage/service-header"
 import { ServiceFormHandler } from "@/components/service/createNewRequest/service-form-handler"
 import { NewServiceRequestModal } from "@/components/service/serviceRequestPage/new-service-request-modal"
@@ -12,6 +12,7 @@ import ListOFCards from "@/components/listOfcards"
 import { Eye, MessageSquareDot } from "lucide-react"
 import Loader from "@/components/loader"
 import CustomPagination from "@/components/customPagination"
+import { PAGE_SIZE } from "@/constants"
 
 const header = {
   title: "Service Request",
@@ -58,8 +59,6 @@ const cardsConfigBase = {
     },
   ]
 }
-
-const PAGE_SIZE = 4
 
 const Service = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -142,25 +141,25 @@ const Service = () => {
 
 
   return (
-    <Fragment>
+    <div className="">
       <PageHeader header={header} selectedForm={selectedService} />
       {!selectedService ? (
-        <div>
+      <div className="min-h-[55vh]">
           {
             (serviceData.length === 0 && !serviceFilter?.searchTerm && !serviceFilter?.status && !loading) ?
-             <EmptyRequest title='No Service Requests Yet' description="You haven’t submitted any service requests yet." buttonText="Submit New Request" />
-            : (
-              <>
-                <CreateAndFilter onNewRequest={() => setIsModalOpen(true)} filterConfig={filterKeys} setAppliedFilter={setServiceFilter} appliedFilter={serviceFilter} />
-                {(serviceData.length != 0) && (serviceFilter?.totalPages ?? 0) > 0 ? (
-                  <>
-                    <ListOFCards cardsConfig={cardsConfig} cardsData={serviceData} />
-                    <CustomPagination handlePageChange={handlePageChange} currentPage={serviceFilter?.page} totalPages={serviceFilter?.totalPages ?? 0} />
-                  </>) :
-                  !loading && <EmptyRequest hideButton={true} title={'No requests found'} />}
-              </>
+              <EmptyRequest title='No Service Requests Yet' description="You haven’t submitted any service requests yet." buttonText="Submit New Request" />
+              : (
+                <>
+                  <CreateAndFilter onNewRequest={() => setIsModalOpen(true)} filterConfig={filterKeys} setAppliedFilter={setServiceFilter} appliedFilter={serviceFilter} />
+                  <div className="">
+                        <ListOFCards cardsConfig={cardsConfig} cardsData={serviceData} />
+                        {!!(serviceFilter?.totalPages  && serviceFilter.totalPages > 2 && serviceData.length > 3) && <CustomPagination handlePageChange={handlePageChange} currentPage={serviceFilter?.page} totalPages={serviceFilter?.totalPages ?? 0} />}
+                      {!loading && serviceData.length === 0 && <EmptyRequest hideButton={true} title={'No Requests Found'} />}
 
-            )
+                  </div>
+                </>
+
+              )
           }
         </div>
       ) : (
@@ -177,7 +176,7 @@ const Service = () => {
         setSelectedService={setSelectedService}
       />
       {loading && <Loader />}
-    </Fragment>
+    </div>
   )
 }
 

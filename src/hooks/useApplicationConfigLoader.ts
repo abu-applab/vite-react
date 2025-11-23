@@ -8,7 +8,6 @@ import { useEffect } from "react";
 export const useApplicationConfigLoader = () => {
   const networkRequest = useNetworkRequest();
   const { selectedInvestment } = useApp();
-  console.log('selectedInvestment: ', selectedInvestment);
 
   const loadApplicationConfig = async (selectedApplication: string, setFormData: any) => {
     let baseConfig = getApplicationFormConfig(selectedApplication);

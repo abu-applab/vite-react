@@ -17,7 +17,7 @@ interface FieldConfig {
     sections: SectionConfig[];
   }
   
-  const isEmpty = (val: any) => val === undefined || val === null || val === "" || val === 0 || val === '0'
+  const isEmpty = (val: any) => val === undefined || val === null || val === "" 
   const isDigitsOnly = (val: string) => /^\d+$/.test(val)
   const hasEmojiOrUnicodeSymbols = (val: string) =>
     /[^\u0000-\u007F\u0600-\u06FF\s]/.test(val); 

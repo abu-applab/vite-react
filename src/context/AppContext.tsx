@@ -42,6 +42,13 @@ interface ApplicationFilter {
   typeOfApplication?: string
   searchTerm?: string
 }
+interface CompanyFilter {
+  page: number,
+  status?: string,
+  totalPages?: number
+  searchTerm?: string
+}
+
 interface AppContextType {
   contactId: string;
   setContactId: React.Dispatch<React.SetStateAction<string>>;
@@ -65,6 +72,8 @@ interface AppContextType {
   setApplicationFilter: React.Dispatch<React.SetStateAction<ApplicationFilter>>;
   applicationDraftFilter: ApplicationFilter;
   setApplicationDarftFilter: React.Dispatch<React.SetStateAction<ApplicationFilter>>;
+  companiesFilter: CompanyFilter;
+  setCompaniesFilter: React.Dispatch<React.SetStateAction<CompanyFilter>>;
 }
 
 // Create context
@@ -92,11 +101,12 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     { title: "Review & Submit", completed: false, active: false, stepNumber: "5" },
     { title: "FormSubmission", completed: false, active: false, stepNumber: "6" },
   ])
-
   // comapnies
   const [contactName, setContactName] = useState('')
   const [companies, setCompanies] = useState<CompanyType[]>([]);
   const [selectedCompany, setSelectedCompany] = useState<CompanyType | null>(null);
+  const [companiesFilter, setCompaniesFilter] = useState<CompanyFilter>({ page: 1 })
+
 
   //Application
   const [isCreateNewForm, setCreateNewForm] = useState(false);
@@ -133,7 +143,9 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
       applicationFilter,
       setApplicationFilter,
       applicationDraftFilter,
-      setApplicationDarftFilter
+      setApplicationDarftFilter,
+      companiesFilter,
+      setCompaniesFilter,
     }}>
       {children}
     </AppContext.Provider>

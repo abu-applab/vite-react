@@ -222,7 +222,7 @@ export const removeEmptyValues = (data: any) => {
   const cleaned: any = {};
 
   Object.entries(data).forEach(([key, value]) => {
-    if (value !== 0 && value !== "") {
+    if (value !== 0 && value !== "" && value !== '00000000-0000-0000-0000-000000000000')  {
       cleaned[key] = value;
     }
   });

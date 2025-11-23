@@ -16,14 +16,16 @@ import Loader from "@/components/loader";
 import { motion } from 'framer-motion'
 import { useTranslation } from "react-i18next";
 import { clearAllLocalStorage } from "@/lib/utils";
+import { PAGE_SIZE } from "@/constants";
 
 const PortalLayout = () => {
-    const { isMenuOpen, setIsMenuOpen, setCompanies, setSelectedCompany, contactId } = useApp();
+    const { isMenuOpen, setIsMenuOpen, setCompanies, setSelectedCompany, contactId, setCompaniesFilter } = useApp();
     const navigate = useNavigate();
     const networkRequest = useNetworkRequest();
     const [isLoading, setIsLoading] = useState(false);
     const { i18n } = useTranslation();
     const lang = localStorage.getItem('lang') ?? 'en'
+    const { t } = useTranslation();
 
     useEffect(() => {
         const fetchCompanies = async () => {
@@ -39,7 +41,13 @@ const PortalLayout = () => {
                 });
                 const companyList = response?.data?.[0]?.companies || [];
                 setCompanies(companyList);
-                companyList.length > 0 && setSelectedCompany(companyList[0])
+                if (companyList.length > 0) {
+                    setSelectedCompany(companyList[0]);
+                    setCompaniesFilter((prev) => ({
+                        ...prev,
+                        totalPages: Math.ceil(companyList.length / PAGE_SIZE)
+                    }))
+                }
                 setIsLoading(false)
             } catch (error) {
                 setIsLoading(false)
@@ -86,8 +94,8 @@ const PortalLayout = () => {
     }
     return (
         <div className='bg-[#f6f5ef] w-screen min-h-screen flex flex-col'>
-            <div className="flex flex-row items-center justify-between w-full h-[88px] lg:px-20 md:px-6 px-4 md:border-b-2">
-                <Button variant="ghost" className="cursor-pointer" onClick={() => navigate('/portal')}>
+            <div className="flex flex-row items-center justify-between w-full h-[88px] lg:px-20 md:px-6 md:border-b-2 max-md:px-4">
+                <Button variant="ghost" className="cursor-pointer p-0" onClick={() => navigate('/portal')}>
                     <img src={manateqLogo2} alt="logo" className="w-[158px] h-10" />
                 </Button>
                 <div className="flex items-center justify-center gap-2">
@@ -117,15 +125,15 @@ const PortalLayout = () => {
                                 </DropdownMenuLabel>
                                 <DropdownMenuItem className="flex items-center mt-2 gap-3 px-4 py-2 hover:bg-gray-50 cursor-pointer font-medium text-xs" onClick={() => navigate('/portal/my-profile')}>
                                     <User className="w-5 h-5  text-black" />
-                                    My Profile
+                                    {t('my_profile')}
                                 </DropdownMenuItem>
                                 <DropdownMenuItem onClick={() => navigate('/portal/settings')} className="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 cursor-pointer font-medium text-xs">
                                     <Settings className="w-5 h-5  text-black" />
-                                    Settings
+                                    {t('settings')}
                                 </DropdownMenuItem>
                                 <DropdownMenuItem onClick={() => { handleLogOut() }} className="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 cursor-pointer font-medium text-xs">
                                     <LogOut className="w-5 h-5 text-black" />
-                                    Log Out
+                                    {t('log_out')}
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
@@ -158,8 +166,9 @@ const PortalLayout = () => {
                     </div>
                 </>
             }
-            <div className="flex-1">
-                <div className="lg:px-20 md:px-6 md:mt-10 m-4">
+            <div className="flex-1 flex flex-col">
+                <div className="lg:px-20 md:px-6 md:mt-10 flex-1 flex flex-col justify-center max-md:m-4">
+
                     {
                         isLoading ? <Loader /> :
                             <Outlet />

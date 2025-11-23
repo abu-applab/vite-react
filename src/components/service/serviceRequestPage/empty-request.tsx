@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button'
 import documentsLogo from '../../../assets/images/documents.svg'
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 
 interface EmptyRequestProps {
@@ -12,7 +12,7 @@ interface EmptyRequestProps {
 }
 
 export const EmptyRequest = ({ onNewRequest, hideButton = false, title = '', description = '', buttonText = '' }: EmptyRequestProps) => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   return (
     <div className={cn('w-full h-full flex flex-col items-center justify-center text-center', {'mt-20': hideButton})}>
       <div className='w-[150px] h-[140px] mr-3'>
@@ -32,14 +32,14 @@ export const EmptyRequest = ({ onNewRequest, hideButton = false, title = '', des
         >
           {buttonText}
         </Button>
-        <Button
+        {/* <Button
           type='button'
           variant='ghost'
           className='border border-zinc-300 text-sm font-medium h-10 cursor-pointer'
           onClick={() => navigate('/portal')}
         >
           Go Back
-        </Button>
+        </Button> */}
       </div>)}
     </div>
   )

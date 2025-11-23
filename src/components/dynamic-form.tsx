@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Textarea } from "./ui/textarea"
 import { Button } from "./ui/button"
 import FileUpload from "./file-upload"
-import { CalendarIcon, ChevronsUpDown, Trash2 } from "lucide-react"
+import { CalendarIcon, ChevronsUpDown, Download, Eye, Trash2 } from "lucide-react"
 import pdfLogo from "../assets/images/pdf-logo.svg"
 import { cn, formatFileSize, getFileName, getFileType } from "@/lib/utils"
 import { useEffect, type Dispatch, type SetStateAction } from "react"
@@ -17,6 +17,7 @@ import { useApp } from "@/context/AppContext"
 import ProductInformation from "./productInformation"
 import FormSteps from "./addCompany/formSteps"
 import { useTranslation } from "react-i18next"
+import SubmittedFormSteps from "./submittedFormSteps"
 
 interface DynamicFormProps {
   config: FormConfig
@@ -35,6 +36,7 @@ interface DynamicFormProps {
   products?: any
   isLastStepActive?: boolean
   applicationSteps?: any
+  setApplicationSteps?: any
   isSubmittedApplication?: boolean
 }
 
@@ -55,10 +57,11 @@ const DynamicForm = ({
   products,
   isLastStepActive = true,
   applicationSteps,
-  isSubmittedApplication = false
+  setApplicationSteps,
+  isSubmittedApplication = false,
 }: DynamicFormProps) => {
   const { setCreateNewForm, setSelectedInvestment } = useApp();
-  const {t} = useTranslation()
+  const { t } = useTranslation()
 
 
   // handling this state to show whether it's for view or create new service 
@@ -95,7 +98,7 @@ const DynamicForm = ({
               {...(field.type === "number" ? { onWheel: (e) => e.currentTarget.blur() } : {})}
               disabled={field.disabled || isSubmittedApplication}
               onKeyDown={(e) => {
-                if(field.type === 'number' && ['e', 'E', '+', '-', '.'].includes(e.key)) {
+                if (field.type === 'number' && ['e', 'E', '+', '-', '.'].includes(e.key)) {
                   e.preventDefault();
                 }
               }}
@@ -115,9 +118,8 @@ const DynamicForm = ({
             <Select
               value={formData[field.id] || ""}
               onValueChange={(value) => {
-                // Update this field value
-
-                // ✅ If this field has a dependency, update that too
+                // Fix me
+                if (isSubmittedApplication) return;
                 if (field.dependsOn) {
                   const selectedOption = field.options?.find(
                     (val): val is { id: string; name: string; plotId: string, agreementId: string } =>
@@ -263,58 +265,97 @@ const DynamicForm = ({
           </div>
         )
 
-      case "file":
+      case "file": 
+        const value = formData?.[field.id];
+        const isFile = value instanceof File;
+        const isUrl = typeof value?.fileUrl === "string" && value?.fileUrl.startsWith("http");
+
         return (
-          <div className="space-y-2">
-            <div
-              ref={(el) => {
-                fieldRefs.current[field.id] = el
-              }}
-              tabIndex={-1}
-            >
-              {/* <Label htmlFor={field.id}>
-              {field.label}
-              {field.required && <span className="text-destructive">*</span>}
-            </Label> */}
-              {!formData?.[field.id] ? (
-                <>
-                  <FileUpload
-                    onFileUpload={(value) => handleInputChange(field.id, value)}
-                    handleFileUploadError={(uploadError: string) => setErrors((prev) => ({
-                      ...prev,
-                      [field.id]: uploadError
-                    }))}
-                    isServiceForm
-                    fileLabel={t(field.label)}
-                  />
-                  {errors[field.id] && <span className="text-sm text-red-600">{errors[field.id]}</span>}
-                </>
-              ) : (
-                <Card className="p-4.5 flex flex-row items-center justify-between">
-                  <div className="flex flex-row gap-3 items-center justify-start">
-                    <div className="h-12 w-12 p-3">
-                      <img src={pdfLogo} alt="pdf logo" />
-                    </div>
-                    <div className="flex flex-col">
-                      <h4 className="font-medium text-gray-900">{getFileName(formData?.[field.id]?.name)}</h4>
-                      <p className="text-sm text-gray-600">
-                        {getFileType(formData?.[field.id]?.name)} • {formatFileSize(formData?.[field.id]?.size)}
-                      </p>
-                    </div>
+          <div className={cn("space-y-2")}>
+            {/* UPLOAD STATE */}
+            {(!value) && (
+              <>
+                <FileUpload
+                  onFileUpload={(file) => handleInputChange(field.id, file)}
+                  handleFileUploadError={(uploadError: string) =>
+                    setErrors((prev) => ({ ...prev, [field.id]: uploadError }))
+                  }
+                  isServiceForm
+                  fileLabel={t(field.label)}
+                />
+                {errors[field.id] && (
+                  <span className="text-sm text-red-600">{errors[field.id]}</span>
+                )}
+              </>
+            )}
+
+            {/* FILE OBJECT STATE (before submit) */}
+            {(isFile) && (
+              <Card className="p-4.5 flex flex-row items-center justify-between">
+                <div className="flex flex-row gap-3 items-center justify-start">
+                  <div className="h-12 w-12 p-3">
+                    <img src={pdfLogo} alt="pdf logo" />
                   </div>
-                  {!isSubmittedApplication && <Button
+                  <div className="flex flex-col">
+                    <h4 className="font-medium text-gray-900">{getFileName(formData?.[field.id]?.name)}</h4>
+                    <p className="text-sm text-gray-600">
+                      {getFileType(formData?.[field.id]?.name)} • {formatFileSize(formData?.[field.id]?.size)}
+                    </p>
+                  </div>
+                </div>
+
+                {!isSubmittedApplication && (
+                  <Button
                     className="border-2 h-8 w-8 p-2"
                     type="button"
                     variant="ghost"
                     onClick={() => handleInputChange(field.id, null)}
                   >
                     <Trash2 className="h-4 w-4 text-[#82764f]" />
-                  </Button>}
-                </Card>
-              )}
-            </div>
+                  </Button>
+                )}
+              </Card>
+            )}
+
+            {/* URL STATE (after backend returns a link) */}
+            {isUrl && (
+              <Card className="p-4.5 flex flex-row items-center justify-between">
+                <div className="flex flex-row gap-3 items-center">
+                  <div className="h-12 w-12 p-3">
+                    <img src={pdfLogo} alt="pdf logo" />
+                  </div>
+
+                  <div>
+                    <h4 className="font-medium text-gray-900">
+                      {value?.fileName}
+                    </h4>
+                    <p className="text-sm text-gray-600">Uploaded Document</p>
+                  </div>
+                </div>
+
+                <div className="flex flex-row gap-3">
+                  {/* VIEW BUTTON */}
+                  <Button
+                    className="border-2 h-8 w-8 p-2 hover:bg-transparent cursor-pointer"
+                    type="button"
+                    variant="ghost"
+                    onClick={() => window.open(value?.fileUrl)}
+                  >
+                    <Eye className="h-4 w-4 text-[#82764f]" />
+                  </Button>
+
+                  <Button asChild className="border-2 h-8 w-8 p-2 hover:bg-transparent cursor-pointer">
+                    <a href={value?.fileUrl}>
+                      <Download className="h-4 w-4 text-[#82764f]" />
+                    </a>
+                  </Button>
+
+                </div>
+              </Card>
+            )}
           </div>
-        )
+        );
+
 
       case "datepicker": {
         const minYear = field.minYear ?? 1900;
@@ -382,7 +423,9 @@ const DynamicForm = ({
         <CardDescription>{t(config?.description)}</CardDescription>
         {isCreateApplication && (
           <div className="md:hidden">
-              <FormSteps steps={applicationSteps} />
+             {!isSubmittedApplication ? 
+               <FormSteps steps={applicationSteps} /> :
+              <SubmittedFormSteps setApplicationSteps={setApplicationSteps} applicationSteps={applicationSteps} />}
           </div>
         )}
       </div>
@@ -390,12 +433,12 @@ const DynamicForm = ({
         <form onSubmit={handleSubmit} className="space-y-6">
           {config?.sections.map((section, sectionIndex) => {
             if (section.key === "ProductsJson") {
-              return <ProductInformation 
-                setProducts={setProducts} 
-                products={products} 
+              return <ProductInformation
+                setProducts={setProducts}
+                products={products}
                 isError={!!errors.ProductsJson}
                 isSubmittedApplication={isSubmittedApplication}
-                 />
+              />
             }
             return (
               <>
@@ -413,6 +456,9 @@ const DynamicForm = ({
                               formData.requiredUpdate ??
                               [];
                             return selectedList.includes(field.showIfSelected);
+                          }
+                          if(!formData[field?.id] && isSubmittedApplication && field.type === 'file') {
+                            return false
                           }
                           return true;
                         })
@@ -441,7 +487,7 @@ const DynamicForm = ({
                   {t("save")}
                 </Button>
               }
-              <Button type={(!isLastStepActive || isNext) ? "button" : "submit"} className="bg-maroon-100 hover:bg-[#7A1F2B]" onClick={(!isLastStepActive || isNext) ? goToNextStep : handleSubmit}>
+              <Button type="button" className="bg-maroon-100 hover:bg-[#7A1F2B]" onClick={(!isLastStepActive || isNext) ? goToNextStep : handleSubmit}>
                 {(!isLastStepActive || isNext) ? t("next") : t("submit")}
               </Button>
             </div>

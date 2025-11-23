@@ -15,6 +15,7 @@ export interface FormField {
     minYear?: number,
     maxYear?: number,
     subTitle?: string
+    fileName?: string
 
 }
 
@@ -1195,14 +1196,16 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                     id: "Documents.ValidCommercialRegistration",
                                     label: "valid_commercial_registration",
                                     type: "file",
-                                    required: true
+                                    required: true,
+                                    fileName: 'Valid Commercial Registration',
                                 },
 
                                 {
                                     id: "Documents.OwnersId",
                                     label: "owners_id",
                                     type: "file",
-                                    required: true
+                                    required: true,
+                                    fileName: 'Owners IDs'
                                 },
 
                                 {
@@ -1216,63 +1219,72 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                     id: "Documents.IndustrialLicense",
                                     label: "industrial_License",
                                     type: "file",
-                                    required: true
+                                    required: true,
+                                    fileName: ''
                                 },
 
                                 {
                                     id: "Documents.ConceptualSiteLayout1",
                                     label: "conceptual_site_layout",
                                     type: "file",
-                                    required: true
+                                    required: true,
+                                    fileName: ''
                                 },
 
                                 {
                                     id: "Documents.MaterialSafetyDataSheets",
                                     label: "material_safety_date_sheets",
                                     type: "file",
-                                    required: true
+                                    required: true,
+                                    fileName: "Material Safety Data Sheets"
                                 },
 
                                 {
                                     id: "Documents.ConceptualSiteLayout2",
                                     label: "conceptual_site_layout",
                                     type: "file",
-                                    required: true
+                                    required: true,
+                                    fileName: ''
                                 },
 
                                 {
                                     id: "Documents.ProjectedCashFlow",
                                     label: "projected_cash_flow",
                                     type: "file",
-                                    required: true
+                                    required: true,
+                                    fileName: "Projected Cash Flow"
                                 },
 
                                 {
                                     id: "Documents.FinancialCapacityProof",
                                     label: "financial_capacity_proo_to_execute_the_project",
                                     type: "file",
-                                    required: true
+                                    required: true,
+                                    fileName: ''
                                 },
 
                                 {
                                     id: "Documents.CreditBureauReport",
                                     label: "credit_bureau_repor_for_owner",
                                     type: "file",
-                                    required: true
+                                    required: true,
+                                    fileName: ''
                                 },
 
                                 {
                                     id: "Documents.CompanyProfile",
                                     label: "company_profile_if_applicable",
                                     type: "file",
-                                    required: false
+                                    required: false,
+                                    fileName: "Company Profile"
                                 },
 
                                 {
                                     id: "Documents.AuditedFinancialStatements",
                                     label: "three_years_of_audited_financial_statements_if_applicable",
                                     type: "file",
-                                    required: false
+                                    required: false,
+                                    fileName: 'Audited Financials'
                                 },
 
                             ]
@@ -1333,11 +1345,7 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                     type: "select",
                                     required: true,
                                     options: [
-                                        { id: "LogisticsWarehousing", name: "Logistics Warehousing" },
-                                        { id: "WorkshopsAssembly", name: "Workshops Assembly" },
                                         { id: "OpenYardsStorage", name: "Open Yards Storage" },
-                                        { id: "Industry", name: "Industry" },
-                                        { id: "NonIndustry", name: "Non Industry" },
                                     ],
                                 },
                                 {
@@ -1393,24 +1401,28 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                     label: "valid_commercial_registration",
                                     type: "file",
                                     required: true,
+                                    fileName: 'Valid Commercial Registration'
                                 },
                                 {
                                     id: "Documents.ValidCommercialLicense",
                                     label: "valid_commercial_license",
                                     type: "file",
                                     required: true,
+                                    fileName: 'A Valid Commercial License'
                                 },
                                 {
                                     id: "Documents.OwnersIDs",
                                     label: "owners_id",
                                     type: "file",
                                     required: true,
+                                    fileName: 'Owners IDs'
                                 },
                                 {
                                     id: "Documents.EstablishmentCard",
                                     label: "establishment_card",
                                     type: "file",
                                     required: true,
+                                    fileName: 'The Establishment Card'
                                 },
                                 {
                                     id: "Documents.BusinessPlan",
@@ -1423,18 +1435,21 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                     label: "three_years_audited_financial_statements",
                                     type: "file",
                                     required: false,
+                                    fileName: 'Audited Financials'
                                 },
                                 {
                                     id: "Documents.TrafficListingFromMOI",
                                     label: "traffic_listing_moi",
                                     type: "file",
                                     required: false,
+                                    fileName: 'Traffic Listing from MOI'
                                 },
                                 {
                                     id: "Documents.PhotosOfMaterialsAndEquipment",
                                     label: "photos_materials_equipment",
                                     type: "file",
                                     required: true,
+                                    fileName: 'Photos of Materials & Equipment'
                                 },
                             ],
                         },
