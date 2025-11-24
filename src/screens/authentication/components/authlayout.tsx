@@ -6,7 +6,7 @@ import { motion } from 'framer-motion'
 import { useMediaQuery } from 'react-responsive'
 import { useSearchParams } from 'react-router-dom'
 
-export default function AuthLayout({ children }: { children: React.ReactNode }) {
+export default function AuthLayout({ children, hideLogo = false }: { children: React.ReactNode; hideLogo?: boolean }) {
     const isDesktop = useMediaQuery({ minWidth: 768 })
     const [searchParams] = useSearchParams();
     const token = searchParams.get("token");
@@ -38,11 +38,13 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
                 animate={addMotion ? { x: 0 } : false}
                 transition={addMotion ? { duration: 0.8, ease: 'easeOut' } : {}}
             >
-                <img
-                    src={manateqLoginLogo}
-                    alt="Manateq Logo"
-                    className="w-14 h-14 mb-6"
-                />
+                {!hideLogo && (
+                    <img
+                        src={manateqLoginLogo}
+                        alt="Manateq Logo"
+                        className="w-14 h-14 mb-6"
+                    />
+                )}
                 {children}
             </motion.div>
         </div>

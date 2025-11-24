@@ -9,9 +9,10 @@ import { AlertCircle } from "lucide-react";
 
 interface ForgotPasswordProps {
   onSwitch: (view: any) => void;
+  onResetSuccess?: (mail: string) => void;
 }
 
-const ForgotPasswordForm = ({ onSwitch }: ForgotPasswordProps) => {
+const ForgotPasswordForm = ({ onSwitch, onResetSuccess }: ForgotPasswordProps) => {
   const networkRequest = useNetworkRequest();
   const [formData, setFormData] = useState({ email: "" });
   const [fieldErrors, setFieldErrors] = useState<{ email?: string }>({});
@@ -63,9 +64,10 @@ const ForgotPasswordForm = ({ onSwitch }: ForgotPasswordProps) => {
         method: "POST",
         body,
       });
-      console.log("Forgot password response:", response);
+
 
       if (response?.success) {
+        onResetSuccess?.(formData.email);
         setSuccessMessage(
           response?.message || "OTP has been sent to your email address."
         );
