@@ -206,7 +206,7 @@ const ApplicationPage = () => {
     const [refreshDraft, setRefreshDraft] = useState(false);
     const navigate = useNavigate();
     const { id } = useParams();
-    const {t} = useTranslation();
+    const { t } = useTranslation();
 
     const cardActions = {
         view: (card: any) => {
@@ -459,47 +459,51 @@ const ApplicationPage = () => {
             <PageHeader header={header} />
 
             {(!isCreateNewApplication) ? (
-                (applicationData.length === 0 && applicationDraftData.length === 0 && !applicationFilter?.searchTerm && !applicationFilter?.typeOfApplication && !applicationFilter?.status && !loading) ?
-                    <EmptyRequest title='no_applications_found' description="havent_submitted_application_yet" buttonText="submit_new_applications" onNewRequest={() => setCreateNewApplication(true)} />
-                    :
-                    <div>
-                        <CreateAndFilter
-                            onNewRequest={() => setCreateNewApplication(true)}
-                            filterConfig={filterKeys}
-                            setAppliedFilter={setApplicationFilter}
-                            appliedFilter={applicationFilter}
-                        />
-                        <div className="w-full min-h-[55vh] mt-6">
-                            <div className="flex items-center bg-white h-[56px] rounded-lg shadow-md gap-[8px] max-md:justify-between max-md:px-4">
-                                {tabs.map((tab) => (
-                                    <button key={tab.id} className={`py-[10px] h-full md:ml-[40px] text-sm font-medium ${activeTab === tab.id ? 'text-maroon-100 border-b-2 border-maroon-100' : 'text-black hover:text-gray-500'} focus:outline-none focus:text-maroon-100 `} onClick={() => setActiveTab(tab.id)} > {t(tab.label)}
-                                    </button>
-                                ))}
+                <div className="min-h-[55vh]">
+                    {(applicationData.length === 0 && applicationDraftData.length === 0 && !applicationFilter?.searchTerm && !applicationFilter?.typeOfApplication && !applicationFilter?.status && !loading) ?
+                    <div className="min-h-[45vh] flex items-center justify-center">
+                        <EmptyRequest title='no_applications_found' description="havent_submitted_application_yet" buttonText="submit_new_applications" onNewRequest={() => setCreateNewApplication(true)} />
+                    </div>        
+                        :
+                        <div>
+                            <CreateAndFilter
+                                onNewRequest={() => setCreateNewApplication(true)}
+                                filterConfig={filterKeys}
+                                setAppliedFilter={setApplicationFilter}
+                                appliedFilter={applicationFilter}
+                            />
+                            <div className="w-full min-h-[55vh] mt-6">
+                                <div className="flex items-center bg-white h-[56px] rounded-lg shadow-md gap-[8px] max-md:justify-between max-md:px-4">
+                                    {tabs.map((tab) => (
+                                        <button key={tab.id} className={`py-[10px] h-full md:ml-[40px] text-sm font-medium ${activeTab === tab.id ? 'text-maroon-100 border-b-2 border-maroon-100' : 'text-black hover:text-gray-500'} focus:outline-none focus:text-maroon-100 `} onClick={() => setActiveTab(tab.id)} > {t(tab.label)}
+                                        </button>
+                                    ))}
+                                </div>
+                                <div className="mt-4 w-full min-h-[35vh] rounded-b-lg">
+                                    {activeTab === 'submitted' &&
+                                        ((applicationData.length > 0 && (applicationFilter?.totalPages ?? 0) > 0) ?
+                                            <>
+                                                <ListOFCards cardsConfig={cardsConfig} cardsData={applicationData} />
+                                                {(applicationFilter?.totalPages ?? 0) > 1 && (
+                                                    <CustomPagination handlePageChange={(page) => handlePageChange(page, applicationFilter?.totalPages ?? 0, setApplicationFilter)} currentPage={applicationFilter?.page ?? 1} totalPages={applicationFilter?.totalPages ?? 0} />
+                                                )}
+                                            </>
+                                            : !loading && <EmptyRequest hideButton={true} title={'no_applications_found'} />)
+                                    }
+                                    {activeTab === 'drafted' &&
+                                        ((applicationDraftData.length > 0 && (applicationDraftFilter?.totalPages ?? 0) > 0) ?
+                                            <>
+                                                <ListOFCards cardsConfig={cardsDraftConfig} cardsData={applicationDraftData} />
+                                                {(applicationDraftFilter?.totalPages ?? 0) > 1 && (
+                                                    <CustomPagination handlePageChange={(page) => handlePageChange(page, applicationDraftFilter?.totalPages ?? 0, setApplicationDarftFilter)} currentPage={applicationDraftFilter?.page ?? 1} totalPages={applicationDraftFilter?.totalPages ?? 0} />
+                                                )}
+                                            </>
+                                            : !loading && <EmptyRequest hideButton={true} title={'no_applications_found'} />)
+                                    }
+                                </div>
                             </div>
-                            <div className="mt-4 w-full min-h-[35vh] rounded-b-lg">
-                                {activeTab === 'submitted' &&
-                                    ((applicationData.length > 0 && (applicationFilter?.totalPages ?? 0) > 0) ?
-                                        <>
-                                            <ListOFCards cardsConfig={cardsConfig} cardsData={applicationData} />
-                                            {(applicationFilter?.totalPages ?? 0) > 1 && (
-                                                <CustomPagination handlePageChange={(page) => handlePageChange(page, applicationFilter?.totalPages ?? 0, setApplicationFilter)} currentPage={applicationFilter?.page ?? 1} totalPages={applicationFilter?.totalPages ?? 0} />
-                                            )}
-                                        </>
-                                        : !loading && <EmptyRequest hideButton={true} title={'no_applications_found'} />)
-                                }
-                                {activeTab === 'drafted' &&
-                                    ((applicationDraftData.length > 0 && (applicationDraftFilter?.totalPages ?? 0) > 0) ?
-                                        <>
-                                            <ListOFCards cardsConfig={cardsDraftConfig} cardsData={applicationDraftData} />
-                                            {(applicationDraftFilter?.totalPages ?? 0) > 1 && (
-                                                <CustomPagination handlePageChange={(page) => handlePageChange(page, applicationDraftFilter?.totalPages ?? 0, setApplicationDarftFilter)} currentPage={applicationDraftFilter?.page ?? 1} totalPages={applicationDraftFilter?.totalPages ?? 0} />
-                                            )}
-                                        </>
-                                        : !loading && <EmptyRequest hideButton={true} title={'no_applications_found'} />)
-                                }
-                            </div>
-                        </div>
-                    </div>
+                        </div>}
+                </div>
             ) :
                 <div>{steps[step].component}</div>
             }

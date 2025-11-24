@@ -72,8 +72,8 @@ const ViolationPage = () => {
             try {
                 const params = new URLSearchParams();
 
-                // params.append("AccountId", selectedCompany?.accountID ?? "");
-                params.append("AccountId", 'b5c52ef7-a23f-e511-80ca-00155d0c0f13');
+                params.append("AccountId", selectedCompany?.accountID ?? "");
+                // params.append("AccountId", 'b5c52ef7-a23f-e511-80ca-00155d0c0f13');
                 params.append("Page", (violationFilter?.page ?? 1).toString());
                 params.append("PageSize", PAGE_SIZE.toString());
                 violationFilter?.searchTerm && params.append("SearchTerm", (violationFilter?.searchTerm));
@@ -123,20 +123,22 @@ const ViolationPage = () => {
         <div className="">
             <PageHeader header={header} />
             {<div className="min-h-[55vh]">
-               { (violationData?.length === 0 && !violationFilter?.searchTerm && !violationFilter?.status && !loading) ?
-                <EmptyRequest title='no_violation_found' description="no_violation_reports_found." hideButton />
-                :
-                <>
-                    <CreateAndFilter filterConfig={filterKeys} setAppliedFilter={setViolationFilter} appliedFilter={violationFilter} />
-                    <div className="">
-                        <ListOFCards cardsConfig={cardsConfig} cardsData={violationData} />
-                        {!!((violationFilter?.totalPages ?? 0) > 1) && <CustomPagination handlePageChange={handlePageChange} currentPage={violationFilter?.page} totalPages={violationFilter?.totalPages ?? 0} />}
-                        {!loading && violationData?.length === 0 && <EmptyRequest hideButton={true} title={'no_violation_reports'} />}
+                {(violationData?.length === 0 && !violationFilter?.searchTerm && !violationFilter?.status && !loading) ?
+                    <div className="min-h-[45vh] flex items-center justify-center">
+                        <EmptyRequest title='no_violation_found' description="no_violation_reports_found." hideButton />
                     </div>
-                </>}
+                    :
+                    <>
+                        <CreateAndFilter filterConfig={filterKeys} setAppliedFilter={setViolationFilter} appliedFilter={violationFilter} />
+                        <div className="">
+                            <ListOFCards cardsConfig={cardsConfig} cardsData={violationData} />
+                            {!!((violationFilter?.totalPages ?? 0) > 1) && <CustomPagination handlePageChange={handlePageChange} currentPage={violationFilter?.page} totalPages={violationFilter?.totalPages ?? 0} />}
+                            {!loading && violationData?.length === 0 && <EmptyRequest hideButton={true} title={'no_violation_reports'} />}
+                        </div>
+                    </>}
             </div>
             }
-             {loading && <Loader />}
+            {loading && <Loader />}
         </div>
     )
 }

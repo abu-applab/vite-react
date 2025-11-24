@@ -148,7 +148,9 @@ const Service = () => {
       <div className="min-h-[55vh]">
           {
             (serviceData.length === 0 && !serviceFilter?.searchTerm && !serviceFilter?.status && !loading) ?
+            <div className="min-h-[45vh] flex items-center justify-center">
               <EmptyRequest title='no_service_requests_yet' description="havent_submitted_request_yet." buttonText="submit_new_request" onNewRequest={() => setIsModalOpen(true)}  />
+            </div>  
               : (
                 <>
                   <CreateAndFilter onNewRequest={() => setIsModalOpen(true)} filterConfig={filterKeys} setAppliedFilter={setServiceFilter} appliedFilter={serviceFilter} />
