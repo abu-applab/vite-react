@@ -152,7 +152,7 @@ const SignUpForm = ({ onSwitch }: SignUpFormProps) => {
       });
 
       if (response?.success) {
-        console.log("Signup successful:", response);
+
         setSuccessMessage(response?.message || "Signup successful.");
         // You can auto-switch to login after success
         // onSwitch("login");
@@ -160,7 +160,7 @@ const SignUpForm = ({ onSwitch }: SignUpFormProps) => {
         setApiError(response?.message || "Signup failed. Please try again.");
       }
     } catch (err) {
-      console.error("Signup error:", err);
+
       setApiError(err instanceof Error ? err.message : "Signup failed. Please try again.");
     } finally {
       setLoading(false);
@@ -168,11 +168,11 @@ const SignUpForm = ({ onSwitch }: SignUpFormProps) => {
   };
   const googleLogin = useGoogleLogin({
     onSuccess: (tokenResponse) => {
-      console.log("Google login success", tokenResponse);
+
       // TODO: send tokenResponse.access_token or id_token to your backend for verification/login
     },
     onError: (errorResponse) => {
-      console.error("Google login error", errorResponse);
+
     },
   });
   const handleSocialSignUp = (key: string) => {
@@ -186,7 +186,7 @@ const SignUpForm = ({ onSwitch }: SignUpFormProps) => {
   return (
     <form onSubmit={handleSubmit} className="w-full px-40 space-y-4">
       <div className="grid grid-cols-2 gap-8">
-        {signUpFields.map(({ id, label, type, placeholder }) => {
+        {signUpFields.map(({ id, label, type, placeholder, required }) => {
           const fieldKey = id as keyof FormData;
           const showError = Boolean(fieldErrors[fieldKey]);
 
@@ -197,7 +197,9 @@ const SignUpForm = ({ onSwitch }: SignUpFormProps) => {
                 "col-span-2": label === "Email",
               })}
             >
-              <Label className="text-sm font-medium">{label}</Label>
+              <Label className="text-sm font-medium">{label}
+                {required && <span className="text-red-500">*</span>}
+              </Label>
               {fieldKey === "password" || fieldKey === "confirmPassword" ? (
                 <PasswordInput
                   name={id}

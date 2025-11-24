@@ -133,8 +133,8 @@ export default function OtpVeirificationForm({
     return (
         <div className="mt-4 flex justify-center">
 
-            <form onSubmit={handleSubmit} className="mt-6 space-y-6 w-full max-w-md mx-auto">
-                <div className="flex justify-center gap-3">
+            <form onSubmit={handleSubmit} className="mt-4 space-y-6 w-full max-w-md mx-auto">
+                <div className="flex justify-center gap-2">
                     {otp.map((value, index) => (
                         <Input
                             key={index}
@@ -147,7 +147,7 @@ export default function OtpVeirificationForm({
                             value={value}
                             onChange={(e) => handleChange(index, e.target.value)}
                             onKeyDown={(e) => handleKeyDown(index, e)}
-                            className="w-12 h-12 text-center text-lg font-medium border-1 rounded-md border-green-500 focus-visible:ring-0 focus-visible:ring-offset-0"
+                            className="w-13 h-13 text-center text-lg font-medium border-1 rounded-md border-green-500 focus-visible:ring-0 focus-visible:ring-offset-0"
                         />
                     ))}
                 </div>

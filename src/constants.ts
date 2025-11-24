@@ -129,13 +129,13 @@ export const loginFields = [
 ];
 
 export const signUpFields = [
-  { id: "firstName", label: "First Name", type: "text", placeholder: "Type your first name" },
-  { id: "lastName", label: "Last Name", type: "text", placeholder: "Type your last name" },
-  { id: "email", label: "Email", type: "text", placeholder: "Type your email" },
-  { id: "landlineNumber", label: "Landline Number", type: "text", placeholder: "Type your landline number" },
-  { id: "mobileNumber", label: "Mobile Number", type: "text", placeholder: "Type your mobile number" },
-  { id: "password", label: "Password", type: "password", placeholder: "Type your password" },
-  { id: "confirmPassword", label: "Confirm Password", type: "password", placeholder: "Confirm your password" },
+  { id: "firstName", label: "First Name", type: "text", placeholder: "Type your first name", required: true },
+  { id: "lastName", label: "Last Name", type: "text", placeholder: "Type your last name", required: true },
+  { id: "email", label: "Email", type: "text", placeholder: "Type your email", required: true },
+  { id: "landlineNumber", label: "Landline Number", type: "text", placeholder: "Type your landline number", required: true },
+  { id: "mobileNumber", label: "Mobile Number", type: "text", placeholder: "Type your mobile number", required: true },
+  { id: "password", label: "Password", type: "password", placeholder: "Type your password", required: true },
+  { id: "confirmPassword", label: "Confirm Password", type: "password", placeholder: "Confirm your password", required: true },
 ];
 
 export const forgotPasswordFields = [
