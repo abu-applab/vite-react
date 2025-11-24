@@ -50,14 +50,14 @@ const ForgotPassword = () => {
                         Password Reset Link Sent !
                     </h2>
 
-                    <p className="text-sm md:text-base text-gray-600 max-w-md mb-8">
+                    <p className="text-sm md:text-base text-gray-600 max-w-xl mb-6">
                         We&apos;ve sent a password reset link to your registered email.
                         Please check your inbox and follow the instructions to reset your password.
                     </p>
 
                     <button
                         onClick={() => navigate('/login')}
-                        className="w-full max-w-xl rounded-md bg-[#971B2F] hover:bg-[#7A1F2B] text-white text-sm font-medium py-2.5 mb-4"
+                        className="w-md rounded-md bg-[#971B2F] hover:bg-[#7A1F2B] text-white text-sm font-medium py-2.5 mb-4"
                     >
                         Back to Login
                     </button>
@@ -87,7 +87,7 @@ const ForgotPassword = () => {
                     <ForgotPasswordForm
                         onSwitch={(view: any) => navigate(`/${view}`)}
                         onResetSuccess={(email: string) => {
-                            setShowMailSent({ email, show: true });
+                            setShowMailSent(prev => ({ ...prev, show: true, email }));
                         }}
                     />
                 </>)}
