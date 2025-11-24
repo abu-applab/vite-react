@@ -23,7 +23,7 @@ const PageHeader = ({ header, selectedForm }: pageHeaderProps) => {
         <div className="hidden md:block">
             <h1 className="text-2xl mb-1">{t(header.title)}</h1>
             <div className="mb-6 text-base text-muted-foreground">
-                <Link to="/portal">{header.homeLink === 'companyName' ? selectedCompany?.englishName : 'Home'}</Link>
+                <Link to="/portal">{header.homeLink === 'companyName' ? (selectedCompany?.englishName ?? 'Home') : 'Home'}</Link>
 
                 {!selectedInvestment?.application ?
                     <>

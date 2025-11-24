@@ -1,7 +1,7 @@
 export interface FormField {
     id: string;
     label: string;
-    type: "text" | "select" | "textarea" | "file" | "number" | "multiselect" | "datepicker";
+    type: "text" | "select" | "textarea" | "file" | "number" | "multiselect" | "datepicker" | "attachment";
     required: boolean;
     placeholder?: string;
     options?: string[] | { id: string, name: string, agreementId?: string, disabled?: boolean }[];
@@ -1600,3 +1600,156 @@ export const TotalCalculationMap: Record<string, string[]> = {
         "maintenanceWorkshops",
     ],
 };
+
+export const violationFormConfig = {
+    title: "finding_details",
+    sections: [
+        {
+            title: "finding_details",
+            fields: [
+                {
+                    id: "findingNumber",
+                    label: "finding_number",
+                    type: "text",
+                    required: true,
+                    placeholder: "",
+                    disabled: true,
+                },
+                {
+                    id: "riskLevelRating",
+                    label: "risk_level_rating",
+                    type: "text",
+                    required: true,
+                    placeholder: "",
+                    disabled: true,
+                },
+                {
+                    id: "inspectionType",
+                    label: "inspection_type",
+                    type: "text",
+                    required: true,
+                    placeholder: "",
+                    disabled: true,
+                },
+                {
+                    id: "findingType",
+                    label: "finding_type",
+                    type: "text",
+                    required: true,
+                    placeholder: "",
+                    disabled: true,
+                },
+                {
+                    id: "focusArea",
+                    label: "focus_area",
+                    type: "text",
+                    required: true,
+                    placeholder: "",
+                    disabled: true,
+                },
+                {
+                    id: "proposedAction",
+                    label: "proposed_action",
+                    type: "text",
+                    required: true,
+                    placeholder: "",
+                    disabled: true,
+                },
+                {
+                    id: "expectedCloseoutDate",
+                    label: "expected_closeout_date",
+                    type: "text",
+                    required: true,
+                    placeholder: "",
+                    disabled: true,
+                },
+                {
+                    id: "submissionData",
+                    label: "submission_data",
+                    type: "text",
+                    required: true,
+                    placeholder: "",
+                    disabled: true,
+                },
+                {
+                    id: "actualCloseoutDate",
+                    label: "actual_closeout_date",
+                    type: "text",
+                    required: true,
+                    placeholder: "",
+                    disabled: true,
+                },
+                {
+                    id: "sssuanceDate",
+                    label: "issuance_data",
+                    type: "text",
+                    required: true,
+                    placeholder: "",
+                    disabled: true,
+                },
+                {
+                    id: "findingStatus",
+                    label: "finding_status",
+                    type: "text",
+                    required: true,
+                    placeholder: "",
+                    disabled: true,
+                },
+            ],
+        },
+        {
+            title: "action_party_response",
+            fields: [
+                {
+                    id: "closureComments",
+                    label: "closure_comments",
+                    type: "textarea",
+                    required: true,
+                    placeholder: "",
+                    disabled: true,
+                },
+                {
+                    id: "riskLevelRating",
+                    label: "corrective_action_plan",
+                    type: "textarea",
+                    required: true,
+                    placeholder: "",
+                    disabled: true,
+                },
+                {
+                    id: "inspectionType",
+                    label: "remedial_action",
+                    type: "textarea",
+                    required: true,
+                    placeholder: "",
+                    disabled: true,
+                },
+                {
+                    id: "findingType",
+                    label: "root_cause",
+                    type: "textarea",
+                    required: true,
+                    placeholder: "",
+                    disabled: true,
+                },
+            ],
+        },
+        {
+            title: "attachments",
+            fields: [
+                {
+                    id: "violationPhotos",
+                    label: "violation_photos",
+                    type: "attachment",
+                    required: true,
+                },
+                {
+                    id: "closeoutEvidence",
+                    label: "closeout_evidence",
+                    type: "attachment",
+                    required: true, 
+                },
+            ],
+        },
+    ],
+}

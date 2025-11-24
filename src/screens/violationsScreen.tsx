@@ -1,167 +1,142 @@
-import { Badge } from "@/components/ui/badge";
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { AlertCircle, Building2, Search } from "lucide-react"
-import { Link } from "react-router-dom";
+import { API_ENDPOINTS } from "@/api/apiEndpoints";
+import useNetworkRequest from "@/api/useNetworkRequest";
+import { CreateAndFilter } from "@/components/createAndFilter";
+import CustomPagination from "@/components/customPagination";
+import ListOFCards from "@/components/listOfcards";
+import Loader from "@/components/loader";
+import PageHeader from "@/components/pageHeader";
+import { EmptyRequest } from "@/components/service/serviceRequestPage/empty-request";
+import { PAGE_SIZE } from "@/constants";
+import { useApp } from "@/context/AppContext";
+import { SquareLibrary } from "lucide-react";
+import { useEffect, useState } from "react";
 
 
-const companies = [
-    'Al Noor Real Estate',
-    'Qatar International Islamic Bank',
-    'Mesaieed Petrochemical Holding Company',
-    'Ezdan Holding Group',
-];
+const header = {
+    title: "violation_reports",
+    homeLink: 'Home',
+    contentLinks: ['all_violation_reports', 'all_violation_reports'],
+}
 
-const statuses = [
-    'Pending',
-    'Approved',
-    'Rejected',
-    'In Progress',
-    'Completed'
-];
+const filterKeys = {
+    title: 'Violation Reports',
+    filterTypes: [
+        { id: '939330000', value: 'approved' },
+        { id: '939330005', value: 'pre_approved' },
+        { id: '939330001', value: 'rejected' },
+        { id: '1', value: 'in_progress' },
+        { id: '939330003', value: 'cancelled' },
+        { id: '2', value: 'pending_work' },
+        { id: '939330002', value: 'pending_investor_update' },
+        { id: '939330004', value: 'pending_request_fees' },
+    ]
+}
 
-const issues = [
-    {
-        id: "#QH20257A - 25/07/2025",
-        tag: "QHSE",
-        plotNumber: "ME-IZ-LE-17356",
-        finding: "Fire exit blocked with furniture",
-        notifiedDate: "26/07/2025",
-        dueDate: "10/08/2025",
-        status: "Open",
-        daysRemaining: "2-6 days remaining",
-    },
-    {
-        id: "#QH20257A - 25/07/2025",
-        tag: "Operations",
-        plotNumber: "ME-IZ-LE-17356",
-        finding: "Fire exit blocked with furniture",
-        notifiedDate: "26/07/2025",
-        dueDate: "10/08/2025",
-        status: "Open",
-        daysRemaining: "2-6 days remaining",
-    },
-    {
-        id: "#QH20257A - 25/07/2025",
-        tag: "Operations",
-        plotNumber: "ME-IZ-LE-17356",
-        finding: "Fire exit blocked with furniture",
-        notifiedDate: "26/07/2025",
-        dueDate: "10/08/2025",
-        status: "Open",
-        daysRemaining: "2-6 days remaining",
-    },
-    {
-        id: "#QH20257A - 25/07/2025",
-        tag: "QHSE",
-        plotNumber: "ME-IZ-LE-17356",
-        finding: "Fire exit blocked with furniture",
-        notifiedDate: "26/07/2025",
-        dueDate: "10/08/2025",
-        status: "Open",
-        daysRemaining: "2-6 days remaining",
-    },
-];
+const cardsConfig = {
+    icon: SquareLibrary,
+    id: "requestId",
+    title: "findingNumber",
+    label: "workOrderType",
+    status: 'status',
+    showBelow: true,
+    fields: [
+        {
+            label: "plot_number",
+            key: "plotNumber",
+        },
+        {
+            label: "finding_type",
+            key: "findingType",
+        },
+        {
+            label: "issuance_date",
+            key: "issuanceDate",
+        },
+        {
+            label: "expected_closeout_date",
+            key: "expectedCloseOutDate",
+        },
+    ],
+}
 
 const ViolationPage = () => {
 
+    const { violationFilter, setViolationFilter, selectedCompany } = useApp();
+    const [loading, setLoading] = useState(false);
+    const networkRequest = useNetworkRequest();
+    const [violationData, setViolationData] = useState<any[]>([])
+
+    useEffect(() => {
+        const fetchRequests = async () => {
+            setLoading(true)
+            try {
+                const params = new URLSearchParams();
+
+                // params.append("AccountId", selectedCompany?.accountID ?? "");
+                params.append("AccountId", 'b5c52ef7-a23f-e511-80ca-00155d0c0f13');
+                params.append("Page", (violationFilter?.page ?? 1).toString());
+                params.append("PageSize", PAGE_SIZE.toString());
+                violationFilter?.searchTerm && params.append("SearchTerm", (violationFilter?.searchTerm));
+
+                if (violationFilter?.status) {
+                    violationFilter.status.split(",").forEach(val => {
+                        params.append("StatusArray", val);
+                    });
+                }
+                const response = await networkRequest(API_ENDPOINTS.getFindingsList, { method: "GET", body: params })
+                console.log('response: ', response);
+
+                if (response?.success) {
+                    const totalPages = Math.ceil(response.data.totalRecords / PAGE_SIZE)
+                    setViolationData(response?.data?.data)
+                    setViolationFilter((prev) => ({
+                        ...prev,
+                        totalPages: totalPages
+                    }))
+                }
+            } catch (error) {
+                console.error("Error fetching service requests:", error)
+            } finally {
+                setLoading(false)
+            }
+        }
+        if (selectedCompany?.accountID) {
+            fetchRequests()
+        }
+    }, [
+        selectedCompany?.accountID,
+        violationFilter?.page,
+        violationFilter?.status,
+        violationFilter?.searchTerm,
+    ]);
+
+    const handlePageChange = (newPage: number) => {
+        if (newPage > 0 && newPage <= (violationFilter?.totalPages ?? 0)) {
+            setViolationFilter((prev: any) => ({
+                ...prev,
+                page: newPage,
+            }))
+        }
+    }
+
     return (
-        <div className="mx-[80px] mt-10">
-            <div>
-                <h1 className="text-2xl mb-1 font-semibold">Violations Reports</h1>
-                <p className="mb-6 text-base text-muted-foreground">
-                    <Link to="/portal">Home</Link>
-                    <span className="mx-2">›</span>
-                    <span className="text-maroon-100">All Violations Reports</span>
-                </p>
-            </div>
-            <div>
-                <div className="flex flex-wrap gap-3 items-center mb-6">
-                    <div className="relative flex-1">
-                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-maroon-100" />
-                        <Input placeholder="Search..." className="pl-10 max-w-md bg-background" />
+        <div className="">
+            <PageHeader header={header} />
+            {<div className="min-h-[55vh]">
+               { (violationData?.length === 0 && !violationFilter?.searchTerm && !violationFilter?.status && !loading) ?
+                <EmptyRequest title='no_violation_found' description="no_violation_reports_found." hideButton />
+                :
+                <>
+                    <CreateAndFilter filterConfig={filterKeys} setAppliedFilter={setViolationFilter} appliedFilter={violationFilter} />
+                    <div className="">
+                        <ListOFCards cardsConfig={cardsConfig} cardsData={violationData} />
+                        {!!((violationFilter?.totalPages ?? 0) > 1) && <CustomPagination handlePageChange={handlePageChange} currentPage={violationFilter?.page} totalPages={violationFilter?.totalPages ?? 0} />}
+                        {!loading && violationData?.length === 0 && <EmptyRequest hideButton={true} title={'no_violation_reports'} />}
                     </div>
-                    <div className="relative">
-                        <Building2 className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4" />
-                        <Select defaultValue="Al Noor Real Estate">
-                            <SelectTrigger className="bg-background pl-10">
-                                <SelectValue placeholder="" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {companies.map((company, index) => (
-                                    <SelectItem key={index} value={company}>
-                                        {company}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                    </div>
-                    <Select>
-                        <SelectTrigger className="bg-background">
-                            <SelectValue placeholder="Status" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {statuses.map((status, index) => (
-                                <SelectItem key={index} value={status}>
-                                    {status}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                </div>
+                </>}
             </div>
-            <div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-8xl w-full">
-                    {issues.map((issue, idx) => (
-                        <Card key={idx} className="rounded-xl  border border-gray-200 shadow-sm">
-                            <div className="px-6 border-b border-gray-300" >
-                            <div className="flex justify-between items-center mb-4">
-                                <div className="flex items-center space-x-4">
-                                    <h4 className="font-medium text-lg">{issue.id}</h4>
-                                    <Badge variant="outline" className="text-xs rounded-full text-gray-500">
-                                        {issue.tag}
-                                    </Badge>
-                                </div>
-                                <Badge
-                                    className="bg-red-100 text-red-500 text-xs font-normal rounded-full flex items-center gap-1"
-                                    style={{ minWidth: 56 }}
-                                >
-                                    <span className="h-2 w-2 rounded-full bg-red-500" />
-                                    {issue.status}
-                                </Badge>
-                            </div>
-                            </div>
-                            <div className="px-6 grid grid-cols-2 gap-x-12 text-sm">
-                                <div className="space-y-5">
-                                    <div>
-                                        <p className="text-gray-500">Plot Number</p>
-                                        <p className="font-medium">{issue.plotNumber}</p>
-                                    </div>
-                                    <div>
-                                        <p className="text-gray-500">Notified Date</p>
-                                        <p className="font-medium">{issue.notifiedDate}</p>
-                                    </div>
-                                </div>
-                                <div className="space-y-5">
-                                    <div>
-                                        <p className="text-gray-500">Finding</p>
-                                        <p className="font-medium">{issue.finding}</p>
-                                    </div>
-                                    <div>
-                                        <p className="text-gray-500">Due Date</p>
-                                        <p className="font-medium">{issue.dueDate}</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="bg-red-50 rounded-sm mx-6 p-2 flex justify-center items-center text-red-600 text-xs gap-2">
-                                <AlertCircle className="h-4 w-4 flex-shrink-0" />
-                                <span>{issue.daysRemaining}</span>
-                            </div>
-                        </Card>
-                    ))}
-                </div>
-            </div>
+            }
+             {loading && <Loader />}
         </div>
     )
 }

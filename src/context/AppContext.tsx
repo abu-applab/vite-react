@@ -9,6 +9,11 @@ export interface StepsType {
   active: boolean,
   stepNumber: string,
 }
+export interface Contact {
+  id: string,
+  firstName: string,
+  lastName: string,
+}
 export interface CompanyType {
   accountID: string;
   englishName: string;
@@ -35,6 +40,12 @@ interface ServiceFilter {
   searchTerm?: string
   typeOfApplication?: string
 }
+interface ViolationFilter {
+  page: number,
+  status?: string,
+  totalPages?: number
+  searchTerm?: string
+}
 interface ApplicationFilter {
   page: number,
   status?: string,
@@ -50,8 +61,8 @@ interface CompanyFilter {
 }
 
 interface AppContextType {
-  contactId: string;
-  setContactId: React.Dispatch<React.SetStateAction<string>>;
+  contact: Contact | null;
+  setContact: React.Dispatch<React.SetStateAction<Contact | null>>;
   isMenuOpen: boolean;
   setIsMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
   addCompanySteps: StepsType[];
@@ -74,6 +85,8 @@ interface AppContextType {
   setApplicationDarftFilter: React.Dispatch<React.SetStateAction<ApplicationFilter>>;
   companiesFilter: CompanyFilter;
   setCompaniesFilter: React.Dispatch<React.SetStateAction<CompanyFilter>>;
+  violationFilter: ViolationFilter;
+  setViolationFilter: React.Dispatch<React.SetStateAction<ViolationFilter>>;
 }
 
 // Create context
@@ -86,8 +99,10 @@ interface AppProviderProps {
 
 // Provider
 export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
+  const storedContact = getLocalStorageItem("contact");
+  const initialContact: Contact | null = storedContact ? JSON.parse(storedContact) : null;
+  const [contact, setContact] = useState<Contact | null>(initialContact);
 
-  const [contactId, setContactId] = useState(getLocalStorageItem("contactId") || "")
 
   //navbar
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -115,6 +130,9 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   //services
   const [serviceFilter, setServiceFilter] = useState<ServiceFilter>({ page: 1 })
 
+  //services
+  const [violationFilter, setViolationFilter] = useState<ViolationFilter>({ page: 1 })
+
   //application
   const [applicationFilter, setApplicationFilter] = useState<ApplicationFilter>({ page: 1 })
   const [applicationDraftFilter, setApplicationDarftFilter] = useState<ApplicationFilter>({ page: 1, status: '939330004' })
@@ -122,8 +140,8 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
 
   return (
     <AppContext.Provider value={{
-      contactId,
-      setContactId,
+      contact,
+      setContact,
       isMenuOpen,
       setIsMenuOpen,
       addCompanySteps,
@@ -146,6 +164,8 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
       setApplicationDarftFilter,
       companiesFilter,
       setCompaniesFilter,
+      violationFilter,
+      setViolationFilter,
     }}>
       {children}
     </AppContext.Provider>

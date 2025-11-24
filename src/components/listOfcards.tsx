@@ -9,8 +9,9 @@ import { useTranslation } from "react-i18next"
 interface CardConfig {
     icon: ElementType,
     id: string,
-    subTitle?: string,
     title: string,
+    subTitle?: string,
+    label?: string,
     status?: string,
     showBelow?: boolean,
     fields: {
@@ -85,107 +86,145 @@ function getPointerColor(status: string) {
     }
 }
 
+const getValue = (obj: any, key?: string) => {
+    if (!key) return "";
+    return obj?.[key] ?? "";
+};
+
+const StatusBadge = ({ status, className = "" }: { status: string, className?: string }) => (
+    <div className={cn(
+      getStatusColor(status),
+      "border-0 text-xs flex items-center justify-center rounded-2xl px-2 py-1 h-fit",
+      className
+    )}>
+      <span className={`size-1.5 ${getPointerColor(status)} rounded-full mr-1`} />
+      <span className="text-xs font-medium">{status}</span>
+    </div>
+  );
+  
+  const ActionsMenu = ({ options, data, t }: { options: any[], data: any, t: any }) => (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+          <MoreVertical className="h-4 w-4" />
+        </Button>
+      </DropdownMenuTrigger>
+  
+      <DropdownMenuContent align="end">
+        {options.map((option, idx) => {
+          const Icon = option.icon;
+          return (
+            <DropdownMenuItem
+              key={idx}
+              className="flex items-center gap-2"
+              onClick={() => option.onClick?.(data)}
+            >
+              {Icon && <Icon className="h-4 w-4 text-maroon-100" />}
+              {t(option.label)}
+            </DropdownMenuItem>
+          );
+        })}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+  
+
 
 const ListOFCards = ({ cardsConfig, cardsData, isProducts = false }: ListOfCardsProps) => {
-    const {t} = useTranslation();
-    return (
+    const { t } = useTranslation();
 
-        <div className={cn("grid grid-cols-1 md:grid-cols-2 gap-4 mt-8", { 'md:grid-cols-1': isProducts })}>
-            {cardsData.map((data) => (
-                <Card key={data[cardsConfig.id as keyof typeof data]} className="relative">
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0">
-                        <div className="flex items-center gap-3">
-                            <div className="w-12 h-12 border border-[#E4E4E7] rounded-[8px] bg-white flex items-center justify-center">
-                                <cardsConfig.icon className="w-5 h-5 text-black" />
-                            </div>
-                            <div className="flex flex-col">
-                                <div className="flex items-center justify-start gap-2">
-                                    <span className="text-lg leading-7 font-medium text-gray-800">{data[cardsConfig.title as keyof typeof data]}</span>
-                                    {cardsConfig.status && <div className={`${getStatusColor(data[cardsConfig.status as keyof typeof data] ?? '')} md:hidden border-0 text-xs flex items-center justify-center rounded-2xl px-2 py-1 h-fit ${(!cardsConfig.showBelow) ? 'hidden' : ''}`}>
-                                        <span className={`size-1.5 ${getPointerColor(data[cardsConfig.status as keyof typeof data] ?? '')} rounded-full mr-1`}></span>
-                                        <span className="text-xs leading-4 font-medium">{data[cardsConfig.status as keyof typeof data]}</span>
-                                    </div>}
+    return (
+        <div className={cn("grid grid-cols-1 md:grid-cols-2 gap-4 mt-8", {
+            'md:grid-cols-1': isProducts
+        })}>
+            {cardsData?.map((data) => {
+                const statusValue = getValue(data, cardsConfig.status);
+                const titleValue = getValue(data, cardsConfig.title);
+                const subTitleValue = getValue(data, cardsConfig.subTitle);
+
+                return (
+                    <Card key={getValue(data, cardsConfig.id)} className="relative">
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 max-md:px-2">
+                            <div className="flex items-center gap-3">
+                                <div className="w-12 h-12 border border-[#E4E4E7] rounded-[8px] bg-white flex items-center justify-center">
+                                    <cardsConfig.icon className="w-5 h-5 text-black" />
                                 </div>
-                                {cardsConfig.subTitle && 
-                                <div className="flex flex-row gap-2">
-                                    <h3 className="font-medium text-base text-gray-500">{data[cardsConfig.subTitle as keyof typeof data]}</h3>
-                                    {cardsConfig.status && <div className={`${getStatusColor(data[cardsConfig.status as keyof typeof data] ?? '')} md:hidden border-0 text-xs flex items-center justify-center rounded-2xl px-2 py-1 h-fit ${(!!cardsConfig.showBelow) ? 'hidden' : ''}`}>
-                                        <span className={`size-1.5 ${getPointerColor(data[cardsConfig.status as keyof typeof data] ?? '')} rounded-full mr-1`}></span>
-                                        <span className="text-xs leading-4 font-medium">{data[cardsConfig.status as keyof typeof data]}</span>
-                                    </div>}
-                                </div>    
-                                }
+
+                                <div className="flex flex-col">
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-base font-medium text-gray-800">{titleValue}</span>
+
+                                        {cardsConfig.status && cardsConfig.showBelow && (
+                                            <StatusBadge status={statusValue} className="md:hidden" />
+                                        )}
+                                    </div>
+
+                                    {cardsConfig.subTitle && (
+                                        <div className="flex gap-2">
+                                            <h3 className="font-medium text-sm text-gray-500">{subTitleValue}</h3>
+
+                                            {cardsConfig.status && !cardsConfig.showBelow && (
+                                                <StatusBadge status={statusValue} className="md:hidden" />
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
                             </div>
-                        </div>
-                        <div className="flex items-center">
-                            {cardsConfig.status && <div className={`${getStatusColor(data[cardsConfig.status as keyof typeof data] ?? '')} border-0 text-xs md:flex items-center justify-center rounded-2xl px-2 py-1 hidden h-fit`}>
-                                <span className={`size-1.5 ${getPointerColor(data[cardsConfig.status as keyof typeof data] ?? '')} rounded-full mr-1`}></span>
-                                <span className="text-xs leading-4 font-medium">{data[cardsConfig.status as keyof typeof data]}</span>
-                            </div>}
-                            {cardsConfig?.menuOptions && cardsConfig?.menuOptions?.length > 0 && <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                                        <MoreVertical className="h-4 w-4" />
-                                        <span className="sr-only">Open menu</span>
-                                    </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end">
-                                    {cardsConfig.menuOptions?.map((option, idx) => {
-                                        const Icon = option.icon
-                                        return (
-                                            <DropdownMenuItem
-                                                key={idx}
-                                                className="flex items-center gap-2"
-                                                onClick={() => option.onClick?.(data)}
-                                            >
-                                                {Icon && <Icon className="h-4 w-4 text-maroon-100" />}
-                                                {option.label}
-                                            </DropdownMenuItem>
-                                        )
-                                    })}
-                                </DropdownMenuContent>
-                            </DropdownMenu>}
-                        </div>
-                    </CardHeader>
-                    <CardContent className="pt-0">
-                        <div className="-mx-6 border-t border-gray-200"></div>
-                        <div className={cn("pt-4 grid grid-cols-1 md:grid-cols-2 gap-3 text-sm", { "md:grid-cols-3": isProducts })}>
-                            {
-                                cardsConfig.fields.map((field) => {
-                                    let value = field.key === 'mainConatact' ? data?.mainConatact?.name : data[field?.key]
-                                    value = (field.key === 'totalPlots' && !value) ? 0 : value
-                                    if (field.key === 'submissionDate' || field.key === 'submittedDate') {
+
+                            <div className="flex items-center">
+                                {cardsConfig.status && (
+                                    <StatusBadge status={statusValue} className="hidden md:flex" />
+                                )}
+
+                                {!!cardsConfig.menuOptions?.length && (
+                                    <ActionsMenu options={cardsConfig.menuOptions} data={data} t={t} />
+                                )}
+                            </div>
+                        </CardHeader>
+
+                        <CardContent className="pt-0">
+                            <div className="-mx-6 border-t border-gray-200"></div>
+
+                            <div className={cn(
+                                "pt-4 grid grid-cols-1 md:grid-cols-2 gap-3 text-sm",
+                                { "md:grid-cols-3": isProducts }
+                            )}>
+                                {cardsConfig.fields.map((field, i) => {
+                                    let value = getValue(data, field.key);
+
+                                    if (field.key === "mainConatact") {
+                                        value = data?.mainConatact?.name;
+                                    }
+
+                                    if (field.key === "totalPlots" && !value) {
+                                        value = 0;
+                                    }
+
+                                    if (
+                                        field.key === "submissionDate" ||
+                                        field.key === "submittedDate"
+                                    ) {
                                         value = new Date(value).toLocaleDateString("en-US");
                                     }
+
                                     return (
-                                        <div className={cn("flex flex-row items-center justify-between md:block md:mb-3")}>
-                                            <p className="text-gray-500 mb-1">{t(field.label)}</p>
-                                            <p className="font-medium text-gray-900">{value ?? 'N/A'}</p>
+                                        <div
+                                            key={i}
+                                            className="flex justify-between md:block md:mb-3"
+                                        >
+                                            <p className="text-gray-500 mb-1 text-sm">{t(field.label)}</p>
+                                            <p className="font-medium text-gray-900 text-sm">{value ?? "N/A"}</p>
                                         </div>
-                                    )
-                                })
-                            }
-                        </div>
-                        {/* {(alerts.length > 0 && showAlerts)&& (
-                            <div className={`grid w-full ${alerts.length === 1 ? 'grid-cols-1' : 'grid-cols-2'} mt-1 gap-2.5`}>
-                                {
-                                    alerts.map(({ title, id, type }) => {
-                                        return (
-                                            <div key={id} className={`flex flex-row items-center justify-center gap-2 ${type === 'warning' ? 'bg-amber-50 text-amber-600' : 'bg-red-50 text-red-600'} px-4 py-1.5 rounded-lg`}>
-                                                <CircleAlert />
-                                                <p>{title}</p>
-                                            </div>
-                                        )
-                                    })
-                                }
+                                    );
+                                })}
                             </div>
-                        )} */}
-                    </CardContent>
-                </Card>
-            ))}
+                        </CardContent>
+                    </Card>
+                );
+            })}
         </div>
-    )
-}
+    );
+};
+
 
 export default ListOFCards;
-

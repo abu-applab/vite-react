@@ -15,7 +15,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
     return (
         <div className='flex h-screen w-full overflow-hidden flex-col md:flex-row'>
             <motion.div
-                className='w-full h-[70%] md:w-1/2 md:h-screen relative'
+                className='w-full md:w-1/2 h-[60%] md:h-screen relative max-md:-mt-[5vh]'
                 initial={addMotion ? { x: '-100%' } : false}
                 animate={addMotion ? { x: 0 } : false}
                 transition={addMotion ? { duration: 0.8, ease: 'easeOut' } : {}}
@@ -33,7 +33,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
                 </div>
             </motion.div>
             <motion.div className="relative flex flex-col w-full md:w-1/2 items-center justify-center rounded-t-3xl md:rounded-none md:static bottom-0
-                 bg-[#f6f5ef] md:bg-transparent px-4 py-6 pb-[max(env(safe-area-inset-bottom),1rem)] md:p-0"
+                 bg-[#f6f5ef] md:bg-transparent px-4 py-6 pb-[max(env(safe-area-inset-bottom),1rem)] md:p-0 max-md:-mt-[10vh] max-md:h-full"
                 initial={addMotion ? { x: '100%' } : false}
                 animate={addMotion ? { x: 0 } : false}
                 transition={addMotion ? { duration: 0.8, ease: 'easeOut' } : {}}

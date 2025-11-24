@@ -460,7 +460,7 @@ const ApplicationPage = () => {
 
             {(!isCreateNewApplication) ? (
                 (applicationData.length === 0 && applicationDraftData.length === 0 && !applicationFilter?.searchTerm && !applicationFilter?.typeOfApplication && !applicationFilter?.status && !loading) ?
-                    <EmptyRequest title='no_applications_found' description="havent_submitted_application_yet" buttonText="submit_new_applications" />
+                    <EmptyRequest title='no_applications_found' description="havent_submitted_application_yet" buttonText="submit_new_applications" onNewRequest={() => setCreateNewApplication(true)} />
                     :
                     <div>
                         <CreateAndFilter

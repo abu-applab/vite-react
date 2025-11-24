@@ -34,7 +34,7 @@ const LoginForm = ({ onSwitch }: LoginFormProps) => {
   const [loading, setLoading] = useState(false);
   const networkRequest = useNetworkRequest();
   const { instance } = useMsal();
-  const { setContactId } = useApp();
+  const { setContact } = useApp();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -95,8 +95,8 @@ const LoginForm = ({ onSwitch }: LoginFormProps) => {
         body,
       });
       if (response?.success) {
-        setContactId(response?.data?.contact?.id);
-        setLocalStorageItem("contactId", response?.data?.contact?.id);
+        setContact(response?.data?.contact);
+        setLocalStorageItem("contact",JSON.stringify(response?.data?.contact));
         onSwitch('otpverification', response?.data?.otpResponse?.phoneNumber);
       } else {
         setAuthError(response?.message || "Incorrect email or password.");
