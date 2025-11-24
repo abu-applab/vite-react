@@ -9,7 +9,7 @@ import FileUpload from "./file-upload"
 import { CalendarIcon, ChevronsUpDown, Download, Eye, Trash2 } from "lucide-react"
 import pdfLogo from "../assets/images/pdf-logo.svg"
 import { cn, formatFileSize, getFileName, getFileType } from "@/lib/utils"
-import { useEffect, type Dispatch, type SetStateAction } from "react"
+import { useEffect, useState, type Dispatch, type SetStateAction } from "react"
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
 import { Command, CommandGroup, CommandItem, CommandList } from "./ui/command"
 import { Checkbox } from "./ui/checkbox"
@@ -62,6 +62,11 @@ const DynamicForm = ({
 }: DynamicFormProps) => {
   const { setCreateNewForm, setSelectedInvestment } = useApp();
   const { t } = useTranslation()
+  const [_popupFileUrl, setPopupFileUrl] = useState(null);
+
+const openAttachmentPopup = (fileUrl: any) => {
+  setPopupFileUrl(fileUrl);
+};
 
 
   // handling this state to show whether it's for view or create new service 
@@ -265,7 +270,7 @@ const DynamicForm = ({
           </div>
         )
 
-      case "file": 
+      case "file":
         const value = formData?.[field.id];
         const isFile = value instanceof File;
         const isUrl = typeof value?.fileUrl === "string" && value?.fileUrl.startsWith("http");
@@ -409,6 +414,50 @@ const DynamicForm = ({
         );
       }
 
+      case "attachment": {
+        const hasUploadPermission = field.id === "closeoutEvidence"; // only this allows uploading
+
+        return (
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <Label htmlFor={field.id}>
+                {t(field.label)}
+                {field.required && <span className="text-destructive">*</span>}
+              </Label>
+
+              {/* Button to show popup */}
+              <button
+                type="button"
+                className="text-sm underline text-maroon-100"
+                onClick={() => {
+                  // You should open popup screen here
+                  // Pass field.id to know which list to load
+                  openAttachmentPopup(field.id)
+                }}
+              >
+                {t("View Previous attached documents")}
+              </button>
+            </div>
+
+            {/* Only show upload UI for closeoutEvidence */}
+            {hasUploadPermission && !isSubmittedApplication && (
+              <FileUpload
+                onFileUpload={(file) => handleInputChange(field.id, file)}
+                handleFileUploadError={(uploadError: string) =>
+                  setErrors((prev) => ({ ...prev, [field.id]: uploadError }))
+                }
+                fileLabel={t(field.label)}
+              />
+            )}
+
+            {errors[field.id] && (
+              <span className="text-sm text-red-600">{errors[field.id]}</span>
+            )}
+          </div>
+        );
+      }
+
+
       default:
         return null
     }
@@ -423,8 +472,8 @@ const DynamicForm = ({
         <CardDescription>{t(config?.description)}</CardDescription>
         {isCreateApplication && (
           <div className="md:hidden">
-             {!isSubmittedApplication ? 
-               <FormSteps steps={applicationSteps} /> :
+            {!isSubmittedApplication ?
+              <FormSteps steps={applicationSteps} /> :
               <SubmittedFormSteps setApplicationSteps={setApplicationSteps} applicationSteps={applicationSteps} />}
           </div>
         )}
@@ -457,7 +506,7 @@ const DynamicForm = ({
                               [];
                             return selectedList.includes(field.showIfSelected);
                           }
-                          if(!formData[field?.id] && isSubmittedApplication && field.type === 'file') {
+                          if (!formData[field?.id] && isSubmittedApplication && field.type === 'file') {
                             return false
                           }
                           return true;

@@ -1,5 +1,6 @@
 import type { Dispatch, SetStateAction } from "react";
 import type { Step } from "./applicationPage/addNewApplication";
+import { useTranslation } from "react-i18next";
 
 interface SubmittedFormStepsProps {
     applicationSteps: Step[],
@@ -7,6 +8,7 @@ interface SubmittedFormStepsProps {
 }
 
 const SubmittedFormSteps = ({ applicationSteps, setApplicationSteps }: SubmittedFormStepsProps) => {
+    const { t } = useTranslation();
 
     const handleStepClick = (index: number) => {
         setApplicationSteps((prevSteps) =>
@@ -30,7 +32,7 @@ const SubmittedFormSteps = ({ applicationSteps, setApplicationSteps }: Submitted
                                 : "text-gray-500"
                         }`}
                 >
-                    {step.title}
+                    {t(step.title)}
                 </button>
             ))}
         </div>

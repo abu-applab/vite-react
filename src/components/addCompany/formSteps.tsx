@@ -2,6 +2,7 @@ import { type StepsType } from "@/context/AppContext"
 import { cn } from "@/lib/utils";
 import { Check } from "lucide-react";
 import { useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 
 interface FormStepsProps {
   steps: StepsType[]
@@ -9,8 +10,9 @@ interface FormStepsProps {
 }
 
 const FormSteps = ({ steps, isAddCompany }: FormStepsProps) => {
-
+  const { t } = useTranslation();
   const scrollRef = useRef<HTMLDivElement | null>(null);
+
   useEffect(() => {
     const activeStep = scrollRef.current?.querySelector(".active-step");
     if (activeStep && window.innerWidth < 768) {
@@ -67,7 +69,7 @@ const FormSteps = ({ steps, isAddCompany }: FormStepsProps) => {
                           "text-gray-400": isUpcoming,
                         })}
                       >
-                        {step.title}
+                        {t(step.title)}
                       </div>
                     </div>
                   </div>

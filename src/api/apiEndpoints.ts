@@ -14,6 +14,9 @@ export const API_ENDPOINTS = {
   getISICSections: '/Proxy/WebApp/getISICSections',
   getISICCodesBySectionId: '/Proxy/WebApp/getISICCodesBySectionId',
   getAllServiceRequests: "/Proxy/WebApp/getAllServiceRequests",
+  getApplicationsList: '/Proxy/WebApp/getApplicationsList',
+  getApplication: '/Proxy/WebApp/getApplication',
+  getFindingsList: "/Proxy/WebApp/getFindingsList",
   logIn: "/RegistationAndLogin/login",
   logOut: "/RegistationAndLogin/logout",
   signUp: "/RegistationAndLogin/signup",
@@ -21,9 +24,7 @@ export const API_ENDPOINTS = {
   resendOtp: "/RegistationAndLogin/resend-otp",
 
   forgotpassword: "/RegistationAndLogin/requestPasswordReset",
-  resetPassword: "resetPassword",
-  getApplicationsList: '/getApplicationsList',
-  getApplication: '/getApplication',
+  resetPassword: "/RegistationAndLogin/resetPassword",
 }
 
 export const API_SERVICES_ENDPOINTS = {

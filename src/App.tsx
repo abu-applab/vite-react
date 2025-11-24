@@ -1,6 +1,6 @@
 import './App.css'
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import { useEffect, lazy, Suspense, type JSX } from 'react';
+import { useEffect, lazy, type JSX } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getLocalStorageItem } from './lib/utils';
 

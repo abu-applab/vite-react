@@ -1,12 +1,13 @@
 import { X } from "lucide-react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog"
 import { Button } from "./ui/button"
+import { useTranslation } from "react-i18next"
 
 interface ConfirmationModalProps {
     open: boolean
     onOpenChange: (open: boolean) => void
     title?: string
-    description?: string
+    description: string
     confirmText?: string
     cancelText?: string
     onConfirm: () => void
@@ -15,13 +16,13 @@ interface ConfirmationModalProps {
 export function ConfirmationModal({
     open,
     onOpenChange,
-    title = "Confirmation",
-    description = "This action will submit your application for review. You won’t be able to make further edits after this.",
-    confirmText = "Submit",
-    cancelText = "Cancel",
+    title = "confirmation",
+    description,
+    confirmText = "submit",
+    cancelText = "cancel",
     onConfirm,
 }: ConfirmationModalProps) {
-
+    const { t } = useTranslation();
     const handleClose = () => onOpenChange(false)
 
     return (
@@ -32,7 +33,7 @@ export function ConfirmationModal({
             >
                 <DialogHeader className="border-b px-5 py-3 flex flex-row items-center justify-between">
                     <DialogTitle className="text-lg font-medium text-foreground">
-                        {title}
+                        {t(title)}
                     </DialogTitle>
 
                     <Button
@@ -46,9 +47,9 @@ export function ConfirmationModal({
                 </DialogHeader>
 
                 <div className="flex flex-col items-center justify-center px-6 py-6 gap-1">
-                    <h4 className="text-xl font-semibold text-black ">Confirm Submission ?</h4>
+                    <h4 className="text-xl font-semibold text-black ">{t('confirm_submission')}</h4>
                     <p className="text-sm text-center text-zinc-500 leading-relaxed">
-                        {description}
+                        {t(description)}
                     </p>
 
                     <div className="flex items-center gap-3 mt-6 mb-2">
@@ -59,14 +60,14 @@ export function ConfirmationModal({
                             onClick={handleClose}
                             type="button"
                         >
-                            {cancelText}
+                            {t(cancelText)}
                         </Button>
 
                         <Button
                             className="bg-[#862634] hover:bg-[#7A1F2B] text-white px-4 py-2 rounded-md text-sm leading-5 font-medium"
                             onClick={onConfirm}
                         >
-                            {confirmText}
+                            {t(confirmText)}
                         </Button>
                     </div>
                 </div>

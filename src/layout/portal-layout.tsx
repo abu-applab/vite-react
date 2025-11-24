@@ -6,7 +6,6 @@ import { BellDot, LogOut, Menu, Settings, User } from "lucide-react";
 import Footer from "@/components/footer";
 import { useApp } from "../context/AppContext";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import avatar from ".././assets/images/Avatar.svg"
 import { NavigationBar } from "@/components/navigationItems";
 import { MobileMenu } from "@/components/mobileMenu";
 import { useEffect, useState } from "react";
@@ -17,9 +16,10 @@ import { motion } from 'framer-motion'
 import { useTranslation } from "react-i18next";
 import { clearAllLocalStorage } from "@/lib/utils";
 import { PAGE_SIZE } from "@/constants";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 const PortalLayout = () => {
-    const { isMenuOpen, setIsMenuOpen, setCompanies, setSelectedCompany, contactId, setCompaniesFilter } = useApp();
+    const { isMenuOpen, setIsMenuOpen, setCompanies, setSelectedCompany, contact, setCompaniesFilter } = useApp();
     const navigate = useNavigate();
     const networkRequest = useNetworkRequest();
     const [isLoading, setIsLoading] = useState(false);
@@ -27,12 +27,15 @@ const PortalLayout = () => {
     const lang = localStorage.getItem('lang') ?? 'en'
     const { t } = useTranslation();
 
+
+    const fullName = `${contact?.firstName} ${contact?.lastName}`
+    const initials = `${contact?.firstName.charAt(0)}${contact?.lastName.charAt(0)}`.toUpperCase();
+
     useEffect(() => {
         const fetchCompanies = async () => {
             setIsLoading(true)
             const body = {
-                // hardcorded
-                contactId: contactId
+                contactId: contact?.id ?? ''
             }
             try {
                 const response = await networkRequest(API_ENDPOINTS.getCompanies, {
@@ -115,13 +118,12 @@ const PortalLayout = () => {
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent className="w-64 mt-2 rounded-lg shadow-lg border bg-white p-0 pb-2">
-                                <DropdownMenuLabel className="px-4 py-2 font-medium flex flex-row gap-4 items-center bg-zinc-100">
-                                    <img
-                                        src={avatar}
-                                        alt="User Avatar"
-                                        className="w-10 h-10 rounded-full object-cover"
-                                    />
-                                    <span className="text-xs">Mushthofa Ahmad Kamal</span>
+                                <DropdownMenuLabel className="px-4 py-2 font-medium flex flex-row gap-2 items-center bg-zinc-100">
+                                    <Avatar className="h-8 w-8 text-maroon-100">
+                                        {/* <AvatarImage src={avatar} alt="Mushthtofa Ahmad Kamal" /> */}
+                                        <AvatarFallback className="bg-white">{initials}</AvatarFallback>
+                                    </Avatar>
+                                    <h1 className="text-xs">{`${fullName}`}</h1>
                                 </DropdownMenuLabel>
                                 <DropdownMenuItem className="flex items-center mt-2 gap-3 px-4 py-2 hover:bg-gray-50 cursor-pointer font-medium text-xs" onClick={() => navigate('/portal/my-profile')}>
                                     <User className="w-5 h-5  text-black" />

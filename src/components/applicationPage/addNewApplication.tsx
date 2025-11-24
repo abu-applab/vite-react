@@ -37,7 +37,7 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
 
   const networkRequest = useNetworkRequest()
   const { loadApplicationConfig } = useApplicationConfigLoader();
-  const { setCreateNewForm, setSelectedInvestment, selectedCompany, contactId, selectedInvestment } = useApp();
+  const { setCreateNewForm, setSelectedInvestment, selectedCompany, contact, selectedInvestment } = useApp();
   const fieldRefs = useRef<Record<string, HTMLElement | null>>({})
   const { id } = useParams();
 
@@ -206,7 +206,7 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
       if (id && (selectedInvestment?.status && selectedInvestment?.status?.toLowerCase() !== "draft")) {
         setApplicationSteps((prev) => {
           const data = prev
-            .filter((d) => d.title !== "Instruction")
+            .filter((d) => d.title !== "instruction")
             .map((cn, index) => index === 0 ? { ...cn, active: true } : { ...cn })
           return data
         })
@@ -344,7 +344,7 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
       setIsLoading(true);
       const body = new FormData();
       body.append('Company', selectedCompany?.accountID ?? '');
-      body.append('ContactPerson', contactId);
+      body.append('ContactPerson', contact?.id ?? '');
       body.append('ApplicationType', selectedInvestment?.applicationType ?? '');
 
       if (products.length > 0) body.append('ProductsJson', JSON.stringify(products));
@@ -414,7 +414,7 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
       setIsLoading(true);
       const body = new FormData();
       body.append('Company', selectedCompany?.accountID ?? '');
-      body.append('ContactPerson', contactId);
+      body.append('ContactPerson', contact?.id ?? '');
       body.append('ApplicationType', selectedInvestment?.applicationType ?? '');
 
       if (products.length > 0) body.append('ProductsJson', JSON.stringify(products));
@@ -581,12 +581,15 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
         handleTryAgain={handleTryAgain}
         errorMessage={errorMessage}
         isSaveApplication={isSaveApplication}
-        buttonText="View My Applocation"
+        buttonText="view_my_application"
+        title="application_submitted_successfully"
+        heading="application_submitted"
       />
       <ConfirmationModal
         open={isConfirmSubmitOpen}
         onOpenChange={setConfirmSubmitOpen}
         onConfirm={executeSubmit}
+        description="confirmation_application_desc"
       />
       {isLoading && <Loader />}
     </div>

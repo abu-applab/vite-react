@@ -4,10 +4,12 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { ChevronDown } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { navigationItems } from "@/lib/utils"
+import { useTranslation } from "react-i18next"
 
 export function NavigationBar() {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
   const navigate = useNavigate();
+  const {t} = useTranslation();
 
   const pathName = window.location.pathname;
 
@@ -29,14 +31,14 @@ export function NavigationBar() {
                   }`}
                 >
                   <item.icon className="h-5 w-5" />
-                  <span>{item.name}</span>
+                  <span>{t(item.name)}</span>
                   <ChevronDown className="h-4 w-4 ml-1" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" className="w-56">
                 {item.children.map((option) => (
                   <DropdownMenuItem key={option.name} onClick={() => navigate(option.href)} className="cursor-pointer">
-                    {option.name}
+                    {t(option.name)}
                   </DropdownMenuItem>
                 ))}
               </DropdownMenuContent>
@@ -54,7 +56,7 @@ export function NavigationBar() {
             onClick={() => navigate(item.href)}
           >
             <item.icon className="h-5 w-5" />
-            <span>{item.name}</span>
+            <span>{t(item.name)}</span>
           </Button>
         )
       })}

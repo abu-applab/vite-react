@@ -9,6 +9,7 @@ import { Label } from "./ui/label";
 import ListOFCards from "./listOfcards";
 import { useProductConfigLoader } from "@/hooks/useProductConfigLoader";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 
 const initialProduct = {
     nameOfProduct: "",
@@ -93,11 +94,11 @@ const validateProductForm = (form: Product) => {
 
 
 const productFields = [
-    { label: "Name of Product", key: "nameOfProduct" },
-    { label: "Annual Production Capacity", key: "annualProductionCapacity", type: "number" },
-    { label: "Quantity", key: "quantity", type: "number" },
-    { label: "Source of Raw Material", key: "sourceOfRawMaterials" },
-    { label: "Unit", key: "units", type: "number" },
+    { label: "name_of_product", key: "nameOfProduct" },
+    { label: "annual_production_capacity", key: "annualProductionCapacity", type: "number" },
+    { label: "quantity", key: "quantity", type: "number" },
+    { label: "source_of_raw_materials", key: "sourceOfRawMaterials" },
+    { label: "unit", key: "units", type: "number" },
 ]
 
 const ProductInformation = ({ products, setProducts, isError, isSubmittedApplication = false }: ProductInformationProps) => {
@@ -107,6 +108,7 @@ const ProductInformation = ({ products, setProducts, isError, isSubmittedApplica
     const [hsCodes, setHsCodes] = useState<{ id: string; value: string }[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [errors, setErrors] = useState<Partial<Record<keyof Product, string>>>({});
+    const { t } = useTranslation();
 
 
     const { loadProductionConfig } = useProductConfigLoader();
@@ -173,23 +175,23 @@ const ProductInformation = ({ products, setProducts, isError, isSubmittedApplica
         id: "nameOfProduct",
         title: "nameOfProduct",
         fields: [
-            { label: "Annual Production Capacity", key: "annualProductionCapacity" },
-            { label: "Quantity", key: "quantity" },
-            { label: "HS Code", key: "hsCode" },
-            { label: "Source of Raw Materials", key: "sourceOfRawMaterials" },
-            { label: "Unit", key: "units" },
+            { label: "annual_production_capacity", key: "annualProductionCapacity" },
+            { label: "quantity", key: "quantity" },
+            { label: "hs_code", key: "hsCode" },
+            { label: "source_of_raw_materials", key: "sourceOfRawMaterials" },
+            { label: "unit", key: "units" },
         ],
         // 👇 dynamic menu actions
         menuOptions: [
             {
-                label: "Update",
+                label: "update",
                 onClick: (data: Product) => {
                     const index = products.findIndex(p => p.nameOfProduct === data.nameOfProduct);
                     handleEditProduct(data, index);
                 },
             },
             {
-                label: "Delete",
+                label: "delete",
                 onClick: (data: Product) => {
                     const index = products.findIndex(p => p.nameOfProduct === data.nameOfProduct);
                     handleDeleteProduct(index);
@@ -201,10 +203,10 @@ const ProductInformation = ({ products, setProducts, isError, isSubmittedApplica
     return (
         <>
             <div className="flex flex-row justify-between items-center">
-                <h4 className="max-md:text-maroon-100 max-md:ml-4 mb-3">Product Information</h4>
+                <h4 className="max-md:text-maroon-100 max-md:ml-4 mb-3">{t('product_information')}</h4>
                 {(products?.length > 0 && !isSubmittedApplication) && <Button type="button" variant="ghost" className="border" onClick={handleOpenModal}>
                     <Plus />
-                    Add New Product
+                    {t('add_new_product')}
                 </Button>}
             </div>
             {products?.length > 0 ? (
@@ -214,10 +216,10 @@ const ProductInformation = ({ products, setProducts, isError, isSubmittedApplica
                     <Card className={cn("flex flex-col items-center justify-center gap-6 p-6 mb-0", { "border-red-600": isError })}>
                         <h4 className="text-sm font-normal">No Product Information Found</h4>
                         <Button variant="ghost" type="button" className={cn("border", {"border-red-600": isError})} onClick={handleOpenModal}>
-                            <CirclePlus /> Add New Product
+                            <CirclePlus />{t('add_new_product')}
                         </Button>
                     </Card>
-                    {isError && <span className="text-sm text-red-600">Atleast One Product Information is required</span>}
+                    {isError && <span className="text-sm text-red-600">{t('atleast_one_product_required')}</span>}
                 </div>
             )}
 
@@ -233,7 +235,7 @@ const ProductInformation = ({ products, setProducts, isError, isSubmittedApplica
                     <div className="grid md:grid-cols-2 grid-cols-1 gap-4 p-6">
                         {productFields.map(({ label, key, type }) => (
                             <div key={key} className="flex flex-col gap-2">
-                                <Label>{label}</Label>
+                                <Label>{t(label)}</Label>
                                 <Input
                                     type={type || "text"}
                                     value={productForm[key as keyof Product]}
@@ -249,7 +251,7 @@ const ProductInformation = ({ products, setProducts, isError, isSubmittedApplica
                                             [key]: "",
                                         }); // clear error on change
                                     }}
-                                    placeholder={label}
+                                    placeholder={t(label)}
                                     className={errors[key as keyof Product] ? "border-red-500" : ""}
                                 />
                                 {errors[key as keyof Product] && (
@@ -259,7 +261,7 @@ const ProductInformation = ({ products, setProducts, isError, isSubmittedApplica
                         ))}
                         {/* HS Code Select */}
                         <div className="flex flex-col gap-2">
-                            <Label>HS Code</Label>
+                            <Label>{t('hs_code')}</Label>
                             <Select
                                 value={productForm.hsCode}
                                 onValueChange={(v) => {
@@ -288,10 +290,10 @@ const ProductInformation = ({ products, setProducts, isError, isSubmittedApplica
 
                     <div className="flex justify-between px-5 py-3 border-t border-border h-[56px]">
                         <Button variant="outline" type="button" onClick={() => setIsProductModalOpen(false)}>
-                            Cancel
+                            {t('cancel')}
                         </Button>
                         <Button className="bg-maroon-100" type="button" onClick={handleSaveProduct}>
-                            {editingIndex === null ? "Add" : "Update"}
+                            {editingIndex === null ? t("add") : t("update")}
                         </Button>
                     </div>
                 </DialogContent>

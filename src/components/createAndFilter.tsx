@@ -8,16 +8,17 @@ import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
 import { Command, CommandGroup, CommandItem, CommandList } from "./ui/command"
 import { Checkbox } from "./ui/checkbox"
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
 
 interface FilterKeys {
   title: string,
-  createNewRequest: string,
+  createNewRequest?: string,
   filterTypes: { id: string, value: string }[]
   applicationFilter?: { id: string, value: string, icon: any }[]
 }
 
 interface CreateAndFilterProps {
-  onNewRequest: () => void
+  onNewRequest?: () => void
   filterConfig: FilterKeys
   appliedFilter: {
     page: number,
@@ -31,6 +32,7 @@ interface CreateAndFilterProps {
 export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, setAppliedFilter }: CreateAndFilterProps) => {
   const { companies, selectedCompany, setSelectedCompany } = useApp()
   const [searchText, setSearchText] = useState("");
+  const { t } = useTranslation();
 
   return (
     <div className="">
@@ -42,7 +44,7 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, set
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-maroon-100" />
             <Input
-              placeholder="Search..."
+              placeholder={t('search')}
               className="pl-10 bg-background"
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
@@ -58,13 +60,13 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, set
             />
 
           </div>
-          <Button
+          {filterConfig?.createNewRequest && <Button
             size="icon"
             className="bg-white hover:bg-zinc-50 text-black rounded-md border cursor-pointer"
             onClick={onNewRequest}
           >
             <Plus className="h-5 w-5" />
-          </Button>
+          </Button>}
           <Popover>
             <PopoverTrigger asChild>
               <Button
@@ -111,7 +113,7 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, set
                               checked={isChecked}
                               className="data-[state=checked]:bg-maroon-100 data-[state=checked]:border-gray-800"
                             />
-                            <span>{option.value}</span>
+                            <span>{t(option.value)}</span>
                           </div>
                         </CommandItem>
                       );
@@ -126,9 +128,12 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, set
 
         {/* Company Dropdown */}
         <div className="flex flex-row gap-3">
-          {filterConfig?.applicationFilter && filterConfig?.applicationFilter?.length > 0 && <Select>
+          {filterConfig?.applicationFilter && filterConfig?.applicationFilter?.length > 0 && 
+          <Select onValueChange={(value) => {
+            setAppliedFilter({ ...appliedFilter, page: 1, typeOfApplication: value })
+          }}>
             <SelectTrigger className="bg-background data-[placeholder]:text-foreground flex-1 min-w-[100px]">
-              <SelectValue placeholder="Application type" />
+              <SelectValue placeholder={t("application_type")} />
             </SelectTrigger>
             <SelectContent>
               {filterConfig.applicationFilter.map((application: { id: string, value: string, icon: any }) => (
@@ -159,7 +164,7 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, set
         <div className="relative flex-1 max-w-md">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-maroon-100" />
           <Input
-            placeholder="Search..."
+            placeholder={t('search')}
             className="pl-10 bg-background"
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
@@ -176,32 +181,32 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, set
 
         </div>
         <div className="flex gap-2">
-          <Button
+          {filterConfig?.createNewRequest && <Button
             className="text-black bg-white hover:bg-gray-100 cursor-pointer"
             onClick={onNewRequest}
           >
             <CirclePlus className="h-4 w-4 mr-2" />
-            {filterConfig.createNewRequest}
-          </Button>
-          {filterConfig?.applicationFilter && filterConfig?.applicationFilter?.length > 0 && 
-          <Select 
-          value={appliedFilter?.typeOfApplication || ''}
-          onValueChange={(value) => {
-            setAppliedFilter({ ...appliedFilter, page: 1, typeOfApplication: value })
-          }}
-           >
-            <SelectTrigger className="bg-background data-[placeholder]:text-foreground">
-              <SelectValue placeholder="Application type" />
-            </SelectTrigger>
-            <SelectContent>
-              {filterConfig.applicationFilter.map((application: { id: string, value: string, icon: any }) => (
-                <SelectItem value={application.id}>
-                  <application.icon className="text-maroon-100" />
-                  {application.value}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>}
+            {t(filterConfig.createNewRequest)}
+          </Button>}
+          {filterConfig?.applicationFilter && filterConfig?.applicationFilter?.length > 0 &&
+            <Select
+              value={appliedFilter?.typeOfApplication || ''}
+              onValueChange={(value) => {
+                setAppliedFilter({ ...appliedFilter, page: 1, typeOfApplication: value })
+              }}
+            >
+              <SelectTrigger className="bg-background data-[placeholder]:text-foreground">
+                <SelectValue placeholder={t("application_type")} />
+              </SelectTrigger>
+              <SelectContent>
+                {filterConfig.applicationFilter.map((application: { id: string, value: string, icon: any }) => (
+                  <SelectItem value={application.id}>
+                    <application.icon className="text-maroon-100" />
+                    {application.value}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>}
           <Select
             value={selectedCompany?.accountID || ''}
             onValueChange={(value) => {
@@ -230,12 +235,12 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, set
                 className={`justify-between w-fit`}
               >
                 {appliedFilter?.status
-                  ? `Status ${filterConfig.filterTypes!
+                  ? `${t('status')} ${filterConfig.filterTypes!
                     .filter((opt: any) =>
                       appliedFilter?.status?.split(",").includes(opt.id)
                     )
                     .map((opt: any) => opt.value).length}`
-                  : "Status"}
+                  : t("status")}
                 <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
               </Button>
             </PopoverTrigger>
@@ -279,7 +284,7 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, set
                               checked={isChecked}
                               className={`data-[state=checked]:bg-maroon-100 data-[state=checked]:border-gray-800`}
                             />
-                            <span>{option.value}</span>
+                            <span>{t(option.value)}</span>
                           </div>
                         </CommandItem>
                       )
@@ -298,7 +303,7 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, set
                 setAppliedFilter({ page: 1 })
               }}
             >
-              Clear Filter
+              {t('clear_filter')}
             </Button>
           )}
         </div>

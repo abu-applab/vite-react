@@ -21,6 +21,7 @@ import Loader from "@/components/loader";
 import { useNavigate, useParams } from "react-router-dom";
 import { EmptyRequest } from "@/components/service/serviceRequestPage/empty-request";
 import { PAGE_SIZE } from "@/constants";
+import { useTranslation } from "react-i18next";
 
 interface InvestmentOptions {
     id: string
@@ -45,28 +46,28 @@ const investmentTypes: InvestmentType =
     options: [
         {
             id: "logisticsPark",
-            title: "Logistics Park",
-            description: "Zones for warehousing and distribution to strengthen trade.",
+            title: "logistics_park",
+            description: "logistics_park_desc",
             image: logistics,
             disabled: true
         },
         {
             id: "Industrial",
-            title: "Industrial",
-            description: "Heavy industrial hub for large-scale manufacturing.",
+            title: "industrial",
+            description: "industrial_desc",
             image: industrial,
         },
         {
             id: "commercial",
-            title: "Commercial",
-            description: "Flexible spaces for storage and light industry.",
+            title: "commercial",
+            description: "commercial_desc",
             image: commercial,
             disabled: true,
         },
         {
             id: "Logistics",
-            title: "Open Yards",
-            description: "Plots and facilities for business growth environment.",
+            title: "open_yards",
+            description: "open_yards_desc",
             image: openYards,
         },
     ]
@@ -80,26 +81,26 @@ const investmentLocations: InvestmentType =
     options: [
         {
             id: "7703413e-4094-ea11-8106-00155d0d0b8c",
-            title: "Al Khor Industrial Zone",
+            title: "al_khor_industrial_zone",
             image: alKhor,
             investments: ['Logistics', 'Industrial']
         },
         {
             id: "b8797db0-4094-ea11-8106-00155d0d0b8c",
-            title: "Al Karaana Industrial Zone",
+            title: "al_karaana_industrial_zone",
             image: alKaranaa,
             investments: ['Logistics', 'Industrial'],
         },
         {
             id: "40bae3c1-b36b-ed11-811e-00155d0d0b8c",
-            title: "Small Medium Ind",
+            title: "small_medium_ind",
             image: smiZone,
             investments: ['Industrial'],
             applicationType: "SMI",
         },
         {
             id: "edb79af3-c0d5-e611-80d3-00155d0d0b8cc",
-            title: "Mesaieed Industrial Zone",
+            title: "mesaieed_industrial_zone",
             image: mesaieed,
             investments: ['Industrial'],
             applicationType: "MIZ",
@@ -115,17 +116,17 @@ const cardsConfigBase = {
     status: 'status',
     fields: [
         {
-            label: "Location",
+            label: "location",
             key: "locationNameEn",
         },
         {
-            label: "Submitted Date",
+            label: "submitted_date",
             key: "submissionDate",
         },
     ],
     menuOptions: [
         {
-            label: "View Details",
+            label: "view_details",
             icon: Eye,
             actionKey: "view"
         },
@@ -140,22 +141,22 @@ const cardsDraftConfigBase = {
     status: 'status',
     fields: [
         {
-            label: "Location",
+            label: "location",
             key: "locationNameEn",
         },
         {
-            label: "Created Date",
+            label: "created_date",
             key: "createdOn",
         },
     ],
     menuOptions: [
         {
-            label: "Continue",
+            label: "continue",
             icon: CircleArrowRight,
             actionKey: "view"
         },
         {
-            label: "Delete",
+            label: "delete",
             icon: Trash2,
             actionKey: "delete"
         },
@@ -163,28 +164,28 @@ const cardsDraftConfigBase = {
 }
 
 const tabs = [
-    { id: 'submitted', label: 'Submitted Applications' },
-    { id: 'drafted', label: 'Drafted Applications' },
+    { id: 'submitted', label: 'submitted_applications' },
+    { id: 'drafted', label: 'drafted_applications' },
 ];
 
 const header = {
-    title: "Applications",
+    title: "applications",
     homeLink: 'companyName',
-    contentLinks: ['View Applications', 'Create New Applications'],
+    contentLinks: ['view_applications', 'create_new_applications'],
 }
 
 const filterKeys = {
-    title: 'Applocations',
-    createNewRequest: 'Create New Application',
+    title: 'Applications',
+    createNewRequest: 'create_new_applications',
     filterTypes: [
-        { id: '939330000', value: 'Submitted' },
-        { id: '939330001', value: 'Review In Progress' },
-        { id: '939330002', value: 'Approved' },
+        { id: '939330000', value: 'submitted' },
+        { id: '939330001', value: 'review_in_progress' },
+        { id: '939330002', value: 'approved' },
         { id: '939330003', value: 'Rejected' },
-        { id: '939330005', value: 'Pending Submit Transfer' },
-        { id: '939330006', value: 'On Hold' },
-        { id: '939330007', value: 'Cancelled' },
-        { id: '939330008', value: 'Terminated' },
+        { id: '939330005', value: 'pending_submit_transfer' },
+        { id: '939330006', value: 'on_hold' },
+        { id: '939330007', value: 'cancelled' },
+        { id: '939330008', value: 'terminated' },
     ],
     applicationFilter: [
         { id: '100000000', value: 'Industrial', icon: Factory },
@@ -205,6 +206,7 @@ const ApplicationPage = () => {
     const [refreshDraft, setRefreshDraft] = useState(false);
     const navigate = useNavigate();
     const { id } = useParams();
+    const { t } = useTranslation();
 
     const cardActions = {
         view: (card: any) => {
@@ -393,7 +395,7 @@ const ApplicationPage = () => {
                 // Disable Al Khor & Al Karaana when selectedApplication is 'industrial'
                 if (
                     selectedApplication === "Industrial" &&
-                    ["Al Khor Industrial Zone", "Al Karaana Industrial Zone"].includes(option.title)
+                    ["al_khor_industrial_zone", "al_karaana_industrial_zone"].includes(option.title)
                 ) {
                     return { ...option, disabled: true };
                 }
@@ -457,47 +459,51 @@ const ApplicationPage = () => {
             <PageHeader header={header} />
 
             {(!isCreateNewApplication) ? (
-                (applicationData.length === 0 && applicationDraftData.length === 0 && !applicationFilter?.searchTerm && !applicationFilter?.typeOfApplication && !applicationFilter?.status && !loading) ?
-                    <EmptyRequest title='No Applications Found' description="You haven’t submitted any service requests yet." buttonText="Submit New Applications" />
-                    :
-                    <div>
-                        <CreateAndFilter
-                            onNewRequest={() => setCreateNewApplication(true)}
-                            filterConfig={filterKeys}
-                            setAppliedFilter={setApplicationFilter}
-                            appliedFilter={applicationFilter}
-                        />
-                        <div className="w-full min-h-[55vh] mt-6">
-                            <div className="flex items-center bg-white h-[56px] rounded-lg shadow-md gap-[8px]">
-                                {tabs.map((tab) => (
-                                    <button key={tab.id} className={`py-[10px] h-full ml-[40px] text-sm font-medium ${activeTab === tab.id ? 'text-maroon-100 border-b-2 border-maroon-100' : 'text-black hover:text-gray-500'} focus:outline-none focus:text-maroon-100 `} onClick={() => setActiveTab(tab.id)} > {tab.label}
-                                    </button>
-                                ))}
+                <div className="min-h-[55vh]">
+                    {(applicationData.length === 0 && applicationDraftData.length === 0 && !applicationFilter?.searchTerm && !applicationFilter?.typeOfApplication && !applicationFilter?.status && !loading) ?
+                    <div className="min-h-[45vh] flex items-center justify-center">
+                        <EmptyRequest title='no_applications_found' description="havent_submitted_application_yet" buttonText="submit_new_applications" onNewRequest={() => setCreateNewApplication(true)} />
+                    </div>        
+                        :
+                        <div>
+                            <CreateAndFilter
+                                onNewRequest={() => setCreateNewApplication(true)}
+                                filterConfig={filterKeys}
+                                setAppliedFilter={setApplicationFilter}
+                                appliedFilter={applicationFilter}
+                            />
+                            <div className="w-full min-h-[55vh] mt-6">
+                                <div className="flex items-center bg-white h-[56px] rounded-lg shadow-md gap-[8px] max-md:justify-between max-md:px-4">
+                                    {tabs.map((tab) => (
+                                        <button key={tab.id} className={`py-[10px] h-full md:ml-[40px] text-sm font-medium ${activeTab === tab.id ? 'text-maroon-100 border-b-2 border-maroon-100' : 'text-black hover:text-gray-500'} focus:outline-none focus:text-maroon-100 `} onClick={() => setActiveTab(tab.id)} > {t(tab.label)}
+                                        </button>
+                                    ))}
+                                </div>
+                                <div className="mt-4 w-full min-h-[35vh] rounded-b-lg">
+                                    {activeTab === 'submitted' &&
+                                        ((applicationData.length > 0 && (applicationFilter?.totalPages ?? 0) > 0) ?
+                                            <>
+                                                <ListOFCards cardsConfig={cardsConfig} cardsData={applicationData} />
+                                                {(applicationFilter?.totalPages ?? 0) > 1 && (
+                                                    <CustomPagination handlePageChange={(page) => handlePageChange(page, applicationFilter?.totalPages ?? 0, setApplicationFilter)} currentPage={applicationFilter?.page ?? 1} totalPages={applicationFilter?.totalPages ?? 0} />
+                                                )}
+                                            </>
+                                            : !loading && <EmptyRequest hideButton={true} title={'no_applications_found'} />)
+                                    }
+                                    {activeTab === 'drafted' &&
+                                        ((applicationDraftData.length > 0 && (applicationDraftFilter?.totalPages ?? 0) > 0) ?
+                                            <>
+                                                <ListOFCards cardsConfig={cardsDraftConfig} cardsData={applicationDraftData} />
+                                                {(applicationDraftFilter?.totalPages ?? 0) > 1 && (
+                                                    <CustomPagination handlePageChange={(page) => handlePageChange(page, applicationDraftFilter?.totalPages ?? 0, setApplicationDarftFilter)} currentPage={applicationDraftFilter?.page ?? 1} totalPages={applicationDraftFilter?.totalPages ?? 0} />
+                                                )}
+                                            </>
+                                            : !loading && <EmptyRequest hideButton={true} title={'no_applications_found'} />)
+                                    }
+                                </div>
                             </div>
-                            <div className="mt-4 w-full min-h-[35vh] rounded-b-lg">
-                                {activeTab === 'submitted' &&
-                                    ((applicationData.length > 0 && (applicationFilter?.totalPages ?? 0) > 0) ?
-                                        <>
-                                            <ListOFCards cardsConfig={cardsConfig} cardsData={applicationData} />
-                                            {(applicationFilter?.totalPages ?? 0) > 1 && (
-                                                <CustomPagination handlePageChange={(page) => handlePageChange(page, applicationFilter?.totalPages ?? 0, setApplicationFilter)} currentPage={applicationFilter?.page ?? 1} totalPages={applicationFilter?.totalPages ?? 0} />
-                                            )}
-                                        </>
-                                        : !loading && <EmptyRequest hideButton={true} title={'No Applications found'} />)
-                                }
-                                {activeTab === 'drafted' &&
-                                    ((applicationDraftData.length > 0 && (applicationDraftFilter?.totalPages ?? 0) > 0) ?
-                                        <>
-                                            <ListOFCards cardsConfig={cardsDraftConfig} cardsData={applicationDraftData} />
-                                            {(applicationDraftFilter?.totalPages ?? 0) > 1 && (
-                                                <CustomPagination handlePageChange={(page) => handlePageChange(page, applicationDraftFilter?.totalPages ?? 0, setApplicationDarftFilter)} currentPage={applicationDraftFilter?.page ?? 1} totalPages={applicationDraftFilter?.totalPages ?? 0} />
-                                            )}
-                                        </>
-                                        : !loading && <EmptyRequest hideButton={true} title={'No Applications found'} />)
-                                }
-                            </div>
-                        </div>
-                    </div>
+                        </div>}
+                </div>
             ) :
                 <div>{steps[step].component}</div>
             }

@@ -37,7 +37,7 @@ export const ServiceFormHandler = ({
   const fieldRefs = useRef<Record<string, HTMLElement | null>>({});
   const { loadServicePlot, loadServiceSignatory } = useServiceFormConfigLoader()
   const networkRequest = useNetworkRequest();
-  const { selectedCompany, setSelectedCompany, companies, contactId } = useApp();
+  const { selectedCompany, setSelectedCompany, companies, contact } = useApp();
   const [formStage, setFormStage] = useState(1);
   const {t} = useTranslation();
   const [isConfirmSubmitOpen, setConfirmSubmitOpen] = useState(false);
@@ -152,14 +152,14 @@ export const ServiceFormHandler = ({
           urls: apiConfig.urls,
           networkRequest,
           setReferenceMessage,
-          contactId
+          contactId: contact?.id ?? ''
         });
         setSubmittedModal(true);
         setIsLoading(false);
         return;
       }
 
-      const body = prepareRequestBody(formState, apiConfig.contentType, contactId);
+      const body = prepareRequestBody(formState, apiConfig.contentType, contact?.id ?? '');
       const response = await networkRequest(apiConfig.url!, {
         method: apiConfig.method as "POST",
         body,
@@ -218,7 +218,7 @@ export const ServiceFormHandler = ({
       const updateRequestId = await createCompanyUpdateRequest({
         formState,
         networkRequest,
-        contactId
+        contactId: contact?.id ?? ''
       });
       setFormState(prev => ({
         ...prev,
@@ -292,13 +292,15 @@ export const ServiceFormHandler = ({
         referenceMessage={referenceMessage}
         handleTryAgain={handleTryAgain}
         errorMessage={errorMessage}
-        buttonText="View My Requests"
+        buttonText="view_my_requests"
+        title="request_submitted_successfully"
+        heading="request_submitted"
       />
       <ConfirmationModal 
         open={isConfirmSubmitOpen}  
         onOpenChange={setConfirmSubmitOpen} 
         onConfirm={executeSubmit}
-        description="This action will submit your service request for review. You won’t be able to make further edits after this."
+        description="confirmation_request_desc"
       />
       {isLoading && <Loader />}
     </div>
