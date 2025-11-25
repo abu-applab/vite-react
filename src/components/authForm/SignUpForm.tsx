@@ -168,11 +168,11 @@ const SignUpForm = ({ onSwitch }: SignUpFormProps) => {
   };
   const googleLogin = useGoogleLogin({
     onSuccess: (tokenResponse) => {
-
+      console.log('tokenResponse: ', tokenResponse);
       // TODO: send tokenResponse.access_token or id_token to your backend for verification/login
     },
     onError: (errorResponse) => {
-
+      console.log('errorResponse: ', errorResponse);
     },
   });
   const handleSocialSignUp = (key: string) => {
