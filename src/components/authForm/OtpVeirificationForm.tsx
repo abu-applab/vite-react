@@ -27,6 +27,8 @@ export default function OtpVeirificationForm({
     const [_resendMessage, setResendMessage] = useState<string>("");
     const networkRequest = useNetworkRequest();
     const inputsRef = useRef<Array<HTMLInputElement | null>>([]);
+    const isOtpComplete = otp.every((digit) => digit !== "");
+    const hasError = !!error;
 
     const handleChange = (index: number, value: string) => {
         // Allow only digits and max 1 character per box
@@ -109,6 +111,7 @@ export default function OtpVeirificationForm({
             setResending(true);
             setResendMessage("");
             setError("");
+            setOtp(Array(OTP_LENGTH).fill(""));
 
             const body = { phoneNumber };
 
@@ -135,21 +138,35 @@ export default function OtpVeirificationForm({
 
             <form onSubmit={handleSubmit} className="mt-4 space-y-6 w-full max-w-md mx-auto">
                 <div className="flex justify-center gap-2">
-                    {otp.map((value, index) => (
-                        <Input
-                            key={index}
-                            ref={(el: HTMLInputElement | null) => {
-                                inputsRef.current[index] = el;
-                            }}
-                            type="text"
-                            inputMode="numeric"
-                            maxLength={1}
-                            value={value}
-                            onChange={(e) => handleChange(index, e.target.value)}
-                            onKeyDown={(e) => handleKeyDown(index, e)}
-                            className="w-13 h-13 text-center text-lg font-medium border-1 rounded-md border-green-500 focus-visible:ring-0 focus-visible:ring-offset-0"
-                        />
-                    ))}
+                    {otp.map((value, index) => {
+                        const baseClasses =
+                            "w-13 h-13 text-center text-lg font-medium border-1 rounded-md focus-visible:ring-0 focus-visible:ring-offset-0";
+
+                        // Priority: error → red; otherwise filled/complete/success → green; otherwise empty → grey
+                        let colorClasses = "border-gray-300 focus:border-gray-300"; // empty
+
+                        if (hasError) {
+                            colorClasses = "border-red-500 focus:border-red-500";
+                        } else if (success || value || isOtpComplete) {
+                            colorClasses = "border-green-500 focus:border-green-500";
+                        }
+
+                        return (
+                            <Input
+                                key={index}
+                                ref={(el: HTMLInputElement | null) => {
+                                    inputsRef.current[index] = el;
+                                }}
+                                type="text"
+                                inputMode="numeric"
+                                maxLength={1}
+                                value={value}
+                                onChange={(e) => handleChange(index, e.target.value)}
+                                onKeyDown={(e) => handleKeyDown(index, e)}
+                                className={`${baseClasses} ${colorClasses}`}
+                            />
+                        );
+                    })}
                 </div>
 
                 {error && (
