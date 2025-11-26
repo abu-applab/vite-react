@@ -6,10 +6,12 @@ import ListOFCards from "@/components/listOfcards";
 import Loader from "@/components/loader";
 import PageHeader from "@/components/pageHeader";
 import { EmptyRequest } from "@/components/service/serviceRequestPage/empty-request";
+import { ViolationFormHandler } from "@/components/violationScreen/violationFormHandler";
 import { PAGE_SIZE } from "@/constants";
 import { useApp } from "@/context/AppContext";
-import { SquareLibrary } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Eye, SquareLibrary } from "lucide-react";
+import { useEffect, useLayoutEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 
 const header = {
@@ -21,23 +23,27 @@ const header = {
 const filterKeys = {
     title: 'Violation Reports',
     filterTypes: [
-        { id: '939330000', value: 'approved' },
-        { id: '939330005', value: 'pre_approved' },
-        { id: '939330001', value: 'rejected' },
-        { id: '1', value: 'in_progress' },
-        { id: '939330003', value: 'cancelled' },
-        { id: '2', value: 'pending_work' },
-        { id: '939330002', value: 'pending_investor_update' },
-        { id: '939330004', value: 'pending_request_fees' },
+        { id: '120320000', value: 'closed+' },
+        { id: '120320010', value: 'closed-' },
+        { id: '120320020', value: 'open+60' },
+        { id: '120320030', value: 'open+30' },
+        { id: '120320040', value: 'overdue-30' },
+        { id: '120320050', value: 'overdue-60' },
+        { id: '120320060', value: 'overdue-60+' },
+        { id: '120320001', value: 'default_notice_1' },
+        { id: '120320002', value: 'default_notice_2' },
+        { id: '120320003', value: 'sent_to_legal' },
+        { id: '120320004', value: 'escalated_to_carr' },
+        { id: '120320005', value: 'escalated_to_ncr' }
     ]
 }
 
-const cardsConfig = {
+const cardsConfigBase = {
     icon: SquareLibrary,
     id: "requestId",
     title: "findingNumber",
     label: "workOrderType",
-    status: 'status',
+    status: 'actionPartyFindingStatus',
     showBelow: true,
     fields: [
         {
@@ -57,6 +63,14 @@ const cardsConfig = {
             key: "expectedCloseOutDate",
         },
     ],
+    menuOptions: [
+        {
+            label: "view_findings",
+            icon: Eye,
+            actionKey: "view"
+        },
+    ],
+    warning: 'expectedCloseOutDate'
 }
 
 const ViolationPage = () => {
@@ -64,7 +78,42 @@ const ViolationPage = () => {
     const { violationFilter, setViolationFilter, selectedCompany } = useApp();
     const [loading, setLoading] = useState(false);
     const networkRequest = useNetworkRequest();
-    const [violationData, setViolationData] = useState<any[]>([])
+    const [violationData, setViolationData] = useState<any[]>([]);
+    const [showFInding, setShowFinding] = useState(false);
+    const navigate = useNavigate();
+    const { id } = useParams();
+
+    const cardActions = {
+        view: (card: any) => {
+            setShowFinding(true);
+            navigate(`/portal/violations/${card.id}`);
+        },
+    };
+
+    const cardsConfig = {
+        ...cardsConfigBase,
+        menuOptions: cardsConfigBase.menuOptions.map((option) => ({
+            ...option,
+            onClick: (card: any) => {
+                const handler = cardActions[option.actionKey as keyof typeof cardActions];
+                if (handler) handler(card);
+            },
+        })),
+    };
+
+    useLayoutEffect(() => {
+        // Run this only once — not on id changes
+        const navType =
+            (performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming | undefined)?.type ||
+            (performance.navigation?.type === 1 ? "reload" : "");
+
+
+        if (id && navType === "reload") {
+            navigate("/portal/violations", { replace: true });
+        }
+        // 👇 Empty dependency ensures this runs only once on page load
+    }, []);
+
 
     useEffect(() => {
         const fetchRequests = async () => {
@@ -72,8 +121,8 @@ const ViolationPage = () => {
             try {
                 const params = new URLSearchParams();
 
-                params.append("AccountId", selectedCompany?.accountID ?? "");
-                // params.append("AccountId", 'b5c52ef7-a23f-e511-80ca-00155d0c0f13');
+                // params.append("AccountId", selectedCompany?.accountID ?? "");
+                params.append("AccountId", '03a29bae-8b83-e511-80ca-00155d0c0f13');
                 params.append("Page", (violationFilter?.page ?? 1).toString());
                 params.append("PageSize", PAGE_SIZE.toString());
                 violationFilter?.searchTerm && params.append("SearchTerm", (violationFilter?.searchTerm));
@@ -122,8 +171,8 @@ const ViolationPage = () => {
     return (
         <div className="">
             <PageHeader header={header} />
-            {<div className="min-h-[55vh]">
-                {(violationData?.length === 0 && !violationFilter?.searchTerm && !violationFilter?.status && !loading) ?
+            {!showFInding ? <div className="min-h-[55vh]">
+                {((violationData?.length === 0 || !violationData) && !violationFilter?.searchTerm && !violationFilter?.status && !loading) ?
                     <div className="min-h-[45vh] flex items-center justify-center">
                         <EmptyRequest title='no_violation_found' description="no_violation_reports_found." hideButton />
                     </div>
@@ -132,11 +181,17 @@ const ViolationPage = () => {
                         <CreateAndFilter filterConfig={filterKeys} setAppliedFilter={setViolationFilter} appliedFilter={violationFilter} />
                         <div className="">
                             <ListOFCards cardsConfig={cardsConfig} cardsData={violationData} />
-                            {!!((violationFilter?.totalPages ?? 0) > 1) && <CustomPagination handlePageChange={handlePageChange} currentPage={violationFilter?.page} totalPages={violationFilter?.totalPages ?? 0} />}
-                            {!loading && violationData?.length === 0 && <EmptyRequest hideButton={true} title={'no_violation_reports'} />}
+                            {!!(violationFilter?.totalPages && violationFilter.totalPages > 1 && violationData.length > 0) && <CustomPagination handlePageChange={handlePageChange} currentPage={violationFilter?.page} totalPages={violationFilter?.totalPages ?? 0} />}
+                            {!loading && violationData?.length === 0 && <EmptyRequest hideButton={true} title={'no_violation_found'} />}
                         </div>
                     </>}
-            </div>
+            </div> :
+                <ViolationFormHandler
+                    onBack={() => {
+                        setShowFinding(false)
+                        navigate("/portal/violations")}
+                    }
+                />
             }
             {loading && <Loader />}
         </div>

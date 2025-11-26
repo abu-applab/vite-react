@@ -11,7 +11,7 @@ import useNetworkRequest from "@/api/useNetworkRequest"
 import { API_ENDPOINTS } from "@/api/apiEndpoints"
 import { useApplicationConfigLoader } from "@/hooks/useApplicationConfigLoader"
 import { validateForm } from "./validate"
-import { RequestSubmittedModal } from "../service/createNewRequest/request-submitted-modal"
+import { RequestSubmittedModal } from "../service/createNewRequest/requestSubmittedModal"
 import { calculateTotals, parseApiError, removeEmptyValues } from "@/lib/utils"
 import Loader from "../loader"
 import { useNavigate, useParams } from "react-router-dom"
@@ -56,6 +56,10 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
   const [isConfirmSubmitOpen, setConfirmSubmitOpen] = useState(false);
   const navigate = useNavigate();
   const { t } = useTranslation();
+
+    const isSubmittedApplication = Boolean(
+    id && (selectedInvestment?.status && selectedInvestment?.status?.toLowerCase() !== "draft")
+  );
 
   useEffect(() => {
     const fetchData = async () => {
@@ -123,11 +127,11 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
 
   useEffect(() => {
     const init = async () => {
-      const cfg = await loadApplicationConfig(selectedApplication, setFormData);
+      const cfg = await loadApplicationConfig(selectedApplication, setFormData, !!id);
       setConfig(cfg);
     };
     init();
-  }, []);
+  }, [id]);
 
   useEffect(() => {
     const fetchISICCodes = async () => {
@@ -224,7 +228,6 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
   }, [])
 
   const handleInputChange = (fieldId: string, value: any) => {
-    console.log('called here');
     setFormData((prev) => {
       const updated = { ...prev, [fieldId]: value };
 
@@ -482,10 +485,6 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
   };
 
   const isLastStepActive = applicationSteps[applicationSteps.length - 1]?.active === true;
-
-  const isSubmittedApplication = Boolean(
-    id && (selectedInvestment?.status && selectedInvestment?.status?.toLowerCase() !== "draft")
-  );
 
   const renderActiveStep = () => {
     const activeStep = applicationSteps.find((s) => s.active)

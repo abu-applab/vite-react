@@ -171,7 +171,7 @@ const tabs = [
 const header = {
     title: "applications",
     homeLink: 'companyName',
-    contentLinks: ['view_applications', 'create_new_applications'],
+    contentLinks: ['view_applications', 'create_new_applications',],
 }
 
 const filterKeys = {

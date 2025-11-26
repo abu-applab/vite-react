@@ -1602,7 +1602,7 @@ export const TotalCalculationMap: Record<string, string[]> = {
 };
 
 export const violationFormConfig = {
-    title: "finding_details",
+    title: "",
     sections: [
         {
             title: "finding_details",
@@ -1611,23 +1611,20 @@ export const violationFormConfig = {
                     id: "findingNumber",
                     label: "finding_number",
                     type: "text",
-                    required: true,
                     placeholder: "",
                     disabled: true,
                 },
                 {
-                    id: "riskLevelRating",
+                    id: "riskLevelRating", // need to change
                     label: "risk_level_rating",
                     type: "text",
-                    required: true,
                     placeholder: "",
                     disabled: true,
                 },
                 {
-                    id: "inspectionType",
+                    id: "inspectionType",  // missing
                     label: "inspection_type",
                     type: "text",
-                    required: true,
                     placeholder: "",
                     disabled: true,
                 },
@@ -1635,23 +1632,20 @@ export const violationFormConfig = {
                     id: "findingType",
                     label: "finding_type",
                     type: "text",
-                    required: true,
                     placeholder: "",
                     disabled: true,
                 },
                 {
-                    id: "focusArea",
+                    id: "findingFocusArea",
                     label: "focus_area",
                     type: "text",
-                    required: true,
                     placeholder: "",
                     disabled: true,
                 },
                 {
-                    id: "proposedAction",
+                    id: "proposedActionEn",  // en and ar
                     label: "proposed_action",
                     type: "text",
-                    required: true,
                     placeholder: "",
                     disabled: true,
                 },
@@ -1659,15 +1653,13 @@ export const violationFormConfig = {
                     id: "expectedCloseoutDate",
                     label: "expected_closeout_date",
                     type: "text",
-                    required: true,
                     placeholder: "",
                     disabled: true,
                 },
                 {
-                    id: "submissionData",
+                    id: "submissionData", // missing
                     label: "submission_data",
                     type: "text",
-                    required: true,
                     placeholder: "",
                     disabled: true,
                 },
@@ -1675,15 +1667,13 @@ export const violationFormConfig = {
                     id: "actualCloseoutDate",
                     label: "actual_closeout_date",
                     type: "text",
-                    required: true,
                     placeholder: "",
                     disabled: true,
                 },
                 {
-                    id: "sssuanceDate",
+                    id: "issuanceDate",
                     label: "issuance_data",
                     type: "text",
-                    required: true,
                     placeholder: "",
                     disabled: true,
                 },
@@ -1691,7 +1681,6 @@ export const violationFormConfig = {
                     id: "findingStatus",
                     label: "finding_status",
                     type: "text",
-                    required: true,
                     placeholder: "",
                     disabled: true,
                 },
@@ -1706,36 +1695,33 @@ export const violationFormConfig = {
                     type: "textarea",
                     required: true,
                     placeholder: "",
-                    disabled: true,
                 },
                 {
-                    id: "riskLevelRating",
+                    id: "correctiveActionPlan",
                     label: "corrective_action_plan",
                     type: "textarea",
                     required: true,
                     placeholder: "",
-                    disabled: true,
                 },
                 {
-                    id: "inspectionType",
+                    id: "remedialActionCorrection",
                     label: "remedial_action",
                     type: "textarea",
                     required: true,
                     placeholder: "",
-                    disabled: true,
                 },
                 {
-                    id: "findingType",
+                    id: "rootCause",
                     label: "root_cause",
                     type: "textarea",
                     required: true,
                     placeholder: "",
-                    disabled: true,
                 },
             ],
         },
         {
             title: "attachments",
+            key: "attachments",
             fields: [
                 {
                     id: "violationPhotos",

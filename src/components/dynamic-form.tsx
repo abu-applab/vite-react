@@ -6,10 +6,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Textarea } from "./ui/textarea"
 import { Button } from "./ui/button"
 import FileUpload from "./file-upload"
-import { CalendarIcon, ChevronsUpDown, Download, Eye, Trash2 } from "lucide-react"
+import { CalendarIcon, ChevronsUpDown, Download, Trash2 } from "lucide-react"
 import pdfLogo from "../assets/images/pdf-logo.svg"
 import { cn, formatFileSize, getFileName, getFileType } from "@/lib/utils"
-import { useEffect, useState, type Dispatch, type SetStateAction } from "react"
+import { useEffect, type Dispatch, type SetStateAction } from "react"
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
 import { Command, CommandGroup, CommandItem, CommandList } from "./ui/command"
 import { Checkbox } from "./ui/checkbox"
@@ -18,6 +18,7 @@ import ProductInformation from "./productInformation"
 import FormSteps from "./addCompany/formSteps"
 import { useTranslation } from "react-i18next"
 import SubmittedFormSteps from "./submittedFormSteps"
+import { MultipleAttachments } from "./violationScreen/multipleAttachments"
 
 interface DynamicFormProps {
   config: FormConfig
@@ -62,11 +63,7 @@ const DynamicForm = ({
 }: DynamicFormProps) => {
   const { setCreateNewForm, setSelectedInvestment } = useApp();
   const { t } = useTranslation()
-  const [_popupFileUrl, setPopupFileUrl] = useState(null);
 
-const openAttachmentPopup = (fileUrl: any) => {
-  setPopupFileUrl(fileUrl);
-};
 
 
   // handling this state to show whether it's for view or create new service 
@@ -339,16 +336,6 @@ const openAttachmentPopup = (fileUrl: any) => {
                 </div>
 
                 <div className="flex flex-row gap-3">
-                  {/* VIEW BUTTON */}
-                  <Button
-                    className="border-2 h-8 w-8 p-2 hover:bg-transparent cursor-pointer"
-                    type="button"
-                    variant="ghost"
-                    onClick={() => window.open(value?.fileUrl)}
-                  >
-                    <Eye className="h-4 w-4 text-[#82764f]" />
-                  </Button>
-
                   <Button asChild className="border-2 h-8 w-8 p-2 hover:bg-transparent cursor-pointer">
                     <a href={value?.fileUrl}>
                       <Download className="h-4 w-4 text-[#82764f]" />
@@ -414,49 +401,6 @@ const openAttachmentPopup = (fileUrl: any) => {
         );
       }
 
-      case "attachment": {
-        const hasUploadPermission = field.id === "closeoutEvidence"; // only this allows uploading
-
-        return (
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <Label htmlFor={field.id}>
-                {t(field.label)}
-                {field.required && <span className="text-destructive">*</span>}
-              </Label>
-
-              {/* Button to show popup */}
-              <button
-                type="button"
-                className="text-sm underline text-maroon-100"
-                onClick={() => {
-                  // You should open popup screen here
-                  // Pass field.id to know which list to load
-                  openAttachmentPopup(field.id)
-                }}
-              >
-                {t("View Previous attached documents")}
-              </button>
-            </div>
-
-            {/* Only show upload UI for closeoutEvidence */}
-            {hasUploadPermission && !isSubmittedApplication && (
-              <FileUpload
-                onFileUpload={(file) => handleInputChange(field.id, file)}
-                handleFileUploadError={(uploadError: string) =>
-                  setErrors((prev) => ({ ...prev, [field.id]: uploadError }))
-                }
-                fileLabel={t(field.label)}
-              />
-            )}
-
-            {errors[field.id] && (
-              <span className="text-sm text-red-600">{errors[field.id]}</span>
-            )}
-          </div>
-        );
-      }
-
 
       default:
         return null
@@ -464,7 +408,7 @@ const openAttachmentPopup = (fileUrl: any) => {
   }
 
   return (
-    <Card className={cn("lg:p-10 md:py-6 bg-[#F6F5EF]] border-none shadow-none max-md:bg-[#F6F5EF] p-0",
+    <Card className={cn("lg:p-10 md:py-6 bg-[#F6F5EF]] max-md:border-none max-md:shadow-none max-md:bg-[#F6F5EF] p-0 md:bg-white/50",
       { "border-none shadow-none": isCreateApplication }
     )}>
       <div className="max-md:shadow max-md:border max-md:bg-white max-md:p-4 max-md:rounded-lg md:px-6">
@@ -481,6 +425,7 @@ const openAttachmentPopup = (fileUrl: any) => {
       <CardContent className="max-md:p-0">
         <form onSubmit={handleSubmit} className="space-y-6">
           {config?.sections.map((section, sectionIndex) => {
+            console.log('section: ', section);
             if (section.key === "ProductsJson") {
               return <ProductInformation
                 setProducts={setProducts}
@@ -489,11 +434,31 @@ const openAttachmentPopup = (fileUrl: any) => {
                 isSubmittedApplication={isSubmittedApplication}
               />
             }
+            if (section.key === "attachments") {
+              return (<div>
+                <h4 className=" max-md:text-maroon-100 max-md:ml-4 mb-3">{t(section.title)}</h4>
+                <div className="flex flex-col gap-3">
+                  {section.fields?.map((field) => (
+                    <div
+                      key={field.id}
+                    >
+                      <MultipleAttachments
+                        field={field}
+                        handleInputChange={handleInputChange}
+                        errors={errors}
+                        setErrors={setErrors}
+                        formData={formData}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>)
+            }
             return (
               <>
                 <h4 className=" max-md:text-maroon-100 max-md:ml-4 mb-3">{t(section.title)}</h4>
                 <Card key={sectionIndex}>
-                  <CardContent className="space-y-4">
+                  <CardContent className={cn("space-y-4")}>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {section.fields
                         ?.filter((field) => {
@@ -514,7 +479,10 @@ const openAttachmentPopup = (fileUrl: any) => {
                         ?.map((field) => (
                           <>
                             {field.subTitle && <h4 className=" text-maroon-100 max-md:ml-4 mb-3 col-span-full">{t(section.title)}</h4>}
-                            <div key={field.id} className={field.type === "textarea" || field.type === "file" ? "md:col-span-2" : ""}>
+                            <div
+                              key={field.id}
+                              className={["textarea", "file"].includes(field.type) ? "md:col-span-2" : ""}
+                            >
                               {renderField(field)}
                             </div>
                           </>

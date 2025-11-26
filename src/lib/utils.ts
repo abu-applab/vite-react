@@ -263,5 +263,15 @@ export const passwordRules = [
   { id: "special", label: "At least one special character", test: (pw: string) => /[\W_]/.test(pw) },
 ];
 
+export const parseCustomDate = (dateStr: string) => {
+  if (!dateStr) return null;
+
+  const [datePart, timePart] = dateStr.split(" ");
+  const [day, month, year] = datePart.split("/").map(Number);
+
+  const time = new Date(`${year}-${month}-${day} ${timePart} UTC`);
+  return time;
+};
+
 
 
