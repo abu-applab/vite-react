@@ -146,3 +146,11 @@ export const resetPasswordFields = [
   { id: "password", label: "New Password", type: "password", placeholder: "Enter new password" },
   { id: "confirmPassword", label: "Confirm Password", type: "password", placeholder: "Confirm new password" },
 ];
+
+export const landUseData = [
+  { id: 'LogisticsWarehousing', name: 'Logistics Warehousing' },
+  { id: 'WorkshopsAssembly', name: 'Workshops Assembly' },
+  { id: 'OpenYardsStorage', name: 'Open Yards Storage' },
+  { id: 'Industry', name: 'Industry' },
+  { id: 'NonIndustry', name: 'Non Industry' },
+];

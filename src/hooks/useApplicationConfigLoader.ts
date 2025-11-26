@@ -1,15 +1,18 @@
 
 import { API_ENDPOINTS } from "@/api/apiEndpoints";
 import useNetworkRequest from "@/api/useNetworkRequest";
+import { landUseData } from "@/constants";
 import { useApp } from "@/context/AppContext";
 import { getApplicationFormConfig } from "@/lib/form-data";
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 export const useApplicationConfigLoader = () => {
   const networkRequest = useNetworkRequest();
   const { selectedInvestment } = useApp();
+  const { t } = useTranslation();
 
-  const loadApplicationConfig = async (selectedApplication: string, setFormData: any) => {
+  const loadApplicationConfig = async (selectedApplication: string, setFormData: any, isSubmittedApplication?: boolean) => {
     let baseConfig = getApplicationFormConfig(selectedApplication);
 
     let [clusterRes, iSICSectionsRes, locationRes] = await Promise.all([
@@ -34,16 +37,16 @@ export const useApplicationConfigLoader = () => {
     }));
 
     const locationOptions = locations
-      .filter((location: any) => location.name === selectedInvestment?.location)
-      .map((location: any) => ({
-        name: location.name,
-        id: location.id,
-      }));
-
+    .filter((location: any) => (location.name === t(selectedInvestment?.location ?? "", { lng: "en" }) || isSubmittedApplication))
+    .map((location: any) => ({
+      name: location.name,
+      id: location.id,
+    }));
+    
     if (locationOptions.length > 0) {
       setFormData((prev: Record<string, any>) => ({
         ...prev,
-        Location: locationOptions[0].id,
+        Location: isSubmittedApplication ? locationOptions : locationOptions[0].id
       }));
     }
 
@@ -61,6 +64,9 @@ export const useApplicationConfigLoader = () => {
           }
           if (field.id === "isicSection") {
             return { ...field, options: iSICSectionOptions };
+          }
+          if(field.id === "landUse" && isSubmittedApplication) {
+            return {...field, options: landUseData}
           }
           return field;
         }),
