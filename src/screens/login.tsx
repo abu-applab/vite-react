@@ -1,19 +1,25 @@
 import building from '../assets/images/manateqBuilding.png'
 import manateqLoginLogo from '../assets/images/manateq-login-logo.svg'
 import isolationMode from '../assets/images/Isolation-Mode.svg'
-import LoginForm from '@/components/loginForm'
 import { motion } from 'framer-motion'
 import { useMediaQuery } from 'react-responsive'
+import AuthForm from '@/components/authForm/AuthForm'
+import { useSearchParams } from 'react-router-dom'
 
 const Login = () => {
     const isDesktop = useMediaQuery({ minWidth: 768 })
+    const [searchParams] = useSearchParams();
+    const token = searchParams.get("token");
+
+    const addMotion = isDesktop && !token
+
     return (
         <div className='flex h-screen w-full overflow-hidden flex-col md:flex-row'>
             <motion.div
-                className='w-full h-[70%] relative md:w-1/2 md:h-screen'
-                initial={isDesktop ? { x: '-100%' } : false}
-                animate={isDesktop ? { x: 0 } : false}
-                transition={isDesktop ? { duration: 0.8, ease: 'easeOut' } : {}}
+                className='w-full h-[70%] md:w-1/2 md:h-screen relative'
+                initial={addMotion ? { x: '-100%' } : false}
+                animate={addMotion ? { x: 0 } : false}
+                transition={addMotion ? { duration: 0.8, ease: 'easeOut' } : {}}
             >
                 <img
                     src={building}
@@ -27,21 +33,19 @@ const Login = () => {
                     </div>
                 </div>
             </motion.div>
-            <motion.div
-                className="flex flex-col w-full md:w-1/2 items-center justify-center rounded-t-3xl md:rounded-none absolute md:static bottom-0
+            <motion.div className="relative flex flex-col w-full md:w-1/2 items-center justify-center rounded-t-3xl md:rounded-none md:static bottom-0
                  bg-[#f6f5ef] md:bg-transparent px-4 py-6 pb-[max(env(safe-area-inset-bottom),1rem)] md:p-0"
-                initial={isDesktop ? { x: '100%' } : false}
-                animate={isDesktop ? { x: 0 } : false}
-                transition={isDesktop ? { duration: 0.8, ease: 'easeOut' } : {}}
+                initial={addMotion ? { x: '100%' } : false}
+                animate={addMotion ? { x: 0 } : false}
+                transition={addMotion ? { duration: 0.8, ease: 'easeOut' } : {}}
             >
-                <div className="text-center w-[360px]">
-                    <div className="flex justify-center mb-4">
-                        <img src={manateqLoginLogo} alt="Manateq Logo" className="w-10 h-10 md:w-[80px] md:h-[80px]" />
-                    </div>
-                    <h2 className="md:text-2xl text-lg font-semibold text-zinc-950">Login to your account</h2>
-                    <p className="text-zinc-500 md:text-base text-sm">Enter your credentials or use Qatar Pass to continue.</p>
-                </div>
-                <LoginForm />
+                {/* Logo */}
+                <img
+                    src={manateqLoginLogo}
+                    alt="Manateq Logo"
+                    className="w-14 h-14 mb-6"
+                />
+                <AuthForm />
             </motion.div>
         </div>
     )

@@ -145,7 +145,6 @@
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
 }
-
 @layer base {
   * { 
     @apply border-border outline-ring/50;
@@ -156,5 +155,11 @@
   }
   body {
     font-family: 'Inter', sans-serif;
+    background-color: #f6f5ef;
   }
 }
+
+.clip-partial {
+  clip-path: inset(0 0 0 8%); /* cuts right side by 25% */
+}
+

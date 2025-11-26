@@ -1,123 +1,186 @@
-import DynamicForm from "@/components/service/dynamic-form"
-import { NewServiceRequestModal } from "@/components/service/new-service-request-modal"
-import { RequestedService } from "@/components/service/requested-service"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { getFormConfig } from "@/lib/form-data"
-import { CirclePlus, Search } from "lucide-react"
-import { useState } from "react"
-import { Link } from "react-router-dom"
+import { useEffect, useState } from "react"
+// import { ServiceHeader } from "@/components/service/serviceRequestPage/service-header"
+import { ServiceFormHandler } from "@/components/service/createNewRequest/serviceFormHandler"
+import { NewServiceRequestModal } from "@/components/service/serviceRequestPage/new-service-request-modal"
+import { EmptyRequest } from "@/components/service/serviceRequestPage/empty-request"
+import PageHeader from "@/components/pageHeader"
+import { CreateAndFilter } from "@/components/createAndFilter"
+import useNetworkRequest from "@/api/useNetworkRequest"
+import { API_ENDPOINTS } from "@/api/apiEndpoints"
+import { useApp } from "@/context/AppContext"
+import ListOFCards from "@/components/listOfcards"
+import { Eye, MessageSquareDot } from "lucide-react"
+import Loader from "@/components/loader"
+import CustomPagination from "@/components/customPagination"
+import { PAGE_SIZE } from "@/constants"
+// import { AttachmentPopup } from "@/components/violationScreen/attachmentPopup"
 
-const requestedServicesData = [
-  {
-    id: "AP-IZ-LE-81686",
-    plotNumber: "28368",
-    serviceType: "Land Use Letter",
-    submittedDate: "12-07-2025",
-    status: "Approved",
-  },
-  {
-    id: "AP-IZ-LE-81686",
-    plotNumber: "28368",
-    serviceType: "Land Use Letter",
-    submittedDate: "12-07-2025",
-    status: "Approved",
-  },
-  {
-    id: "AP-IZ-LE-81686",
-    plotNumber: "28368",
-    serviceType: "Land Use Letter",
-    submittedDate: "12-07-2025",
-    status: "Approved",
-  },
-  {
-    id: "AP-IZ-LE-81686",
-    plotNumber: "28368",
-    serviceType: "Land Use Letter",
-    submittedDate: "12-07-2025",
-    status: "Approved",
-  },
-]
+const header = {
+  title: "service_request",
+  homeLink: 'companyName',
+  contentLinks: ['all_service_requests', 'new_service_request'],
+}
+
+const filterKeys = {
+  title: 'Service Request',
+  createNewRequest: 'New Service Request',
+  filterTypes: [
+    { id: '939330000', value: 'approved' },
+    { id: '939330005', value: 'pre_approved' },
+    { id: '939330001', value: 'rejected' },
+    { id: '1', value: 'in_progress' },
+    { id: '939330003', value: 'cancelled' },
+    { id: '2', value: 'pending_work' },
+    { id: '939330002', value: 'pending_investor_update' },
+    { id: '939330004', value: 'pending_request_fees' },
+  ]
+}
+
+const cardsConfigBase = {
+  icon: MessageSquareDot,
+  id: "requestId",
+  subTitle: "serviceType",
+  title: "referenceNumber",
+  status: 'status',
+  showBelow: true,
+  fields: [
+    {
+      label: "plot_number",
+      key: "plotNumber",
+    },
+    {
+      label: "submitted_date",
+      key: "submittedDate",
+    },
+  ],
+  menuOptions: [
+    {
+      label: "view_details",
+      icon: Eye,
+      actionKey: "view"
+    },
+  ]
+}
 
 const Service = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedService, setSelectedService] = useState<string>("")
-  const [requestedServices, setRequestedServices] = useState(requestedServicesData)
+  const [loading, setLoading] = useState(false)
+  const [serviceData, setServiceData] = useState<any[]>([])
+  const { serviceFilter, setServiceFilter, selectedCompany } = useApp();
+  // const [isCreateNewService, setCreateNewService] = useState(false);
+  const networkRequest = useNetworkRequest();
 
-  const handlePerviousButton = () => {
-    setSelectedService("")
+  const cardActions = {
+    view: (card: any) => {
+      setSelectedService(card.requestId);
+    },
+  };
+
+  const cardsConfig = {
+    ...cardsConfigBase,
+    menuOptions: cardsConfigBase.menuOptions.map((option) => ({
+      ...option,
+      onClick: (card: any) => {
+        const handler = cardActions[option.actionKey as keyof typeof cardActions];
+        if (handler) handler(card);
+      },
+    })),
+  };
+
+
+
+  useEffect(() => {
+    const fetchRequests = async () => {
+      setLoading(true)
+      try {
+        const params = new URLSearchParams();
+
+        params.append("AccountId", selectedCompany?.accountID ?? "");
+        params.append("Page", (serviceFilter?.page ?? 1).toString());
+        params.append("PageSize", PAGE_SIZE.toString());
+        serviceFilter?.searchTerm && params.append("SearchTerm", (serviceFilter?.searchTerm));
+
+        if (serviceFilter?.status) {
+          serviceFilter.status.split(",").forEach(val => {
+            params.append("StatusArray", val);
+          });
+        }
+        const response = await networkRequest(API_ENDPOINTS.getAllServiceRequests, { method: "GET", body: params })
+
+        if (response?.success) {
+          const totalPages = Math.ceil(response.data.totalRecords / PAGE_SIZE)
+          setServiceData(response.data.data)
+          setServiceFilter((prev) => ({
+            ...prev,
+            totalPages: totalPages
+          }))
+        }
+      } catch (error) {
+        console.error("Error fetching service requests:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    if (selectedCompany?.accountID && !selectedService) {
+      fetchRequests()
+    }
+  }, [serviceFilter?.page,
+  serviceFilter?.status,
+  serviceFilter?.searchTerm,
+  selectedCompany?.accountID,
+    selectedService
+  ])
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage > 0 && newPage <= (serviceFilter?.totalPages ?? 0)) {
+      setServiceFilter((prev: any) => ({
+        ...prev,
+        page: newPage,
+      }))
+    }
   }
 
+
   return (
-    <div className="mx-[80px] mt-10">
-      <div>
-        <h1 className="text-2xl mb-1">Service Request</h1>
-        <div className="mb-6 text-base text-muted-foreground">
-          <Link to="/portal">Al Noor Real Estate W.L.L</Link>
-          <span className="mx-2">›</span>
-          <span className="text-maroon-100">New Service Request</span>
+    <div className="">
+      <PageHeader header={header} selectedForm={selectedService} />
+      {!selectedService ? (
+      <div className="min-h-[55vh]">
+          {
+            (serviceData.length === 0 && !serviceFilter?.searchTerm && !serviceFilter?.status && !loading) ?
+            <div className="min-h-[45vh] flex items-center justify-center">
+              <EmptyRequest title='no_service_requests_yet' description="havent_submitted_request_yet." buttonText="submit_new_request" onNewRequest={() => setIsModalOpen(true)}  />
+            </div>  
+              : (
+                <>
+                  <CreateAndFilter onNewRequest={() => setIsModalOpen(true)} filterConfig={filterKeys} setAppliedFilter={setServiceFilter} appliedFilter={serviceFilter} />
+                  <div className="">
+                        <ListOFCards cardsConfig={cardsConfig} cardsData={serviceData} />
+                        {!!(serviceFilter?.totalPages  && serviceFilter.totalPages > 1) && <CustomPagination handlePageChange={handlePageChange} currentPage={serviceFilter?.page} totalPages={serviceFilter?.totalPages ?? 0} />}
+                      {!loading && serviceData.length === 0 && <EmptyRequest hideButton={true} title={'no_requests_found'} />}
+
+                  </div>
+                </>
+
+              )
+          }
         </div>
-      </div>
-      {(!selectedService || isModalOpen) ? (
-        <>
-          <div className="flex flex-row items-center justify-between">
-            <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-maroon-100" />
-              <Input placeholder="Search..." className="pl-10 bg-background" />
-            </div>
-            <div className="flex gap-2">
-              <Button className="text-black bg-white hover:bg-gray-100" onClick={() => setIsModalOpen(true)}>
-                <CirclePlus className="h-4 w-4 mr-2" />
-                New Service Request
-              </Button>
-              <Select defaultValue="">
-                <SelectTrigger className="w-48 bg-background">
-                  <SelectValue placeholder="Select Company" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="al-noor">Al Noor Real Estate W.L.L</SelectItem>
-                  <SelectItem value="qatar-bank">Qatar International Islamic Bank</SelectItem>
-                  <SelectItem value="mesaieed">Mesaieed Petrochemical Holding Company</SelectItem>
-                  <SelectItem value="ezdan">Ezdan Holding Group</SelectItem>
-                </SelectContent>
-              </Select>
-              <Select>
-                <SelectTrigger className="w-32 bg-background">
-                  <SelectValue placeholder="Status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="pending">Pending</SelectItem>
-                  <SelectItem value="approved">Approved</SelectItem>
-                  <SelectItem value="rejected">Rejected</SelectItem>
-                  <SelectItem value="in-progress">In Progress</SelectItem>
-                  <SelectItem value="completed">Completed</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
-            {requestedServices.map((request, index) => (
-              <RequestedService key={index} request={request} />
-            ))}
-          </div>
-        </>
-      )
-        : <DynamicForm 
-            config={getFormConfig(selectedService)} 
-            handlePerviousButton={handlePerviousButton} 
-            setSelectedService={setSelectedService} 
-            selectedService={selectedService}
-            setRequestedServices={setRequestedServices}
-            requestedServices={requestedServices}
-          />
-      }
+      ) : (
+        <ServiceFormHandler
+          selectedService={selectedService}
+          setSelectedService={setSelectedService}
+          onBack={() => setSelectedService("")}
+        />
+      )}
+
       <NewServiceRequestModal
         open={isModalOpen}
         onOpenChange={setIsModalOpen}
-        selectedService={selectedService}
         setSelectedService={setSelectedService}
       />
+      {loading && <Loader />}
+      {/* <AttachmentPopup open={true} onOpenChange={() => {}}/> */}
     </div>
   )
 }

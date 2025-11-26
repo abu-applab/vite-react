@@ -1,67 +1,120 @@
 import './App.css'
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Login from './screens/login';
-import LoginLayout from './layout/login-layout';
-import AddCompany from './screens/addCompany';
-import PortalLayout from './layout/portal-layout';
-import HubPage from './screens/hubPage';
-import Service from './screens/service';
-import { useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { useEffect, lazy, type JSX } from 'react';
 import { useTranslation } from 'react-i18next';
-import ApplicationPage from './screens/applicationPage';
+import { getLocalStorageItem } from './lib/utils';
 
+// Lazy load components
+const Login = lazy(() => import('./screens/authentication/login'));
+const SignUp = lazy(() => import('./screens/authentication/signUp'));
+const ForgotPassword = lazy(() => import('./screens/authentication/forgotPassword'));
+const ResetPassword = lazy(() => import('./screens/authentication/resetPassword'));
+const OtpVerification = lazy(() => import('./screens/authentication/otpVerification'));
+const AddCompany = lazy(() => import('./screens/addCompany'));
+const LoginLayout = lazy(() => import('./layout/login-layout'));
+const PortalLayout = lazy(() => import('./layout/portal-layout'));
+const HubPage = lazy(() => import('./screens/hubPage'));
+const Service = lazy(() => import('./screens/service'));
+const ApplicationPage = lazy(() => import('./screens/application'));
+const AllocatedPlotsPage = lazy(() => import('./screens/allocatedPlotsPage'));
+const PlotDetailsScreen = lazy(() => import('./screens/plotDetailsScreen'));
+const DirectoryScreen = lazy(() => import('./screens/directoryScreen'));
+const ViolationPage = lazy(() => import('./screens/violationsScreen'));
+const BotRequestAndReportsPage = lazy(() => import('./screens/botRequestAndReportsPage'));
+const PaymentScreen = lazy(() => import('./screens/paymentScreen'));
+const Agreements = lazy(() => import('./screens/agreements'));
+const MyProfile = lazy(() => import('./screens/myProfile'));
+const Notifications = lazy(() => import('./screens/notifications'));
+const CompanyProfile = lazy(() => import('./screens/companyProfile'));
+
+// Constants
+const SUPPORTED_LANGUAGES = ['en', 'ar'] as const;
+const DEFAULT_LANGUAGE = 'en';
+const AUTH_TOKEN_KEY = 'auth_txn';
+const LANG_KEY = 'lang';
 
 function App() {
   const { i18n } = useTranslation();
-  
-  useEffect(() => {
-    const defaultLanguage = localStorage.getItem("lang") || "en";
-    console.log(' localStorage.getItem("lang"): ',  localStorage.getItem("lang"));
-    const currentPath = window.location.pathname;
-    const hasLanguage = currentPath.startsWith('/en') || currentPath.startsWith('/ar');
-    if (!hasLanguage) {
-      const newPath = `/${defaultLanguage}${currentPath}`
-      window.location.pathname = newPath;
-    }
-     else {
-      const pathLang = window.location.pathname.split('/')[1];
-      i18n.changeLanguage(pathLang);
-    }
-  }, [])
 
-  const getBaseName = () => {
+  useEffect(() => {
+    const defaultLanguage = localStorage.getItem(LANG_KEY) || DEFAULT_LANGUAGE;
     const currentPath = window.location.pathname;
-    if (currentPath.startsWith("/ar")) {
-      localStorage.setItem("lang", "ar")
-      return "/ar";
+    const pathSegments = currentPath.split('/').filter(Boolean);
+    const firstSegment = pathSegments[0];
+
+    const hasLanguage = SUPPORTED_LANGUAGES.includes(firstSegment as typeof SUPPORTED_LANGUAGES[number]);
+
+    if (!hasLanguage) {
+      window.location.pathname = `/${defaultLanguage}${currentPath}`;
+    } else {
+      i18n.changeLanguage(firstSegment);
+      const html = document.documentElement;
+      html.setAttribute("lang", firstSegment);
+      html.setAttribute("dir", firstSegment === "ar" ? "rtl" : "ltr");
     }
-    localStorage.setItem("lang", "en")
-    return "/en";
+  }, [i18n]);
+
+  const getBaseName = (): string => {
+    const currentPath = window.location.pathname;
+    const pathLang = currentPath.split('/')[1];
+
+    if (pathLang === 'ar') {
+      localStorage.setItem(LANG_KEY, 'ar');
+      return '/ar';
+    }
+
+    localStorage.setItem(LANG_KEY, 'en');
+    return '/en';
+  };
+
+  const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
+    const authToken = getLocalStorageItem(AUTH_TOKEN_KEY);
+    return authToken ? children : <Navigate to="/login" replace />;
+  };
+
+  const AuthRedirect = ({ children }: { children: JSX.Element }) => {
+    const authToken = getLocalStorageItem(AUTH_TOKEN_KEY);
+    return authToken ? <Navigate to="/portal" replace /> : children;
   };
 
   return (
     <Router basename={getBaseName()}>
+      {/* <Suspense fallback={<div></div>}> */}
       <Routes>
         <Route path="/" element={<LoginLayout />}>
-          <Route index element={<Login />} />
-          <Route path="add-company" element={<AddCompany />} />
+          <Route index element={<AuthRedirect><Login /></AuthRedirect>} />
+          <Route path="/login" element={<AuthRedirect><Login /></AuthRedirect>} />
+          <Route path="/signup" element={<AuthRedirect><SignUp /></AuthRedirect>} />
+          <Route path="/forgotpassword" element={<AuthRedirect><ForgotPassword /></AuthRedirect>} />
+          <Route path="/resetpassword" element={<AuthRedirect><ResetPassword /></AuthRedirect>} />
+          <Route path="/otpverification" element={<AuthRedirect><OtpVerification /></AuthRedirect>} />
+          <Route path="/add-company" element={<AuthRedirect><AddCompany /></AuthRedirect>} />
         </Route>
-      </Routes>
-      <Routes>
-        <Route path="/portal" element={<PortalLayout />}>
+
+        <Route path="/portal" element={<ProtectedRoute><PortalLayout /></ProtectedRoute>}>
           <Route index element={<HubPage />} />
-          <Route path="/portal/application" element={<ApplicationPage />} />
-          <Route path="/portal/payments" element={<HubPage />} />
-          <Route path="/portal/allocated-plots" element={<HubPage />} />
-          <Route path="/portal/bot-reports" element={<HubPage />} />
-          <Route path="/portal/violations" element={<HubPage />} />
-          <Route path="/portal/directory" element={<HubPage />} />
-          <Route path="/portal/service" element={<Service />} />
-          {/* <Route path="add-company" element={<AddCompany />} /> */}
+          <Route path="application" element={<ApplicationPage />} />
+          <Route path="application/:id" element={<ApplicationPage />} />
+          <Route path="payments" element={<PaymentScreen />} />
+          <Route path="allocated-plots" element={<AllocatedPlotsPage />} />
+          <Route path="agreements" element={<Agreements />} />
+          <Route path="allocated-plots/:id" element={<PlotDetailsScreen />} />
+          <Route path="bot-requests" element={<BotRequestAndReportsPage selectedBotType="request" />} />
+          <Route path="bot-reports" element={<BotRequestAndReportsPage selectedBotType="reports" />} />
+          <Route path="bot-requests/:form" element={<BotRequestAndReportsPage selectedBotType="request" />} />
+          <Route path="bot-reports/:form" element={<BotRequestAndReportsPage selectedBotType="reports" />} />
+          <Route path="violations" element={<ViolationPage />} />
+          <Route path="violations/:id" element={<ViolationPage />} />
+          <Route path="directory" element={<DirectoryScreen />} />
+          <Route path="service" element={<Service />} />
+          <Route path="my-profile" element={<MyProfile />} />
+          <Route path="notifications" element={<Notifications />} />
+          <Route path="company-profile" element={<CompanyProfile />} />
         </Route>
       </Routes>
+      {/* </Suspense> */}
     </Router>
-  )
+  );
 }
 
-export default App
+export default App;
