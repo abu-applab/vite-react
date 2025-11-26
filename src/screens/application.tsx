@@ -456,7 +456,7 @@ const ApplicationPage = () => {
     return (
         <div className="">
             {/* Header */}
-            <PageHeader header={header} />
+            <PageHeader header={header} customTitle={id ? 'submitted_application': ''} />
 
             {(!isCreateNewApplication) ? (
                 <div className="min-h-[55vh]">

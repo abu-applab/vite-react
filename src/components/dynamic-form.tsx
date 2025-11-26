@@ -284,6 +284,7 @@ const DynamicForm = ({
                   }
                   isServiceForm
                   fileLabel={t(field.label)}
+                  buttonText="upload_file"
                 />
                 {errors[field.id] && (
                   <span className="text-sm text-red-600">{errors[field.id]}</span>

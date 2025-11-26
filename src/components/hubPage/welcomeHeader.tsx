@@ -41,10 +41,10 @@ const WelcomeHeader = ({ setIsAddNewCompany, totalCompanies, currentCompanies }:
                         </Avatar>
                         <div>
                             <h1 className="text-xl font-semibold text-gray-900">{`Hello, ${fullName}`}</h1>
-                            <p className="text-sm text-gray-600">Stay informed and manage your investments seamlessly</p>
+                            <p className="text-sm text-gray-600">{t('Stay_informed_desc')}</p>
                         </div>
                     </div>
-                    <Button className="bg-maroon-100 hover:text-white max-md:w-full" onClick={() => setIsAddNewCompany(true)}>
+                    <Button className="bg-maroon-100 hover:bg-maroon-100 hover:text-white max-md:w-full" onClick={() => setIsAddNewCompany(true)}>
                         <Plus className="h-4 w-4 mr-2" />
                         {t('add_new_company')}
                     </Button>

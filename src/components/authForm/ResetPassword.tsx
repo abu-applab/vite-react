@@ -94,7 +94,7 @@ const ResetPasswordForm = ({ onSwitch }: ResetPasswordProps) => {
 
         try {
             setLoading(true);
-            const body = { ...formData, token };
+            const body = { newPassword: formData.confirmPassword, token };
             const response = await networkRequest(API_ENDPOINTS.resetPassword, {
                 method: "POST",
                 body,

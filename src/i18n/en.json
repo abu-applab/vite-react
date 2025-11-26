@@ -13,6 +13,7 @@
     "language_preference": "Language Preference",
     "discover": "Discover",
     "add_new_company": "Add New Company",
+    "Stay_informed_desc": "Stay informed and manage your investments seamlessly",
 
     "applications": "Applications",
     "view_applications": "View Applications",
@@ -293,7 +294,7 @@
     "three_years_audited_financial_statements_if_applicable": "Three Years of Audited Financial Statements (if applicable)",
     "violation_reports": "Violation Reports",
     "all_violation_reports": "All Violation Reports",
-    "no_violation_found": "No Violation Found",
+    "no_violation_found": "No Violations Found",
     "no_violation_reports_found": "No Violation Reports Found",
     "open_menu": "Open menu",
 
@@ -338,5 +339,7 @@
     "uploaded_closeout_evidence": "Uploaded Closedout Evidence",
     "no_file_selected": "No File selected",
     "upload_file": "Upload File",
+    "submitted_application": "Submitted Application",
+    "view_violation_report": "View Violation Report",
     "": ""
 }

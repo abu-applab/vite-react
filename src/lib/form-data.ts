@@ -831,11 +831,9 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                     type: "select",
                                     required: true,
                                     options: [
-                                        { id: 'LogisticsWarehousing', name: 'Logistics Warehousing' },
-                                        { id: 'WorkshopsAssembly', name: 'Workshops Assembly' },
-                                        { id: 'OpenYardsStorage', name: 'Open Yards Storage' },
                                         { id: 'Industry', name: 'Industry' },
                                         { id: 'NonIndustry', name: 'Non Industry' },
+                                        { id: 'WorkshopsAssembly', name: 'Workshops Assembly' },
                                     ],
                                 },
                                 {

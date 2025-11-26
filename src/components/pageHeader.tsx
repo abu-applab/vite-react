@@ -12,12 +12,14 @@ interface Header {
 interface pageHeaderProps {
     header: Header
     selectedForm?: string
+    customTitle?: string
 }
 
-const PageHeader = ({ header, selectedForm }: pageHeaderProps) => {
+const PageHeader = ({ header, selectedForm, customTitle = '' }: pageHeaderProps) => {
     const { t } = useTranslation();
     const { selectedCompany, isCreateNewForm, selectedInvestment } = useApp();
-    const subTitle = selectedForm ? (`create_${selectedForm}`) :  header.contentLinks[1]
+    let subTitle = selectedForm ? (`create_${selectedForm}`) :  header.contentLinks[1];
+    subTitle = customTitle ? customTitle : subTitle;
 
     return (
         <div className="hidden md:block">

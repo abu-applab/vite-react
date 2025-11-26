@@ -121,15 +121,15 @@ const ViolationPage = () => {
             try {
                 const params = new URLSearchParams();
 
-                // params.append("AccountId", selectedCompany?.accountID ?? "");
-                params.append("AccountId", '03a29bae-8b83-e511-80ca-00155d0c0f13');
+                params.append("AccountId", selectedCompany?.accountID ?? "");
+                // params.append("AccountId", '03a29bae-8b83-e511-80ca-00155d0c0f13');
                 params.append("Page", (violationFilter?.page ?? 1).toString());
                 params.append("PageSize", PAGE_SIZE.toString());
                 violationFilter?.searchTerm && params.append("SearchTerm", (violationFilter?.searchTerm));
 
                 if (violationFilter?.status) {
                     violationFilter.status.split(",").forEach(val => {
-                        params.append("StatusArray", val);
+                        params.append("ActionPartyFindingStatusArray", val);
                     });
                 }
                 const response = await networkRequest(API_ENDPOINTS.getFindingsList, { method: "GET", body: params })
@@ -170,7 +170,7 @@ const ViolationPage = () => {
 
     return (
         <div className="">
-            <PageHeader header={header} />
+            <PageHeader header={header} customTitle={id ? 'view_violation_report' : ''}/>
             {!showFInding ? <div className="min-h-[55vh]">
                 {((violationData?.length === 0 || !violationData) && !violationFilter?.searchTerm && !violationFilter?.status && !loading) ?
                     <div className="min-h-[45vh] flex items-center justify-center">

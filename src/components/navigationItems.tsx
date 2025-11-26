@@ -37,7 +37,7 @@ export function NavigationBar() {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" className="w-56">
                 {item.children.map((option) => (
-                  <DropdownMenuItem key={option.name} onClick={() => navigate(option.href)} className="cursor-pointer">
+                  <DropdownMenuItem key={option.name} onClick={() => navigate(option.href)} className="cursor-pointer" disabled={!!option.disable}>
                     {t(option.name)}
                   </DropdownMenuItem>
                 ))}
@@ -54,6 +54,7 @@ export function NavigationBar() {
               pathName.replace(/^\/[^/]+/, "") === item.href && "h-[56px] border-b-4 border-b-[#852533] text-[#852533]"
             }`}
             onClick={() => navigate(item.href)}
+            disabled={!!item.disable}
           >
             <item.icon className="h-5 w-5" />
             <span>{t(item.name)}</span>
