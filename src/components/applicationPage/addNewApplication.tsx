@@ -57,7 +57,7 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-    const isSubmittedApplication = Boolean(
+  const isSubmittedApplication = Boolean(
     id && (selectedInvestment?.status && selectedInvestment?.status?.toLowerCase() !== "draft")
   );
 
@@ -103,6 +103,7 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
             ...mappedDocuments,
           };
           setFormData(updatedData);
+          setSelectedInvestment
 
           if (response.data.applicationData.products) {
             setProducts(response.data.applicationData.products);
@@ -132,6 +133,30 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
     };
     init();
   }, [id]);
+
+  // useEffect(() => {
+  //   if (id && formState.location && locations.length > 0) {
+  //     console.log('formState.location: ', formState.location);
+  //     console.log('locations: ', locations);
+  //     console.log('called ===== called');
+  //     const selectedLoc = locations.find((loc) => loc.id == formState.location)
+  //     console.log('selectedLoc: ', selectedLoc);
+  //     const updatedConfig = config.map((step: any) => ({
+  //       ...step,
+  //       sections: step.sections?.map((section: any) => ({
+  //         ...section,
+  //         fields: section.fields?.map((field: any) => {
+  //           if (field.id === "location") {
+  //             return { ...field, options: [{ name: selectedLoc?.name, id: selectedLoc?.id }] };
+  //           }
+  //           return field;
+  //         }),
+  //       })),
+  //     }));
+
+  //     setConfig(updatedConfig);
+  //   }
+  // }, [id, formState.location, locations])
 
   useEffect(() => {
     const fetchISICCodes = async () => {

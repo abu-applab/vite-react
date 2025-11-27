@@ -9,7 +9,7 @@ import { useTranslation } from "react-i18next";
 
 export const useApplicationConfigLoader = () => {
   const networkRequest = useNetworkRequest();
-  const { selectedInvestment } = useApp();
+  const { selectedInvestment, setLocations } = useApp();
   const { t } = useTranslation();
 
   const loadApplicationConfig = async (selectedApplication: string, setFormData: any, isSubmittedApplication?: boolean) => {
@@ -24,6 +24,8 @@ export const useApplicationConfigLoader = () => {
     const clusters = clusterRes?.data || [];
     const iSICSections = iSICSectionsRes?.data || [];
     const locations = locationRes?.data || [];
+
+    setLocations(locations);
 
     // map to select options
     const clusterOptions = clusters.map((cluster: any) => ({
@@ -57,7 +59,7 @@ export const useApplicationConfigLoader = () => {
         ...section,
         fields: section.fields?.map((field: any) => {
           if (field.id === "location") {
-            return { ...field, options: locationOptions };
+            return { ...field, options: locationOptions, disabled: true };
           }
           if (field.id === "cluster") {
             return { ...field, options: clusterOptions };

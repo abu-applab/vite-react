@@ -430,7 +430,7 @@ const ApplicationPage = () => {
                             application: application ?? '',
                             applicationType: locationName?.applicationType ?? 'LogisticsParks',
                             location: locationName?.title ?? '',
-                            locationId: locationName?.id ?? ''
+                            locationId: ''
                         })
                         setStep(2); // Go to AddNewApplication (step 3 → index 2)
                     }}

@@ -60,6 +60,12 @@ interface CompanyFilter {
   searchTerm?: string
 }
 
+interface Locations {
+  id: string,
+  name: string,
+  nameAr: string,
+}
+
 interface AppContextType {
   contact: Contact | null;
   setContact: React.Dispatch<React.SetStateAction<Contact | null>>;
@@ -87,6 +93,8 @@ interface AppContextType {
   setCompaniesFilter: React.Dispatch<React.SetStateAction<CompanyFilter>>;
   violationFilter: ViolationFilter;
   setViolationFilter: React.Dispatch<React.SetStateAction<ViolationFilter>>;
+  locations: Locations[];
+  setLocations: React.Dispatch<React.SetStateAction<Locations[]>>;
 }
 
 // Create context
@@ -102,6 +110,9 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const storedContact = getLocalStorageItem("contact");
   const initialContact: Contact | null = storedContact ? JSON.parse(storedContact) : null;
   const [contact, setContact] = useState<Contact | null>(initialContact);
+
+
+  const [locations, setLocations] = useState<Locations[]>([]);
 
 
   //navbar
@@ -166,6 +177,8 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
       setCompaniesFilter,
       violationFilter,
       setViolationFilter,
+      locations,
+      setLocations,
     }}>
       {children}
     </AppContext.Provider>
