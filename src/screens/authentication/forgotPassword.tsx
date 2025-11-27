@@ -39,42 +39,41 @@ const ForgotPassword = () => {
 
         <AuthLayout hideLogo={showMailSentData.show}>
             {showMailSentData.show ? (
-                <div className="flex flex-col items-center text-center px-6 py-10">
-                    <img
-                        src={mailSentIcon}
-                        alt="Mail Sent"
-                        className="w-24 h-24 mb-8"
-                    />
+                <div className="flex items-center justify-center px-4">
+                    <div className="flex flex-col items-center text-center w-full max-w-md px-6 py-10">
+                        <img
+                            src={mailSentIcon}
+                            alt="Mail Sent"
+                            className="w-24 h-24 mb-8"
+                        />
 
-                    <h2 className="text-2xl font-semibold text-gray-900 mb-2">
-                        Password Reset Link Sent !
-                    </h2>
+                        <h2 className="text-2xl md:text-3xl font-semibold text-gray-900 mb-2">
+                            Password Reset Link Sent!
+                        </h2>
 
-                    <p className="text-sm md:text-base text-gray-600 max-w-xl mb-6">
-                        We&apos;ve sent a password reset link to your registered email.
-                        Please check your inbox and follow the instructions to reset your password.
-                    </p>
+                        <p className="text-sm md:text-base text-gray-600 max-w-xl mb-6">
+                            We&apos;ve sent a password reset link to your registered email.
+                            Please check your inbox and follow the instructions to reset your password.
+                        </p>
 
-                    <button
-                        onClick={() => navigate('/login')}
-                        className="w-md rounded-md bg-[#971B2F] hover:bg-[#7A1F2B] text-white text-sm font-medium py-2.5 mb-4"
-                    >
-                        Back to Login
-                    </button>
-
-                    <p className="text-xs md:text-sm text-gray-700">
-                        Didn&apos;t receive an email?{" "}
                         <button
-                            type="button"
-                            onClick={() => {
-                                // setShowMailSent((prev) => ({ ...prev, show: false }))
-                                handleResend();
-                            }}
-                            className="text-[#971B2F] font-medium underline underline-offset-2 hover: cursor-pointer"
+                            onClick={() => navigate('/login')}
+                            className="w-full rounded-md bg-[#971B2F] hover:bg-[#7A1F2B] text-white text-sm font-medium py-2.5 mb-4"
                         >
-                            {showMailSentData.loading ? 'Resending...' : 'Resend'}
+                            Back to Login
                         </button>
-                    </p>
+
+                        <p className="text-xs md:text-sm text-gray-700">
+                            Didn&apos;t receive an email?{' '}
+                            <button
+                                type="button"
+                                onClick={handleResend}
+                                className="text-[#971B2F] font-medium underline underline-offset-2 hover:cursor-pointer"
+                            >
+                                {showMailSentData.loading ? 'Resending...' : 'Resend'}
+                            </button>
+                        </p>
+                    </div>
                 </div>
             ) : (
                 <>

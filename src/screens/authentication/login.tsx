@@ -16,7 +16,9 @@ const Login = () => {
             {otpData.show ? (
                 <OtpVerification phoneNumber={otpData.phoneNumber} />
             ) : (<><h1 className="text-xl md:text-2xl font-semibold text-gray-900">Sign In to your account</h1>
-                <p className="text-gray-500 text-sm mt-1">Enter your credentials to continue.</p>
+                <p className="text-gray-500 text-sm sm:text-base mt-1 text-center md:text-left">
+                    Enter your details to sign in.
+                </p>
                 <LoginForm
                     onSwitch={(view: any, data?: any) => {
                         if (view === 'otpverification') {
@@ -28,7 +30,8 @@ const Login = () => {
                             navigate(`/${view}`);
                         }
                     }}
-                /></>
+                />
+            </>
             )}
         </AuthLayout>
     )

@@ -96,7 +96,7 @@ const LoginForm = ({ onSwitch }: LoginFormProps) => {
       });
       if (response?.success) {
         setContact(response?.data?.contact);
-        setLocalStorageItem("contact",JSON.stringify(response?.data?.contact));
+        setLocalStorageItem("contact", JSON.stringify(response?.data?.contact));
         onSwitch('otpverification', response?.data?.otpResponse?.phoneNumber);
       } else {
         setAuthError(response?.message || "Incorrect email or password.");
@@ -150,106 +150,112 @@ const LoginForm = ({ onSwitch }: LoginFormProps) => {
     }
   };
   return (
-    <div>
-      <form onSubmit={handleSubmit} className="w-full max-w-sm rounded-xl px-6">
-        {loginFields.map(({ id, label, type, placeholder, icon }) => {
-          const Icon = icons[icon as keyof typeof icons];
-          const fieldKey = id as keyof FormData;
-          const showFieldError = Boolean(fieldErrors[fieldKey]);
-          const isPasswordField = fieldKey === "password";
+    <form
+      onSubmit={handleSubmit}
+      className="w-full max-w-sm mx-auto space-y-4"
+    >
+      {loginFields.map(({ id, label, type, placeholder, icon }) => {
+        const Icon = icons[icon as keyof typeof icons];
+        const fieldKey = id as keyof FormData;
+        const showFieldError = Boolean(fieldErrors[fieldKey]);
+        const isPasswordField = fieldKey === "password";
 
-          return (
-            <div key={id} className="space-y-2 mb-4 min-w-[360px]">
-              <Label className="text-sm font-medium">{label}</Label>
-              <div className="relative">
-                {Icon && fieldKey !== "password" && (
-                  <Icon className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
-                )}
-
-                {isPasswordField ? (
-                  <PasswordInput
-                    name={id}
-                    placeholder={placeholder}
-                    value={String(formData[fieldKey] || "")}
-                    onChange={handleChange}
-                    showError={showFieldError}
-                  />
-                ) : (
-                  <Input
-                    name={id}
-                    type={type}
-                    placeholder={placeholder}
-                    value={formData[fieldKey] || ""}
-                    onChange={handleChange}
-                    className={cn("pl-10 text-sm", { "ring-1 ring-red-500": showFieldError })}
-                  />
-                )}
-              </div>
-
-              {showFieldError && (
-                <p className="text-xs text-red-500 mt-1">{fieldErrors[fieldKey]}</p>
+        return (
+          <div
+            key={id}
+            className={cn("space-y-2 w-full")}
+          >
+            <Label className="text-sm font-medium">{label}</Label>
+            <div className="relative">
+              {Icon && fieldKey !== "password" && (
+                <Icon className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
               )}
 
-              {/* {isPasswordField && authError && (
+              {isPasswordField ? (
+                <PasswordInput
+                  name={id}
+                  placeholder={placeholder}
+                  value={String(formData[fieldKey] || "")}
+                  onChange={handleChange}
+                  showError={showFieldError}
+                />
+              ) : (
+                <Input
+                  name={id}
+                  type={type}
+                  placeholder={placeholder}
+                  value={formData[fieldKey] || ""}
+                  onChange={handleChange}
+                  className={cn("pl-10 h-9 sm:h-10 text-sm sm:text-base", {
+                    "ring-1 ring-red-500": showFieldError,
+                  })}
+                />
+              )}
+            </div>
+
+            {showFieldError && (
+              <p className="text-xs text-red-500 mt-1">{fieldErrors[fieldKey]}</p>
+            )}
+
+            {/* {isPasswordField && authError && (
                 <p className="text-xs text-red-500 mt-1">{authError}</p>
               )} */}
-            </div>
-          );
-        })}
-
-        <div className="text-right mb-4">
-          <span
-            onClick={() => onSwitch("forgotpassword")}
-            className="text-muted-foreground underline text-sm font-normal cursor-pointer"
-          >
-            Forgot Password?
-          </span>
-        </div>
-        {authError && (
-          <div className="w-full mb-3 flex items-center justify-center rounded-lg bg-white py-2 text-sm text-red-600 border border-red-200">
-            <AlertCircle className="w-4 h-4 mr-2" />
-            <span>{authError}</span>
           </div>
-        )}
-        <Button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-[#971B2F] hover:bg-[#7A1F2B] text-white font-medium text-sm py-2 rounded-md"
+        );
+      })}
+
+      <div className="text-right mb-4">
+        <span
+          onClick={() => onSwitch("forgotpassword")}
+          className="text-muted-foreground underline text-sm font-normal cursor-pointer"
         >
-          {loading ? "Signing In..." : "Sign In"}
-        </Button>
-
-        <div className="flex items-center my-4">
-          <hr className="flex-grow border-gray-200" />
-          <span className="mx-3 text-gray-500 text-xs">Or Sign In With</span>
-          <hr className="flex-grow border-gray-200" />
+          Forgot Password?
+        </span>
+      </div>
+      {authError && (
+        <div className="w-full mb-3 flex items-center justify-center rounded-lg bg-white py-2 text-sm text-red-600 border border-red-200">
+          <AlertCircle className="w-4 h-4 mr-2" />
+          <span>{authError}</span>
         </div>
+      )}
+      <Button
+        type="submit"
+        disabled={loading}
+        className="w-full bg-[#971B2F] hover:bg-[#7A1F2B] text-white font-medium text-sm sm:text-base py-2 rounded-md"
+      >
+        {loading ? "Signing In..." : "Sign In"}
+      </Button>
 
-        <div className="flex gap-3">
-          <button
-            type="button"
-            onClick={() => handleSocialSignIn("outlook")}
-            className="flex-1 flex items-center justify-center gap-2 border border-gray-200 rounded-md py-2 text-sm hover:bg-gray-50"
-          >
-            <img src={outlook} alt="Outlook" className="w-4 h-4" /> Outlook
-          </button>
-          <button
-            type="button"
-            onClick={() => handleSocialSignIn("google")}
-            className="flex-1 flex items-center justify-center gap-2 border border-gray-200 rounded-md py-2 text-sm hover:bg-gray-50"
-          >
-            <img src={google} alt="Google" className="w-4 h-4" /> Google
-          </button>
-        </div>
+      <div className="flex items-center my-4">
+        <hr className="flex-grow border-gray-200" />
+        <span className="mx-3 text-gray-500 text-xs">Or Sign In With</span>
+        <hr className="flex-grow border-gray-200" />
+      </div>
 
-        <p className="text-sm text-gray-700 mt-4 flex items-center justify-center">
-          Don’t have an account?{" "}
-          <span onClick={() => onSwitch("signup")} className="text-[#971B2F] font-medium cursor-pointer ml-1">
-            Sign Up
-          </span>
-        </p>
-      </form>
-    </div>
+      <div className="flex flex-col sm:flex-row gap-3">
+        <button
+          type="button"
+          onClick={() => handleSocialSignIn("outlook")}
+          className="flex-1 flex items-center justify-center gap-2 border border-gray-200 rounded-md py-2 text-sm hover:bg-gray-50"
+        >
+          <img src={outlook} alt="Outlook" className="w-4 h-4" /> Outlook
+        </button>
+        <button
+          type="button"
+          onClick={() => handleSocialSignIn("google")}
+          className="flex-1 flex items-center justify-center gap-2 border border-gray-200 rounded-md py-2 text-sm hover:bg-gray-50"
+        >
+          <img src={google} alt="Google" className="w-4 h-4" /> Google
+        </button>
+      </div>
+
+      <p className="text-sm text-gray-700 mt-4 flex items-center justify-center">
+        Don’t have an account?{" "}
+        <span onClick={() => onSwitch("signup")} className="text-[#971B2F] font-medium cursor-pointer ml-1">
+          Sign Up
+        </span>
+      </p>
+    </form>
   );
 };
 

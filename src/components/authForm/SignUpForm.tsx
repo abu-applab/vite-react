@@ -184,8 +184,11 @@ const SignUpForm = ({ onSwitch }: SignUpFormProps) => {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="w-full px-40 space-y-4">
-      <div className="grid grid-cols-2 gap-8">
+    <form
+      onSubmit={handleSubmit}
+      className="w-full max-w-xl mx-auto px-4 sm:px-6 lg:px-10 space-y-4"
+    >
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
         {signUpFields.map(({ id, label, type, placeholder, required }) => {
           const fieldKey = id as keyof FormData;
           const showError = Boolean(fieldErrors[fieldKey]);
@@ -193,8 +196,8 @@ const SignUpForm = ({ onSwitch }: SignUpFormProps) => {
           return (
             <div
               key={id}
-              className={cn("space-y-2 min-w-[250px]", {
-                "col-span-2": label === "Email",
+              className={cn("space-y-2 w-full", {
+                "sm:col-span-2": label === "Email",
               })}
             >
               <Label className="text-sm font-medium">{label}
@@ -217,7 +220,7 @@ const SignUpForm = ({ onSwitch }: SignUpFormProps) => {
                   onChange={handleChange}
                   inputMode={id === "landlineNumber" || id === "mobileNumber" ? "numeric" : undefined}
                   maxLength={id === "landlineNumber" || id === "mobileNumber" ? 8 : undefined}
-                  className={cn("text-sm", { "ring-1 ring-red-500": showError })}
+                  className={cn("text-sm sm:text-base", { "ring-1 ring-red-500": showError })}
                 />
               )}
 
@@ -269,7 +272,7 @@ const SignUpForm = ({ onSwitch }: SignUpFormProps) => {
       <Button
         type="submit"
         disabled={loading}
-        className="w-full bg-[#971B2F] hover:bg-[#7A1F2B] text-white font-medium text-sm py-2 rounded-md"
+        className="w-full bg-[#971B2F] hover:bg-[#7A1F2B] text-white font-medium text-sm sm:text-base py-2 rounded-md"
       >
         {loading ? "Signing Up..." : "Sign Up"}
       </Button>
@@ -279,7 +282,7 @@ const SignUpForm = ({ onSwitch }: SignUpFormProps) => {
         <hr className="flex-grow border-gray-200" />
       </div>
 
-      <div className="flex gap-3">
+      <div className="flex flex-col sm:flex-row gap-3">
         <button
           type="button"
           onClick={() => handleSocialSignUp("outlook")}

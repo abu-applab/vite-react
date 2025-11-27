@@ -13,17 +13,17 @@ export default function AuthLayout({ children, hideLogo = false }: { children: R
 
     const addMotion = isDesktop && !token
     return (
-        <div className='flex h-screen w-full overflow-hidden flex-col md:flex-row'>
+        <div className="flex min-h-screen w-full flex-col md:flex-row ">
             <motion.div
-                className='w-full md:w-1/2 h-[60%] md:h-screen relative max-md:-mt-[5vh]'
+                className="relative w-full md:w-1/2 max-md:h-[60vh] md:h-screen md:sticky md:top-0 max-md:-mt-[5vh]"
                 initial={addMotion ? { x: '-100%' } : false}
                 animate={addMotion ? { x: 0 } : false}
                 transition={addMotion ? { duration: 0.8, ease: 'easeOut' } : {}}
             >
                 <img
                     src={building}
-                    alt='img'
-                    className='w-full h-full object-cover'
+                    alt="img"
+                    className="w-full h-full object-cover"
                 />
                 <div className='absolute top-[64px] md:top-10 left-1/2 transform -translate-x-1/2 w-full'>
                     <div className='flex flex-col items-center justify-center'>
@@ -32,8 +32,9 @@ export default function AuthLayout({ children, hideLogo = false }: { children: R
                     </div>
                 </div>
             </motion.div>
-            <motion.div className="relative flex flex-col w-full md:w-1/2 items-center justify-center rounded-t-3xl md:rounded-none md:static bottom-0
-                 bg-[#f6f5ef] md:bg-transparent px-4 py-6 pb-[max(env(safe-area-inset-bottom),1rem)] md:p-0 max-md:-mt-[10vh] max-md:h-full"
+            <motion.div
+                className="relative flex flex-col w-full md:w-1/2 items-center justify-center md:rounded-none md:static bottom-0
+     bg-[#f6f5ef] md:bg-transparent px-4 py-6 pb-[max(env(safe-area-inset-bottom),1rem)] md:px-10 md:pt-12 md:pb-10 max-md:-mt-[10vh] max-md:h-full"
                 initial={addMotion ? { x: '100%' } : false}
                 animate={addMotion ? { x: 0 } : false}
                 transition={addMotion ? { duration: 0.8, ease: 'easeOut' } : {}}
