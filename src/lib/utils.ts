@@ -1,7 +1,7 @@
 import { clsx, type ClassValue } from "clsx"
 import { AppWindow, FileText, Home, MessageSquareDot, SquareDashed, SquareLibrary, Wallet } from "lucide-react"
 import { twMerge } from "tailwind-merge"
-import { TotalCalculationMap } from "./form-data";
+import { findingTypeRules, TotalCalculationMap, violationFormConfig } from "./form-data";
 
 interface SubmitCompanyUpdateProps {
   formState: Record<string, any>;
@@ -273,5 +273,41 @@ export const parseCustomDate = (dateStr: string) => {
   return time;
 };
 
+export const getDynamicViolationFormConfig = (findingType: string) => {
+  const rules = findingTypeRules[findingType as keyof typeof findingTypeRules] || {};
+
+  const updatedSections = violationFormConfig.sections.map((section) => {
+    return {
+      ...section,
+      fields: section.fields.map((field) => {
+        let updatedField = { ...field };
+
+        // hide/show logic
+        if (rules.showField && updatedField.id === rules.showField) {
+          updatedField.hidden = false;
+        }
+        if (rules.hideField && updatedField.id === rules.hideField) {
+          updatedField.hidden = true;
+        }
+
+        // required fields logic
+        updatedField.required = (rules.mandatory as string[])?.includes(field.id) || false;
+
+
+        // read-only logic for Compliance / Non-Inspected
+        if (rules.readOnly) {
+          updatedField.disabled = true;
+        }
+
+        return updatedField;
+      }),
+    };
+  });
+
+  return {
+    ...violationFormConfig,
+    sections: updatedSections,
+  };
+};
 
 

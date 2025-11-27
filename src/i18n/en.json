@@ -340,6 +340,8 @@
     "no_file_selected": "No File selected",
     "upload_file": "Upload File",
     "submitted_application": "Submitted Application",
-    "view_violation_report": "View Violation Report",
+    "view_violation_report": "View Violation Reports",
+    "violation_updated_successfully": "Violation updated Successfully",
+    "violation_updated": "Violation Updated",
     "": ""
 }

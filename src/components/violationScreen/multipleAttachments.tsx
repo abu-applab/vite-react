@@ -12,23 +12,23 @@ import { formatFileSize } from "@/lib/utils";
 import { addFile, fileToBase64 } from "@/lib/fileManager-util";
 
 interface MultipleAttachmentsProps {
-    field: { id: string, label: string }
+    field: { id: string, label: string, disabled?: boolean }
     errors: Record<string, string>
     setErrors: Dispatch<SetStateAction<Record<string, string>>>
     handleInputChange: (fieldId: string, value: any) => void
     formData: Record<string, any>
 }
 
-export const MultipleAttachments = ({ field, errors, setErrors, handleInputChange, formData }: MultipleAttachmentsProps) => {
+export const MultipleAttachments = ({ field: { id, label, disabled = false }, errors, setErrors, handleInputChange, formData }: MultipleAttachmentsProps) => {
     const { t } = useTranslation();
     const [isPopUpAttachments, setPopUpAttachments] = useState(false);
 
-    const hasUploadPermission = field.id === "closeoutEvidence";
+    const hasUploadPermission = id === "closeoutEvidence";
 
     // Delete a document by id
     const handleDeleteDocument = (id: number) => {
         const updated = formData.documents.filter((item: any) => item.id !== id);
-        setErrors((prev) => ({ ...prev, [field.id]: '' }))
+        setErrors((prev) => ({ ...prev, [id]: '' }))
         handleInputChange("documents", updated);
     };
 
@@ -46,23 +46,23 @@ export const MultipleAttachments = ({ field, errors, setErrors, handleInputChang
                 }
                 : item
         );
-        setErrors((prev) => ({ ...prev, [field.id]: '' }))
+        setErrors((prev) => ({ ...prev, [id]: '' }))
         handleInputChange("documents", updated);
     };
 
     return (
         <div>
-            <Card className={`p-4 border-dashed ${hasUploadPermission && 'min-h-[300px]'}`}>
+            <Card className={`p-4 border-dashed ${(hasUploadPermission && !disabled) && 'min-h-[300px]'}`}>
                 {/* Header */}
-                <div className={`flex flex-row items-center justify-between w-full ${hasUploadPermission && 'border-dashed border-b-1 pb-4'}`}>
+                <div className={`flex flex-row items-center justify-between w-full ${(hasUploadPermission && !disabled) && 'border-dashed border-b-1 pb-4'}`}>
                     <div className="flex flex-row items-center gap-2">
                         <div className="p-3 bg-[#f4f4f5] rounded-md">
                             <Files className="w-5 h-5 text-black" />
                         </div>
-                        <Label htmlFor={field.id}>{t(field.label)}</Label>
+                        <Label htmlFor={id}>{t(label)}</Label>
                     </div>
 
-                    {Array.isArray(formData[field.id]) && formData[field.id].length > 0 && (
+                    {Array.isArray(formData[id]) && formData[id].length > 0 && (
                         <div className="flex flex-row items-center gap-2">
                             <button
                                 type="button"
@@ -74,7 +74,7 @@ export const MultipleAttachments = ({ field, errors, setErrors, handleInputChang
 
                             {/* Rounded previews */}
                             <div className="flex flex-row -space-x-3">
-                                {formData[field.id].slice(0, 3).map((doc: any, index: number) => (
+                                {formData[id].slice(0, 3).map((doc: any, index: number) => (
                                     <div
                                         key={index}
                                         className={`
@@ -89,10 +89,10 @@ export const MultipleAttachments = ({ field, errors, setErrors, handleInputChang
                                         />
                                     </div>
                                 ))}
-                                {formData[field.id].length > 3 && (
+                                {formData[id].length > 3 && (
                                     <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden ring-2 ring-white clip-partial">
                                         <span className="text-xs font-medium text-gray-800">
-                                            +{formData[field.id].length - 3}
+                                            +{formData[id].length - 3}
                                         </span>
                                     </div>
                                 )}
@@ -100,7 +100,7 @@ export const MultipleAttachments = ({ field, errors, setErrors, handleInputChang
                         </div>
                     )}
                 </div>
-                {hasUploadPermission && <div className={`${formData?.documents?.length > 0 ? 'grid grid-cols-2 gap-2' : ''}`}>
+                {(hasUploadPermission && !disabled) && <div className={`${formData?.documents?.length > 0 ? 'grid grid-cols-2 gap-2' : ''}`}>
                     {formData?.documents?.length > 0 && formData.documents.map((doc: any) => (
                         <Card key={doc.id} className="p-2 flex flex-row items-center justify-between">
                             <div className="flex flex-row gap-3 items-center justify-start">
@@ -165,13 +165,13 @@ export const MultipleAttachments = ({ field, errors, setErrors, handleInputChang
                                 for (const f of uploadList) {
                                     updated = await addFile(updated, f);
                                 }
-                                setErrors((prev) => ({ ...prev, [field.id]: '' }))
+                                setErrors((prev) => ({ ...prev, [id]: '' }))
                                 handleInputChange("documents", updated);
                             }}
                             handleFileUploadError={(uploadError: string) =>
-                                setErrors((prev) => ({ ...prev, [field.id]: uploadError }))
+                                setErrors((prev) => ({ ...prev, [id]: uploadError }))
                             }
-                            fileLabel={t(field.label)}
+                            fileLabel={t(label)}
                             allowMultiple
                             buttonText="browse_file"
                             showUploadIcon
@@ -184,17 +184,17 @@ export const MultipleAttachments = ({ field, errors, setErrors, handleInputChang
 
                 {/* Upload New Files */}
 
-                {errors[field.id] && (
-                    <span className="text-sm text-red-600">{errors[field.id]}</span>
+                {errors[id] && (
+                    <span className="text-sm text-red-600">{errors[id]}</span>
                 )}
             </Card>
 
             {/* Attachment Popup */}
             <AttachmentPopup
-                title={hasUploadPermission ? '' : 'violation_evidence'}
+                title={hasUploadPermission ? 'uploaded_closeout_evidence' : 'violation_evidence'}
                 open={isPopUpAttachments}
                 onOpenChange={setPopUpAttachments}
-                documents={formData[field.id]}
+                documents={formData[id]}
             />
         </div>
     );

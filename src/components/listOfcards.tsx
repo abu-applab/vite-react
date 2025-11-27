@@ -87,6 +87,26 @@ function getPointerColor(status: string) {
     }
 }
 
+const convertDate = (value: string) => {
+    // value = "26/11/2025 03:53 PM"
+    const [datePart, timePart, modifier] = value.split(" ");
+  
+    const [day, month, year] = datePart.split("/").map(Number);
+  
+    let [hours, minutes] = timePart.split(":").map(Number);
+  
+    if (modifier === "PM" && hours !== 12) hours += 12;
+    if (modifier === "AM" && hours === 12) hours = 0;
+  
+    const jsDate = new Date(year, month - 1, day, hours, minutes);
+  
+    return jsDate.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    });
+  };
+
 const getValue = (obj: any, key?: string) => {
     if (!key) return "";
     return obj?.[key] ?? "";
@@ -207,7 +227,7 @@ const ListOFCards = ({ cardsConfig, cardsData, isProducts = false }: ListOfCards
                                         field.key === "submissionDate" ||
                                         field.key === "submittedDate"
                                     ) {
-                                        value = new Date(value).toLocaleDateString("en-US");
+                                        value = convertDate(value);
                                     }
 
                                     return (

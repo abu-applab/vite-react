@@ -212,7 +212,7 @@ const ProductInformation = ({ products, setProducts, isError, isSubmittedApplica
             {products?.length > 0 ? (
                 <ListOFCards cardsConfig={productConfig} cardsData={products} isProducts />
             ) : (
-                <div className="">
+                !isSubmittedApplication && <div className="">
                     <Card className={cn("flex flex-col items-center justify-center gap-6 p-6 mb-0", { "border-red-600": isError })}>
                         <h4 className="text-sm font-normal">No Product Information Found</h4>
                         <Button variant="ghost" type="button" className={cn("border", {"border-red-600": isError})} onClick={handleOpenModal}>

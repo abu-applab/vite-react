@@ -367,6 +367,7 @@ const DynamicForm = ({
                   variant="outline"
                   className={`w-full justify-start text-left font-normal ${!formData[field.id] && "text-muted-foreground"
                     } ${errors[field.id] ? "border-red-600" : ""}`}
+                  disabled={field.disabled || isSubmittedApplication}
                 >
                   {formData[field.id] ? (
                     formData[field.id]
@@ -426,7 +427,6 @@ const DynamicForm = ({
       <CardContent className="max-md:p-0">
         <form onSubmit={handleSubmit} className="space-y-6">
           {config?.sections.map((section, sectionIndex) => {
-            console.log('section: ', section);
             if (section.key === "ProductsJson") {
               return <ProductInformation
                 setProducts={setProducts}
@@ -473,6 +473,9 @@ const DynamicForm = ({
                             return selectedList.includes(field.showIfSelected);
                           }
                           if (!formData[field?.id] && isSubmittedApplication && field.type === 'file') {
+                            return false
+                          }
+                          if (field?.hidden) {
                             return false
                           }
                           return true;
