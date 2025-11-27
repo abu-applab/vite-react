@@ -200,6 +200,13 @@ const ProductInformation = ({ products, setProducts, isError, isSubmittedApplica
         ],
     };
 
+    let finalProductConfig: any = productConfig;
+
+    if (isSubmittedApplication) {
+        const { menuOptions, ...rest } = productConfig;
+        finalProductConfig = rest;
+    }
+
     return (
         <>
             <div className="flex flex-row justify-between items-center">
@@ -210,12 +217,12 @@ const ProductInformation = ({ products, setProducts, isError, isSubmittedApplica
                 </Button>}
             </div>
             {products?.length > 0 ? (
-                <ListOFCards cardsConfig={productConfig} cardsData={products} isProducts />
+                <ListOFCards cardsConfig={finalProductConfig} cardsData={products} isProducts />
             ) : (
-                <div className="">
+                !isSubmittedApplication && <div className="">
                     <Card className={cn("flex flex-col items-center justify-center gap-6 p-6 mb-0", { "border-red-600": isError })}>
                         <h4 className="text-sm font-normal">No Product Information Found</h4>
-                        <Button variant="ghost" type="button" className={cn("border", {"border-red-600": isError})} onClick={handleOpenModal}>
+                        <Button variant="ghost" type="button" className={cn("border", { "border-red-600": isError })} onClick={handleOpenModal}>
                             <CirclePlus />{t('add_new_product')}
                         </Button>
                     </Card>
@@ -271,7 +278,7 @@ const ProductInformation = ({ products, setProducts, isError, isSubmittedApplica
                                 disabled={isLoading}
                             >
                                 <SelectTrigger
-                                    className={cn("w-full", {"border-red-500" : errors.hsCode })}
+                                    className={cn("w-full", { "border-red-500": errors.hsCode })}
                                 >
                                     <SelectValue placeholder={isLoading ? "Loading..." : "Select HS Code"} />
                                 </SelectTrigger>

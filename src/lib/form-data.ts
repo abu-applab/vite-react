@@ -16,7 +16,7 @@ export interface FormField {
     maxYear?: number,
     subTitle?: string
     fileName?: string
-
+    hidden?: boolean
 }
 
 export interface FormSection {
@@ -831,11 +831,9 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                     type: "select",
                                     required: true,
                                     options: [
-                                        { id: 'LogisticsWarehousing', name: 'Logistics Warehousing' },
-                                        { id: 'WorkshopsAssembly', name: 'Workshops Assembly' },
-                                        { id: 'OpenYardsStorage', name: 'Open Yards Storage' },
                                         { id: 'Industry', name: 'Industry' },
                                         { id: 'NonIndustry', name: 'Non Industry' },
+                                        { id: 'WorkshopsAssembly', name: 'Workshops Assembly' },
                                     ],
                                 },
                                 {
@@ -1201,7 +1199,7 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                 },
 
                                 {
-                                    id: "Documents.OwnersId",
+                                    id: "Documents.OwnersIDs",
                                     label: "owners_id",
                                     type: "file",
                                     required: true,
@@ -1209,26 +1207,27 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                 },
 
                                 {
-                                    id: "Documents.BusinessPlan",
+                                    id: "Documents.BusinessPlanAndFeasibilityStudy",
                                     label: "business_plan_feasibility_study",
                                     type: "file",
-                                    required: true
+                                    required: true,
+                                    fileName: 'Business Plan And Feasibility Study'
                                 },
 
                                 {
-                                    id: "Documents.IndustrialLicense",
-                                    label: "industrial_License",
+                                    id: "Documents.IndustrialLicenseOrInitialApprovalFromMOCI",
+                                    label: "industrial_license_initial_approval",
                                     type: "file",
                                     required: true,
-                                    fileName: ''
+                                    fileName: 'Industrial License'
                                 },
 
                                 {
-                                    id: "Documents.ConceptualSiteLayout1",
+                                    id: "Documents.ConceptualSiteLayout",
                                     label: "conceptual_site_layout",
                                     type: "file",
                                     required: true,
-                                    fileName: ''
+                                    fileName: 'Conceptual Site Layout'
                                 },
 
                                 {
@@ -1239,13 +1238,13 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                     fileName: "Material Safety Data Sheets"
                                 },
 
-                                {
-                                    id: "Documents.ConceptualSiteLayout2",
-                                    label: "conceptual_site_layout",
-                                    type: "file",
-                                    required: true,
-                                    fileName: ''
-                                },
+                                // {
+                                //     id: "Documents.ConceptualSiteLayout2",
+                                //     label: "conceptual_site_layout",
+                                //     type: "file",
+                                //     required: true,
+                                //     fileName: ''
+                                // },
 
                                 {
                                     id: "Documents.ProjectedCashFlow",
@@ -1256,21 +1255,41 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                 },
 
                                 {
-                                    id: "Documents.FinancialCapacityProof",
+                                    id: "Documents.FinancialCapacityProofToExecuteTheProject",
                                     label: "financial_capacity_proo_to_execute_the_project",
                                     type: "file",
                                     required: true,
-                                    fileName: ''
+                                    fileName: 'Financial Capacity Proof'
                                 },
 
                                 {
-                                    id: "Documents.CreditBureauReport",
+                                    id: "Documents.SignedCopyOfCreditBureauConsentForm",
                                     label: "credit_bureau_repor_for_owner",
                                     type: "file",
                                     required: true,
-                                    fileName: ''
+                                    fileName: 'Signed Credit Bureau Consent'
                                 },
-
+                                {
+                                    id: "Documents.ThreeYearsOfAuditedFinancialStatements",
+                                    label: "three_years_of_audited_financial_statements_if_applicable",
+                                    type: "file",
+                                    required: false,
+                                    fileName: 'Audited Financials'
+                                },
+                                {
+                                    id: "Documents.BusinessPlan",
+                                    label: "business_plan",
+                                    type: "file",
+                                    required: true,
+                                    fileName: 'Business Plan'
+                                },
+                                {
+                                    id: "Documents.EstablishmentCard",
+                                    label: "establishment_card",
+                                    type: "file",
+                                    required: true,
+                                    fileName: 'The Establishment Card'
+                                },
                                 {
                                     id: "Documents.CompanyProfile",
                                     label: "company_profile_if_applicable",
@@ -1278,15 +1297,20 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                     required: false,
                                     fileName: "Company Profile"
                                 },
-
                                 {
-                                    id: "Documents.AuditedFinancialStatements",
-                                    label: "three_years_of_audited_financial_statements_if_applicable",
+                                    id: "Documents.ValidCommercialLicense",
+                                    label: "valid_commercial_license",
                                     type: "file",
-                                    required: false,
-                                    fileName: 'Audited Financials'
+                                    required: true,
+                                    fileName: 'A Valid Commercial License'
                                 },
-
+                                {
+                                    id: "Documents.PhotosOfMaterialsAndEquipment",
+                                    label: "photos_materials_equipment",
+                                    type: "file",
+                                    required: true,
+                                    fileName: 'Photos of Materials & Equipment'
+                                },
                             ]
                         },
                     ]
@@ -1429,6 +1453,7 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                     label: "business_plan",
                                     type: "file",
                                     required: true,
+                                    fileName: 'Business Plan'
                                 },
                                 {
                                     id: "Documents.ThreeYearsOfAuditedFinancialStatements",
@@ -1601,8 +1626,15 @@ export const TotalCalculationMap: Record<string, string[]> = {
     ],
 };
 
-export const violationFormConfig = {
-    title: "finding_details",
+export const violationFormConfig: {
+    title: string;
+    sections: {
+      title: string;
+      key?: string;
+      fields: FormField[];
+    }[];
+  } = {
+    title: "",
     sections: [
         {
             title: "finding_details",
@@ -1611,89 +1643,107 @@ export const violationFormConfig = {
                     id: "findingNumber",
                     label: "finding_number",
                     type: "text",
-                    required: true,
                     placeholder: "",
                     disabled: true,
+                    required: false,
                 },
                 {
-                    id: "riskLevelRating",
+                    id: "riskRatingOBS", // need to change
                     label: "risk_level_rating",
                     type: "text",
-                    required: true,
                     placeholder: "",
                     disabled: true,
+                    required: false,
                 },
                 {
-                    id: "inspectionType",
+                    id: "inspectionType",  // missing
                     label: "inspection_type",
                     type: "text",
-                    required: true,
                     placeholder: "",
                     disabled: true,
+                    required: false,
                 },
                 {
                     id: "findingType",
                     label: "finding_type",
                     type: "text",
-                    required: true,
                     placeholder: "",
                     disabled: true,
+                    required: false,
                 },
                 {
-                    id: "focusArea",
+                    id: "findingFocusArea",
                     label: "focus_area",
-                    type: "text",
-                    required: true,
+                    type: "textarea",
                     placeholder: "",
                     disabled: true,
+                    required: false,
                 },
                 {
-                    id: "proposedAction",
+                    id: "findingFailureDetailsEn",
+                    label: "finding_details",
+                    type: "text",
+                    placeholder: "",
+                    disabled: true,
+                    required: false,
+                },
+                {
+                    id: "proposedActionEn",  // en and ar
                     label: "proposed_action",
                     type: "text",
-                    required: true,
                     placeholder: "",
                     disabled: true,
+                    // hidden: true,
+                    required: false,
                 },
                 {
-                    id: "expectedCloseoutDate",
+                    id: "requirementEn",  // en and ar
+                    label: "Requirements",
+                    type: "text",
+                    placeholder: "",
+                    disabled: true,
+                    // hidden: true,
+                    required: false,
+                },
+                {
+                    id: "expectedCloseOutDate",
                     label: "expected_closeout_date",
                     type: "text",
-                    required: true,
                     placeholder: "",
                     disabled: true,
+                    required: false,
                 },
                 {
-                    id: "submissionData",
+                    id: "submissionData", // missing
                     label: "submission_data",
                     type: "text",
-                    required: true,
                     placeholder: "",
                     disabled: true,
+                    required: false,
                 },
                 {
-                    id: "actualCloseoutDate",
+                    id: "closedOn",
                     label: "actual_closeout_date",
                     type: "text",
-                    required: true,
                     placeholder: "",
                     disabled: true,
+                    required: false,
                 },
                 {
-                    id: "sssuanceDate",
+                    id: "issuanceDate",
                     label: "issuance_data",
                     type: "text",
-                    required: true,
                     placeholder: "",
                     disabled: true,
+                    required: false,
                 },
                 {
                     id: "findingStatus",
                     label: "finding_status",
                     type: "text",
-                    required: true,
                     placeholder: "",
                     disabled: true,
+                    required: false,
                 },
             ],
         },
@@ -1706,50 +1756,146 @@ export const violationFormConfig = {
                     type: "textarea",
                     required: true,
                     placeholder: "",
-                    disabled: true,
                 },
                 {
-                    id: "riskLevelRating",
+                    id: "correctiveActionPlan",
                     label: "corrective_action_plan",
                     type: "textarea",
                     required: true,
                     placeholder: "",
-                    disabled: true,
                 },
                 {
-                    id: "inspectionType",
+                    id: "remedialActionCorrection",
                     label: "remedial_action",
                     type: "textarea",
                     required: true,
                     placeholder: "",
-                    disabled: true,
                 },
                 {
-                    id: "findingType",
+                    id: "rootCause",
                     label: "root_cause",
                     type: "textarea",
                     required: true,
                     placeholder: "",
-                    disabled: true,
                 },
             ],
         },
         {
             title: "attachments",
+            key: "attachments",
             fields: [
                 {
                     id: "violationPhotos",
                     label: "violation_photos",
                     type: "attachment",
-                    required: true,
+                    required: false,
                 },
                 {
                     id: "closeoutEvidence",
                     label: "closeout_evidence",
                     type: "attachment",
-                    required: true, 
+                    required: false, 
                 },
             ],
         },
     ],
 }
+
+export const findingTypeRules = {
+    "Observations - ملاحظات": {
+      showField: "proposedActionEn",
+      hideField: null,
+      mandatory: ["closureComments"],
+      readOnly: false,
+    },
+  
+    "CARR - تقرير الإجراء التصحيحي": {
+      showField: "requirementEn",
+      hideField: null,
+      mandatory: [
+        "closureComments",
+        "correctiveActionPlan",
+        "remedialActionCorrection",
+        "rootCause",
+      ],
+      readOnly: false,
+    },
+
+    "CARR - DN": {
+      showField: "requirementEn",
+      hideField: null,
+      mandatory: [
+        "closureComments",
+        "correctiveActionPlan",
+        "remedialActionCorrection",
+        "rootCause",
+      ],
+      readOnly: false,
+    },
+
+    "CARR - NCR": {
+      showField: "requirementEn",
+      hideField: null,
+      mandatory: [
+        "closureComments",
+        "correctiveActionPlan",
+        "remedialActionCorrection",
+        "rootCause",
+      ],
+      readOnly: false,
+    },
+
+    "OBS - CARR": {
+      showField: "requirementEn",
+      hideField: null,
+      mandatory: [
+        "closureComments",
+        "correctiveActionPlan",
+        "remedialActionCorrection",
+        "rootCause",
+      ],
+      readOnly: false,
+    },
+  
+    "NCR - تقرير عدم المطابقة للإجراءات": {
+      showField: "requirementEn",
+      hideField: null,
+      mandatory: [
+        "closureComments",
+        "correctiveActionPlan",
+        "remedialActionCorrection",
+        "rootCause",
+      ],
+      readOnly: false,
+    },
+  
+    "SOS - الإيقاف الفوري للأعمال": {
+      showField: "requirementEn",
+      hideField: null,
+      mandatory: [
+        "closureComments",
+        "correctiveActionPlan",
+        "remedialActionCorrection",
+        "rootCause",
+      ],
+      readOnly: false,
+    },
+
+    "Compliance - الإمتثال و أفضل الممارسات": {
+      showField: null,
+      hideField: null,
+      mandatory: [],  
+      readOnly: true,
+      blankStatus: true,
+    },
+  
+    "Not Inspected - لم يتم التفتيش": {
+      showField: null,
+      hideField: null,
+      mandatory: [],  
+      readOnly: true,
+      blankStatus: true,
+    },
+  };
+  
+  

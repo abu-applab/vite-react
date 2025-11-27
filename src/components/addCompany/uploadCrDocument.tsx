@@ -17,7 +17,7 @@ interface UploadCrDocumentProps {
 const UploadCrDocument = ({ goToNextStep, isAddNewCompany = false }: UploadCrDocumentProps) => {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null)
   const [status, setStatus] = useState('completed')
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   console.log('setStatus: ', setStatus);
 
   const handleFileUpload = (file: File) => {
@@ -47,7 +47,11 @@ const UploadCrDocument = ({ goToNextStep, isAddNewCompany = false }: UploadCrDoc
         {
           !uploadedFile ?
             <div className="mx-10">
-              <FileUpload onFileUpload={handleFileUpload} accepetedFile="Upload a clear PDF, JPG, or PNG (max 2 MB). Include English and Arabic if available. Ensure sharp, complete text in color or grayscale, without blur and glare." />
+              <FileUpload onFileUpload={(uploaded) => {
+                if (uploaded instanceof File) {
+                  handleFileUpload(uploaded);
+                }
+              }} accepetedFile="Upload a clear PDF, JPG, or PNG (max 2 MB). Include English and Arabic if available. Ensure sharp, complete text in color or grayscale, without blur and glare." />
             </div>
             :
             <Card className="p-3 flex flex-row items-center justify-between mx-10">
@@ -106,10 +110,10 @@ const UploadCrDocument = ({ goToNextStep, isAddNewCompany = false }: UploadCrDoc
             </Card>
         }
       </div>
-      {uploadedFile && 
-      <div className={cn({'mt-[38px] mx-10 text-right' : isAddNewCompany})}>
-        <Button type="button" className={cn("bg-maroon-100 hover:bg-[#60091A]", { 'absolute bottom-12 right-10': !isAddNewCompany})} onClick={() => goToNextStep()}>{t('next')}</Button>
-      </div>
+      {uploadedFile &&
+        <div className={cn({ 'mt-[38px] mx-10 text-right': isAddNewCompany })}>
+          <Button type="button" className={cn("bg-maroon-100 hover:bg-[#60091A]", { 'absolute bottom-12 right-10': !isAddNewCompany })} onClick={() => goToNextStep()}>{t('next')}</Button>
+        </div>
       }
     </div>
   )

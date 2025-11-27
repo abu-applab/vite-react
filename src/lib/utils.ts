@@ -1,7 +1,7 @@
 import { clsx, type ClassValue } from "clsx"
 import { AppWindow, FileText, Home, MessageSquareDot, SquareDashed, SquareLibrary, Wallet } from "lucide-react"
 import { twMerge } from "tailwind-merge"
-import { TotalCalculationMap } from "./form-data";
+import { findingTypeRules, TotalCalculationMap, violationFormConfig } from "./form-data";
 
 interface SubmitCompanyUpdateProps {
   formState: Record<string, any>;
@@ -18,16 +18,16 @@ export function cn(...inputs: ClassValue[]) {
 export const navigationItems = [
   { name: "home", icon: Home, href: "/portal" },
   { name: "application", icon: AppWindow, href: "/portal/application" },
-  { name: "payments", icon: Wallet, href: "/portal/payments" },
-  { name: "allocated_plots", icon: SquareDashed, href: "/portal/allocated-plots" },
-  { name: "agreements", icon: FileText, href: "/portal/agreements" },
+  { name: "payments", icon: Wallet, href: "/portal/payments", disable: true },
+  { name: "allocated_plots", icon: SquareDashed, href: "/portal/allocated-plots",  disable: true },
+  { name: "agreements", icon: FileText, href: "/portal/agreements",  disable: true },
   {
     name: "Service Request",
     icon: MessageSquareDot,
     children: [
       { name: "general_service_request", href: "/portal/service" },
-      { name: "bot_requests", href: "/portal/bot-requests" },
-      { name: "bot_reports", href: "/portal/bot-reports" },
+      { name: "bot_requests", href: "/portal/bot-requests",  disable: true },
+      { name: "bot_reports", href: "/portal/bot-reports",  disable: true },
     ],
   },
   { name: "HSE Findings", icon: SquareLibrary, href: "/portal/violations" },
@@ -263,5 +263,51 @@ export const passwordRules = [
   { id: "special", label: "At least one special character", test: (pw: string) => /[\W_]/.test(pw) },
 ];
 
+export const parseCustomDate = (dateStr: string) => {
+  if (!dateStr) return null;
+
+  const [datePart, timePart] = dateStr.split(" ");
+  const [day, month, year] = datePart.split("/").map(Number);
+
+  const time = new Date(`${year}-${month}-${day} ${timePart} UTC`);
+  return time;
+};
+
+export const getDynamicViolationFormConfig = (findingType: string) => {
+  const rules = findingTypeRules[findingType as keyof typeof findingTypeRules] || {};
+
+  const updatedSections = violationFormConfig.sections.map((section) => {
+    return {
+      ...section,
+      fields: section.fields.map((field) => {
+        let updatedField = { ...field };
+
+        // hide/show logic
+        if (rules.showField && updatedField.id === rules.showField) {
+          updatedField.hidden = false;
+        }
+        if (rules.hideField && updatedField.id === rules.hideField) {
+          updatedField.hidden = true;
+        }
+
+        // required fields logic
+        updatedField.required = (rules.mandatory as string[])?.includes(field.id) || false;
+
+
+        // read-only logic for Compliance / Non-Inspected
+        if (rules.readOnly) {
+          updatedField.disabled = true;
+        }
+
+        return updatedField;
+      }),
+    };
+  });
+
+  return {
+    ...violationFormConfig,
+    sections: updatedSections,
+  };
+};
 
 

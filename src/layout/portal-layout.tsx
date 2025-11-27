@@ -107,7 +107,7 @@ const PortalLayout = () => {
                             <img src={qatarFlag} className="w-4 h-4" alt="Qatar flag " />
                             <span className="text-black">{lang === 'en' ? 'العربية' : 'English'}</span>
                         </Button>
-                        <Button onClick={() => navigate('/portal/notifications')} className="relative border-[1px] h-10 hover:bg-gray-50">
+                        <Button onClick={() => navigate('/portal/notifications')} className="relative border-[1px] h-10 hover:bg-gray-50" disabled>
                             <BellDot className="w-2 h-2 text-black" />
                             <span className="absolute top-[12px] right-[11px] block h-2 w-2 rounded-full bg-green-500"></span>
                         </Button>
@@ -125,11 +125,11 @@ const PortalLayout = () => {
                                     </Avatar>
                                     <h1 className="text-xs">{`${fullName}`}</h1>
                                 </DropdownMenuLabel>
-                                <DropdownMenuItem className="flex items-center mt-2 gap-3 px-4 py-2 hover:bg-gray-50 cursor-pointer font-medium text-xs" onClick={() => navigate('/portal/my-profile')}>
+                                <DropdownMenuItem className="flex items-center mt-2 gap-3 px-4 py-2 hover:bg-gray-50 cursor-pointer font-medium text-xs" onClick={() => navigate('/portal/my-profile')} disabled>
                                     <User className="w-5 h-5  text-black" />
                                     {t('my_profile')}
                                 </DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => navigate('/portal/settings')} className="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 cursor-pointer font-medium text-xs">
+                                <DropdownMenuItem onClick={() => navigate('/portal/settings')} className="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 cursor-pointer font-medium text-xs" disabled>
                                     <Settings className="w-5 h-5  text-black" />
                                     {t('settings')}
                                 </DropdownMenuItem>

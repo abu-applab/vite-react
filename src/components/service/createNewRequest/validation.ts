@@ -17,7 +17,7 @@ export const validateForm = (selectedService: string, formState: Record<string, 
     section.fields?.forEach((field) => {
       const rawValue = formState[field.id]
       const value = typeof rawValue === "string" ? rawValue.trim() : rawValue
-      const selectedList = formState.RequiredUpdateSet ?? formState.RequiredUpdate ?? [];
+      const selectedList = formState.requiredUpdateSet ?? formState.requiredUpdate ?? [];
       if (field.required && isEmpty(value) && (!field.showIfSelected || (field.showIfSelected && selectedList?.includes(field.showIfSelected)))) {
         newErrors[field.id] = `${t(field.label)} is required`
         return
@@ -48,9 +48,9 @@ export const validateForm = (selectedService: string, formState: Record<string, 
       if (field.label === "new_phone" && value && !isValidPhone(value))
         newErrors[field.id] = "Must contain exactly 8 digits."
       if (field.label === "new_po_box" && value && !isValidPOBox(value))
-        newErrors[field.id] = "Must contain 5 to 8 character."
+        newErrors[field.id] = "Must contain 5 to 8 digits."
       if (field.label === "building_permit_application_number" && value && !isValidBuildingPermitNumber(value))
-        newErrors[field.id] = "Must contain 1 to 10 character."
+        newErrors[field.id] = "Must contain 1 to 10 digits."
 
       if (field.type === "number" && value !== undefined && value !== null && value !== "") {
         const numericValue = Number(value);

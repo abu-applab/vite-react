@@ -1,8 +1,8 @@
-import { MoreVertical } from "lucide-react"
+import { CircleAlert, MoreVertical } from "lucide-react"
 import { Button } from "./ui/button"
 import { Card, CardContent, CardHeader } from "./ui/card"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { cn } from "@/lib/utils"
+import { cn, parseCustomDate } from "@/lib/utils"
 import type { ElementType } from "react"
 import { useTranslation } from "react-i18next"
 
@@ -23,6 +23,7 @@ interface CardConfig {
         icon?: ElementType
         onClick?: (data: any) => void
     }[]
+    warning?: string
 }
 
 interface ListOfCardsProps {
@@ -86,6 +87,26 @@ function getPointerColor(status: string) {
     }
 }
 
+const convertDate = (value: string) => {
+    // value = "26/11/2025 03:53 PM"
+    const [datePart, timePart, modifier] = value.split(" ");
+  
+    const [day, month, year] = datePart.split("/").map(Number);
+  
+    let [hours, minutes] = timePart.split(":").map(Number);
+  
+    if (modifier === "PM" && hours !== 12) hours += 12;
+    if (modifier === "AM" && hours === 12) hours = 0;
+  
+    const jsDate = new Date(year, month - 1, day, hours, minutes);
+  
+    return jsDate.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    });
+  };
+
 const getValue = (obj: any, key?: string) => {
     if (!key) return "";
     return obj?.[key] ?? "";
@@ -93,41 +114,41 @@ const getValue = (obj: any, key?: string) => {
 
 const StatusBadge = ({ status, className = "" }: { status: string, className?: string }) => (
     <div className={cn(
-      getStatusColor(status),
-      "border-0 text-xs flex items-center justify-center rounded-2xl px-2 py-1 h-fit",
-      className
+        getStatusColor(status),
+        "border-0 text-xs flex items-center justify-center rounded-2xl px-2 py-1 h-fit",
+        className
     )}>
-      <span className={`size-1.5 ${getPointerColor(status)} rounded-full mr-1`} />
-      <span className="text-xs font-medium">{status}</span>
+        <span className={`size-1.5 ${getPointerColor(status)} rounded-full mr-1`} />
+        <span className="text-xs font-medium">{status}</span>
     </div>
-  );
-  
-  const ActionsMenu = ({ options, data, t }: { options: any[], data: any, t: any }) => (
+);
+
+const ActionsMenu = ({ options, data, t }: { options: any[], data: any, t: any }) => (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-          <MoreVertical className="h-4 w-4" />
-        </Button>
-      </DropdownMenuTrigger>
-  
-      <DropdownMenuContent align="end">
-        {options.map((option, idx) => {
-          const Icon = option.icon;
-          return (
-            <DropdownMenuItem
-              key={idx}
-              className="flex items-center gap-2"
-              onClick={() => option.onClick?.(data)}
-            >
-              {Icon && <Icon className="h-4 w-4 text-maroon-100" />}
-              {t(option.label)}
-            </DropdownMenuItem>
-          );
-        })}
-      </DropdownMenuContent>
+        <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                <MoreVertical className="h-4 w-4" />
+            </Button>
+        </DropdownMenuTrigger>
+
+        <DropdownMenuContent align="end">
+            {options.map((option, idx) => {
+                const Icon = option.icon;
+                return (
+                    <DropdownMenuItem
+                        key={idx}
+                        className="flex items-center gap-2"
+                        onClick={() => option.onClick?.(data)}
+                    >
+                        {Icon && <Icon className="h-4 w-4 text-maroon-100" />}
+                        {t(option.label)}
+                    </DropdownMenuItem>
+                );
+            })}
+        </DropdownMenuContent>
     </DropdownMenu>
-  );
-  
+);
+
 
 
 const ListOFCards = ({ cardsConfig, cardsData, isProducts = false }: ListOfCardsProps) => {
@@ -144,7 +165,7 @@ const ListOFCards = ({ cardsConfig, cardsData, isProducts = false }: ListOfCards
 
                 return (
                     <Card key={getValue(data, cardsConfig.id)} className="relative">
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 max-md:px-2">
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 max-md:px-4">
                             <div className="flex items-center gap-3">
                                 <div className="w-12 h-12 border border-[#E4E4E7] rounded-[8px] bg-white flex items-center justify-center">
                                     <cardsConfig.icon className="w-5 h-5 text-black" />
@@ -152,7 +173,9 @@ const ListOFCards = ({ cardsConfig, cardsData, isProducts = false }: ListOfCards
 
                                 <div className="flex flex-col">
                                     <div className="flex items-center gap-2">
-                                        <span className="text-base font-medium text-gray-800">{titleValue}</span>
+                                        <div className="flex items-center">
+                                            <span className="text-base font-medium text-gray-800 max-md:text-sm">{titleValue}</span>
+                                        </div>
 
                                         {cardsConfig.status && cardsConfig.showBelow && (
                                             <StatusBadge status={statusValue} className="md:hidden" />
@@ -161,7 +184,7 @@ const ListOFCards = ({ cardsConfig, cardsData, isProducts = false }: ListOfCards
 
                                     {cardsConfig.subTitle && (
                                         <div className="flex gap-2">
-                                            <h3 className="font-medium text-sm text-gray-500">{subTitleValue}</h3>
+                                            <h3 className="font-medium text-sm text-gray-500 max-md:text-[13px]">{subTitleValue}</h3>
 
                                             {cardsConfig.status && !cardsConfig.showBelow && (
                                                 <StatusBadge status={statusValue} className="md:hidden" />
@@ -182,7 +205,7 @@ const ListOFCards = ({ cardsConfig, cardsData, isProducts = false }: ListOfCards
                             </div>
                         </CardHeader>
 
-                        <CardContent className="pt-0">
+                        <CardContent className="pt-0 max-md:px-4">
                             <div className="-mx-6 border-t border-gray-200"></div>
 
                             <div className={cn(
@@ -204,7 +227,7 @@ const ListOFCards = ({ cardsConfig, cardsData, isProducts = false }: ListOfCards
                                         field.key === "submissionDate" ||
                                         field.key === "submittedDate"
                                     ) {
-                                        value = new Date(value).toLocaleDateString("en-US");
+                                        value = convertDate(value);
                                     }
 
                                     return (
@@ -218,6 +241,39 @@ const ListOFCards = ({ cardsConfig, cardsData, isProducts = false }: ListOfCards
                                     );
                                 })}
                             </div>
+                            {cardsConfig.warning && (() => {
+                                let value = getValue(data, cardsConfig.warning);
+                                if (!value) return null;
+                                value = parseCustomDate(value);
+
+                                const today = new Date();
+                                const targetDate = new Date(value);
+                                const diffTime = targetDate.getTime() - today.getTime();
+                                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                                let text = "";
+                                let textColor = "text-green-600";
+                                let textBackground = 'bg-green-50';
+
+                                if (diffDays > 30) {
+                                    text = `${diffDays} days remaining`;
+                                } else if (diffDays < 30 && diffDays >= 0) {
+                                    text = `${diffDays} days remaining`;
+                                    textColor = "text-yellow-600";
+                                    textBackground = 'bg-yellow-50';
+                                } else {
+                                    text = `${Math.abs(diffDays)} days overdue`;
+                                    textColor = "text-red-600";
+                                    textBackground = 'bg-red-50';
+                                }
+
+                                return (
+                                    <div className={`mt-3 text-sm font-medium w-full h-8 flex items-center justify-center gap-2 rounded-md bg-green ${textColor} ${textBackground}`}>
+                                        <CircleAlert className="w-4 h-4" />
+                                        <span className={`text-sm font-normal`}>{text}</span>
+                                    </div>
+                                );
+                            })()}
                         </CardContent>
                     </Card>
                 );

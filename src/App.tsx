@@ -104,6 +104,7 @@ function App() {
           <Route path="bot-requests/:form" element={<BotRequestAndReportsPage selectedBotType="request" />} />
           <Route path="bot-reports/:form" element={<BotRequestAndReportsPage selectedBotType="reports" />} />
           <Route path="violations" element={<ViolationPage />} />
+          <Route path="violations/:id" element={<ViolationPage />} />
           <Route path="directory" element={<DirectoryScreen />} />
           <Route path="service" element={<Service />} />
           <Route path="my-profile" element={<MyProfile />} />

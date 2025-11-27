@@ -3,7 +3,7 @@ import { validateForm } from "./validation";
 import useNetworkRequest from "@/api/useNetworkRequest";
 import { API_SERVICES_ENDPOINTS } from "@/api/apiEndpoints";
 import DynamicForm from "@/components/dynamic-form";
-import { RequestSubmittedModal } from "./request-submitted-modal";
+import { RequestSubmittedModal } from "./requestSubmittedModal";
 import Loader from "@/components/loader";
 import { createCompanyUpdateRequest, parseApiError, prepareRequestBody, submitUpdateCompanyInformation } from "@/lib/utils";
 import { getServiceFormConfig } from "@/lib/form-data";

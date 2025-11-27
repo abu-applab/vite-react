@@ -46,7 +46,7 @@ const UploadOwnerDocument = ({ goToNextStep, goToPreviousStep }: UploadOwnerDocu
     const [uploadedFile, setUploadedFile] = useState<File | null>(null)
     console.log('uploadedFile: ', uploadedFile);
     const [formData, setFormData] = useState(initialState)
-    const {t}  = useTranslation();
+    const { t } = useTranslation();
 
     const handleInputChange = (name: string, value: string) => {
         setFormData((prev) => (
@@ -83,7 +83,7 @@ const UploadOwnerDocument = ({ goToNextStep, goToPreviousStep }: UploadOwnerDocu
             <div className="mx-10">
                 <h3 className="mb-3">{t('owners')}</h3>
                 <Card className={`p-6 gap-20 ${selectedOwner && 'flex flex-row'}`}>
-                    <div className={cn("flex flex-col gap-6", {'w-[300px]': selectedOwner})}>
+                    <div className={cn("flex flex-col gap-6", { 'w-[300px]': selectedOwner })}>
                         {
                             formData.owners.map((owner, index) => {
                                 const completed = owner.email && owner.phoneNumber && owner.documents.length > 1
@@ -125,42 +125,46 @@ const UploadOwnerDocument = ({ goToNextStep, goToPreviousStep }: UploadOwnerDocu
                             })
                         }
                     </div>
-                    {selectedOwner && 
-                    <div className="flex-1">
-                        <h3 className="text-sm font-medium">{t('qid_passport')}</h3>
-                        <p className="text-sm font-medium text-zinc-400">{t('qid_passport_desc')}</p>
-                        <div className="mt-3">
-                            <FileUpload
-                                onFileUpload={handleFileUpload}
-                                accepetedFile="or just click to browse and upload files (PDF, JPG, PNG). Maximum size: 5MB per file"
-                            />
-                        </div>
-                        <div className="mt-6">
-                            <FormField
-                                key="email"
-                                label="Email"
-                                value={selectedOwner.email}
-                                onChange={(value) => handleInputChange("email", value)}
-                                type="email"
-                                required={true}
-                                placeholder="Please type the email"
-                            />
-                        </div>
-                        <div className="mt-6">
-                            <PhoneInput
-                                required
-                                placeholder=""
-                                onChange={(value) => console.log("Phone number:", value)}
-                                value={selectedOwner.phoneNumber}
-                            />
-                        </div>
-                    </div>}
+                    {selectedOwner &&
+                        <div className="flex-1">
+                            <h3 className="text-sm font-medium">{t('qid_passport')}</h3>
+                            <p className="text-sm font-medium text-zinc-400">{t('qid_passport_desc')}</p>
+                            <div className="mt-3">
+                                <FileUpload
+                                     onFileUpload={(uploaded) => {
+                                        if (uploaded instanceof File) {
+                                            handleFileUpload(uploaded);
+                                        }
+                                    }}
+                                    accepetedFile="or just click to browse and upload files (PDF, JPG, PNG). Maximum size: 5MB per file"
+                                />
+                            </div>
+                            <div className="mt-6">
+                                <FormField
+                                    key="email"
+                                    label="Email"
+                                    value={selectedOwner.email}
+                                    onChange={(value) => handleInputChange("email", value)}
+                                    type="email"
+                                    required={true}
+                                    placeholder="Please type the email"
+                                />
+                            </div>
+                            <div className="mt-6">
+                                <PhoneInput
+                                    required
+                                    placeholder=""
+                                    onChange={(value) => console.log("Phone number:", value)}
+                                    value={selectedOwner.phoneNumber}
+                                />
+                            </div>
+                        </div>}
                 </Card>
             </div>
             <div className="mx-10 mt-8">
                 <h3 className="mb-3">{t('authorized_signatories')}</h3>
                 <Card className={`p-6 gap-20 ${selectedSignatories && 'flex flex-row'}`}>
-                    <div className={cn("flex flex-col gap-6", {'w-[300px]': selectedSignatories})}>
+                    <div className={cn("flex flex-col gap-6", { 'w-[300px]': selectedSignatories })}>
                         {
                             formData.signatories.map((owner, index) => {
                                 const completed = owner.email && owner.phoneNumber && owner.documents.length > 1
@@ -202,33 +206,37 @@ const UploadOwnerDocument = ({ goToNextStep, goToPreviousStep }: UploadOwnerDocu
                             })
                         }
                     </div>
-                    {selectedSignatories && 
-                    <div className="flex-1">
-                        <h3 className="text-sm font-medium">{t('qid_passport')}</h3>
-                        <p className="text-sm font-medium text-zinc-400">{t('qid_passport_desc')}</p>
-                        <div className="mt-3">
-                            <FileUpload onFileUpload={handleFileUpload} accepetedFile="or just click to browse and upload files (PDF, JPG, PNG). Maximum size: 5MB per file" />
-                        </div>
-                        <div className="mt-6">
-                            <FormField
-                                key="email"
-                                label="Email"
-                                value={selectedSignatories.email}
-                                onChange={(value) => handleInputChange("email", value)}
-                                type="email"
-                                required={true}
-                                placeholder="Please type the email"
-                            />
-                        </div>
-                        <div className="mt-6">
-                            <PhoneInput
-                                required
-                                placeholder=""
-                                onChange={(value) => console.log("Phone number:", value)}
-                                value={selectedSignatories.phoneNumber}
-                            />
-                        </div>
-                    </div>}
+                    {selectedSignatories &&
+                        <div className="flex-1">
+                            <h3 className="text-sm font-medium">{t('qid_passport')}</h3>
+                            <p className="text-sm font-medium text-zinc-400">{t('qid_passport_desc')}</p>
+                            <div className="mt-3">
+                                <FileUpload onFileUpload={(uploaded) => {
+                                    if (uploaded instanceof File) {
+                                        handleFileUpload(uploaded);
+                                    }
+                                }} accepetedFile="or just click to browse and upload files (PDF, JPG, PNG). Maximum size: 5MB per file" />
+                            </div>
+                            <div className="mt-6">
+                                <FormField
+                                    key="email"
+                                    label="Email"
+                                    value={selectedSignatories.email}
+                                    onChange={(value) => handleInputChange("email", value)}
+                                    type="email"
+                                    required={true}
+                                    placeholder="Please type the email"
+                                />
+                            </div>
+                            <div className="mt-6">
+                                <PhoneInput
+                                    required
+                                    placeholder=""
+                                    onChange={(value) => console.log("Phone number:", value)}
+                                    value={selectedSignatories.phoneNumber}
+                                />
+                            </div>
+                        </div>}
                 </Card>
             </div>
             <div className="mx-10 mt-8">
@@ -240,7 +248,11 @@ const UploadOwnerDocument = ({ goToNextStep, goToPreviousStep }: UploadOwnerDocu
                             <span className="text-gray-400">&nbsp;(Optional)</span>
                         </div>
                         <FileUpload
-                            onFileUpload={handleFileUpload}
+                            onFileUpload={(uploaded) => {
+                                if (uploaded instanceof File) {
+                                    handleFileUpload(uploaded);
+                                }
+                            }}
                             accepetedFile="or just click to browse and upload files (PDF, JPG, PNG). Maximum size: 5MB per file"
                         />
                     </div>
@@ -250,7 +262,11 @@ const UploadOwnerDocument = ({ goToNextStep, goToPreviousStep }: UploadOwnerDocu
                             <span className="text-gray-400">&nbsp;(Optional)</span>
                         </div>
                         <FileUpload
-                            onFileUpload={handleFileUpload}
+                            onFileUpload={(uploaded) => {
+                                if (uploaded instanceof File) {
+                                    handleFileUpload(uploaded);
+                                }
+                            }}
                             accepetedFile="or just click to browse and upload files (PDF, JPG, PNG). Maximum size: 5MB per file"
                         />
                     </div>
@@ -258,7 +274,7 @@ const UploadOwnerDocument = ({ goToNextStep, goToPreviousStep }: UploadOwnerDocu
             </div>
             <div className="flex justify-between pt-6 mx-10">
                 <Button type="button" variant="outline" className="bg-transparent" onClick={() => goToPreviousStep()}>
-                   {t('previous')}
+                    {t('previous')}
                 </Button>
                 <Button type="submit" className="px-8 bg-maroon-100 hover:bg-[#60091A]" onClick={() => goToNextStep()}>
                     {t('next')}

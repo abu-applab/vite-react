@@ -65,11 +65,21 @@ const HubPage = () => {
   }
 
   const filteredCompanies = companies.filter((company: any) => {
+
     const searchText = companiesFilter.searchTerm?.toLowerCase() ?? "";
 
-    // Status filter
-    const statusMatch =
-      !companiesFilter.status || company.status?.toLowerCase() === companiesFilter.status.toLowerCase();
+    // ----- Status Filter (using split and matching multiple values) -----
+    let statusMatch = true;
+
+    if (companiesFilter?.status) {
+      const statusList = companiesFilter.status
+        .split(",")
+        .map(val => val.trim().toLowerCase());
+
+      statusMatch = statusList.some(
+        status => company.status?.toLowerCase() === status
+      );
+    }
 
     // Search filter
     const searchMatch =

@@ -171,7 +171,7 @@ const tabs = [
 const header = {
     title: "applications",
     homeLink: 'companyName',
-    contentLinks: ['view_applications', 'create_new_applications'],
+    contentLinks: ['view_applications', 'create_new_applications',],
 }
 
 const filterKeys = {
@@ -456,7 +456,7 @@ const ApplicationPage = () => {
     return (
         <div className="">
             {/* Header */}
-            <PageHeader header={header} />
+            <PageHeader header={header} customTitle={id ? 'submitted_application': ''} />
 
             {(!isCreateNewApplication) ? (
                 <div className="min-h-[55vh]">

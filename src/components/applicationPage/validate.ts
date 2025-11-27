@@ -52,10 +52,11 @@ interface FieldConfig {
         const value = formState[field.id]?.toString().trim?.() || formState[field.id];
   
         if (field.required && isEmpty(value) && !isSave && (!excludedKeys.includes(field.id))) {
-          if(field.id === 'isicSection' && !formState.isicCode) {
+          if(field.id === 'isicSection' && formState.isicCode) {
+            return;
+          } else {
             newErrors[field.id] = `${t(field.label)} is required`;
           }
-          newErrors[field.id] = `${t(field.label)} is required`;
           return;
         }
   

@@ -2,5 +2,6 @@
     "upload_crd": "Upload Commercial Registration Document",
     "upload_crd_desc": "Submit your Commercial Registration to auto-fill company info.",
     "upload_crd_existing_user": "Add Commercial Registration Document",
-    "upload_crd_existing_user_desc": "Upload your CR document to continue"
+    "upload_crd_existing_user_desc": "Upload your CR document to continue",
+    "small_medium_ind": "Small Medium Ind ar"
 }
