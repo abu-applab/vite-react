@@ -142,13 +142,18 @@ export default function OtpVeirificationForm({
                         const baseClasses =
                             "w-13 h-13 text-center text-lg font-medium border-1 rounded-md focus-visible:ring-0 focus-visible:ring-offset-0";
 
-                        // Priority: error → red; otherwise filled/complete/success → green; otherwise empty → grey
-                        let colorClasses = "border-gray-300 focus:border-gray-300"; // empty
+                        const isFilled = value !== "";
+                        const isLastBox = index === OTP_LENGTH - 1;
+
+                        let colorClasses = "border-gray-300 focus:border-gray-300";
 
                         if (hasError) {
                             colorClasses = "border-red-500 focus:border-red-500";
-                        } else if (success || value || isOtpComplete) {
+                        } else if (isFilled) {
                             colorClasses = "border-green-500 focus:border-green-500";
+                        }
+                        if (isLastBox && isFilled) {
+                            colorClasses = "!border-green-500 !focus:border-green-500";
                         }
 
                         return (
