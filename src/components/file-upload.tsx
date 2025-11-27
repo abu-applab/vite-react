@@ -9,6 +9,7 @@ interface FileUploadProps {
     isServiceForm?: boolean
     accepetedFile?: string
     fileLabel?: string
+    isRequired?: boolean
     handleFileUploadError?: (text: string) => void
     allowMultiple?: boolean
     acceptedLength?: number
@@ -28,6 +29,7 @@ const FileUpload = ({
     buttonText = '',
     showUploadIcon = false,
     children,
+    isRequired = false,
 }: FileUploadProps) => {
 
     const [isDragActive, setIsDragActive] = useState(false);
@@ -80,7 +82,7 @@ const FileUpload = ({
     return (
         <div
             {...getRootProps()}
-            className={`${!children ? 'border-2 border-dashed rounded-2xl text-center cursor-pointer': '!p-0'}
+            className={`${!children ? 'border-2 border-dashed rounded-2xl text-center cursor-pointer' : '!p-0'}
                 ${isDragActive ? 'border-green-500 bg-green-50' : 'border-gray-300 hover:border-gray-400'}
                 ${isServiceForm ? 'm-0 p-1' : 'p-2 py-10'}
             `}
@@ -106,13 +108,16 @@ const FileUpload = ({
                             </Button>
                         </div>
                     ) :
-                        <div className={`flex flex-row items-center justify-between ${showUploadIcon ? 'p-3': 'p-4'}`}>
+                        <div className={`flex flex-row items-center justify-between ${showUploadIcon ? 'p-3' : 'p-4'}`}>
                             <div className='flex flex-row items-center justify-start gap-3'>
                                 {showUploadIcon && <div className='w-10 h-10'>
                                     <Download className='text-gray-400 p-2 w-full h-full' />
                                 </div>}
                                 <div className='flex flex-col items-start'>
-                                    <h4 className="text-base font-medium text-gray-900">{fileLabel}</h4>
+                                    <div className='flex items-center justify-start'>
+                                        <h4 className="text-base font-medium text-gray-900 inline-block">{fileLabel}</h4>
+                                        {isRequired && <span className="text-destructive">*</span>}
+                                    </div>
                                     <p className="text-gray-400 text-xs font-normal">{t('no_file_selected')}</p>
                                 </div>
                             </div>

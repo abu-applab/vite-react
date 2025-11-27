@@ -103,8 +103,8 @@ export const MultipleAttachments = ({ field: { id, label, disabled = false }, er
                 {(hasUploadPermission && !disabled) && <div className={`${formData?.documents?.length > 0 ? 'grid grid-cols-2 gap-2' : ''}`}>
                     {formData?.documents?.length > 0 && formData.documents.map((doc: any) => (
                         <Card key={doc.id} className="p-2 flex flex-row items-center justify-between">
-                            <div className="flex flex-row gap-3 items-center justify-start">
-                                <div className="h-12 w-12 p-3">
+                            <div className="flex flex-row gap-3 items-center justify-center">
+                                <div className="h-12 w-12 p-3 flex items-center justify-center">
                                     <img
                                         src={doc.mimeType === "application/pdf" ? pdfLogo : pngLogo}
                                         alt="File"

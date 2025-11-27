@@ -207,7 +207,7 @@ const DynamicForm = ({
                       .filter((opt: any) =>
                         formData[field.id].split(",").includes(opt.id)
                       )
-                      .map((opt: any) => opt.name)
+                      .map((opt: any) => t(opt.name))
                       .join(", ")
                     : "Select options"}
                   <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -250,7 +250,7 @@ const DynamicForm = ({
                                 checked={isChecked}
                                 className={`data-[state=checked]:bg-maroon-100 data-[state=checked]:border-gray-800`}
                               />
-                              <span>{option.name}</span>
+                              <span>{t(option.name)}</span>
                             </div>
                           </CommandItem>
                         )
@@ -285,6 +285,7 @@ const DynamicForm = ({
                   isServiceForm
                   fileLabel={t(field.label)}
                   buttonText="upload_file"
+                  isRequired={field.required}
                 />
                 {errors[field.id] && (
                   <span className="text-sm text-red-600">{errors[field.id]}</span>
