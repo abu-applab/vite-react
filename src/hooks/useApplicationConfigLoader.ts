@@ -12,7 +12,7 @@ export const useApplicationConfigLoader = () => {
   const { selectedInvestment, setLocations } = useApp();
   const { t } = useTranslation();
 
-  const loadApplicationConfig = async (selectedApplication: string, setFormData: any, isSubmittedApplication?: boolean) => {
+  const loadApplicationConfig = async (selectedApplication: string, _setFormData: any, isSubmittedApplication?: boolean) => {
     let baseConfig = getApplicationFormConfig(selectedApplication);
 
     let [clusterRes, iSICSectionsRes, locationRes] = await Promise.all([
@@ -44,13 +44,6 @@ export const useApplicationConfigLoader = () => {
       name: location.name,
       id: location.id,
     }));
-    
-    if (locationOptions.length > 0) {
-      setFormData((prev: Record<string, any>) => ({
-        ...prev,
-        Location: isSubmittedApplication ? locationOptions : locationOptions[0].id
-      }));
-    }
 
     // inject into config
     const updatedConfig = baseConfig.map((step: any) => ({
@@ -59,7 +52,7 @@ export const useApplicationConfigLoader = () => {
         ...section,
         fields: section.fields?.map((field: any) => {
           if (field.id === "location") {
-            return { ...field, options: locationOptions, disabled: true };
+            return { ...field, options: locationOptions};
           }
           if (field.id === "cluster") {
             return { ...field, options: clusterOptions };

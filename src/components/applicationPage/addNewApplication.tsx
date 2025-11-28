@@ -120,6 +120,7 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
     };
 
     if (id) {
+      setApplicationId(id)
       fetchData();
     }
   }, [id]);
@@ -293,7 +294,7 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
         const stepConfig = config?.[currentIndex];
 
         newErrors = validateForm(stepConfig, formState, t)
-        if (products.length <= 0 && applicationSteps[currentIndex].title === 'Company Details (1 of 2)') {
+        if (!(products.length > 0) && applicationSteps[currentIndex].title === 'company_details_1') {
           newErrors.ProductsJson = "Field is required"
         }
         if (Object.keys(newErrors).length > 0) {
@@ -375,7 +376,11 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
       body.append('ContactPerson', contact?.id ?? '');
       body.append('ApplicationType', selectedInvestment?.applicationType ?? '');
 
-      if (products.length > 0) body.append('ProductsJson', JSON.stringify(products));
+      const transformedProducts = products?.map(({ id, hsCodeName, ...rest }: any) => rest);
+
+      if (transformedProducts.length > 0) {
+        body.append('ProductsJson', JSON.stringify(transformedProducts));
+      }
       const excludedKeys = [
         "TotalCost",
         "TotalFunding",
@@ -389,7 +394,7 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
       });
       let response;
       // ✅ If we already have an ID, update; otherwise create
-      if (applicationId) {
+      if (applicationId || id) {
         response = await networkRequest(`${API_ENDPOINTS.updateApplication}?id=${applicationId}`, {
           method: 'POST',
           body,
@@ -445,7 +450,11 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
       body.append('ContactPerson', contact?.id ?? '');
       body.append('ApplicationType', selectedInvestment?.applicationType ?? '');
 
-      if (products.length > 0) body.append('ProductsJson', JSON.stringify(products));
+      const transformedProducts = products?.map(({ id, hsCodeName, ...rest }: any) => rest);
+
+      if (transformedProducts.length > 0) {
+        body.append('ProductsJson', JSON.stringify(transformedProducts));
+      }
       const excludedKeys = [
         "TotalCost",
         "TotalFunding",

@@ -1656,7 +1656,7 @@ export const violationFormConfig: {
                     required: false,
                 },
                 {
-                    id: "inspectionType",  // missing
+                    id: "workOrderType",  // missing
                     label: "inspection_type",
                     type: "text",
                     placeholder: "",
@@ -1713,14 +1713,14 @@ export const violationFormConfig: {
                     disabled: true,
                     required: false,
                 },
-                {
-                    id: "submissionData", // missing
-                    label: "submission_data",
-                    type: "text",
-                    placeholder: "",
-                    disabled: true,
-                    required: false,
-                },
+                // {
+                //     id: "submissionData", // missing
+                //     label: "submission_data",
+                //     type: "text",
+                //     placeholder: "",
+                //     disabled: true,
+                //     required: false,
+                // },
                 {
                     id: "closedOn",
                     label: "actual_closeout_date",

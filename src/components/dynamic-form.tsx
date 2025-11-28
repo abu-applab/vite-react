@@ -111,6 +111,13 @@ const DynamicForm = ({
 
       case "select":
         const isDisabled = field.disabled;
+        const options =
+          field.id === "location" && !!formData?.[field.id]
+            ? field.options?.filter(
+              (fd) =>
+                typeof fd === "object" && "id" in fd && fd.id === formData[field.id]
+            )
+            : field.options;
         return (
           <div className="space-y-2">
             <Label htmlFor={field.id}>
@@ -123,7 +130,7 @@ const DynamicForm = ({
                 // Fix me
                 if (isSubmittedApplication) return;
                 if (field.dependsOn) {
-                  const selectedOption = field.options?.find(
+                  const selectedOption = options?.find(
                     (val): val is { id: string; name: string; plotId: string, agreementId: string } =>
                       typeof val !== "string" && val.id === value
                   );
@@ -146,7 +153,7 @@ const DynamicForm = ({
                 <SelectValue placeholder={`Select ${t(field.label).toLowerCase()}`} />
               </SelectTrigger>
               <SelectContent>
-                {field.options?.map((option) => {
+                {options?.map((option) => {
                   const key = typeof option === "string" ? option : option.id;
                   const value = typeof option === "string" ? option : option.name;
                   const isOptionDisabled =

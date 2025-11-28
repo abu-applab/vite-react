@@ -274,7 +274,17 @@ export const parseCustomDate = (dateStr: string) => {
 };
 
 export const getDynamicViolationFormConfig = (findingType: string) => {
-  const rules = findingTypeRules[findingType as keyof typeof findingTypeRules] || {};
+  const rules = findingTypeRules[findingType as keyof typeof findingTypeRules] || {
+    showField: "requirementEn",
+    hideField: null,
+    mandatory: [
+      "closureComments",
+      "correctiveActionPlan",
+      "remedialActionCorrection",
+      "rootCause",
+    ],
+    readOnly: false,
+  };
 
   const updatedSections = violationFormConfig.sections.map((section) => {
     return {

@@ -151,7 +151,7 @@ export const ViolationFormHandler = ({ onBack }: ViolationFormHandlerProps) => {
     }
   };
 
-
+   const isSubmittedApplication = Boolean(formState?.findingType ===  "Compliance - الإمتثال و أفضل الممارسات" || formState?.findingType === "Not Inspected - لم يتم التفتيش")
 
   return (
     <div>
@@ -164,6 +164,7 @@ export const ViolationFormHandler = ({ onBack }: ViolationFormHandlerProps) => {
         handleInputChange={handleInputChange}
         handlePerviousButton={() => onBack()}
         handleSubmit={handleSubmit}
+        isSubmittedApplication={isSubmittedApplication}
       />
 
       <RequestSubmittedModal

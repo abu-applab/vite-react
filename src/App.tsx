@@ -1,8 +1,8 @@
 import './App.css'
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import { useEffect, lazy, type JSX } from 'react';
-import { useTranslation } from 'react-i18next';
+import { lazy, type JSX } from 'react';
 import { getLocalStorageItem } from './lib/utils';
+import { useLanguageInit } from './hooks/useLanguageInit';
 
 // Lazy load components
 const Login = lazy(() => import('./screens/authentication/login'));
@@ -27,45 +27,11 @@ const MyProfile = lazy(() => import('./screens/myProfile'));
 const Notifications = lazy(() => import('./screens/notifications'));
 const CompanyProfile = lazy(() => import('./screens/companyProfile'));
 
-// Constants
-const SUPPORTED_LANGUAGES = ['en', 'ar'] as const;
-const DEFAULT_LANGUAGE = 'en';
 const AUTH_TOKEN_KEY = 'auth_txn';
-const LANG_KEY = 'lang';
 
 function App() {
-  const { i18n } = useTranslation();
 
-  useEffect(() => {
-    const defaultLanguage = localStorage.getItem(LANG_KEY) || DEFAULT_LANGUAGE;
-    const currentPath = window.location.pathname;
-    const pathSegments = currentPath.split('/').filter(Boolean);
-    const firstSegment = pathSegments[0];
-
-    const hasLanguage = SUPPORTED_LANGUAGES.includes(firstSegment as typeof SUPPORTED_LANGUAGES[number]);
-
-    if (!hasLanguage) {
-      window.location.pathname = `/${defaultLanguage}${currentPath}`;
-    } else {
-      i18n.changeLanguage(firstSegment);
-      const html = document.documentElement;
-      html.setAttribute("lang", firstSegment);
-      html.setAttribute("dir", firstSegment === "ar" ? "rtl" : "ltr");
-    }
-  }, [i18n]);
-
-  const getBaseName = (): string => {
-    const currentPath = window.location.pathname;
-    const pathLang = currentPath.split('/')[1];
-
-    if (pathLang === 'ar') {
-      localStorage.setItem(LANG_KEY, 'ar');
-      return '/ar';
-    }
-
-    localStorage.setItem(LANG_KEY, 'en');
-    return '/en';
-  };
+  useLanguageInit()
 
   const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
     const authToken = getLocalStorageItem(AUTH_TOKEN_KEY);
@@ -78,7 +44,7 @@ function App() {
   };
 
   return (
-    <Router basename={getBaseName()}>
+    <Router>
       {/* <Suspense fallback={<div></div>}> */}
       <Routes>
         <Route path="/" element={<LoginLayout />}>
