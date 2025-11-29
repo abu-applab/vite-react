@@ -8,6 +8,7 @@ import { Button } from "./ui/button"
 import FileUpload from "./file-upload"
 import { CalendarIcon, ChevronsUpDown, Download, Trash2 } from "lucide-react"
 import pdfLogo from "../assets/images/pdf-logo.svg"
+import pngLogo from "../assets/images/png-logo.svg"
 import { cn, formatFileSize, getFileName, getFileType } from "@/lib/utils"
 import { useEffect, type Dispatch, type SetStateAction } from "react"
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
@@ -305,7 +306,11 @@ const DynamicForm = ({
               <Card className="p-4.5 flex flex-row items-center justify-between">
                 <div className="flex flex-row gap-3 items-center justify-start">
                   <div className="h-12 w-12 p-3">
-                    <img src={pdfLogo} alt="pdf logo" />
+                  <img
+                      src={value?.name.toLowerCase().endsWith('.pdf') ? pdfLogo : pngLogo}
+                      alt={value?.name.toLowerCase().endsWith('.pdf') ? "pdf logo" : "png logo"}
+                      className="w-full h-full"
+                    />
                   </div>
                   <div className="flex flex-col">
                     <h4 className="font-medium text-gray-900">{getFileName(formData?.[field.id]?.name)}</h4>
@@ -333,7 +338,11 @@ const DynamicForm = ({
               <Card className="p-4.5 flex flex-row items-center justify-between">
                 <div className="flex flex-row gap-3 items-center">
                   <div className="h-12 w-12 p-3">
-                    <img src={pdfLogo} alt="pdf logo" />
+                    <img
+                      src={value?.fileName.toLowerCase().endsWith('.pdf') ? pdfLogo : pngLogo}
+                      alt={value?.fileName.toLowerCase().endsWith('.pdf') ? "pdf logo" : "png logo"}
+                      className="w-full h-full"
+                    />
                   </div>
 
                   <div>
@@ -350,7 +359,16 @@ const DynamicForm = ({
                       <Download className="h-4 w-4 text-[#82764f]" />
                     </a>
                   </Button>
-
+                  {!isSubmittedApplication && (
+                    <Button
+                      className="border-2 h-8 w-8 p-2"
+                      type="button"
+                      variant="ghost"
+                      onClick={() => handleInputChange(field.id, null)}
+                    >
+                      <Trash2 className="h-4 w-4 text-[#82764f]" />
+                    </Button>
+                  )}
                 </div>
               </Card>
             )}
