@@ -43,6 +43,7 @@ const cardsConfigBase = {
     id: "requestId",
     title: "findingNumber",
     label: "workOrderType",
+    tag: "workOrderType",
     status: 'actionPartyFindingStatus',
     showBelow: true,
     fields: [
@@ -168,28 +169,26 @@ const ViolationPage = () => {
         }
     }
 
+    const hideFilters = (violationData?.length === 0 || !violationData) && !violationFilter?.searchTerm && !violationFilter?.status && !loading
+
     return (
         <div className="">
-            <PageHeader header={header} customTitle={id ? 'view_violation_report' : ''}/>
+            <PageHeader header={header} customTitle={id ? 'view_violation_report' : ''} />
             {!showFInding ? <div className="min-h-[55vh]">
-                {((violationData?.length === 0 || !violationData) && !violationFilter?.searchTerm && !violationFilter?.status && !loading) ?
-                    <div className="min-h-[45vh] flex items-center justify-center">
-                        <EmptyRequest title='no_violation_found' description="no_violation_reports_found." hideButton />
+                <>
+                    <CreateAndFilter filterConfig={filterKeys} setAppliedFilter={setViolationFilter} appliedFilter={violationFilter} hideFilters={hideFilters}/>
+                    <div className="">
+                        <ListOFCards cardsConfig={cardsConfig} cardsData={violationData} />
+                        {!!(violationFilter?.totalPages && violationFilter.totalPages > 1 && violationData.length > 0) && <CustomPagination handlePageChange={handlePageChange} currentPage={violationFilter?.page} totalPages={violationFilter?.totalPages ?? 0} />}
+                        {!loading && (violationData?.length === 0 || !violationData) && <EmptyRequest hideButton={true} title={'no_violation_found'} />}
                     </div>
-                    :
-                    <>
-                        <CreateAndFilter filterConfig={filterKeys} setAppliedFilter={setViolationFilter} appliedFilter={violationFilter} />
-                        <div className="">
-                            <ListOFCards cardsConfig={cardsConfig} cardsData={violationData} />
-                            {!!(violationFilter?.totalPages && violationFilter.totalPages > 1 && violationData.length > 0) && <CustomPagination handlePageChange={handlePageChange} currentPage={violationFilter?.page} totalPages={violationFilter?.totalPages ?? 0} />}
-                            {!loading && violationData?.length === 0 && <EmptyRequest hideButton={true} title={'no_violation_found'} />}
-                        </div>
-                    </>}
+                </>
             </div> :
                 <ViolationFormHandler
                     onBack={() => {
                         setShowFinding(false)
-                        navigate("/portal/violations")}
+                        navigate("/portal/violations")
+                    }
                     }
                 />
             }
