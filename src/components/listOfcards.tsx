@@ -12,6 +12,7 @@ interface CardConfig {
     title: string,
     subTitle?: string,
     label?: string,
+    tag?: string,
     status?: string,
     showBelow?: boolean,
     fields: {
@@ -161,7 +162,9 @@ const ListOFCards = ({ cardsConfig, cardsData, isProducts = false }: ListOfCards
             {cardsData?.map((data) => {
                 const statusValue = getValue(data, cardsConfig.status);
                 const titleValue = getValue(data, cardsConfig.title);
-                const subTitleValue = getValue(data, cardsConfig.subTitle);
+                let subTitleValue = getValue(data, cardsConfig.subTitle);
+                subTitleValue = subTitleValue === 'Logistics' ? 'Open Yards' : subTitleValue
+                const tagValue = getValue(data, cardsConfig.tag);
 
                 return (
                     <Card key={getValue(data, cardsConfig.id)} className="relative">
@@ -173,8 +176,9 @@ const ListOFCards = ({ cardsConfig, cardsData, isProducts = false }: ListOfCards
 
                                 <div className="flex flex-col">
                                     <div className="flex items-center gap-2">
-                                        <div className="flex items-center">
+                                        <div className="flex items-center gap-2">
                                             <span className="text-base font-medium text-gray-800 max-md:text-sm">{titleValue}</span>
+                                            {tagValue && <span className="rounded-2xl text-zinc-500 border-gray-300 border p-1">{tagValue}</span>}
                                         </div>
 
                                         {cardsConfig.status && cardsConfig.showBelow && (
@@ -219,6 +223,10 @@ const ListOFCards = ({ cardsConfig, cardsData, isProducts = false }: ListOfCards
                                         value = data?.mainConatact?.name;
                                     }
 
+                                    if (field.key === "hsCodeName") {
+                                        value = value ? value : 'Loading...'
+                                    }
+
                                     if (field.key === "totalPlots" && !value) {
                                         value = 0;
                                     }
@@ -236,7 +244,7 @@ const ListOFCards = ({ cardsConfig, cardsData, isProducts = false }: ListOfCards
                                             className="flex justify-between md:block md:mb-3"
                                         >
                                             <p className="text-gray-500 mb-1 text-sm">{t(field.label)}</p>
-                                            <p className="font-medium text-gray-900 text-sm">{value ?? "N/A"}</p>
+                                            <p className="font-medium text-gray-900 text-sm">{(value || value === 0) ? value : "N/A"}</p>
                                         </div>
                                     );
                                 })}

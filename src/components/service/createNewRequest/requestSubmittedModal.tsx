@@ -18,6 +18,7 @@ interface RequestSubmittedModalProps {
   handleTryAgain: () => void
   errorMessage?: string
   isSaveApplication?: boolean
+  isUpdatedApplication?: boolean
   buttonText: string
   title: string
   heading: string
@@ -31,6 +32,7 @@ export function RequestSubmittedModal({
   handleTryAgain,
   errorMessage = "An unexpected error occurred.",
   isSaveApplication = false,
+  isUpdatedApplication = false,
   buttonText = '',
   title = '',
   heading = ''
@@ -40,11 +42,14 @@ export function RequestSubmittedModal({
 
   const handleClose = () => onOpenChange(false)
 
+  let headingText = isUpdatedApplication ? 'application_updated' : (isSaveApplication ? 'application_saved' : heading);
+  let titleText = isUpdatedApplication ? 'application_draft_updated' : (isSaveApplication ? 'application_saved_as_draft' : title);
+
   const status = isSuccess
     ? {
-        heading: isSaveApplication ? 'application_saved' : heading,
+        heading: headingText,
         icon: successfull,
-        title: isSaveApplication ? "application_saved_as_draft" : title,
+        title: titleText,
         subtitle: (
           <>
             <span className="">{`${' '} ${t(referenceMessage)}`}</span>
@@ -73,7 +78,7 @@ export function RequestSubmittedModal({
             variant="ghost"
             size="icon"
             className="h-6 w-6 text-gray-500 hover:text-black hover:bg-transparent cursor-pointer"
-            onClick={(isSuccess && !isSaveApplication) ? onGoToRequest : handleClose}
+            onClick={(isSuccess && !isSaveApplication && !isUpdatedApplication) ? onGoToRequest : handleClose}
           >
             <X className="h-4 w-4" />
           </Button>

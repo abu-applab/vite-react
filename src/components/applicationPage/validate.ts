@@ -27,6 +27,16 @@ interface FieldConfig {
 
   const isValidEmployeeCount = (value: string) => /^[0-9]{1,6}$/.test(value);
 
+  const containsArabicNumerals = (value: string) => {
+    const arabicNumeralsRegex = /[\u0660-\u0669]/; // Arabic numerals ٠-٩
+    return arabicNumeralsRegex.test(value);
+  };
+
+  const hasSpecialCharacters = (value: string) => {
+    const validCharsRegex = /^[\p{L}\s]*$/u;
+    return !validCharsRegex.test(value);
+  };
+
 
   //   const hasSpecialChars = (val: string) => /[^A-Za-z0-9\u0600-\u06FF\s]/.test(val)
   //   const isArabic = (val: string) => /[\u0600-\u06FF]/.test(val)
@@ -58,6 +68,14 @@ interface FieldConfig {
             newErrors[field.id] = `${t(field.label)} is required`;
           }
           return;
+        }
+
+        if(field.id === 'location' && !value && isSave) {
+          newErrors[field.id] = `${t(field.label)} is required`;
+        }
+
+        if((field.id === 'technologyCountryOfOrigin' || field.id === 'equipmentCountryOfOrigin') && value && hasSpecialCharacters(value)) {
+          newErrors[field.id] = "This field can only contain letters and spaces."
         }
   
         // 🔹 Handle numeric fields with 10-digit limit and > 0 validation
@@ -107,6 +125,12 @@ interface FieldConfig {
           if (err) newErrors[field.id] = err;
           if (isDigitsOnly(value)) newErrors[field.id] = "This field cannot contain digits only.";
         }
+
+        if (field.type === "text" && value) {
+          const err = containsArabicNumerals(value);
+          if (err) newErrors[field.id] = "This field cannot contain Arabic numerals";
+        }
+
         const maximum15digits = [
           "totalRequestedPlotSize",
           "constructionCost", 
@@ -121,6 +145,11 @@ interface FieldConfig {
 
         if (!isValidEmployeeCount(value) && value && (field.id === 'currentNumberOfEmployees' || field.id === 'additionalEmploymentProjected')) {
           newErrors[field.id] = "Please enter a valid number (1–6 digits)";
+        }
+
+        if (parseInt(value, 10) === 0 && field?.id === 'totalRequestedPlotSize') {
+          newErrors[field.id] = `${t(field.label)} cannot be 0`;
+          return;
         }
       });
     });

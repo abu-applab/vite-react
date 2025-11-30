@@ -27,12 +27,67 @@ interface CreateAndFilterProps {
     searchTerm?: string
   }
   setAppliedFilter: any
+  disableStatus?: boolean
+  hideFilters?: boolean
 }
 
-export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, setAppliedFilter }: CreateAndFilterProps) => {
+export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, setAppliedFilter, disableStatus = false, hideFilters = false }: CreateAndFilterProps) => {
   const { companies, selectedCompany, setSelectedCompany } = useApp()
   const [searchText, setSearchText] = useState("");
   const { t } = useTranslation();
+
+  if(!(companies.length > 0)) {
+    return null;
+  }
+
+  if (hideFilters) {
+    return (
+      <>
+        <Card className="flex flex-col gap-4 md:hidden p-4">
+          <h2 className="text-lg leading-7 font-medium text-card-foreground">{filterConfig.title}</h2>
+          <div className="flex flex-row gap-3">
+            <Select defaultValue={selectedCompany?.accountID}>
+              <SelectTrigger className="bg-background flex-1 min-w-[100px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {companies.map((company) => (
+                  <SelectItem key={company.accountID} value={company.accountID}>
+                    {company.englishName}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </Card>
+        <div className="hidden md:flex flex-row items-center justify-between gap-2">
+          <div></div>
+          <div>
+            <Select
+              value={selectedCompany?.accountID || ''}
+              onValueChange={(value) => {
+                const selectedValue = companies.find((company: CompanyType) => company.accountID === value)
+                selectedValue && setSelectedCompany(selectedValue)
+                setAppliedFilter({ ...appliedFilter, page: 1 })
+              }}
+            >
+              <SelectTrigger className="bg-background">
+                <Building2 className="h-4 w-4 mr-2 text-foreground" />
+                <SelectValue placeholder="" />
+              </SelectTrigger>
+              <SelectContent>
+                {companies.map((company) => (
+                  <SelectItem key={company.accountID} value={company.accountID}>
+                    {company.englishName}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+      </>
+    )
+  }
 
   return (
     <div className="">
@@ -72,6 +127,7 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, set
               <Button
                 size="icon"
                 className="bg-white text-black hover:bg-zinc-50 rounded-md border cursor-pointer"
+                disabled={disableStatus}
               >
                 <ListFilter className="h-5 w-5" />
               </Button>
@@ -128,22 +184,22 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, set
 
         {/* Company Dropdown */}
         <div className="flex flex-row gap-3">
-          {filterConfig?.applicationFilter && filterConfig?.applicationFilter?.length > 0 && 
-          <Select onValueChange={(value) => {
-            setAppliedFilter({ ...appliedFilter, page: 1, typeOfApplication: value })
-          }}>
-            <SelectTrigger className="bg-background data-[placeholder]:text-foreground flex-1 min-w-[100px]">
-              <SelectValue placeholder={t("application_type")} />
-            </SelectTrigger>
-            <SelectContent>
-              {filterConfig.applicationFilter.map((application: { id: string, value: string, icon: any }) => (
-                <SelectItem value={application.id}>
-                  <application.icon className="text-maroon-100" />
-                  {application.value}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>}
+          {filterConfig?.applicationFilter && filterConfig?.applicationFilter?.length > 0 &&
+            <Select onValueChange={(value) => {
+              setAppliedFilter({ ...appliedFilter, page: 1, typeOfApplication: value })
+            }}>
+              <SelectTrigger className="bg-background data-[placeholder]:text-foreground flex-1 min-w-[100px]">
+                <SelectValue placeholder={t("application_type")} />
+              </SelectTrigger>
+              <SelectContent>
+                {filterConfig.applicationFilter.map((application: { id: string, value: string, icon: any }) => (
+                  <SelectItem value={application.id}>
+                    <application.icon className="text-maroon-100" />
+                    {application.value}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>}
           <Select defaultValue={selectedCompany?.accountID}>
             <SelectTrigger className="bg-background flex-1 min-w-[100px]">
               <SelectValue />
@@ -233,6 +289,7 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, set
                 variant="outline"
                 role="combobox"
                 className={`justify-between w-fit`}
+                disabled={disableStatus}
               >
                 {appliedFilter?.status
                   ? `${t('status')} ${filterConfig.filterTypes!

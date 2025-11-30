@@ -281,10 +281,10 @@ const DynamicForm = ({
         const isUrl = typeof value?.fileUrl === "string" && value?.fileUrl.startsWith("http");
 
         return (
-          <div className={cn("space-y-2")}>
+          <div className={cn("")}>
             {/* UPLOAD STATE */}
             {(!value) && (
-              <>
+              <div className="mt-3">
                 <FileUpload
                   onFileUpload={(file) => handleInputChange(field.id, file)}
                   handleFileUploadError={(uploadError: string) =>
@@ -294,71 +294,38 @@ const DynamicForm = ({
                   fileLabel={t(field.label)}
                   buttonText="upload_file"
                   isRequired={field.required}
+                  tooltip={field.tooltip}
                 />
                 {errors[field.id] && (
                   <span className="text-sm text-red-600">{errors[field.id]}</span>
                 )}
-              </>
+              </div>
             )}
 
             {/* FILE OBJECT STATE (before submit) */}
             {(isFile) && (
-              <Card className="p-4.5 flex flex-row items-center justify-between">
-                <div className="flex flex-row gap-3 items-center justify-start">
-                  <div className="h-12 w-12 p-3">
-                  <img
-                      src={value?.name.toLowerCase().endsWith('.pdf') ? pdfLogo : pngLogo}
-                      alt={value?.name.toLowerCase().endsWith('.pdf') ? "pdf logo" : "png logo"}
-                      className="w-full h-full"
-                    />
-                  </div>
-                  <div className="flex flex-col">
-                    <h4 className="font-medium text-gray-900">{getFileName(formData?.[field.id]?.name)}</h4>
-                    <p className="text-sm text-gray-600">
-                      {getFileType(formData?.[field.id]?.name)} • {formatFileSize(formData?.[field.id]?.size)}
-                    </p>
-                  </div>
-                </div>
-
-                {!isSubmittedApplication && (
-                  <Button
-                    className="border-2 h-8 w-8 p-2"
-                    type="button"
-                    variant="ghost"
-                    onClick={() => handleInputChange(field.id, null)}
-                  >
-                    <Trash2 className="h-4 w-4 text-[#82764f]" />
-                  </Button>
-                )}
-              </Card>
-            )}
-
-            {/* URL STATE (after backend returns a link) */}
-            {isUrl && (
-              <Card className="p-4.5 flex flex-row items-center justify-between">
-                <div className="flex flex-row gap-3 items-center">
-                  <div className="h-12 w-12 p-3">
-                    <img
-                      src={value?.fileName.toLowerCase().endsWith('.pdf') ? pdfLogo : pngLogo}
-                      alt={value?.fileName.toLowerCase().endsWith('.pdf') ? "pdf logo" : "png logo"}
-                      className="w-full h-full"
-                    />
+              <div className="space-y-2">
+                <Label htmlFor={field.id}>
+                  {t(field.label)}
+                  {field.required && <span className="text-destructive">*</span>}
+                </Label>
+                <Card className="p-4.5 flex flex-row items-center justify-between">
+                  <div className="flex flex-row gap-3 items-center justify-start">
+                    <div className="h-12 w-12 p-3">
+                      <img
+                        src={value?.name.toLowerCase().endsWith('.pdf') ? pdfLogo : pngLogo}
+                        alt={value?.name.toLowerCase().endsWith('.pdf') ? "pdf logo" : "png logo"}
+                        className="w-full h-full"
+                      />
+                    </div>
+                    <div className="flex flex-col">
+                      <h4 className="font-medium text-gray-900">{getFileName(formData?.[field.id]?.name)}</h4>
+                      <p className="text-sm text-gray-600">
+                        {getFileType(formData?.[field.id]?.name)} • {formatFileSize(formData?.[field.id]?.size)}
+                      </p>
+                    </div>
                   </div>
 
-                  <div>
-                    <h4 className="font-medium text-gray-900">
-                      {value?.fileName}
-                    </h4>
-                    <p className="text-sm text-gray-600">Uploaded Document</p>
-                  </div>
-                </div>
-
-                <div className="flex flex-row gap-3">
-                  <Button asChild className="border-2 h-8 w-8 p-2 hover:bg-transparent cursor-pointer">
-                    <a href={value?.fileUrl}>
-                      <Download className="h-4 w-4 text-[#82764f]" />
-                    </a>
-                  </Button>
                   {!isSubmittedApplication && (
                     <Button
                       className="border-2 h-8 w-8 p-2"
@@ -369,8 +336,54 @@ const DynamicForm = ({
                       <Trash2 className="h-4 w-4 text-[#82764f]" />
                     </Button>
                   )}
-                </div>
-              </Card>
+                </Card>
+              </div>
+            )}
+
+            {/* URL STATE (after backend returns a link) */}
+            {isUrl && (
+              <div className="space-y-2">
+                <Label htmlFor={field.id}>
+                  {t(field.label)}
+                  {field.required && <span className="text-destructive">*</span>}
+                </Label>
+                <Card className="p-4.5 flex flex-row items-center justify-between">
+                  <div className="flex flex-row gap-3 items-center">
+                    <div className="h-12 w-12 p-3">
+                      <img
+                        src={value?.fileName.toLowerCase().endsWith('.pdf') ? pdfLogo : pngLogo}
+                        alt={value?.fileName.toLowerCase().endsWith('.pdf') ? "pdf logo" : "png logo"}
+                        className="w-full h-full"
+                      />
+                    </div>
+
+                    <div>
+                      <h4 className="font-medium text-gray-900">
+                        {value?.fileName}
+                      </h4>
+                      <p className="text-sm text-gray-600">Uploaded Document</p>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-row gap-3">
+                    <Button asChild className="border-2 h-8 w-8 p-2 hover:bg-transparent cursor-pointer">
+                      <a href={value?.fileUrl}>
+                        <Download className="h-4 w-4 text-[#82764f]" />
+                      </a>
+                    </Button>
+                    {!isSubmittedApplication && (
+                      <Button
+                        className="border-2 h-8 w-8 p-2"
+                        type="button"
+                        variant="ghost"
+                        onClick={() => handleInputChange(field.id, null)}
+                      >
+                        <Trash2 className="h-4 w-4 text-[#82764f]" />
+                      </Button>
+                    )}
+                  </div>
+                </Card>
+              </div>
             )}
           </div>
         );
@@ -486,7 +499,7 @@ const DynamicForm = ({
                 <h4 className=" max-md:text-maroon-100 max-md:ml-4 mb-3">{t(section.title)}</h4>
                 <Card key={sectionIndex}>
                   <CardContent className={cn("space-y-4")}>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center justify-center">
                       {section.fields
                         ?.filter((field) => {
                           // If field has showIfSelected, show it only if that value is selected in multiselect
@@ -511,7 +524,7 @@ const DynamicForm = ({
                             {field.subTitle && <h4 className=" text-maroon-100 max-md:ml-4 mb-3 col-span-full">{t(section.title)}</h4>}
                             <div
                               key={field.id}
-                              className={["textarea", "file"].includes(field.type) ? "md:col-span-2" : ""}
+                              className={["textarea"].includes(field.type) ? "md:col-span-2" : ""}
                             >
                               {renderField(field)}
                             </div>

@@ -12,7 +12,7 @@ export const useApplicationConfigLoader = () => {
   const { selectedInvestment, setLocations } = useApp();
   const { t } = useTranslation();
 
-  const loadApplicationConfig = async (selectedApplication: string, _setFormData: any, isSubmittedApplication?: boolean) => {
+  const loadApplicationConfig = async (selectedApplication: string, _setFormData: any) => {
     let baseConfig = getApplicationFormConfig(selectedApplication);
 
     let [clusterRes, iSICSectionsRes, locationRes] = await Promise.all([
@@ -39,11 +39,15 @@ export const useApplicationConfigLoader = () => {
     }));
 
     const locationOptions = locations
-    .filter((location: any) => (location.name === t(selectedInvestment?.location ?? "", { lng: "en" }) || isSubmittedApplication))
-    .map((location: any) => ({
-      name: location.name,
-      id: location.id,
-    }));
+      .filter((location: any) =>
+        selectedInvestment?.location
+          ? location.name === t(selectedInvestment.location ?? "", { lng: "en" })
+          : true
+      )
+      .map((location: any) => ({
+        name: location.name,
+        id: location.id,
+      }));
 
     // inject into config
     const updatedConfig = baseConfig.map((step: any) => ({
@@ -52,7 +56,7 @@ export const useApplicationConfigLoader = () => {
         ...section,
         fields: section.fields?.map((field: any) => {
           if (field.id === "location") {
-            return { ...field, options: locationOptions};
+            return { ...field, options: locationOptions };
           }
           if (field.id === "cluster") {
             return { ...field, options: clusterOptions };
@@ -60,8 +64,8 @@ export const useApplicationConfigLoader = () => {
           if (field.id === "isicSection") {
             return { ...field, options: iSICSectionOptions };
           }
-          if(field.id === "landUse" && isSubmittedApplication) {
-            return {...field, options: landUseData}
+          if (field.id === "landUse" && (selectedInvestment?.status === 'Submitted')) {
+            return { ...field, options: landUseData }
           }
           return field;
         }),
@@ -87,7 +91,7 @@ export const useISICCodeLoader = (formState: Record<string, any>, setConfig: any
       try {
         const response = await networkRequest(API_ENDPOINTS.getISICCodesBySectionId, {
           method: "GET",
-          body: {sectionId: sectionId}
+          body: { sectionId: sectionId }
         })
 
         const isicCodes = response?.data || [];

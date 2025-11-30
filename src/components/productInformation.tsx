@@ -16,6 +16,7 @@ const initialProduct = {
     annualProductionCapacity: "",
     quantity: "",
     hsCode: "",
+    hsCodeName: "",
     sourceOfRawMaterials: "",
     units: "",
 };
@@ -39,14 +40,14 @@ const validateProductForm = (form: Product) => {
         errors.nameOfProduct = "Name of Product cannot contain digits";
     } else if (form.nameOfProduct.length > 50) {
         errors.nameOfProduct = "Maximum 50 characters allowed";
+    } else if (!/^[a-zA-Z\s\-]+$/.test(form.nameOfProduct)) {
+        errors.nameOfProduct = "Special characters are not allowed";
     }
 
     // Annual Production Capacity: required, numeric, max 15 digits, > 0
     if (!form.annualProductionCapacity) {
         errors.annualProductionCapacity = "Annual Production Capacity is required";
-    } else if (!/^\d+$/.test(form.annualProductionCapacity)) {
-        errors.annualProductionCapacity = "Must be a valid number";
-    } else if (form.annualProductionCapacity.length > 15) {
+    } else if (form.annualProductionCapacity.length > 15 || !/^\d{1,15}$/.test(form.annualProductionCapacity)) {
         errors.annualProductionCapacity = "Maximum 15 digits allowed";
     } else if (Number(form.annualProductionCapacity) === 0) {
         errors.annualProductionCapacity = "Value cannot be zero";
@@ -55,9 +56,7 @@ const validateProductForm = (form: Product) => {
     // Quantity: same as above
     if (!form.quantity) {
         errors.quantity = "Quantity is required";
-    } else if (!/^\d+$/.test(form.quantity)) {
-        errors.quantity = "Must be a valid number";
-    } else if (form.quantity.length > 15) {
+    } else if (form.quantity.length > 15 || !/^\d{1,15}$/.test(form.quantity)) {
         errors.quantity = "Maximum 15 digits allowed";
     } else if (Number(form.quantity) === 0) {
         errors.quantity = "Value cannot be zero";
@@ -68,6 +67,8 @@ const validateProductForm = (form: Product) => {
         errors.sourceOfRawMaterials = "Source of Raw Materials is required";
     } else if (/^\d+$/.test(form.sourceOfRawMaterials)) {
         errors.sourceOfRawMaterials = "Cannot contain only numbers";
+    } else if (!/^[a-zA-Z0-9\s\-,]+$/.test(form.sourceOfRawMaterials)) {
+        errors.sourceOfRawMaterials = "Special characters are not allowed";
     } else if (form.sourceOfRawMaterials.length > 100) {
         errors.sourceOfRawMaterials = "Maximum 100 characters allowed";
     }
@@ -75,23 +76,17 @@ const validateProductForm = (form: Product) => {
     // Unit: same validation as numeric fields
     if (!form.units) {
         errors.units = "Unit is required";
-    } else if (!/^\d+$/.test(form.units)) {
-        errors.units = "Must be a valid number";
-    } else if (form.units.length > 15) {
+    } else if (form.units.length > 15 || !/^\d{1,15}$/.test(form.units)) {
         errors.units = "Maximum 15 digits allowed";
     }
-    // else if (Number(form.units) === 0) {
-    //     errors.units = "Value cannot be zero";
-    // }
 
     // HS Code required
     if (!form.hsCode) {
-        errors.hsCode = "HS Code is required";
+        errors.hsCode = "ISIC Code is required";
     }
 
     return errors;
 };
-
 
 const productFields = [
     { label: "name_of_product", key: "nameOfProduct" },
@@ -110,7 +105,6 @@ const ProductInformation = ({ products, setProducts, isError, isSubmittedApplica
     const [errors, setErrors] = useState<Partial<Record<keyof Product, string>>>({});
     const { t } = useTranslation();
 
-
     const { loadProductionConfig } = useProductConfigLoader();
 
     useEffect(() => {
@@ -128,25 +122,44 @@ const ProductInformation = ({ products, setProducts, isError, isSubmittedApplica
         fetchHSCodes();
     }, []);
 
+    // ✅ Handle products coming from API (ensure they have hsCodeName)
+    useEffect(() => {
+        if (products.length > 0) {
+            const productsWithHsCodeName = products.map(product => {
+                // If product doesn't have hsCodeName but has hsCode, find the name
+                if (!product.hsCodeName && product.hsCode) {
+                    const hsCodeItem = hsCodes.find(item => item.id === product.hsCode);
+                    return {
+                        ...product,
+                        hsCodeName: hsCodeItem?.value || ""
+                    };
+                }
+                return product;
+            });
+
+            if (JSON.stringify(products) !== JSON.stringify(productsWithHsCodeName)) {
+                setProducts(productsWithHsCodeName);
+            }
+        }
+    }, [hsCodes, products.length]); // Run when hsCodes are loaded or products change
+
     const handleEditProduct = (data: Product, index: number) => {
         setProductForm(data);
         setEditingIndex(index);
         setIsProductModalOpen(true);
     };
 
-    // ✅ Delete
     const handleDeleteProduct = (index: number) => {
         const updatedProducts = products.filter((_, i) => i !== index);
         setProducts(updatedProducts);
     };
-
 
     const handleSaveProduct = () => {
         const validationErrors = validateProductForm(productForm);
         setErrors(validationErrors);
 
         if (Object.keys(validationErrors).length > 0) {
-            return; // Stop submit if validation fails
+            return;
         }
 
         const updatedProducts = [...products];
@@ -170,6 +183,27 @@ const ProductInformation = ({ products, setProducts, isError, isSubmittedApplica
         setIsProductModalOpen(true);
     };
 
+    // ✅ Updated to set both hsCode and hsCodeName when selecting
+    const handleHsCodeChange = (hsCodeId: string) => {
+        const selectedHsCode = hsCodes.find(item => item.id === hsCodeId);
+        setProductForm({ 
+            ...productForm, 
+            hsCode: hsCodeId,
+            hsCodeName: selectedHsCode?.value || "" // ✅ Set hsCodeName
+        });
+        setErrors({ ...errors, hsCode: "" });
+    };
+
+    const getSelectedHsCodeDisplay = () => {
+        // ✅ Show hsCodeName if available, otherwise find from hsCodes
+        if (productForm.hsCodeName) {
+            return productForm.hsCodeName;
+        }
+        const selectedItem = hsCodes.find(item => item.id === productForm.hsCode);
+        return selectedItem?.value || (isLoading ? "Loading..." : "");
+    };
+
+    // ✅ Updated productConfig to use hsCodeName instead of hsCode
     const productConfig = {
         icon: Factory,
         id: "nameOfProduct",
@@ -177,11 +211,10 @@ const ProductInformation = ({ products, setProducts, isError, isSubmittedApplica
         fields: [
             { label: "annual_production_capacity", key: "annualProductionCapacity" },
             { label: "quantity", key: "quantity" },
-            { label: "hs_code", key: "hsCode" },
+            { label: "hs_code", key: "hsCodeName" }, 
             { label: "source_of_raw_materials", key: "sourceOfRawMaterials" },
             { label: "unit", key: "units" },
         ],
-        // 👇 dynamic menu actions
         menuOptions: [
             {
                 label: "update",
@@ -248,7 +281,7 @@ const ProductInformation = ({ products, setProducts, isError, isSubmittedApplica
                                     value={productForm[key as keyof Product]}
                                     onChange={(e) => {
                                         const value =
-                                            type === "number" ? Number(e.target.value) || 0 : e.target.value;
+                                            type === "number" ? Number(e.target.value) || ("") : e.target.value;
                                         setProductForm({
                                             ...productForm,
                                             [key]: value,
@@ -256,9 +289,13 @@ const ProductInformation = ({ products, setProducts, isError, isSubmittedApplica
                                         setErrors({
                                             ...errors,
                                             [key]: "",
-                                        }); // clear error on change
+                                        });
                                     }}
-                                    placeholder={t(label)}
+                                    onKeyDown={(e) => {
+                                        if (type === 'number' && ['e', 'E', '+', '-', '.'].includes(e.key)) {
+                                          e.preventDefault();
+                                        }
+                                      }}
                                     className={errors[key as keyof Product] ? "border-red-500" : ""}
                                 />
                                 {errors[key as keyof Product] && (
@@ -271,16 +308,15 @@ const ProductInformation = ({ products, setProducts, isError, isSubmittedApplica
                             <Label>{t('hs_code')}</Label>
                             <Select
                                 value={productForm.hsCode}
-                                onValueChange={(v) => {
-                                    setProductForm({ ...productForm, hsCode: v });
-                                    setErrors({ ...errors, hsCode: "" });
-                                }}
+                                onValueChange={handleHsCodeChange} // ✅ Updated handler
                                 disabled={isLoading}
                             >
                                 <SelectTrigger
                                     className={cn("w-full", { "border-red-500": errors.hsCode })}
                                 >
-                                    <SelectValue placeholder={isLoading ? "Loading..." : "Select HS Code"} />
+                                    <SelectValue placeholder={isLoading ? "Loading..." : "Select HS Code"} >
+                                        {getSelectedHsCodeDisplay()}
+                                    </SelectValue>
                                 </SelectTrigger>
                                 <SelectContent>
                                     {hsCodes.map((item) => (
@@ -292,7 +328,6 @@ const ProductInformation = ({ products, setProducts, isError, isSubmittedApplica
                             </Select>
                             {errors.hsCode && <p className="text-red-500 text-xs">{errors.hsCode}</p>}
                         </div>
-
                     </div>
 
                     <div className="flex justify-between px-5 py-3 border-t border-border h-[56px]">

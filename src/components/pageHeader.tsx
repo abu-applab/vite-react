@@ -15,12 +15,10 @@ interface pageHeaderProps {
     customTitle?: string
 }
 
-const PageHeader = ({ header, selectedForm, customTitle = '' }: pageHeaderProps) => {
+const PageHeader = ({ header, customTitle = '' }: pageHeaderProps) => {
     const { t } = useTranslation();
     const { selectedCompany, isCreateNewForm, selectedInvestment } = useApp();
-    let subTitle = selectedForm ? (`create_${selectedForm}`) :  header.contentLinks[1];
-    subTitle = customTitle ? customTitle : subTitle;
-
+    const subTitle = customTitle ? customTitle :  header.contentLinks[1];
     return (
         <div className="hidden md:block">
             <h1 className="text-2xl mb-1">{t(header.title)}</h1>
@@ -38,6 +36,8 @@ const PageHeader = ({ header, selectedForm, customTitle = '' }: pageHeaderProps)
                         <Link to="/portal">{isCreateNewForm ? t(header.contentLinks[1]) : t(header.contentLinks[0])}</Link>
                         <span className="mx-2">›</span>
                         <span className="text-maroon-100">{t(selectedInvestment?.application)}</span>
+                        <span className="mx-2">›</span>
+                        <span className="text-maroon-100">{t(selectedInvestment?.location ?? '')}</span>
                     </>
                 }
             </div>

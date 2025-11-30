@@ -17,7 +17,7 @@ export function cn(...inputs: ClassValue[]) {
 
 export const navigationItems = [
   { name: "home", icon: Home, href: "/portal" },
-  { name: "application", icon: AppWindow, href: "/portal/application" },
+  { name: "applications", icon: AppWindow, href: "/portal/application" },
   { name: "payments", icon: Wallet, href: "/portal/payments", disable: true },
   { name: "allocated_plots", icon: SquareDashed, href: "/portal/allocated-plots",  disable: true },
   { name: "agreements", icon: FileText, href: "/portal/agreements",  disable: true },
@@ -30,7 +30,7 @@ export const navigationItems = [
       { name: "bot_reports", href: "/portal/bot-reports",  disable: true },
     ],
   },
-  { name: "HSE Findings", icon: SquareLibrary, href: "/portal/violations" },
+  { name: "violation_reports", icon: SquareLibrary, href: "/portal/violations" },
 ]
 
 export const getFileType = (fileName: string) => {
@@ -273,18 +273,27 @@ export const parseCustomDate = (dateStr: string) => {
   return time;
 };
 
-export const getDynamicViolationFormConfig = (findingType: string) => {
-  const rules = findingTypeRules[findingType as keyof typeof findingTypeRules] || {
-    showField: "requirementEn",
-    hideField: null,
-    mandatory: [
-      "closureComments",
-      "correctiveActionPlan",
-      "remedialActionCorrection",
-      "rootCause",
-    ],
-    readOnly: false,
-  };
+const getFindingTypeRules = (key: string) => {
+  return findingTypeRules[key as keyof typeof findingTypeRules];
+};
+
+export const getDynamicViolationFormConfig = (findingType: string, actionPartyFindingStatus: string) => {
+  const rules = (
+    getFindingTypeRules(findingType) ||
+    getFindingTypeRules(actionPartyFindingStatus) || 
+    {
+      showField: "requirementEn",
+      hideField: null,
+      mandatory: [
+        "closureComments",
+        "correctiveActionPlan",
+        "remedialActionCorrection", 
+        "rootCause",
+      ],
+      readOnly: false,
+    }
+  );
+  
 
   const updatedSections = violationFormConfig.sections.map((section) => {
     return {

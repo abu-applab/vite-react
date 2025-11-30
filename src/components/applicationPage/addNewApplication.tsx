@@ -53,6 +53,7 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
   const [referenceMessage, setReferenceMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [isSaveApplication, setSaveApplication] = useState(false);
+  const [isUpdatedApplication, setUpdatedApplication] = useState(false);
   const [isConfirmSubmitOpen, setConfirmSubmitOpen] = useState(false);
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -129,11 +130,11 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
 
   useEffect(() => {
     const init = async () => {
-      const cfg = await loadApplicationConfig(selectedApplication, setFormData, !!id);
+      const cfg = await loadApplicationConfig(selectedApplication, setFormData);
       setConfig(cfg);
     };
     init();
-  }, [id]);
+  }, []);
 
   // useEffect(() => {
   //   if (id && formState.location && locations.length > 0) {
@@ -367,7 +368,11 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
       }
       return;
     }
-    setSaveApplication(true);
+    if(!!applicationId) {
+      setUpdatedApplication(true)
+    } else {
+      setSaveApplication(true);
+    }
     setReferenceMessage('');
     try {
       setIsLoading(true);
@@ -411,7 +416,7 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
         if (newId && !applicationId) {
           setApplicationId(newId);
         }
-        setReferenceMessage('You can continue editing it anytime from the Applications page.');
+        setReferenceMessage(response.message);
       } else {
         console.error(response?.message || 'Failed to save');
       }
@@ -442,6 +447,7 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
       return;
     }
     setSaveApplication(false);
+    setUpdatedApplication(false);
     setReferenceMessage('');
     try {
       setIsLoading(true);
@@ -617,6 +623,7 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
         buttonText="view_my_application"
         title="application_submitted_successfully"
         heading="application_submitted"
+        isUpdatedApplication={isUpdatedApplication}
       />
       <ConfirmationModal
         open={isConfirmSubmitOpen}

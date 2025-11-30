@@ -17,6 +17,7 @@ import { useTranslation } from "react-i18next";
 import { clearAllLocalStorage } from "@/lib/utils";
 import { PAGE_SIZE } from "@/constants";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { ErrorState } from "@/components/errorState";
 
 const PortalLayout = () => {
     const { isMenuOpen, setIsMenuOpen, setCompanies, setSelectedCompany, contact, setCompaniesFilter } = useApp();
@@ -27,7 +28,8 @@ const PortalLayout = () => {
     const lang = localStorage.getItem('lang') ?? 'en'
     const { t } = useTranslation();
     const abortControllerRef = useRef<AbortController | null>(null);
-
+    const [hasError, setHasError] = useState(false);
+    const [retryCount, setRetryCount] = useState(0);
 
     const fullName = `${contact?.firstName} ${contact?.lastName}`
     const initials = `${contact?.firstName.charAt(0)}${contact?.lastName.charAt(0)}`.toUpperCase();
@@ -64,9 +66,12 @@ const PortalLayout = () => {
                     }
                     setIsLoading(false);
                 }
-            } catch (error) {
+            } catch (error: any) {
                 if (!signal.aborted) {
                     console.error("Failed to fetch companies:", error);
+                    if (error?.status === 500) {
+                        setHasError(true);
+                    }
                     setIsLoading(false);
                 }
             }
@@ -79,7 +84,7 @@ const PortalLayout = () => {
                 abortControllerRef.current.abort();
             }
         };
-    }, [contact?.id]); 
+    }, [contact?.id, retryCount]); 
 
     const switchLanguage = () => {
         const currentLang = i18n.language;
@@ -105,6 +110,15 @@ const PortalLayout = () => {
             console.error('Logout failed:', error);
         }
     }
+
+
+    const handleTryAgain = () => {
+        // Reset states and increment retry count to trigger useEffect
+        setHasError(false);
+        abortControllerRef.current = null
+        setRetryCount(prev => prev + 1);
+    };
+
     return (
         <div className='bg-[#f6f5ef] w-screen min-h-screen flex flex-col'>
             <div className="flex flex-row items-center justify-between w-full h-[88px] lg:px-20 md:px-6 md:border-b-2 max-md:px-4">
@@ -181,10 +195,13 @@ const PortalLayout = () => {
             <div className="flex-1 flex flex-col">
                 <div className="lg:px-20 md:px-6 md:mt-10 flex-1 flex flex-col justify-center max-md:m-4">
 
-                    {
-                        isLoading ? <Loader /> :
-                            <Outlet />
-                    }
+                {isLoading ? (
+                     <Loader />
+                    ) : hasError ? (
+                        <ErrorState handleTryAgain={handleTryAgain} />
+                    ) : (
+                        <Outlet />
+                    )}
                 </div>
             </div>
             <Footer />

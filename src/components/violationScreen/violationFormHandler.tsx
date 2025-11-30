@@ -34,7 +34,7 @@ const initialFormState: FormState = {
 interface ViolationFormHandlerProps {
   onBack: () => void;
 }
-  
+
 
 export const ViolationFormHandler = ({ onBack }: ViolationFormHandlerProps) => {
   const [formState, setFormState] = useState<Record<string, any>>({ ...initialFormState });
@@ -47,7 +47,7 @@ export const ViolationFormHandler = ({ onBack }: ViolationFormHandlerProps) => {
   const [isSubmittedModalOpen, setSubmittedModal] = useState(false);
   const [referenceMessage, setReferenceMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const {t} = useTranslation();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -64,8 +64,8 @@ export const ViolationFormHandler = ({ onBack }: ViolationFormHandlerProps) => {
           const documentsList = response.data.documents || [];
 
           // Separate objects based on createdBy condition
-          const violationPhotos = documentsList.filter((doc: any) => doc?.createdBy !== "# D365CRMSB");
-          const closeoutEvidence = documentsList.filter((doc: any) => doc?.createdBy === "# D365CRMSB");
+          const violationPhotos = documentsList.filter((doc: any) => (doc?.createdBy !== "# D365CRMSB" && doc?.createdBy !== "# QHSE-SBX"));
+          const closeoutEvidence = documentsList.filter((doc: any) => (doc?.createdBy === "# D365CRMSB" || doc?.createdBy === "# QHSE-SBX"));
 
           const updatedFormData = {
             ...findingData,
@@ -76,7 +76,7 @@ export const ViolationFormHandler = ({ onBack }: ViolationFormHandlerProps) => {
           setFormState(updatedFormData);
 
           // ⬇️ Generate dynamic form config based on finding type
-          const newConfig = getDynamicViolationFormConfig(findingData.findingType);
+          const newConfig = getDynamicViolationFormConfig(findingData.findingType, findingData.actionPartyFindingStatus);
 
           setFormConfig(newConfig as any);
         } else {
@@ -151,7 +151,8 @@ export const ViolationFormHandler = ({ onBack }: ViolationFormHandlerProps) => {
     }
   };
 
-   const isSubmittedApplication = Boolean(formState?.findingType ===  "Compliance - الإمتثال و أفضل الممارسات" || formState?.findingType === "Not Inspected - لم يتم التفتيش")
+  const isSubmittedReport = Boolean(formState?.findingType === "Compliance - الإمتثال و أفضل الممارسات" || formState?.findingType === "Not Inspected - لم يتم التفتيش")
+  const isClosedReport = Boolean(formState?.actionPartyFindingStatus === "Closed+" || formState?.actionPartyFindingStatus === "Closed-")
 
   return (
     <div>
@@ -164,7 +165,7 @@ export const ViolationFormHandler = ({ onBack }: ViolationFormHandlerProps) => {
         handleInputChange={handleInputChange}
         handlePerviousButton={() => onBack()}
         handleSubmit={handleSubmit}
-        isSubmittedApplication={isSubmittedApplication}
+        isSubmittedApplication={isSubmittedReport || isClosedReport}
       />
 
       <RequestSubmittedModal
@@ -219,7 +220,7 @@ const validateForm = (
     const value = typeof rawValue === "string" ? rawValue.trim() : rawValue;
 
     if (type === "text" || type === "textarea") {
-      
+
       // Required rule
       if (required && (!value || value.length === 0)) {
         errors[id] = `${t(field.label)} is required`;

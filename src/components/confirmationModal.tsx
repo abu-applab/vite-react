@@ -8,6 +8,7 @@ interface ConfirmationModalProps {
     onOpenChange: (open: boolean) => void
     title?: string
     description: string
+    subTitle?: string
     confirmText?: string
     cancelText?: string
     onConfirm: () => void
@@ -17,6 +18,7 @@ export function ConfirmationModal({
     open,
     onOpenChange,
     title = "confirmation",
+    subTitle= 'confirm_submission',
     description,
     confirmText = "submit",
     cancelText = "cancel",
@@ -47,7 +49,7 @@ export function ConfirmationModal({
                 </DialogHeader>
 
                 <div className="flex flex-col items-center justify-center px-6 py-6 gap-1">
-                    <h4 className="text-xl font-semibold text-black ">{t('confirm_submission')}</h4>
+                    <h4 className="text-xl font-semibold text-black ">{t(subTitle)}</h4>
                     <p className="text-sm text-center text-zinc-500 leading-relaxed">
                         {t(description)}
                     </p>
