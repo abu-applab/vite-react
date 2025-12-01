@@ -7,8 +7,9 @@ const SignUp = () => {
 
     return (
         <AuthLayout>
-            <p className="text-gray-500 text-sm mt-1">
-                Fill the details to create an account.
+            <h2 className="text-2xl font-bold mb-2">Create your account</h2>
+            <p className="text-gray-500 text-sm mt-1 mb-10">
+                Enter your details to continue.
             </p>
             <SignUpForm onSwitch={(view: any) => navigate(`/${view}`)} />
         </AuthLayout>
