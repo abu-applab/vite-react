@@ -152,7 +152,7 @@ export default function OtpVeirificationForm({
                         } else if (isFilled) {
                             colorClasses = "border-green-500 focus:border-green-500";
                         }
-                        if (isLastBox && isFilled) {
+                        if (isLastBox && isFilled && !hasError) {
                             colorClasses = "!border-green-500 !focus:border-green-500";
                         }
 
