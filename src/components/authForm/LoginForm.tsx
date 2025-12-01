@@ -14,6 +14,7 @@ import { cn, setLocalStorageItem } from "@/lib/utils";
 import { useMsal } from "@azure/msal-react";
 import { loginRequest } from "@/lib/auth/authConfig";
 import { useApp } from "@/context/AppContext";
+import { motion } from "framer-motion";
 
 const icons = { Mail, Lock };
 
@@ -186,7 +187,7 @@ const LoginForm = ({ onSwitch }: LoginFormProps) => {
                   placeholder={placeholder}
                   value={formData[fieldKey] || ""}
                   onChange={handleChange}
-                  className={cn("pl-10 h-9 sm:h-10 text-sm sm:text-base", {
+                  className={cn("pl-10 h-9 sm:h-10 text-sm", {
                     "ring-1 ring-red-500": showFieldError,
                   })}
                 />
@@ -218,13 +219,29 @@ const LoginForm = ({ onSwitch }: LoginFormProps) => {
           <span>{authError}</span>
         </div>
       )}
-      <Button
-        type="submit"
-        disabled={loading}
-        className="w-full bg-[#971B2F] hover:bg-[#7A1F2B] text-white font-medium text-sm sm:text-base py-2 rounded-md"
+      <motion.div
+        initial={{
+          background: "linear-gradient(90deg, #971B2F 10%, #f08697 20%, #971B2F 30%)",
+          backgroundSize: "200% 100%",
+        }}
+        animate={{
+          backgroundPosition: ["200% 0%", "0% 0%"],
+        }}
+        transition={{
+          duration: 1.5,
+          repeat: Infinity,
+          ease: "linear",
+        }}
+        className="w-full rounded-md"
       >
-        {loading ? "Signing In..." : "Sign In"}
-      </Button>
+        <Button
+          type="submit"
+          disabled={loading}
+          className="w-full bg-transparent hover:bg-transparent text-white font-medium text-sm sm:text-base py-2"
+        >
+          {loading ? "Signing In..." : "Sign In"}
+        </Button>
+      </motion.div>
 
       <div className="flex items-center my-4">
         <hr className="flex-grow border-gray-200" />
