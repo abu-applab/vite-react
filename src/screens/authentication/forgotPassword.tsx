@@ -52,8 +52,7 @@ const ForgotPassword = () => {
                         </h2>
 
                         <p className="text-sm md:text-base text-gray-600 max-w-xl mb-6">
-                            We&apos;ve sent a password reset link to your registered email.
-                            Please check your inbox and follow the instructions to reset your password.
+                            If an account exists for the email you provided, you will receive a password reset link shortly. Please check your inbox and follow the instructions.
                         </p>
 
                         <button
@@ -80,8 +79,8 @@ const ForgotPassword = () => {
                     <h1 className="text-xl md:text-2xl font-semibold text-gray-900">
                         Forgot Password
                     </h1>
-                    <p className="text-gray-500 text-sm mt-1">
-                        Enter your registered email to reset your password.
+                    <p className="text-gray-500 text-sm mt-1 mb-10">
+                        Enter your email to request password reset.
                     </p>
                     <ForgotPasswordForm
                         onSwitch={(view: any) => navigate(`/${view}`)}
