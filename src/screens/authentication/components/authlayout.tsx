@@ -6,12 +6,12 @@ import { motion } from 'framer-motion'
 import { useMediaQuery } from 'react-responsive'
 import { useSearchParams } from 'react-router-dom'
 
-export default function AuthLayout({ children, hideLogo = false }: { children: React.ReactNode; hideLogo?: boolean }) {
+export default function AuthLayout({ children, hideLogo = false, animate = false }: { children: React.ReactNode; hideLogo?: boolean, animate?: boolean }) {
     const isDesktop = useMediaQuery({ minWidth: 768 })
     const [searchParams] = useSearchParams();
     const token = searchParams.get("token");
 
-    const addMotion = isDesktop && !token
+    const addMotion = isDesktop && !token && animate
     return (
         <div className="flex min-h-screen w-full flex-col md:flex-row ">
             <motion.div
