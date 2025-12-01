@@ -10,6 +10,7 @@ import { API_ENDPOINTS } from "@/api/apiEndpoints";
 import checkCircle from "../../assets/images/check-circle.svg"
 import circleX from "../../assets/images/circle-x.svg"
 import { passwordRules } from "@/lib/utils";
+import PasswordInput from "../ui/passwordInput";
 
 interface ResetPasswordProps {
     onSwitch: (view: any) => void;
@@ -35,10 +36,9 @@ const ResetPasswordForm = ({ onSwitch }: ResetPasswordProps) => {
         special: false,
     });
 
-    console.log('passwordValidation: ', passwordValidation);
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        console.log('name: ', name);
+
 
         setFormData((prev) => ({ ...prev, [name]: value }));
         setErrors((prev) => ({ ...prev, [name]: "" }));
@@ -106,7 +106,7 @@ const ResetPasswordForm = ({ onSwitch }: ResetPasswordProps) => {
                 setApiError(response?.message || "Failed to reset password");
             }
         } catch (err) {
-            console.error(err);
+
             setApiError("Failed to reset password");
         } finally {
             setLoading(false);
@@ -115,16 +115,14 @@ const ResetPasswordForm = ({ onSwitch }: ResetPasswordProps) => {
 
     return (
         <form onSubmit={handleSubmit} className="space-y-4 w-full max-w-sm">
-            {resetPasswordFields.map(({ id, label, type, placeholder }) => (
+            {resetPasswordFields.map(({ id, label, placeholder }) => (
                 <div key={id} className="space-y-2 text-left w-full">
                     <Label className="text-sm font-medium">{label}</Label>
-                    <Input
+                    <PasswordInput
                         name={id}
-                        type={type}
                         placeholder={placeholder}
                         value={formData[id] || ""}
                         onChange={handleChange}
-                        className={`text-sm ${errors[id] ? "ring-1 ring-red-500" : ""}`}
                     />
                     {errors[id] && <p className="text-xs text-red-500">{errors[id]}</p>}
                 </div>
@@ -152,16 +150,22 @@ const ResetPasswordForm = ({ onSwitch }: ResetPasswordProps) => {
 
             <Button
                 type="submit"
-                disabled={loading}
-                className="w-full bg-[#971B2F] hover:bg-[#7A1F2B] text-white font-medium text-sm py-2 rounded-md"
+                // disabled={!Object.values(passwordValidation).every(Boolean) || !formData.password || !formData.confirmPassword || formData.password !== formData.confirmPassword || loading}
+                className={`w-full font-medium text-sm py-2 rounded-md ${Object.values(passwordValidation).every(Boolean) &&
+                    formData.password &&
+                    formData.confirmPassword &&
+                    formData.password === formData.confirmPassword
+                    ? 'bg-[#971B2F] text-white hover:bg-[#7a1628]'
+                    : 'bg-gray-300 text-gray-500 cursor-not-allowed hover:bg-gray-200'
+                    }`}
             >
                 {loading ? "Resetting..." : "Reset Password"}
             </Button>
             <p className="text-sm text-gray-700 mt-4 flex items-center justify-center">
-                {"Remember password? Go back to "}
+                {"Remember Password ? "}
                 <span
                     onClick={() => onSwitch("login")}
-                    className="text-[#971B2F] font-medium cursor-pointer ml-1"
+                    className="text-[#971B2F] font-medium cursor-pointer ml-1 underline"
                 >
                     {`${''} Sign In`}
                 </span>

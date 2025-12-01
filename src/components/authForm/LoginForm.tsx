@@ -268,7 +268,7 @@ const LoginForm = ({ onSwitch }: LoginFormProps) => {
 
       <p className="text-sm text-gray-700 mt-4 flex items-center justify-center">
         Don’t have an account?{" "}
-        <span onClick={() => onSwitch("signup")} className="text-[#971B2F] font-medium cursor-pointer ml-1">
+        <span onClick={() => onSwitch("signup")} className="text-[#971B2F] font-medium cursor-pointer ml-1 underline">
           Sign Up
         </span>
       </p>

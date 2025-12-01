@@ -130,7 +130,7 @@ const ForgotPasswordForm = ({ onSwitch, onResetSuccess }: ForgotPasswordProps) =
         {"Remember password? Go back to\u00a0"}
         <span
           onClick={() => onSwitch("login")}
-          className="text-[#971B2F] font-medium cursor-pointer"
+          className="text-[#971B2F] font-medium cursor-pointer underline"
         >
           Sign In
         </span>

@@ -303,7 +303,7 @@ const SignUpForm = ({ onSwitch }: SignUpFormProps) => {
         Already a member?{" "}
         <span
           onClick={() => onSwitch("login")}
-          className="text-[#971B2F] font-medium cursor-pointer ml-1"
+          className="text-[#971B2F] font-medium cursor-pointer ml-1 underline"
         >
           Sign In
         </span>
