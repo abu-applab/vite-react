@@ -19,15 +19,15 @@ export const navigationItems = [
   { name: "home", icon: Home, href: "/portal" },
   { name: "applications", icon: AppWindow, href: "/portal/application" },
   { name: "payments", icon: Wallet, href: "/portal/payments", disable: true },
-  { name: "allocated_plots", icon: SquareDashed, href: "/portal/allocated-plots",  disable: true },
-  { name: "agreements", icon: FileText, href: "/portal/agreements",  disable: true },
+  { name: "allocated_plots", icon: SquareDashed, href: "/portal/allocated-plots", disable: true },
+  { name: "agreements", icon: FileText, href: "/portal/agreements", disable: true },
   {
     name: "Service Request",
     icon: MessageSquareDot,
     children: [
       { name: "general_service_request", href: "/portal/service" },
-      { name: "bot_requests", href: "/portal/bot-requests",  disable: true },
-      { name: "bot_reports", href: "/portal/bot-reports",  disable: true },
+      { name: "bot_requests", href: "/portal/bot-requests", disable: true },
+      { name: "bot_reports", href: "/portal/bot-reports", disable: true },
     ],
   },
   { name: "violation_reports", icon: SquareLibrary, href: "/portal/violations" },
@@ -222,7 +222,7 @@ export const removeEmptyValues = (data: any) => {
   const cleaned: any = {};
 
   Object.entries(data).forEach(([key, value]) => {
-    if (value !== 0 && value !== "" && value !== '00000000-0000-0000-0000-000000000000')  {
+    if (value !== 0 && value !== "" && value !== '00000000-0000-0000-0000-000000000000') {
       cleaned[key] = value;
     }
   });
@@ -258,7 +258,7 @@ export const clearAllLocalStorage = () => {
 };
 export const passwordRules = [
   { id: "length", label: "Minimum 8 characters", test: (pw: string) => pw.length >= 8 },
-  { id: "upperLower", label: "One uppercase and one lowercase character", test: (pw: string) => /[A-Z]/.test(pw) && /[a-z]/.test(pw) },
+  { id: "upperLower", label: "One uppercase and lowercase character", test: (pw: string) => /[A-Z]/.test(pw) && /[a-z]/.test(pw) },
   { id: "number", label: "At least one numeric", test: (pw: string) => /\d/.test(pw) },
   { id: "special", label: "At least one special character", test: (pw: string) => /[\W_]/.test(pw) },
 ];

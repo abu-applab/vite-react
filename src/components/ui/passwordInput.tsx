@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, KeyRound } from "lucide-react";
 import { Input } from "./input";
 import { cn } from "@/lib/utils";
 
@@ -8,7 +8,9 @@ export type PasswordInputProps = {
     placeholder?: string;
     value: string;
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    showError: boolean;
+    showError?: boolean;
+    icon?: React.ReactNode;
+    hideIcon?: boolean;
 };
 
 const PasswordInput: React.FC<PasswordInputProps> = ({
@@ -16,19 +18,30 @@ const PasswordInput: React.FC<PasswordInputProps> = ({
     placeholder,
     value,
     onChange,
-    showError,
+    showError = false,
+    icon = <KeyRound className="w-4 h-4 text-gray-400" />,
+    hideIcon = false,
 }) => {
     const [show, setShow] = useState(false);
 
     return (
         <div className="relative">
+            {!hideIcon && icon && (
+                <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
+                    {icon}
+                </div>
+            )}
             <Input
                 name={name}
                 type={show ? "text" : "password"}
                 placeholder={placeholder}
                 value={value}
                 onChange={onChange}
-                className={cn("text-sm pr-10", { "ring-1 ring-red-500": showError })}
+                className={cn(
+                    "text-sm pr-10",
+                    (!hideIcon && icon) ? "pl-10" : "pl-3",
+                    { "ring-1 ring-red-500": showError },
+                )}
             />
             <button
                 type="button"
