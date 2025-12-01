@@ -62,7 +62,9 @@ const SignUpForm = ({ onSwitch }: SignUpFormProps) => {
     if (name === "landlineNumber" || name === "mobileNumber") {
       nextValue = value.replace(/\D/g, "");
     }
-
+    else if ((name === "firstName" || name === "lastName") && /\d/.test(value)) {
+      return; // Don't update the state if numbers are entered
+    }
     setFormData((prev) => ({
       ...prev,
       [name]: nextValue,
@@ -210,6 +212,7 @@ const SignUpForm = ({ onSwitch }: SignUpFormProps) => {
                   value={String(formData[fieldKey] || "")}
                   onChange={handleChange}
                   showError={showError}
+                  hideIcon={true}
                 />
               ) : (
                 <Input
@@ -239,10 +242,7 @@ const SignUpForm = ({ onSwitch }: SignUpFormProps) => {
                         className="w-3.5 h-3.5 mr-2"
                       />
                       <span
-                        className={cn("text-xs", {
-                          "text-green-600": passwordValidation[rule.id],
-                          "text-gray-500": !passwordValidation[rule.id],
-                        })}
+                        className={cn("text-xs text-gray-500")}
                       >
                         {rule.label}
                       </span>
