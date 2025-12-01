@@ -19,14 +19,14 @@ export const API_ENDPOINTS = {
   getFindingsList: "/Proxy/WebApp/getFindingsListFromOP",
   GetFindingFromOP: "/Proxy/WebApp/GetFindingFromOP",
   updateFindingDetails: "/Proxy/WebApp/updateFindingDetails",
-  logIn: "/RegistationAndLogin/login",
-  logOut: "/RegistationAndLogin/logout",
-  signUp: "/RegistationAndLogin/signup",
-  validateApi: "/RegistationAndLogin/validate-otp",
-  resendOtp: "/RegistationAndLogin/resend-otp",
+  logIn: "/RegistrationAndLogin/login",
+  logOut: "/RegistrationAndLogin/logout",
+  signUp: "/RegistrationAndLogin/signup",
+  validateApi: "/RegistrationAndLogin/validate-otp",
+  resendOtp: "/RegistrationAndLogin/resend-otp",
 
-  forgotpassword: "/RegistationAndLogin/requestPasswordReset",
-  resetPassword: "/RegistationAndLogin/resetPassword",
+  forgotpassword: "/RegistrationAndLogin/requestPasswordReset",
+  resetPassword: "/Proxy/RegistrationAndLogin/resetPassword",
 }
 
 export const API_SERVICES_ENDPOINTS = {
