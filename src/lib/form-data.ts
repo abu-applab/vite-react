@@ -17,6 +17,7 @@ export interface FormField {
     subTitle?: string
     fileName?: string
     hidden?: boolean
+    tooltip?: string
 }
 
 export interface FormSection {
@@ -841,7 +842,7 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                     label: "location",
                                     type: "select",
                                     required: true,
-                                    options: []
+                                    options: [{ id: "loading", name: "Fetching location...", disabled: true }],
                                 },
                                 {
                                     id: "isicSection",
@@ -861,7 +862,7 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                     id: "proposedBusinessActivity",
                                     label: "description_of_proposed_business_activities",
                                     type: "textarea",
-                                    required: true,
+                                    required: false,
                                     placeholder: "",
                                     min: 100,
                                     max: 500,
@@ -1237,23 +1238,6 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                     required: true,
                                     fileName: "Material Safety Data Sheets"
                                 },
-
-                                // {
-                                //     id: "Documents.ConceptualSiteLayout2",
-                                //     label: "conceptual_site_layout",
-                                //     type: "file",
-                                //     required: true,
-                                //     fileName: ''
-                                // },
-
-                                {
-                                    id: "Documents.ProjectedCashFlow",
-                                    label: "projected_cash_flow",
-                                    type: "file",
-                                    required: true,
-                                    fileName: "Projected Cash Flow"
-                                },
-
                                 {
                                     id: "Documents.FinancialCapacityProofToExecuteTheProject",
                                     label: "financial_capacity_proo_to_execute_the_project",
@@ -1261,7 +1245,6 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                     required: true,
                                     fileName: 'Financial Capacity Proof'
                                 },
-
                                 {
                                     id: "Documents.SignedCopyOfCreditBureauConsentForm",
                                     label: "credit_bureau_repor_for_owner",
@@ -1277,39 +1260,11 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                     fileName: 'Audited Financials'
                                 },
                                 {
-                                    id: "Documents.BusinessPlan",
-                                    label: "business_plan",
-                                    type: "file",
-                                    required: true,
-                                    fileName: 'Business Plan'
-                                },
-                                {
-                                    id: "Documents.EstablishmentCard",
-                                    label: "establishment_card",
-                                    type: "file",
-                                    required: true,
-                                    fileName: 'The Establishment Card'
-                                },
-                                {
                                     id: "Documents.CompanyProfile",
                                     label: "company_profile_if_applicable",
                                     type: "file",
                                     required: false,
                                     fileName: "Company Profile"
-                                },
-                                {
-                                    id: "Documents.ValidCommercialLicense",
-                                    label: "valid_commercial_license",
-                                    type: "file",
-                                    required: true,
-                                    fileName: 'A Valid Commercial License'
-                                },
-                                {
-                                    id: "Documents.PhotosOfMaterialsAndEquipment",
-                                    label: "photos_materials_equipment",
-                                    type: "file",
-                                    required: true,
-                                    fileName: 'Photos of Materials & Equipment'
                                 },
                             ]
                         },
@@ -1377,7 +1332,7 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                     label: "cluster",
                                     type: "select",
                                     required: true,
-                                    options: [],
+                                    options: [{ id: "loading", name: "Fetching cluster...", disabled: true }]
                                 },
                                 {
                                     id: "proposedBusinessActivity",
@@ -1406,7 +1361,7 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                     label: "preferred_location",
                                     type: "select",
                                     required: true,
-                                    options: [],
+                                    options: [{ id: "loading", name: "Fetching location...", disabled: true }],
                                 },
                             ],
                         },
@@ -1474,7 +1429,15 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                     label: "photos_materials_equipment",
                                     type: "file",
                                     required: true,
-                                    fileName: 'Photos of Materials & Equipment'
+                                    fileName: 'Photos of Materials & Equipment',
+                                    tooltip: 'photos_materials_equipment_tooltip'
+                                },
+                                {
+                                    id: "Documents.CompanyProfile",
+                                    label: "company_profile_if_applicable",
+                                    type: "file",
+                                    required: false,
+                                    fileName: "Company Profile"
                                 },
                             ],
                         },
@@ -1656,7 +1619,7 @@ export const violationFormConfig: {
                     required: false,
                 },
                 {
-                    id: "inspectionType",  // missing
+                    id: "workOrderType",  // missing
                     label: "inspection_type",
                     type: "text",
                     placeholder: "",
@@ -1682,7 +1645,7 @@ export const violationFormConfig: {
                 {
                     id: "findingFailureDetailsEn",
                     label: "finding_details",
-                    type: "text",
+                    type: "textarea",
                     placeholder: "",
                     disabled: true,
                     required: false,
@@ -1690,7 +1653,7 @@ export const violationFormConfig: {
                 {
                     id: "proposedActionEn",  // en and ar
                     label: "proposed_action",
-                    type: "text",
+                    type: "textarea",
                     placeholder: "",
                     disabled: true,
                     // hidden: true,
@@ -1699,7 +1662,7 @@ export const violationFormConfig: {
                 {
                     id: "requirementEn",  // en and ar
                     label: "Requirements",
-                    type: "text",
+                    type: "textarea",
                     placeholder: "",
                     disabled: true,
                     // hidden: true,
@@ -1713,14 +1676,14 @@ export const violationFormConfig: {
                     disabled: true,
                     required: false,
                 },
-                {
-                    id: "submissionData", // missing
-                    label: "submission_data",
-                    type: "text",
-                    placeholder: "",
-                    disabled: true,
-                    required: false,
-                },
+                // {
+                //     id: "submissionData", // missing
+                //     label: "submission_data",
+                //     type: "text",
+                //     placeholder: "",
+                //     disabled: true,
+                //     required: false,
+                // },
                 {
                     id: "closedOn",
                     label: "actual_closeout_date",
@@ -1890,6 +1853,22 @@ export const findingTypeRules = {
     },
   
     "Not Inspected - لم يتم التفتيش": {
+      showField: null,
+      hideField: null,
+      mandatory: [],  
+      readOnly: true,
+      blankStatus: true,
+    },
+
+    "Closed+": {
+      showField: null,
+      hideField: null,
+      mandatory: [],  
+      readOnly: true,
+      blankStatus: true,
+    },
+
+    "Closed-": {
       showField: null,
       hideField: null,
       mandatory: [],  

@@ -17,7 +17,7 @@ const cardsConfig = {
   fields: [
     {
       label: "total_plots",
-      key: "totalPlots",
+      key: "plotCount",
     },
     {
       label: "main_contact",

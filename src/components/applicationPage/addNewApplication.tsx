@@ -53,11 +53,12 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
   const [referenceMessage, setReferenceMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [isSaveApplication, setSaveApplication] = useState(false);
+  const [isUpdatedApplication, setUpdatedApplication] = useState(false);
   const [isConfirmSubmitOpen, setConfirmSubmitOpen] = useState(false);
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-    const isSubmittedApplication = Boolean(
+  const isSubmittedApplication = Boolean(
     id && (selectedInvestment?.status && selectedInvestment?.status?.toLowerCase() !== "draft")
   );
 
@@ -103,6 +104,7 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
             ...mappedDocuments,
           };
           setFormData(updatedData);
+          setSelectedInvestment
 
           if (response.data.applicationData.products) {
             setProducts(response.data.applicationData.products);
@@ -119,6 +121,7 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
     };
 
     if (id) {
+      setApplicationId(id)
       fetchData();
     }
   }, [id]);
@@ -127,11 +130,35 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
 
   useEffect(() => {
     const init = async () => {
-      const cfg = await loadApplicationConfig(selectedApplication, setFormData, !!id);
+      const cfg = await loadApplicationConfig(selectedApplication, setFormData);
       setConfig(cfg);
     };
     init();
-  }, [id]);
+  }, []);
+
+  // useEffect(() => {
+  //   if (id && formState.location && locations.length > 0) {
+  //     console.log('formState.location: ', formState.location);
+  //     console.log('locations: ', locations);
+  //     console.log('called ===== called');
+  //     const selectedLoc = locations.find((loc) => loc.id == formState.location)
+  //     console.log('selectedLoc: ', selectedLoc);
+  //     const updatedConfig = config.map((step: any) => ({
+  //       ...step,
+  //       sections: step.sections?.map((section: any) => ({
+  //         ...section,
+  //         fields: section.fields?.map((field: any) => {
+  //           if (field.id === "location") {
+  //             return { ...field, options: [{ name: selectedLoc?.name, id: selectedLoc?.id }] };
+  //           }
+  //           return field;
+  //         }),
+  //       })),
+  //     }));
+
+  //     setConfig(updatedConfig);
+  //   }
+  // }, [id, formState.location, locations])
 
   useEffect(() => {
     const fetchISICCodes = async () => {
@@ -268,7 +295,7 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
         const stepConfig = config?.[currentIndex];
 
         newErrors = validateForm(stepConfig, formState, t)
-        if (products.length <= 0 && applicationSteps[currentIndex].title === 'Company Details (1 of 2)') {
+        if (!(products.length > 0) && applicationSteps[currentIndex].title === 'company_details_1') {
           newErrors.ProductsJson = "Field is required"
         }
         if (Object.keys(newErrors).length > 0) {
@@ -341,7 +368,11 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
       }
       return;
     }
-    setSaveApplication(true);
+    if(!!applicationId) {
+      setUpdatedApplication(true)
+    } else {
+      setSaveApplication(true);
+    }
     setReferenceMessage('');
     try {
       setIsLoading(true);
@@ -350,7 +381,11 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
       body.append('ContactPerson', contact?.id ?? '');
       body.append('ApplicationType', selectedInvestment?.applicationType ?? '');
 
-      if (products.length > 0) body.append('ProductsJson', JSON.stringify(products));
+      const transformedProducts = products?.map(({ id, hsCodeName, ...rest }: any) => rest);
+
+      if (transformedProducts.length > 0) {
+        body.append('ProductsJson', JSON.stringify(transformedProducts));
+      }
       const excludedKeys = [
         "TotalCost",
         "TotalFunding",
@@ -364,7 +399,7 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
       });
       let response;
       // ✅ If we already have an ID, update; otherwise create
-      if (applicationId) {
+      if (applicationId || id) {
         response = await networkRequest(`${API_ENDPOINTS.updateApplication}?id=${applicationId}`, {
           method: 'POST',
           body,
@@ -381,7 +416,7 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
         if (newId && !applicationId) {
           setApplicationId(newId);
         }
-        setReferenceMessage('You can continue editing it anytime from the Applications page.');
+        setReferenceMessage(response.message);
       } else {
         console.error(response?.message || 'Failed to save');
       }
@@ -412,6 +447,7 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
       return;
     }
     setSaveApplication(false);
+    setUpdatedApplication(false);
     setReferenceMessage('');
     try {
       setIsLoading(true);
@@ -420,7 +456,11 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
       body.append('ContactPerson', contact?.id ?? '');
       body.append('ApplicationType', selectedInvestment?.applicationType ?? '');
 
-      if (products.length > 0) body.append('ProductsJson', JSON.stringify(products));
+      const transformedProducts = products?.map(({ id, hsCodeName, ...rest }: any) => rest);
+
+      if (transformedProducts.length > 0) {
+        body.append('ProductsJson', JSON.stringify(transformedProducts));
+      }
       const excludedKeys = [
         "TotalCost",
         "TotalFunding",
@@ -583,6 +623,7 @@ const AddNewApplication = ({ selectedApplication, setSelectedApplication, setCre
         buttonText="view_my_application"
         title="application_submitted_successfully"
         heading="application_submitted"
+        isUpdatedApplication={isUpdatedApplication}
       />
       <ConfirmationModal
         open={isConfirmSubmitOpen}

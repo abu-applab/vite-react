@@ -22,6 +22,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { EmptyRequest } from "@/components/service/serviceRequestPage/empty-request";
 import { PAGE_SIZE } from "@/constants";
 import { useTranslation } from "react-i18next";
+import { ConfirmationModal } from "@/components/confirmationModal";
 
 interface InvestmentOptions {
     id: string
@@ -111,7 +112,7 @@ const investmentLocations: InvestmentType =
 const cardsConfigBase = {
     icon: FileSpreadsheet,
     id: "applicationId",
-    subTitle: "locationNameEn",
+    subTitle: "typeOfApplication",
     title: "referenceNumber",
     status: 'status',
     fields: [
@@ -136,7 +137,7 @@ const cardsConfigBase = {
 const cardsDraftConfigBase = {
     icon: FileSpreadsheet,
     id: "applicationId",
-    subTitle: "locationNameEn",
+    subTitle: "typeOfApplication",
     title: "referenceNumber",
     status: 'status',
     fields: [
@@ -204,6 +205,8 @@ const ApplicationPage = () => {
     const [applicationData, setApplicationData] = useState([])
     const [applicationDraftData, setApplicationDarftData] = useState([])
     const [refreshDraft, setRefreshDraft] = useState(false);
+    const [isConfirmSubmitOpen, setConfirmSubmitOpen] = useState(false);
+    const [selectedApplicationId, setSelectedApplicationId] = useState('');
     const navigate = useNavigate();
     const { id } = useParams();
     const { t } = useTranslation();
@@ -225,20 +228,8 @@ const ApplicationPage = () => {
             navigate(`/portal/application/${card.applicationId}`);
         },
         delete: async (card: any) => {
-            setLoading(true);
-            try {
-                const response = await networkRequest(
-                    `${API_ENDPOINTS.deleteApplication}?id=${card.applicationId}`,
-                    { method: "POST" }
-                );
-
-                if (response.success) {
-                    setRefreshDraft(prev => !prev);
-                    console.log("Deleted successfully", card.applicationId);
-                }
-            } catch (error) {
-                console.error("Delete failed:", error);
-            }
+            setSelectedApplicationId(card.applicationId);
+            setConfirmSubmitOpen(true);
         },
     };
 
@@ -273,16 +264,14 @@ const ApplicationPage = () => {
     }, [id]);
 
     useLayoutEffect(() => {
-        // Run this only once — not on id changes
         const navType =
             (performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming | undefined)?.type ||
-            (performance.navigation?.type === 1 ? "reload" : "");
+            (performance?.navigation?.type === 1 ? "reload" : "");
 
 
         if (id && navType === "reload") {
             navigate("/portal/application", { replace: true });
         }
-        // 👇 Empty dependency ensures this runs only once on page load
     }, []);
 
 
@@ -386,6 +375,23 @@ const ApplicationPage = () => {
         }
     }
 
+    const executeDelete = async () => {
+        setConfirmSubmitOpen(false);
+        setLoading(true);
+        try {
+            const response = await networkRequest(
+                `${API_ENDPOINTS.deleteApplication}?id=${selectedApplicationId}`,
+                { method: "POST" }
+            );
+
+            if (response.success) {
+                setRefreshDraft(prev => !prev);
+            }
+        } catch (error) {
+            console.error("Delete failed:", error);
+        }
+    }
+
     const filteredInvestmentLocations = {
         ...investmentLocations,
         options: investmentLocations.options.filter(option =>
@@ -425,12 +431,12 @@ const ApplicationPage = () => {
                 <InvestmentSelector
                     handleSelectedOption={(val: string) => {
                         const locationName = investmentLocations.options.find((loc) => loc.id === val)
-                        const application = selectedApplication === "Logistics" ? 'Open Yards' : locationName?.title
+                        const application = selectedApplication === "Logistics" ? 'open_yards' : 'industrial'
                         setSelectedInvestment({
                             application: application ?? '',
                             applicationType: locationName?.applicationType ?? 'LogisticsParks',
                             location: locationName?.title ?? '',
-                            locationId: locationName?.id ?? ''
+                            locationId: ''
                         })
                         setStep(2); // Go to AddNewApplication (step 3 → index 2)
                     }}
@@ -452,60 +458,75 @@ const ApplicationPage = () => {
         },
     ];
 
+    const hideFilters = (applicationData.length === 0 && applicationDraftData.length === 0 && !applicationFilter?.searchTerm && !applicationFilter?.typeOfApplication && !applicationFilter?.status && !loading)
+
 
     return (
         <div className="">
             {/* Header */}
-            <PageHeader header={header} customTitle={id ? 'submitted_application': ''} />
+            <PageHeader header={header} customTitle={id ? 'submitted_application' : ''} />
 
             {(!isCreateNewApplication) ? (
                 <div className="min-h-[55vh]">
-                    {(applicationData.length === 0 && applicationDraftData.length === 0 && !applicationFilter?.searchTerm && !applicationFilter?.typeOfApplication && !applicationFilter?.status && !loading) ?
-                    <div className="min-h-[45vh] flex items-center justify-center">
-                        <EmptyRequest title='no_applications_found' description="havent_submitted_application_yet" buttonText="submit_new_applications" onNewRequest={() => setCreateNewApplication(true)} />
-                    </div>        
-                        :
-                        <div>
-                            <CreateAndFilter
-                                onNewRequest={() => setCreateNewApplication(true)}
-                                filterConfig={filterKeys}
-                                setAppliedFilter={setApplicationFilter}
-                                appliedFilter={applicationFilter}
-                            />
-                            <div className="w-full min-h-[55vh] mt-6">
-                                <div className="flex items-center bg-white h-[56px] rounded-lg shadow-md gap-[8px] max-md:justify-between max-md:px-4">
-                                    {tabs.map((tab) => (
-                                        <button key={tab.id} className={`py-[10px] h-full md:ml-[40px] text-sm font-medium ${activeTab === tab.id ? 'text-maroon-100 border-b-2 border-maroon-100' : 'text-black hover:text-gray-500'} focus:outline-none focus:text-maroon-100 `} onClick={() => setActiveTab(tab.id)} > {t(tab.label)}
-                                        </button>
-                                    ))}
-                                </div>
-                                <div className="mt-4 w-full min-h-[35vh] rounded-b-lg">
-                                    {activeTab === 'submitted' &&
-                                        ((applicationData.length > 0 && (applicationFilter?.totalPages ?? 0) > 0) ?
-                                            <>
-                                                <ListOFCards cardsConfig={cardsConfig} cardsData={applicationData} />
-                                                {(applicationFilter?.totalPages ?? 0) > 1 && (
-                                                    <CustomPagination handlePageChange={(page) => handlePageChange(page, applicationFilter?.totalPages ?? 0, setApplicationFilter)} currentPage={applicationFilter?.page ?? 1} totalPages={applicationFilter?.totalPages ?? 0} />
-                                                )}
-                                            </>
-                                            : !loading && <EmptyRequest hideButton={true} title={'no_applications_found'} />)
-                                    }
-                                    {activeTab === 'drafted' &&
-                                        ((applicationDraftData.length > 0 && (applicationDraftFilter?.totalPages ?? 0) > 0) ?
-                                            <>
-                                                <ListOFCards cardsConfig={cardsDraftConfig} cardsData={applicationDraftData} />
-                                                {(applicationDraftFilter?.totalPages ?? 0) > 1 && (
-                                                    <CustomPagination handlePageChange={(page) => handlePageChange(page, applicationDraftFilter?.totalPages ?? 0, setApplicationDarftFilter)} currentPage={applicationDraftFilter?.page ?? 1} totalPages={applicationDraftFilter?.totalPages ?? 0} />
-                                                )}
-                                            </>
-                                            : !loading && <EmptyRequest hideButton={true} title={'no_applications_found'} />)
-                                    }
-                                </div>
-                            </div>
-                        </div>}
+                    <div>
+                        <CreateAndFilter
+                            onNewRequest={() => setCreateNewApplication(true)}
+                            filterConfig={filterKeys}
+                            setAppliedFilter={setApplicationFilter}
+                            appliedFilter={applicationFilter}
+                            disableStatus={activeTab === 'drafted'}
+                            hideFilters={hideFilters}
+                        />
+                        <div className="w-full min-h-[55vh] mt-6">
+                            {
+                                hideFilters ? <EmptyRequest title='no_applications_found' description="havent_submitted_application_yet" buttonText="submit_new_applications" onNewRequest={() => setCreateNewApplication(true)} /> :
+                                    <>
+                                        <div className="flex items-center bg-white h-[56px] rounded-lg shadow-md gap-[8px] max-md:justify-between max-md:px-4">
+                                            {tabs.map((tab) => (
+                                                <button key={tab.id} className={`py-[10px] h-full md:ml-[40px] text-sm font-medium ${activeTab === tab.id ? 'text-maroon-100 border-b-2 border-maroon-100' : 'text-black hover:text-gray-500'} focus:outline-none focus:text-maroon-100 `} onClick={() => setActiveTab(tab.id)} > {t(tab.label)}
+                                                </button>
+                                            ))}
+                                        </div>
+                                        <div className="mt-4 w-full min-h-[35vh] rounded-b-lg">
+                                            {activeTab === 'submitted' &&
+                                                ((applicationData.length > 0 && (applicationFilter?.totalPages ?? 0) > 0) ?
+                                                    <>
+                                                        <ListOFCards cardsConfig={cardsConfig} cardsData={applicationData} />
+                                                        {(applicationFilter?.totalPages ?? 0) > 1 && (
+                                                            <CustomPagination handlePageChange={(page) => handlePageChange(page, applicationFilter?.totalPages ?? 0, setApplicationFilter)} currentPage={applicationFilter?.page ?? 1} totalPages={applicationFilter?.totalPages ?? 0} />
+                                                        )}
+                                                    </>
+                                                    : !loading && <EmptyRequest hideButton={true} title={'no_applications_found'} />)
+                                            }
+                                            {activeTab === 'drafted' &&
+                                                ((applicationDraftData.length > 0 && (applicationDraftFilter?.totalPages ?? 0) > 0) ?
+                                                    <>
+                                                        <ListOFCards cardsConfig={cardsDraftConfig} cardsData={applicationDraftData} />
+                                                        {(applicationDraftFilter?.totalPages ?? 0) > 1 && (
+                                                            <CustomPagination handlePageChange={(page) => handlePageChange(page, applicationDraftFilter?.totalPages ?? 0, setApplicationDarftFilter)} currentPage={applicationDraftFilter?.page ?? 1} totalPages={applicationDraftFilter?.totalPages ?? 0} />
+                                                        )}
+                                                    </>
+                                                    : !loading && <EmptyRequest hideButton={true} title={'no_applications_found'} />)
+                                            }
+                                        </div>
+
+                                    </>
+                            }
+                        </div>
+                        <ConfirmationModal
+                            open={isConfirmSubmitOpen}
+                            onOpenChange={setConfirmSubmitOpen}
+                            onConfirm={executeDelete}
+                            description="confirmation_delete_desc"
+                            confirmText="delete"
+                            subTitle="confirm_deletion"
+                        />
+                    </div>
                 </div>
             ) :
-                <div>{steps[step].component}</div>
+                <div className="min-h-[55vh] flex items-center">
+                    <div className="w-full">{steps[step].component}</div>
+                </div>
             }
             {loading && <Loader />}
         </div>

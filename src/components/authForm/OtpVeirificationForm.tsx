@@ -27,7 +27,7 @@ export default function OtpVeirificationForm({
     const [_resendMessage, setResendMessage] = useState<string>("");
     const networkRequest = useNetworkRequest();
     const inputsRef = useRef<Array<HTMLInputElement | null>>([]);
-    const isOtpComplete = otp.every((digit) => digit !== "");
+    // const isOtpComplete = otp.every((digit) => digit !== "");
     const hasError = !!error;
 
     const handleChange = (index: number, value: string) => {

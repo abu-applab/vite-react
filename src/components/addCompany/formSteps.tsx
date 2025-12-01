@@ -61,11 +61,11 @@ const FormSteps = ({ steps, isAddCompany }: FormStepsProps) => {
 
                     {/* Step Content */}
                     <div className="mt-3 text-center">
-                      <div className="text-xs font-normal text-black">Step {step.stepNumber}</div>
+                      <div className={cn("text-xs font-normal text-black", { "text-zinc-900": isCurrent || isCompleted,
+                          "text-gray-400": isUpcoming,})}>Step {step.stepNumber}</div>
                       <div
                         className={cn("text-sm font-medium leading-tight max-md:max-w-[200px]", {
-                          "text-zinc-900": isCurrent,
-                          "text-green-600": isCompleted,
+                          "text-zinc-900": isCurrent || isCompleted,
                           "text-gray-400": isUpcoming,
                         })}
                       >

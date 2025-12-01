@@ -1,8 +1,9 @@
-import { CloudDownload, CloudUpload, Download } from 'lucide-react'
+import { CircleAlert, CloudDownload, CloudUpload, Download } from 'lucide-react'
 import { useCallback, useState, type ReactNode } from 'react'
 import { useDropzone, type FileRejection } from 'react-dropzone'
 import { Button } from './ui/button'
 import { useTranslation } from 'react-i18next'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip'
 
 interface FileUploadProps {
     onFileUpload: (file: File | File[]) => void
@@ -16,6 +17,7 @@ interface FileUploadProps {
     buttonText?: string
     showUploadIcon?: boolean
     children?: ReactNode   // 👈 ADDED CHILDREN
+    tooltip?: string
 }
 
 const FileUpload = ({
@@ -30,6 +32,7 @@ const FileUpload = ({
     showUploadIcon = false,
     children,
     isRequired = false,
+    tooltip = ''
 }: FileUploadProps) => {
 
     const [isDragActive, setIsDragActive] = useState(false);
@@ -117,6 +120,21 @@ const FileUpload = ({
                                     <div className='flex items-center justify-start'>
                                         <h4 className="text-base font-medium text-gray-900 inline-block">{fileLabel}</h4>
                                         {isRequired && <span className="text-destructive">*</span>}
+                                        {tooltip && (
+                                            <TooltipProvider>
+                                                <Tooltip>
+                                                    <TooltipTrigger asChild>
+                                                        <CircleAlert className="w-4 h-4 text-gray-400 cursor-help ml-1" />
+                                                    </TooltipTrigger>
+                                                    <TooltipContent
+                                                        className="text-gray-900 bg-white p-3 rounded-lg max-w-xs shadow-lg border border-gray-200 data-[side=bottom]:fill-white data-[side=top]:fill-white data-[side=left]:fill-white data-[side=right]:fill-white"
+                                                        sideOffset={3}
+                                                    >
+                                                        <p className="text-sm font-normal leading-5">{t(tooltip)}</p>
+                                                    </TooltipContent>
+                                                </Tooltip>
+                                            </TooltipProvider>
+                                        )}
                                     </div>
                                     <p className="text-gray-400 text-xs font-normal">{t('no_file_selected')}</p>
                                 </div>

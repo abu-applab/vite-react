@@ -8,7 +8,7 @@ import { useApp } from "../context/AppContext";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { NavigationBar } from "@/components/navigationItems";
 import { MobileMenu } from "@/components/mobileMenu";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { API_ENDPOINTS } from "@/api/apiEndpoints";
 import useNetworkRequest from "@/api/useNetworkRequest";
 import Loader from "@/components/loader";
@@ -17,6 +17,7 @@ import { useTranslation } from "react-i18next";
 import { clearAllLocalStorage } from "@/lib/utils";
 import { PAGE_SIZE } from "@/constants";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { ErrorState } from "@/components/errorState";
 
 const PortalLayout = () => {
     const { isMenuOpen, setIsMenuOpen, setCompanies, setSelectedCompany, contact, setCompaniesFilter } = useApp();
@@ -26,61 +27,75 @@ const PortalLayout = () => {
     const { i18n } = useTranslation();
     const lang = localStorage.getItem('lang') ?? 'en'
     const { t } = useTranslation();
-
+    const abortControllerRef = useRef<AbortController | null>(null);
+    const [hasError, setHasError] = useState(false);
+    const [retryCount, setRetryCount] = useState(0);
 
     const fullName = `${contact?.firstName} ${contact?.lastName}`
     const initials = `${contact?.firstName.charAt(0)}${contact?.lastName.charAt(0)}`.toUpperCase();
 
     useEffect(() => {
+        if (!contact?.id) return;
+
+        abortControllerRef.current = new AbortController();
+        const signal = abortControllerRef.current.signal;
+
         const fetchCompanies = async () => {
-            setIsLoading(true)
+            if (isLoading || signal.aborted) return;
+            
+            setIsLoading(true);
             const body = {
-                contactId: contact?.id ?? ''
-            }
+                contactId: contact.id
+            };
+            
             try {
                 const response = await networkRequest(API_ENDPOINTS.getCompanies, {
                     method: 'GET',
-                    body: body
+                    body: body,
+                    signal: signal 
                 });
-                const companyList = response?.data?.[0]?.companies || [];
-                setCompanies(companyList);
-                if (companyList.length > 0) {
-                    setSelectedCompany(companyList[0]);
-                    setCompaniesFilter((prev) => ({
-                        ...prev,
-                        totalPages: Math.ceil(companyList.length / PAGE_SIZE)
-                    }))
+                if (!signal.aborted) {
+                    const companyList = response?.data?.[0]?.companies || [];
+                    setCompanies(companyList);
+                    if (companyList.length > 0) {
+                        setSelectedCompany(companyList[0]);
+                        setCompaniesFilter((prev) => ({
+                            ...prev,
+                            totalPages: Math.ceil(companyList.length / PAGE_SIZE)
+                        }));
+                    }
+                    setIsLoading(false);
                 }
-                setIsLoading(false)
-            } catch (error) {
-                setIsLoading(false)
-                console.error("Failed to fetch companies:", error);
+            } catch (error: any) {
+                if (!signal.aborted) {
+                    console.error("Failed to fetch companies:", error);
+                    if (error?.status === 500) {
+                        setHasError(true);
+                    }
+                    setIsLoading(false);
+                }
             }
         };
 
         fetchCompanies();
-    }, []);
+
+        return () => {
+            if (abortControllerRef.current) {
+                abortControllerRef.current.abort();
+            }
+        };
+    }, [contact?.id, retryCount]); 
 
     const switchLanguage = () => {
-        const currentPath = window.location.pathname;
-        const newLang = currentPath.startsWith("/en") ? "ar" : "en";
-
-        // Store preference
+        const currentLang = i18n.language;
+        const newLang = currentLang === "en" ? "ar" : "en";
         localStorage.setItem("lang", newLang);
-
-        // Update i18n
         i18n.changeLanguage(newLang);
-
-        // Update <html> tag direction
         const html = document.documentElement;
         html.setAttribute("lang", newLang);
         html.setAttribute("dir", newLang === "ar" ? "rtl" : "ltr");
-
-        // Replace only the language prefix in the URL
-        const updatedPath = currentPath.replace(/^\/(en|ar)/, `/${newLang}`);
-
-        window.location.pathname = updatedPath;
     };
+
     const handleLogOut = async () => {
         try {
             clearAllLocalStorage()
@@ -95,6 +110,15 @@ const PortalLayout = () => {
             console.error('Logout failed:', error);
         }
     }
+
+
+    const handleTryAgain = () => {
+        // Reset states and increment retry count to trigger useEffect
+        setHasError(false);
+        abortControllerRef.current = null
+        setRetryCount(prev => prev + 1);
+    };
+
     return (
         <div className='bg-[#f6f5ef] w-screen min-h-screen flex flex-col'>
             <div className="flex flex-row items-center justify-between w-full h-[88px] lg:px-20 md:px-6 md:border-b-2 max-md:px-4">
@@ -171,10 +195,13 @@ const PortalLayout = () => {
             <div className="flex-1 flex flex-col">
                 <div className="lg:px-20 md:px-6 md:mt-10 flex-1 flex flex-col justify-center max-md:m-4">
 
-                    {
-                        isLoading ? <Loader /> :
-                            <Outlet />
-                    }
+                {isLoading ? (
+                     <Loader />
+                    ) : hasError ? (
+                        <ErrorState handleTryAgain={handleTryAgain} />
+                    ) : (
+                        <Outlet />
+                    )}
                 </div>
             </div>
             <Footer />
