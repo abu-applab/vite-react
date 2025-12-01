@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Label } from "@radix-ui/react-label";
-import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { AlertCircle } from "lucide-react";
 import { resetPasswordFields } from "@/constants";
