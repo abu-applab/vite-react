@@ -279,8 +279,8 @@ const getFindingTypeRules = (key: string) => {
 
 export const getDynamicViolationFormConfig = (findingType: string, actionPartyFindingStatus: string) => {
   const rules = (
+    getFindingTypeRules(actionPartyFindingStatus) ||
     getFindingTypeRules(findingType) ||
-    getFindingTypeRules(actionPartyFindingStatus) || 
     {
       showField: "requirementEn",
       hideField: null,

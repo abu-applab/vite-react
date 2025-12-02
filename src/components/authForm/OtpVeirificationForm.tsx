@@ -11,13 +11,15 @@ import { API_ENDPOINTS } from "@/api/apiEndpoints";
 interface OtpVerificationFormProps {
     onSwitch: (view: string) => void;
     phoneNumber: string;
+    setOtpData: any;
 }
 
 const OTP_LENGTH = 6;
 
 export default function OtpVeirificationForm({
     onSwitch,
-    phoneNumber
+    phoneNumber,
+    setOtpData,
 }: OtpVerificationFormProps) {
     const [otp, setOtp] = useState<string[]>(Array(OTP_LENGTH).fill(""));
     const [error, setError] = useState<string>("");
@@ -208,7 +210,10 @@ export default function OtpVeirificationForm({
                     <button
                         type="button"
                         className="flex items-center justify-center font-normal text-sm text-gray-500 hover:text-gray-800 gap-2 mt-4"
-                        onClick={() => onSwitch("login")}
+                        onClick={() => setOtpData((prev: any) => ({
+                            ...prev,
+                            show: false,
+                        }))}
                     >
                         <ArrowLeft size={16} /> Back to login
                     </button>
