@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, ArrowLeft } from "lucide-react";
 import checkCircle from "../../assets/images/check-circle.svg";
 import { setLocalStorageItem } from "@/lib/utils";
 import useNetworkRequest from "@/api/useNetworkRequest";
@@ -189,7 +189,7 @@ export default function OtpVeirificationForm({
                     {submitting ? "Verifying..." : "Verify OTP"}
                 </Button>
 
-                <div className="mt-3 flex flex-col items-center space-y-1">
+                <div className="mt-3 mb-0 flex flex-col items-center space-y-1">
                     <button
                         type="button"
                         onClick={handleResendOtp}
@@ -204,12 +204,22 @@ export default function OtpVeirificationForm({
                     )} */}
                 </div>
 
+                <div className="w-full flex justify-center">
+                    <button
+                        type="button"
+                        className="flex items-center justify-center font-normal text-sm text-gray-500 hover:text-gray-800 gap-2 mt-4"
+                        onClick={() => onSwitch("login")}
+                    >
+                        <ArrowLeft size={16} /> Back to login
+                    </button>
+                </div>
                 {success && (
                     <p className="flex items-center justify-center gap-2 text-sm text-green-600">
                         <img src={checkCircle} alt="check" />
                         OTP Verified Successfully. Redirecting to Hub...
                     </p>
                 )}
+
             </form>
         </div>
     );

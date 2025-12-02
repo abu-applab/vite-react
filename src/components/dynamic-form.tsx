@@ -95,7 +95,11 @@ const DynamicForm = ({
               }}
               type={field.type}
               placeholder={field.placeholder}
-              value={formData[field.id] || ''}
+              value={
+                field.id === 'debt' 
+                  ? String(formData[field.id])
+                  : (formData[field.id] || '')
+              }
               onChange={(e) => handleInputChange(field.id, e.target.value)}
               className={`${errors[field.id] ? "border-red-600" : ""} placeholder:text-sm`}
               {...(field.type === "number" ? { onWheel: (e) => e.currentTarget.blur() } : {})}
@@ -521,7 +525,7 @@ const DynamicForm = ({
                         })
                         ?.map((field) => (
                           <>
-                            {field.subTitle && <h4 className=" text-maroon-100 max-md:ml-4 mb-3 col-span-full">{t(section.title)}</h4>}
+                            {field.subTitle && <h4 className=" text-maroon-100 max-md:ml-4 mb-3 col-span-full">{t(field.subTitle)}</h4>}
                             <div
                               key={field.id}
                               className={["textarea"].includes(field.type) ? "md:col-span-2" : ""}

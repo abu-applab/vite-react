@@ -124,6 +124,7 @@ interface FieldConfig {
           const err = validateTextLength(field, value);
           if (err) newErrors[field.id] = err;
           if (isDigitsOnly(value)) newErrors[field.id] = "This field cannot contain digits only.";
+          if (!/^[\p{L}0-9\s.,!?-]+$/u.test(value)) newErrors[field.id] = "Only letters, numbers, spaces, and .,!?- are allowed";
         }
 
         if (field.type === "text" && value) {
@@ -150,6 +151,14 @@ interface FieldConfig {
         if (parseInt(value, 10) === 0 && field?.id === 'totalRequestedPlotSize') {
           newErrors[field.id] = `${t(field.label)} cannot be 0`;
           return;
+        }
+
+        if (field.id === 'numberOfShifts' && value &&  /^\d{4,}$/.test(value)) {
+           newErrors[field.id] = "Maximum 3 digits allowed"
+        }
+
+        if ( field.id === 'equity' && formState.equity < formState.TotalCost * 0.3) {
+          newErrors[field.id] = "Equity contribution must be at least 30% of project cost.";
         }
       });
     });

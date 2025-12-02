@@ -67,8 +67,8 @@ const validateProductForm = (form: Product) => {
         errors.sourceOfRawMaterials = "Source of Raw Materials is required";
     } else if (/^\d+$/.test(form.sourceOfRawMaterials)) {
         errors.sourceOfRawMaterials = "Cannot contain only numbers";
-    } else if (!/^[a-zA-Z0-9\s\-,]+$/.test(form.sourceOfRawMaterials)) {
-        errors.sourceOfRawMaterials = "Special characters are not allowed";
+    } else if (!/^[\p{L}0-9\s.,!?-]+$/u.test(form.sourceOfRawMaterials)) {
+        errors.sourceOfRawMaterials = "Only letters, numbers, spaces, and .,!?- are allowed"; 
     } else if (form.sourceOfRawMaterials.length > 100) {
         errors.sourceOfRawMaterials = "Maximum 100 characters allowed";
     }

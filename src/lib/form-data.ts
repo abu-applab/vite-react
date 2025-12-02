@@ -43,7 +43,7 @@ export function getServiceFormConfig(formType: string): FormConfig {
         case "rentalRelationship":
             return {
                 title: "rental_relation",
-                description: "rental_relationship_desc",
+                description: "create_rentalRelationship",
                 needsPlots: true,
                 sections: [
                     {
@@ -153,7 +153,7 @@ export function getServiceFormConfig(formType: string): FormConfig {
         case "certifiedCopyOfAgreement":
             return {
                 title: "certified_copy_of_agreement_form",
-                description: "certifiedCopyOfAgreement_desc",
+                description: "create_certifiedCopyOfAgreement",
                 needsPlots: true,
                 sections: [
                     {
@@ -199,7 +199,7 @@ export function getServiceFormConfig(formType: string): FormConfig {
         case "kahramaa":
             return {
                 title: "kahramaa",
-                description: "kahramaa_desc",
+                description: "create_kahramaa",
                 needsPlots: true,
                 sections: [
                     {
@@ -245,7 +245,7 @@ export function getServiceFormConfig(formType: string): FormConfig {
         case "complaint":
             return {
                 title: "complaint",
-                description: "complaint_desc",
+                description: "create_complaint",
                 needsPlots: true,
                 sections: [
                     {
@@ -302,7 +302,7 @@ export function getServiceFormConfig(formType: string): FormConfig {
         case "demarcationLetter":
             return {
                 title: "demarcation_letter",
-                description: "demarcationLetter_desc",
+                description: "create_demarcationLetter",
                 needsPlots: true,
                 sections: [
                     {
@@ -356,7 +356,7 @@ export function getServiceFormConfig(formType: string): FormConfig {
         case "updateCompanyInformation":
             return {
                 title: "update_company_information",
-                description: "updateCompanyInformation_desc",
+                description: "create_updateCompanyInformation",
                 needsPlots: true,
                 needsSignatory: true,
                 sections: [
@@ -466,7 +466,7 @@ export function getServiceFormConfig(formType: string): FormConfig {
         case "updateContactDetails":
             return {
                 title: "update_contact_details",
-                description: "updateContactDetails_desc",
+                description: "create_updateContactDetails",
                 needsPlots: true,
                 sections: [
                     {
@@ -560,7 +560,7 @@ export function getServiceFormConfig(formType: string): FormConfig {
         case "technicalQueries":
             return {
                 title: "technical_queries",
-                description: "technicalQueries_desc",
+                description: "create_technicalQueries",
                 needsPlots: true,
                 sections: [
                     {
@@ -1148,6 +1148,12 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                     required: true
                                 },
                                 {
+                                    id: "workingCapital",
+                                    label: "working_capital",
+                                    type: "number",
+                                    required: true
+                                },
+                                {
                                     id: "TotalCost",
                                     label: "total_cost",
                                     type: "number",
@@ -1165,13 +1171,8 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                     id: "debt",
                                     label: "debt",
                                     type: "number",
-                                    required: true
-                                },
-                                {
-                                    id: "workingCapital",
-                                    label: "working_capital",
-                                    type: "number",
-                                    required: true
+                                    required: true,
+                                    disabled: true,
                                 },
                                 {
                                     id: "TotalFunding",
@@ -1576,8 +1577,8 @@ export function getCommonFormConfig(formType: string): FormConfig {
 }
 
 export const TotalCalculationMap: Record<string, string[]> = {
-    TotalCost: ["constructionCost", "costOfPlantMachinery", "costOfOtherFixedAssets"],
-    TotalFunding: ["equity", "debt", "workingCapital"],
+    TotalCost: ["constructionCost", "costOfPlantMachinery", "costOfOtherFixedAssets", "workingCapital"],
+    TotalFunding: ["constructionCost", "costOfPlantMachinery", "costOfOtherFixedAssets", "workingCapital"],
     TotalRequestedPlotSize: [
         "openArea",
         "administration",
