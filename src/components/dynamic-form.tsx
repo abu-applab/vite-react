@@ -96,7 +96,7 @@ const DynamicForm = ({
               type={field.type}
               placeholder={field.placeholder}
               value={
-                field.id === 'debt' 
+                field.id === 'debt'
                   ? String(formData[field.id])
                   : (formData[field.id] || '')
               }
@@ -365,7 +365,12 @@ const DynamicForm = ({
                       <h4 className="font-medium text-gray-900">
                         {value?.fileName}
                       </h4>
-                      <p className="text-sm text-gray-600">Uploaded Document</p>
+                      <p className="text-sm text-gray-600">
+                        {(value?.fileName?.toLowerCase().endsWith(".pdf") ? "PDF" : "PNG")} •{" "}
+                        {value?.createdOn
+                          ? new Date(value.createdOn).toLocaleDateString("en-IN")
+                          : ""}
+                      </p>
                     </div>
                   </div>
 
@@ -500,7 +505,7 @@ const DynamicForm = ({
             }
             return (
               <>
-                <h4 className=" max-md:text-maroon-100 max-md:ml-4 mb-3">{t(section.title)}</h4>
+                <h4 className=" max-md:text-maroon-100 max-md:ml-4 mb-3">{section.title === 'required_documents' ? t('uploaded_documents') : t(section.title)}</h4>
                 <Card key={sectionIndex}>
                   <CardContent className={cn("space-y-4")}>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center justify-center">

@@ -35,78 +35,145 @@ interface ListOfCardsProps {
 }
 
 function getStatusColor(status: string) {
-    switch (status.toLowerCase().trim()) {
+    const statusLower = status.toLowerCase().trim();
+
+    switch (statusLower) {
         case 'draft':
             return "bg-zinc-200 text-zinc-600 hover:bg-zinc-200"
         case 'review in progress':
         case 'pending submit transfer':
         case 'on hold':
         case 'submitted':
-        case 'in progress - قيد الإجراء':
-        case 'pending work -في إنتظار السحب':
-        case 'pending request fees - بإنتظار دفع رسوم الخدمة':
             return "bg-orange-100 text-orange-600 hover:bg-orange-200"
         case "active":
         case "approved":
+        case "pre-approved":
         case "approved - موافقة":
+        case "closed+":
+        case "closed-":
             return "bg-green-100 text-green-600 hover:bg-green-100"
         case "rejected":
         case "cancelled":
         case "terminated":
         case "inactive":
+        case "overdue-30":
+        case "overdue-60":
+        case "overdue-60+":
+        case "default notice 1":
+        case "default notice 2":
+        case "sent to legal":
+        case "escalated to carr":
+        case "escalated to ncr":
         case "rejected - مرفوض":
+        case "cancelled - ملغى":
             return "bg-red-100 text-red-600 hover:bg-red-100"
+        case "open+60":
+        case "open+30":
+        case 'in progress - قيد الإجراء':
+        case 'pending work -في إنتظار السحب':
+        case 'pending request fees - بإنتظار دفع رسوم الخدمة':
+        case 'pending investor update - في انتظار تحديث المستثمر':
+            return "bg-yellow-100 text-yellow-600 hover:bg-yellow-100"
         default:
-            return "bg-orange-100 text-orange-600 hover:bg-orange-100"
+            if (statusLower.includes('draft')) {
+                return "bg-zinc-200 text-zinc-600 hover:bg-zinc-200"
+            }
+            if (statusLower.includes('pending')) {
+                return "bg-yellow-100 text-yellow-600 hover:bg-yellow-200"
+            }
+            if (statusLower.includes('active') || statusLower.includes('approved')) {
+                return "bg-green-100 text-green-600 hover:bg-green-100"
+            }
+            if (statusLower.includes('rejected') || statusLower.includes('cancelled') || statusLower.includes('terminated') ||
+                statusLower.includes('inactive')) {
+                return "bg-red-100 text-red-600 hover:bg-red-100"
+            }
+            return "bg-yellow-100 text-yellow-600 hover:bg-yellow-100"
     }
 }
 
 function getPointerColor(status: string) {
-    switch (status.toLowerCase()) {
-        case 'draft': //Draft
+    const statusLower = status.toLowerCase().trim();
+
+    switch (statusLower) {
+        case 'draft':
             return "bg-zinc-600"
         case 'review in progress':
         case 'pending submit transfer':
         case 'on hold':
         case 'submitted':
-        case 'in progress - قيد الإجراء':
-        case 'pending work -في إنتظار السحب':
-        case 'pending request fees - بإنتظار دفع رسوم الخدمة':
             return "bg-orange-600"
         case "active":
         case "approved":
+        case "pre-approved":
         case "approved - موافقة":
+        case "closed+":
+        case "closed-":
             return "bg-green-600"
         case "rejected":
         case "cancelled":
         case "terminated":
         case "inactive":
+        case "overdue-30":
+        case "overdue-60":
+        case "overdue-60+":
+        case "default notice 1":
+        case "default notice 2":
+        case "sent to legal":
+        case "escalated to carr":
+        case "escalated to ncr":
         case "rejected - مرفوض":
+        case "cancelled - ملغى":
             return "bg-red-600"
+        case "open+60":
+        case "open+30":
+        case 'in progress - قيد الإجراء':
+        case 'pending work -في إنتظار السحب':
+        case 'pending request fees - بإنتظار دفع رسوم الخدمة':
+        case 'pending investor update - في انتظار تحديث المستثمر':
+            return "bg-yellow-600"
         default:
-            return "bg-orange-600"
+            // Fallback safety check with includes()
+            if (statusLower.includes('draft')) {
+                return "bg-zinc-600"
+            }
+            if ( statusLower.includes('pending')) {
+                return "bg-yellow-600"
+            }
+            if (statusLower.includes('active') || statusLower.includes('approved')) {
+                return "bg-green-600"
+            }
+            if (statusLower.includes('rejected') || statusLower.includes('cancelled') || statusLower.includes('terminated') ||
+                statusLower.includes('inactive')) {
+                return "bg-red-600"
+            }
+            if (statusLower.includes('open') || statusLower.includes('progress') || statusLower.includes('قيد') ||
+                statusLower.includes('إنتظار') || statusLower.includes('انتظار')) {
+                return "bg-yellow-600"
+            }
+            return "bg-yellow-600"
     }
 }
 
 const convertDate = (value: string) => {
     // value = "26/11/2025 03:53 PM"
     const [datePart, timePart, modifier] = value.split(" ");
-  
+
     const [day, month, year] = datePart.split("/").map(Number);
-  
+
     let [hours, minutes] = timePart.split(":").map(Number);
-  
+
     if (modifier === "PM" && hours !== 12) hours += 12;
     if (modifier === "AM" && hours === 12) hours = 0;
-  
+
     const jsDate = new Date(year, month - 1, day, hours, minutes);
-  
+
     return jsDate.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
     });
-  };
+};
 
 const getValue = (obj: any, key?: string) => {
     if (!key) return "";
@@ -163,7 +230,7 @@ const ListOFCards = ({ cardsConfig, cardsData, isProducts = false }: ListOfCards
                 const statusValue = getValue(data, cardsConfig.status);
                 const titleValue = getValue(data, cardsConfig.title);
                 let subTitleValue = getValue(data, cardsConfig.subTitle);
-                subTitleValue = subTitleValue === 'Logistics' ? 'Open Yards' : subTitleValue
+                subTitleValue = subTitleValue === 'Logistics' ? 'Logistics Park' : subTitleValue
                 const tagValue = getValue(data, cardsConfig.tag);
 
                 return (
@@ -181,7 +248,7 @@ const ListOFCards = ({ cardsConfig, cardsData, isProducts = false }: ListOfCards
                                             {tagValue && <span className="rounded-2xl text-zinc-500 border-gray-300 border p-1">{tagValue}</span>}
                                         </div>
 
-                                        {cardsConfig.status && cardsConfig.showBelow && (
+                                        {cardsConfig.status && cardsConfig.showBelow && statusValue && (
                                             <StatusBadge status={statusValue} className="md:hidden" />
                                         )}
                                     </div>
@@ -190,7 +257,7 @@ const ListOFCards = ({ cardsConfig, cardsData, isProducts = false }: ListOfCards
                                         <div className="flex gap-2">
                                             <h3 className="font-medium text-sm text-gray-500 max-md:text-[13px]">{subTitleValue}</h3>
 
-                                            {cardsConfig.status && !cardsConfig.showBelow && (
+                                            {cardsConfig.status && !cardsConfig.showBelow && statusValue && (
                                                 <StatusBadge status={statusValue} className="md:hidden" />
                                             )}
                                         </div>
@@ -199,7 +266,7 @@ const ListOFCards = ({ cardsConfig, cardsData, isProducts = false }: ListOfCards
                             </div>
 
                             <div className="flex items-center">
-                                {cardsConfig.status && (
+                                {cardsConfig.status && statusValue && (
                                     <StatusBadge status={statusValue} className="hidden md:flex" />
                                 )}
 
@@ -249,7 +316,7 @@ const ListOFCards = ({ cardsConfig, cardsData, isProducts = false }: ListOfCards
                                     );
                                 })}
                             </div>
-                            {cardsConfig.warning && (() => {
+                            {(cardsConfig.warning && statusValue !== 'Closed+' && statusValue !== 'Closed-') && (() => {
                                 let value = getValue(data, cardsConfig.warning);
                                 if (!value) return null;
                                 value = parseCustomDate(value);

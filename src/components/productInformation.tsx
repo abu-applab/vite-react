@@ -32,16 +32,15 @@ interface ProductInformationProps {
 
 const validateProductForm = (form: Product) => {
     const errors: Partial<Record<keyof Product, string>> = {};
-
     // Name of Product: required, max 50 chars, no digits
     if (!form.nameOfProduct.trim()) {
         errors.nameOfProduct = "Name of Product is required";
-    } else if (/\d/.test(form.nameOfProduct)) {
-        errors.nameOfProduct = "Name of Product cannot contain digits";
+    } else if (/\d/.test(form.nameOfProduct) || /[\u0660-\u0669\u06F0-\u06F9]/.test(form.nameOfProduct)) {
+        errors.nameOfProduct = "Name of Product cannot contain digits (Arabic or English)";
     } else if (form.nameOfProduct.length > 50) {
         errors.nameOfProduct = "Maximum 50 characters allowed";
-    } else if (!/^[a-zA-Z\s\-]+$/.test(form.nameOfProduct)) {
-        errors.nameOfProduct = "Special characters are not allowed";
+    } else if (!/^[\p{Script=Arabic}\u064B-\u065F\u0670\s\-]+$/u.test(form.nameOfProduct)) {
+        errors.nameOfProduct = "Only Arabic/English letters, spaces, and hyphens are allowed";
     }
 
     // Annual Production Capacity: required, numeric, max 15 digits, > 0
@@ -65,10 +64,12 @@ const validateProductForm = (form: Product) => {
     // Source of Raw Materials: required, max 100 chars, not only digits
     if (!form.sourceOfRawMaterials.trim()) {
         errors.sourceOfRawMaterials = "Source of Raw Materials is required";
-    } else if (/^\d+$/.test(form.sourceOfRawMaterials)) {
+    } else if (/^[0-9\u0660-\u0669\u06F0-\u06F9]+$/.test(form.sourceOfRawMaterials)) {
         errors.sourceOfRawMaterials = "Cannot contain only numbers";
-    } else if (!/^[\p{L}0-9\s.,!?-]+$/u.test(form.sourceOfRawMaterials)) {
-        errors.sourceOfRawMaterials = "Only letters, numbers, spaces, and .,!?- are allowed"; 
+    } else if (/[\u0660-\u0669\u06F0-\u06F9]/.test(form.sourceOfRawMaterials)) {
+        errors.sourceOfRawMaterials = "Arabic numerals (٠-٩, ۰-۹) are not allowed";
+    } else if (!/^[a-zA-Z0-9\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF\s.,!?-]+$/u.test(form.sourceOfRawMaterials)) {
+        errors.sourceOfRawMaterials = "Only letters, numbers, spaces, and .,!?- are allowed";
     } else if (form.sourceOfRawMaterials.length > 100) {
         errors.sourceOfRawMaterials = "Maximum 100 characters allowed";
     }
@@ -186,8 +187,8 @@ const ProductInformation = ({ products, setProducts, isError, isSubmittedApplica
     // ✅ Updated to set both hsCode and hsCodeName when selecting
     const handleHsCodeChange = (hsCodeId: string) => {
         const selectedHsCode = hsCodes.find(item => item.id === hsCodeId);
-        setProductForm({ 
-            ...productForm, 
+        setProductForm({
+            ...productForm,
             hsCode: hsCodeId,
             hsCodeName: selectedHsCode?.value || "" // ✅ Set hsCodeName
         });
@@ -211,7 +212,7 @@ const ProductInformation = ({ products, setProducts, isError, isSubmittedApplica
         fields: [
             { label: "annual_production_capacity", key: "annualProductionCapacity" },
             { label: "quantity", key: "quantity" },
-            { label: "hs_code", key: "hsCodeName" }, 
+            { label: "hs_code", key: "hsCodeName" },
             { label: "source_of_raw_materials", key: "sourceOfRawMaterials" },
             { label: "unit", key: "units" },
         ],
@@ -293,9 +294,9 @@ const ProductInformation = ({ products, setProducts, isError, isSubmittedApplica
                                     }}
                                     onKeyDown={(e) => {
                                         if (type === 'number' && ['e', 'E', '+', '-', '.'].includes(e.key)) {
-                                          e.preventDefault();
+                                            e.preventDefault();
                                         }
-                                      }}
+                                    }}
                                     className={errors[key as keyof Product] ? "border-red-500" : ""}
                                 />
                                 {errors[key as keyof Product] && (
@@ -314,7 +315,7 @@ const ProductInformation = ({ products, setProducts, isError, isSubmittedApplica
                                 <SelectTrigger
                                     className={cn("w-full", { "border-red-500": errors.hsCode })}
                                 >
-                                    <SelectValue placeholder={isLoading ? "Loading..." : "Select HS Code"} >
+                                    <SelectValue placeholder={isLoading ? "Loading..." : "Select ISIC Code"} >
                                         {getSelectedHsCodeDisplay()}
                                     </SelectValue>
                                 </SelectTrigger>

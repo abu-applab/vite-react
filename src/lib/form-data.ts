@@ -1165,7 +1165,7 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                     label: "equity",
                                     type: "number",
                                     required: true,
-                                    subTitle: "total_cost",
+                                    subTitle: "sorce_of_funds",
                                 },
                                 {
                                     id: "debt",

@@ -32,7 +32,7 @@ const SubmittedFormSteps = ({ applicationSteps, setApplicationSteps }: Submitted
                                 : "text-gray-500"
                         }`}
                 >
-                    {t(step.title)}
+                    {step.title === 'document_upload' ? t('uploaded_documents') :  t(step.title)}
                 </button>
             ))}
         </div>

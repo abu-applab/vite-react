@@ -431,7 +431,7 @@ const ApplicationPage = () => {
                 <InvestmentSelector
                     handleSelectedOption={(val: string) => {
                         const locationName = investmentLocations.options.find((loc) => loc.id === val)
-                        const application = selectedApplication === "Logistics" ? 'open_yards' : 'industrial'
+                        const application = selectedApplication === "Logistics" ? 'logistics_park' : 'industrial'
                         setSelectedInvestment({
                             application: application ?? '',
                             applicationType: locationName?.applicationType ?? 'LogisticsParks',
