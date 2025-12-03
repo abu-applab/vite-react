@@ -39,7 +39,7 @@ const validateProductForm = (form: Product) => {
         errors.nameOfProduct = "Name of Product cannot contain digits (Arabic or English)";
     } else if (form.nameOfProduct.length > 50) {
         errors.nameOfProduct = "Maximum 50 characters allowed";
-    } else if (!/^[\p{Script=Arabic}\u064B-\u065F\u0670\s\-]+$/u.test(form.nameOfProduct)) {
+    } else if (!/^[A-Za-z\p{Script=Arabic}\u064B-\u065F\u0670\s-]+$/u.test(form.nameOfProduct)) {
         errors.nameOfProduct = "Only Arabic/English letters, spaces, and hyphens are allowed";
     }
 

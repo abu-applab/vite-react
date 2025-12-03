@@ -132,7 +132,7 @@ const ResetPasswordForm = ({ onSwitch }: ResetPasswordProps) => {
                     {passwordRules.map((rule) => (
                         <p
                             key={rule.id}
-                            className={`flex items-center gap-1 text-zinc-600 text-base leading-6 font-normal}`}
+                            className={`flex items-center gap-1 text-gray-600 text-base leading-6 font-normal}`}
                         >
                             {passwordValidation[rule.id] ? <img src={checkCircle} alt="check" /> : <img src={circleX} alt="circleX" />}
                             {rule.label}

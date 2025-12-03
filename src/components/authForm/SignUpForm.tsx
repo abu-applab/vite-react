@@ -242,7 +242,7 @@ const SignUpForm = ({ onSwitch }: SignUpFormProps) => {
                         className="w-3.5 h-3.5 mr-2"
                       />
                       <span
-                        className={cn("text-xs text-gray-500")}
+                        className={cn("text-xs text-gray-600")}
                       >
                         {rule.label}
                       </span>

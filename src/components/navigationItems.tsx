@@ -9,9 +9,49 @@ import { useTranslation } from "react-i18next"
 export function NavigationBar() {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
   const navigate = useNavigate();
-  const {t} = useTranslation();
+  const { t } = useTranslation();
 
   const pathName = window.location.pathname;
+  const isActiveNavItem = (item: any, currentPathname: any) => {
+    // If item has children (like Service Request)
+    if (item.children) {
+      return item.children.some((child: any) =>
+        isActivePath(child.href, currentPathname)
+      );
+    }
+
+    // If item has href
+    if (item.href) {
+      return isActivePath(item.href, currentPathname);
+    }
+
+    return false;
+  };
+
+  const isActivePath = (href: any, currentPathname: any) => {
+    if (!href) return false;
+
+    // Routes that should match both exact path and subpaths
+    const parentRoutes = [
+      "/portal/application",
+      "/portal/service",
+      "/portal/violations"
+    ];
+
+    // Check if this is a parent route
+    if (parentRoutes.includes(href)) {
+      return currentPathname === href ||
+        currentPathname.startsWith(`${href}/`);
+    }
+
+    // For home, only exact match
+    if (href === "/portal") {
+      return currentPathname === href;
+    }
+
+    // For other routes (payments, allocated-plots, agreements, bot-requests, bot-reports)
+    return currentPathname === href;
+  };
 
   return (
     <div className="flex flex-row justify-between h-[56px] lg:px-[68px] md:px-6 w-full border-b-2 overflow-auto">
@@ -26,9 +66,8 @@ export function NavigationBar() {
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
-                  className={`h-full m-0 p-0 px-4 rounded-b-none hover:text-[#852533] hover:bg-[#f6f5ef] ${
-                    !!(item.children.find( option => pathName === option.href))  && "h-[56px] border-b-4 border-b-[#852533] text-[#852533]"
-                  }`}
+                  className={`h-full m-0 p-0 px-4 rounded-b-none hover:text-[#852533] hover:bg-[#f6f5ef] ${!!(item.children.find(option => pathName === option.href)) && "h-[56px] border-b-4 border-b-[#852533] text-[#852533]"
+                    }`}
                 >
                   <item.icon className="h-5 w-5" />
                   <span>{t(item.name)}</span>
@@ -50,9 +89,8 @@ export function NavigationBar() {
           <Button
             key={item.name}
             variant="ghost"
-            className={`h-full m-0 p-0 px-4 rounded-b-none hover:text-[#852533] hover:bg-[#f6f5ef] ${
-              pathName === item.href && "h-[56px] border-b-4 border-b-[#852533] text-[#852533]"
-            }`}
+            className={`h-full m-0 p-0 px-4 rounded-b-none hover:text-[#852533] hover:bg-[#f6f5ef] ${isActiveNavItem(item, pathName) ? "h-[56px] border-b-4 border-b-[#852533] text-[#852533]" : ""
+              }`}
             onClick={() => navigate(item.href)}
             disabled={!!item.disable}
           >

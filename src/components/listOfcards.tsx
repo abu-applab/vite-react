@@ -245,7 +245,7 @@ const ListOFCards = ({ cardsConfig, cardsData, isProducts = false }: ListOfCards
                                     <div className="flex items-center gap-2">
                                         <div className="flex items-center gap-2">
                                             <span className="text-base font-medium text-gray-800 max-md:text-sm">{titleValue}</span>
-                                            {tagValue && <span className="rounded-2xl text-zinc-500 border-gray-300 border p-1">{tagValue}</span>}
+                                            {tagValue && <span className="rounded-2xl text-zinc-500 border-gray-300 border p-1 w-10 h-6 flex items-center justify-center text-xs">{tagValue}</span>}
                                         </div>
 
                                         {cardsConfig.status && cardsConfig.showBelow && statusValue && (
