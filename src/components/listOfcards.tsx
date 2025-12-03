@@ -137,7 +137,7 @@ function getPointerColor(status: string) {
             if (statusLower.includes('draft')) {
                 return "bg-zinc-600"
             }
-            if ( statusLower.includes('pending')) {
+            if (statusLower.includes('pending')) {
                 return "bg-yellow-600"
             }
             if (statusLower.includes('active') || statusLower.includes('approved')) {
@@ -194,7 +194,7 @@ const StatusBadge = ({ status, className = "" }: { status: string, className?: s
 const ActionsMenu = ({ options, data, t }: { options: any[], data: any, t: any }) => (
     <DropdownMenu>
         <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+            <Button variant="ghost" size="sm" className="h-8 w-8 p-0"  onClick={(e) => e.stopPropagation()} >
                 <MoreVertical className="h-4 w-4" />
             </Button>
         </DropdownMenuTrigger>
@@ -206,7 +206,10 @@ const ActionsMenu = ({ options, data, t }: { options: any[], data: any, t: any }
                     <DropdownMenuItem
                         key={idx}
                         className="flex items-center gap-2"
-                        onClick={() => option.onClick?.(data)}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            option.onClick?.(data)
+                        }}
                     >
                         {Icon && <Icon className="h-4 w-4 text-maroon-100" />}
                         {t(option.label)}
@@ -234,7 +237,16 @@ const ListOFCards = ({ cardsConfig, cardsData, isProducts = false }: ListOfCards
                 const tagValue = getValue(data, cardsConfig.tag);
 
                 return (
-                    <Card key={getValue(data, cardsConfig.id)} className="relative">
+                    <Card
+                        key={getValue(data, cardsConfig.id)}
+                        className={`relative ${cardsConfig?.menuOptions?.[0]?.onClick ? 'cursor-pointer': ''}`}
+                        onClick={() => {
+                            if (cardsConfig?.menuOptions?.[0]?.onClick) {
+                                cardsConfig.menuOptions[0].onClick(data);
+                            }
+                        }}
+
+                    >
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 max-md:px-4">
                             <div className="flex items-center gap-3">
                                 <div className="w-12 h-12 border border-[#E4E4E7] rounded-[8px] bg-white flex items-center justify-center">

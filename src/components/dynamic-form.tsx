@@ -398,59 +398,66 @@ const DynamicForm = ({
         );
 
 
-      case "datepicker": {
-        const minYear = field.minYear ?? 1900;
-        const maxYear = field.maxYear ?? new Date().getFullYear();
-
-        return (
-          <div className="space-y-2">
-            <Label htmlFor={field.id}>
-              {t(field.label)}
-              {field.required && <span className="text-destructive">*</span>}
-            </Label>
-
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className={`w-full justify-start text-left font-normal ${!formData[field.id] && "text-muted-foreground"
+        case "datepicker": {
+          const minYear = field.minYear ?? 1900;
+          const maxYear = field.maxYear ?? new Date().getFullYear();
+        
+          return (
+            <div className="space-y-2">
+              <Label htmlFor={field.id}>
+                {t(field.label)}
+                {field.required && <span className="text-destructive">*</span>}
+              </Label>
+        
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className={`w-full justify-start text-left font-normal ${
+                      !formData[field.id] && "text-muted-foreground"
                     } ${errors[field.id] ? "border-red-600" : ""}`}
-                  disabled={field.disabled || isSubmittedApplication}
-                >
-                  {formData[field.id] ? (
-                    formData[field.id]
-                  ) : (
-                    <span>Select Year</span>
-                  )}
-                  <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                </Button>
-              </PopoverTrigger>
-
-              <PopoverContent className="w-56 p-2" align="start">
-                <div className="grid grid-cols-3 gap-2 max-h-60 overflow-y-auto">
-                  {Array.from({ length: maxYear - minYear + 1 }, (_, i) => maxYear - i).map(
-                    (year) => (
-                      <Button
-                        key={year}
-                        variant={formData[field.id] === String(year) ? "default" : "outline"}
-                        className="w-full"
-                        onClick={() => handleInputChange(field.id, String(year))}
-                      >
-                        {year}
-                      </Button>
-                    )
-                  )}
-                </div>
-              </PopoverContent>
-            </Popover>
-
-            {errors[field.id] && (
-              <span className="text-sm text-red-600">{errors[field.id]}</span>
-            )}
-          </div>
-        );
-      }
-
+                    disabled={field.disabled || isSubmittedApplication}
+                  >
+                    {formData[field.id] ? (
+                      formData[field.id]
+                    ) : (
+                      <span>Select Year</span>
+                    )}
+                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+        
+                <PopoverContent className="w-56 p-2" align="start">
+                  <div className="grid grid-cols-3 gap-2 max-h-60 overflow-y-auto">
+                    {Array.from({ length: maxYear - minYear + 1 }, (_, i) => maxYear - i).map(
+                      (year) => {
+                        const isSelected = formData[field.id] === String(year);
+                        return (
+                          <Button
+                            key={year}
+                            variant={isSelected ? "default" : "outline"}
+                            className={`w-full ${
+                              isSelected 
+                                ? "bg-primary text-primary-foreground hover:bg-primary/90" 
+                                : ""
+                            }`}
+                            onClick={() => handleInputChange(field.id, String(year))}
+                          >
+                            {year}
+                          </Button>
+                        );
+                      }
+                    )}
+                  </div>
+                </PopoverContent>
+              </Popover>
+        
+              {errors[field.id] && (
+                <span className="text-sm text-red-600">{errors[field.id]}</span>
+              )}
+            </div>
+          );
+        }
 
       default:
         return null

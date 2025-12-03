@@ -43,7 +43,9 @@ const WelcomeHeader = ({ setIsAddNewCompany, totalCompanies, currentCompanies }:
                             <AvatarFallback>{initials}</AvatarFallback>
                         </Avatar>
                         <div>
-                            <h1 className="text-xl font-semibold text-gray-900">{`Hello, ${fullName}`}</h1>
+                            <h1 className="text-xl text-gray-900">
+                                Hello, <span className="font-semibold">{fullName}</span>
+                            </h1>
                             <p className="text-sm text-gray-600">{t('Stay_informed_desc')}</p>
                         </div>
                     </div>

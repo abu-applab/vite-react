@@ -16,11 +16,11 @@ import { PAGE_SIZE } from "@/constants"
 import Breadcrumb from "@/components/appBreadcrumb"
 // import { AttachmentPopup } from "@/components/violationScreen/attachmentPopup"
 
-const header = {
-  title: "service_request",
-  homeLink: 'companyName',
-  contentLinks: ['all_service_requests', 'new_service_request'],
-}
+// const header = {
+//   title: "service_request",
+//   homeLink: 'companyName',
+//   contentLinks: ['all_service_requests', 'new_service_request'],
+// }
 
 const filterKeys = {
   title: 'Service Request',

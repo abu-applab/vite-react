@@ -169,11 +169,11 @@ const tabs = [
     { id: 'drafted', label: 'drafted_applications' },
 ];
 
-const header = {
-    title: "applications",
-    homeLink: 'companyName',
-    contentLinks: ['view_applications', 'create_new_applications',],
-}
+// const header = {
+//     title: "applications",
+//     homeLink: 'companyName',
+//     contentLinks: ['view_applications', 'create_new_applications',],
+// }
 
 const filterKeys = {
     title: 'Applications',
@@ -520,11 +520,11 @@ const ApplicationPage = () => {
                             disableStatus={activeTab === 'drafted'}
                             hideFilters={hideFilters}
                         />
-                        <div className="w-full min-h-[55vh] mt-6">
+                        <div className="w-full min-h-[55vh] flex flex-col justify-center">
                             {
                                 hideFilters ? <EmptyRequest title='no_applications_found' description="havent_submitted_application_yet" buttonText="submit_new_applications" onNewRequest={() => setCreateNewApplication(true)} /> :
                                     <>
-                                        <div className="flex items-center bg-white h-[56px] rounded-lg shadow-md gap-[8px] max-md:justify-between max-md:px-4">
+                                        <div className="flex items-center bg-white h-[56px] rounded-lg shadow-md gap-[8px] max-md:justify-between max-md:px-4 mt-6">
                                             {tabs.map((tab) => (
                                                 <button key={tab.id} className={`py-[10px] h-full md:ml-[40px] text-sm font-medium ${activeTab === tab.id ? 'text-maroon-100 border-b-2 border-maroon-100' : 'text-black hover:text-gray-500'} focus:outline-none focus:text-maroon-100 `} onClick={() => setActiveTab(tab.id)} > {t(tab.label)}
                                                 </button>

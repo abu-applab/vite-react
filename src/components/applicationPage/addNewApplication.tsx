@@ -319,6 +319,12 @@ const goToNextStep = (e?: React.FormEvent) => {
       }
       if (Object.keys(newErrors).length > 0) {
         setErrors(newErrors);
+        const firstErrorFieldId = Object.keys(newErrors)[0];
+        const el = fieldRefs.current[firstErrorFieldId];
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth", block: "center" });
+          el.focus({ preventScroll: true });
+        }
         return prevSteps; // ⛔ Stop step change
       }
     }

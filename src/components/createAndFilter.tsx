@@ -277,7 +277,15 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, set
             </SelectTrigger>
             <SelectContent>
               {companies.map((company) => (
-                <SelectItem key={company.accountID} value={company.accountID}>
+                <SelectItem
+                  key={company.accountID}
+                  value={company.accountID}
+                  className={
+                    company.accountID === selectedCompany?.accountID
+                      ? "!text-maroon-100"
+                      : ""
+                  }
+                >
                   {company.englishName}
                 </SelectItem>
               ))}
