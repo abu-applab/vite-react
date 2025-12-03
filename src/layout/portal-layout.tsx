@@ -42,17 +42,17 @@ const PortalLayout = () => {
 
         const fetchCompanies = async () => {
             if (isLoading || signal.aborted) return;
-            
+
             setIsLoading(true);
             const body = {
                 contactId: contact.id
             };
-            
+
             try {
                 const response = await networkRequest(API_ENDPOINTS.getCompanies, {
                     method: 'GET',
                     body: body,
-                    signal: signal 
+                    signal: signal
                 });
                 if (!signal.aborted) {
                     const companyList = response?.data?.[0]?.companies || [];
@@ -84,7 +84,7 @@ const PortalLayout = () => {
                 abortControllerRef.current.abort();
             }
         };
-    }, [contact?.id, retryCount]); 
+    }, [contact?.id, retryCount]);
 
     const switchLanguage = () => {
         const currentLang = i18n.language;
@@ -195,8 +195,8 @@ const PortalLayout = () => {
             <div className="flex-1 flex flex-col">
                 <div className="lg:px-20 md:px-6 md:mt-10 flex-1 flex flex-col justify-center max-md:m-4">
 
-                {isLoading ? (
-                     <Loader />
+                    {isLoading ? (
+                        <Loader />
                     ) : hasError ? (
                         <ErrorState handleTryAgain={handleTryAgain} />
                     ) : (

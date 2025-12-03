@@ -10,7 +10,7 @@ interface ServiceHeaderProps {
 }
 
 export const ServiceHeader = ({ onNewRequest }: ServiceHeaderProps) => {
-  const {companies, selectedCompany, setSelectedCompany} = useApp()
+  const { companies, selectedCompany, setSelectedCompany } = useApp()
   return (
     <div className="">
 
@@ -33,7 +33,7 @@ export const ServiceHeader = ({ onNewRequest }: ServiceHeaderProps) => {
             size="icon"
             className="bg-white text-black hover:bg-zinc-50 rounded-md border cursor-pointer"
           >
-            <ListFilter  className="h-5 w-5" />
+            <ListFilter className="h-5 w-5" />
           </Button>
         </div>
 
@@ -66,15 +66,15 @@ export const ServiceHeader = ({ onNewRequest }: ServiceHeaderProps) => {
             <CirclePlus className="h-4 w-4 mr-2" />
             New Service Request
           </Button>
-          <Select 
+          <Select
             value={selectedCompany?.accountID || ''}
             onValueChange={(value) => {
               const selectedValue = companies.find((company: CompanyType) => company.accountID === value)
               selectedValue && setSelectedCompany(selectedValue)
             }}
-            >
+          >
             <SelectTrigger className="bg-background">
-             <Building2 className="h-4 w-4 mr-2 text-foreground" />
+              <Building2 className="h-4 w-4 mr-2 text-foreground" />
               <SelectValue placeholder="" />
             </SelectTrigger>
             <SelectContent>

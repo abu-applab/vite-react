@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { Factory, FileSpreadsheet, Eye, Truck, CircleArrowRight, Trash2 } from "lucide-react"
 import AddNewApplication from "@/components/applicationPage/addNewApplication";
 import { InvestmentSelector } from "@/components/applicationPage/investmentSelector";
@@ -11,7 +11,6 @@ import smiZone from '../assets/images/SMI-zone.svg'
 import alKaranaa from '../assets/images/Al-Karaana.svg'
 import mesaieed from '../assets/images/Mesaieed.svg'
 import { useApp } from "@/context/AppContext";
-import PageHeader from "@/components/pageHeader";
 import { CreateAndFilter } from "@/components/createAndFilter";
 import useNetworkRequest from "@/api/useNetworkRequest";
 import { API_ENDPOINTS } from "@/api/apiEndpoints";
@@ -23,6 +22,7 @@ import { EmptyRequest } from "@/components/service/serviceRequestPage/empty-requ
 import { PAGE_SIZE } from "@/constants";
 import { useTranslation } from "react-i18next";
 import { ConfirmationModal } from "@/components/confirmationModal";
+import Breadcrumb from "@/components/appBreadcrumb";
 
 interface InvestmentOptions {
     id: string
@@ -199,7 +199,8 @@ const ApplicationPage = () => {
     const [activeTab, setActiveTab] = useState('submitted');
     const [isCreateNewApplication, setCreateNewApplication] = useState(false);
     const [selectedApplication, setSelectedApplication] = useState<string>("");
-    const { setSelectedInvestment, setApplicationFilter, applicationDraftFilter, setApplicationDarftFilter, applicationFilter, selectedCompany } = useApp();
+    const [selectedApplicationRef, setSelectedApplicationRef] = useState<string>("");
+    const { setSelectedInvestment, setApplicationFilter, applicationDraftFilter, setApplicationDarftFilter, applicationFilter, selectedCompany, selectedInvestment } = useApp();
     const [loading, setLoading] = useState(false);
     const networkRequest = useNetworkRequest();
     const [applicationData, setApplicationData] = useState([])
@@ -216,6 +217,7 @@ const ApplicationPage = () => {
             console.log("Viewing:", card.typeOfApplication);
             const locationName = investmentLocations.options.find((loc) => loc.title === card.locationNameEn)
             setSelectedApplication(card.typeOfApplication);
+            setSelectedApplicationRef(card.referenceNumber);
             setStep(2)
             setCreateNewApplication(true);
             setSelectedInvestment(() => ({
@@ -260,6 +262,7 @@ const ApplicationPage = () => {
             setCreateNewApplication(false);
             setStep(0);
             setSelectedApplication("");
+            setSelectedApplicationRef("");
         }
     }, [id]);
 
@@ -460,11 +463,38 @@ const ApplicationPage = () => {
 
     const hideFilters = (applicationData.length === 0 && applicationDraftData.length === 0 && !applicationFilter?.searchTerm && !applicationFilter?.typeOfApplication && !applicationFilter?.status && !loading)
 
+    const breadcrumbs = useMemo(() => {
+        const items = [
+            { label: selectedCompany?.englishName ?? "Home", path: "/portal" },
+            { label: tabs.find((t) => t.id === activeTab)?.label ?? "submitted_applications" },
+        ];
+
+        if (isCreateNewApplication) {
+            if (selectedApplicationRef) {
+                items.push({ label: selectedApplicationRef, path: "" });
+            } else {
+                if (step === 0) {
+                    items.push({ label: "create_new_applications", path: "" });
+                } else {
+                    const typeOption = investmentTypes.options.find(o => o.id === selectedApplication);
+                    const typeLabel = typeOption?.title ?? selectedApplication;
+                    items.push({ label: typeLabel, path: "" });
+
+                    if (step === 2 && selectedInvestment?.location) {
+                        items.push({ label: selectedInvestment.location, path: "" });
+                    }
+                }
+            }
+        }
+
+        return items;
+    }, [selectedCompany, activeTab, selectedApplicationRef, isCreateNewApplication, step, selectedApplication, selectedInvestment]);
 
     return (
         <div className="">
             {/* Header */}
-            <PageHeader header={header} customTitle={id ? 'submitted_application' : ''} />
+            {/* <PageHeader header={header} customTitle={id ? 'submitted_application' : ''} /> */}
+            <Breadcrumb items={breadcrumbs} />
 
             {(!isCreateNewApplication) ? (
                 <div className="min-h-[55vh]">
