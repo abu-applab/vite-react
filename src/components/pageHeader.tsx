@@ -18,7 +18,7 @@ interface pageHeaderProps {
 const PageHeader = ({ header, customTitle = '' }: pageHeaderProps) => {
     const { t } = useTranslation();
     const { selectedCompany, isCreateNewForm, selectedInvestment } = useApp();
-    const subTitle = customTitle ? customTitle :  header.contentLinks[1];
+    const subTitle = customTitle ? customTitle : header.contentLinks[1];
     return (
         <div className="hidden md:block">
             <h1 className="text-2xl mb-1">{t(header.title)}</h1>

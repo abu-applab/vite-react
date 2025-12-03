@@ -36,7 +36,7 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, set
   const [searchText, setSearchText] = useState("");
   const { t } = useTranslation();
 
-  if(!(companies.length > 0)) {
+  if (!(companies.length > 0)) {
     return null;
   }
 
