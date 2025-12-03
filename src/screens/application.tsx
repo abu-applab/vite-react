@@ -464,9 +464,17 @@ const ApplicationPage = () => {
     const hideFilters = (applicationData.length === 0 && applicationDraftData.length === 0 && !applicationFilter?.searchTerm && !applicationFilter?.typeOfApplication && !applicationFilter?.status && !loading)
 
     const breadcrumbs = useMemo(() => {
-        const items = [
+        const items: { label: string; path?: string; onClick?: () => void; isTranslated?: boolean }[] = [
             { label: selectedCompany?.englishName ?? "Home", path: "/portal" },
-            { label: tabs.find((t) => t.id === activeTab)?.label ?? "submitted_applications" },
+            {
+                label: tabs.find((t) => t.id === activeTab)?.label ?? "submitted_applications",
+                onClick: () => {
+                    setCreateNewApplication(false);
+                    setStep(0);
+                    setSelectedApplication("");
+                    setSelectedApplicationRef("");
+                }
+            },
         ];
 
         if (isCreateNewApplication) {
@@ -477,8 +485,13 @@ const ApplicationPage = () => {
                     items.push({ label: "create_new_applications", path: "" });
                 } else {
                     const typeOption = investmentTypes.options.find(o => o.id === selectedApplication);
-                    const typeLabel = typeOption?.title ?? selectedApplication;
-                    items.push({ label: typeLabel, path: "" });
+                    const typeLabel = typeOption?.title ? `${t(typeOption.title)} Application` : selectedApplication;
+                    items.push({
+                        label: typeLabel,
+                        path: "",
+                        onClick: step > 1 ? () => setStep(1) : undefined,
+                        isTranslated: true
+                    });
 
                     if (step === 2 && selectedInvestment?.location) {
                         items.push({ label: selectedInvestment.location, path: "" });
@@ -488,7 +501,7 @@ const ApplicationPage = () => {
         }
 
         return items;
-    }, [selectedCompany, activeTab, selectedApplicationRef, isCreateNewApplication, step, selectedApplication, selectedInvestment]);
+    }, [selectedCompany, activeTab, selectedApplicationRef, isCreateNewApplication, step, selectedApplication, selectedInvestment, t]);
 
     return (
         <div className="">

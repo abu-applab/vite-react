@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useMemo } from "react"
+import { useTranslation } from "react-i18next"
 // import { ServiceHeader } from "@/components/service/serviceRequestPage/service-header"
 import { ServiceFormHandler } from "@/components/service/createNewRequest/serviceFormHandler"
-import { NewServiceRequestModal } from "@/components/service/serviceRequestPage/new-service-request-modal"
+import { NewServiceRequestModal, serviceOptions } from "@/components/service/serviceRequestPage/new-service-request-modal"
 import { EmptyRequest } from "@/components/service/serviceRequestPage/empty-request"
-import PageHeader from "@/components/pageHeader"
 import { CreateAndFilter } from "@/components/createAndFilter"
 import useNetworkRequest from "@/api/useNetworkRequest"
 import { API_ENDPOINTS } from "@/api/apiEndpoints"
@@ -13,6 +13,7 @@ import { Eye, MessageSquareDot } from "lucide-react"
 import Loader from "@/components/loader"
 import CustomPagination from "@/components/customPagination"
 import { PAGE_SIZE } from "@/constants"
+import Breadcrumb from "@/components/appBreadcrumb"
 // import { AttachmentPopup } from "@/components/violationScreen/attachmentPopup"
 
 const header = {
@@ -70,6 +71,7 @@ const Service = () => {
   const { serviceFilter, setServiceFilter, selectedCompany } = useApp();
   // const [isCreateNewService, setCreateNewService] = useState(false);
   const networkRequest = useNetworkRequest();
+  const { t } = useTranslation();
 
   const cardActions = {
     view: (card: any) => {
@@ -144,9 +146,34 @@ const Service = () => {
   const hideFilters = serviceData.length === 0 && !serviceFilter?.searchTerm && !serviceFilter?.status && !loading;
 
 
+  const breadcrumbs = useMemo(() => {
+    const items: { label: string; path?: string; onClick?: () => void }[] = [
+      { label: selectedCompany?.englishName ?? "Home", path: "/portal" },
+      {
+        label: "service_request",
+        onClick: () => setSelectedService("")
+      },
+    ];
+
+    if (selectedService) {
+      const service = serviceData.find(item => item.requestId === selectedService);
+      if (service) {
+        items.push({ label: service?.referenceNumber ?? "Details", path: "" });
+      } else {
+        const option = serviceOptions.find(o => o.key === selectedService);
+        if (option) {
+          items.push({ label: `Create ${t(option.title)} Request`, path: "" });
+        }
+      }
+    }
+
+    return items;
+  }, [selectedCompany, selectedService, serviceData, t]);
+
   return (
     <div className="">
-      <PageHeader header={header} selectedForm={selectedService} />
+      {/* <PageHeader header={header} selectedForm={selectedService} /> */}
+      <Breadcrumb items={breadcrumbs} />
       {!selectedService ? (
         <div className="min-h-[55vh]">
           <CreateAndFilter onNewRequest={() => setIsModalOpen(true)} filterConfig={filterKeys} setAppliedFilter={setServiceFilter} appliedFilter={serviceFilter} hideFilters={hideFilters} />
@@ -155,7 +182,7 @@ const Service = () => {
             {!!(serviceFilter?.totalPages && serviceFilter.totalPages > 1) && <CustomPagination handlePageChange={handlePageChange} currentPage={serviceFilter?.page} totalPages={serviceFilter?.totalPages ?? 0} />}
             {!loading && serviceData.length === 0 && (
               hideFilters ? <EmptyRequest title='no_service_requests_yet' description="havent_submitted_request_yet" buttonText="submit_new_request" onNewRequest={() => setIsModalOpen(true)} />
-              : <EmptyRequest hideButton={true} title={'no_requests_found'} />)}
+                : <EmptyRequest hideButton={true} title={'no_requests_found'} />)}
           </div>
         </div>
       ) : (

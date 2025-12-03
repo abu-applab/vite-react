@@ -5,6 +5,8 @@ import { useTranslation } from "react-i18next";
 export interface BreadcrumbItem {
     label: string;
     path?: string;
+    onClick?: () => void;
+    isTranslated?: boolean;
 }
 
 interface BreadcrumbProps {
@@ -23,18 +25,27 @@ export default function Breadcrumb({ items }: BreadcrumbProps) {
 
                     return (
                         <li key={index} className="flex items-center gap-1">
-                            {item.path && !isLast ? (
-                                <Link
-                                    to={item.path}
-                                    className="hover:text-primary underline-offset-2 hover:underline text-base text-muted-foreground"
-                                >
-                                    {t(item.label)}
-                                </Link>
+                            {!isLast && (item.path || item.onClick) ? (
+                                item.path ? (
+                                    <Link
+                                        to={item.path}
+                                        className="hover:text-primary underline-offset-2 hover:underline text-base text-muted-foreground"
+                                    >
+                                        {item.isTranslated ? item.label : t(item.label)}
+                                    </Link>
+                                ) : (
+                                    <span
+                                        onClick={item.onClick}
+                                        className="hover:text-primary underline-offset-2 hover:underline text-base text-muted-foreground cursor-pointer"
+                                    >
+                                        {item.isTranslated ? item.label : t(item.label)}
+                                    </span>
+                                )
                             ) : (
                                 <span
                                     className={isLast ? "font-medium  text-maroon-100 text-base" : ""}
                                 >
-                                    {t(item.label)}
+                                    {item.isTranslated ? item.label : t(item.label)}
                                 </span>
                             )}
 
