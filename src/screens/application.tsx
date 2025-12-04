@@ -534,7 +534,7 @@ const ApplicationPage = () => {
                                             {activeTab === 'submitted' &&
                                                 ((applicationData.length > 0 && (applicationFilter?.totalPages ?? 0) > 0) ?
                                                     <>
-                                                        <ListOFCards cardsConfig={cardsConfig} cardsData={applicationData} />
+                                                        <ListOFCards cardsConfig={cardsConfig} cardsData={applicationData} cardClick={true} />
                                                         {(applicationFilter?.totalPages ?? 0) > 1 && (
                                                             <CustomPagination handlePageChange={(page) => handlePageChange(page, applicationFilter?.totalPages ?? 0, setApplicationFilter)} currentPage={applicationFilter?.page ?? 1} totalPages={applicationFilter?.totalPages ?? 0} />
                                                         )}
@@ -544,7 +544,7 @@ const ApplicationPage = () => {
                                             {activeTab === 'drafted' &&
                                                 ((applicationDraftData.length > 0 && (applicationDraftFilter?.totalPages ?? 0) > 0) ?
                                                     <>
-                                                        <ListOFCards cardsConfig={cardsDraftConfig} cardsData={applicationDraftData} />
+                                                        <ListOFCards cardsConfig={cardsDraftConfig} cardsData={applicationDraftData} cardClick={true} />
                                                         {(applicationDraftFilter?.totalPages ?? 0) > 1 && (
                                                             <CustomPagination handlePageChange={(page) => handlePageChange(page, applicationDraftFilter?.totalPages ?? 0, setApplicationDarftFilter)} currentPage={applicationDraftFilter?.page ?? 1} totalPages={applicationDraftFilter?.totalPages ?? 0} />
                                                         )}

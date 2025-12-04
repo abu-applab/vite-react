@@ -277,7 +277,7 @@ const getFindingTypeRules = (key: string) => {
   return findingTypeRules[key as keyof typeof findingTypeRules];
 };
 
-export const getDynamicViolationFormConfig = (findingType: string, actionPartyFindingStatus: string) => {
+export const getDynamicViolationFormConfig = (findingType: string, actionPartyFindingStatus: string, findingNumber: string ) => {
   const rules = (
     getFindingTypeRules(actionPartyFindingStatus) ||
     getFindingTypeRules(findingType) ||
@@ -293,6 +293,8 @@ export const getDynamicViolationFormConfig = (findingType: string, actionPartyFi
       readOnly: false,
     }
   );
+
+  const riskRatingFieldId = getRiskRatingField(findingNumber);
   
 
   const updatedSections = violationFormConfig.sections.map((section) => {
@@ -300,6 +302,13 @@ export const getDynamicViolationFormConfig = (findingType: string, actionPartyFi
       ...section,
       fields: section.fields.map((field) => {
         let updatedField = { ...field };
+
+        if (updatedField.id === 'riskRatingOBS') {
+          updatedField = {
+            ...updatedField,
+            id: riskRatingFieldId, 
+          };
+        }
 
         // hide/show logic
         if (rules.showField && updatedField.id === rules.showField) {
@@ -329,4 +338,12 @@ export const getDynamicViolationFormConfig = (findingType: string, actionPartyFi
   };
 };
 
-
+export const getRiskRatingField = (findingNumber: string = ''): string => {
+  if (!findingNumber) return 'riskRatingOBS'; // default
+  
+  if (findingNumber.includes('OBS')) return 'riskRatingOBS';
+  if (findingNumber.includes('NCR')) return 'riskRatingNCR';
+  if (findingNumber.includes('CARR')) return 'riskRatingCARR';
+  
+  return 'riskRatingOBS';
+};

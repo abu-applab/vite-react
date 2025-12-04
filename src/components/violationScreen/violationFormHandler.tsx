@@ -76,7 +76,7 @@ export const ViolationFormHandler = ({ onBack }: ViolationFormHandlerProps) => {
           setFormState(updatedFormData);
 
           // ⬇️ Generate dynamic form config based on finding type
-          const newConfig = getDynamicViolationFormConfig(findingData.findingType, findingData.actionPartyFindingStatus);
+          const newConfig = getDynamicViolationFormConfig(findingData.findingType, findingData.actionPartyFindingStatus, findingData.findingNumber );
 
           setFormConfig(newConfig as any);
         } else {

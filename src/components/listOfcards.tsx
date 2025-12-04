@@ -32,6 +32,7 @@ interface ListOfCardsProps {
     cardsData: any[]
     showAlerts?: boolean
     isProducts?: boolean
+    cardClick?: boolean
 }
 
 function getStatusColor(status: string) {
@@ -40,17 +41,13 @@ function getStatusColor(status: string) {
     switch (statusLower) {
         case 'draft':
             return "bg-zinc-200 text-zinc-600 hover:bg-zinc-200"
-        case 'review in progress':
-        case 'pending submit transfer':
-        case 'on hold':
-        case 'submitted':
-            return "bg-orange-100 text-orange-600 hover:bg-orange-200"
         case "active":
         case "approved":
         case "pre-approved":
         case "approved - موافقة":
         case "closed+":
         case "closed-":
+        case 'submitted':    
             return "bg-green-100 text-green-600 hover:bg-green-100"
         case "rejected":
         case "cancelled":
@@ -73,6 +70,9 @@ function getStatusColor(status: string) {
         case 'pending work -في إنتظار السحب':
         case 'pending request fees - بإنتظار دفع رسوم الخدمة':
         case 'pending investor update - في انتظار تحديث المستثمر':
+        case 'review in progress':
+        case 'pending submit transfer':
+        case 'on hold':
             return "bg-yellow-100 text-yellow-600 hover:bg-yellow-100"
         default:
             if (statusLower.includes('draft')) {
@@ -98,17 +98,13 @@ function getPointerColor(status: string) {
     switch (statusLower) {
         case 'draft':
             return "bg-zinc-600"
-        case 'review in progress':
-        case 'pending submit transfer':
-        case 'on hold':
-        case 'submitted':
-            return "bg-orange-600"
         case "active":
         case "approved":
         case "pre-approved":
         case "approved - موافقة":
         case "closed+":
         case "closed-":
+        case 'submitted':    
             return "bg-green-600"
         case "rejected":
         case "cancelled":
@@ -131,6 +127,9 @@ function getPointerColor(status: string) {
         case 'pending work -في إنتظار السحب':
         case 'pending request fees - بإنتظار دفع رسوم الخدمة':
         case 'pending investor update - في انتظار تحديث المستثمر':
+        case 'review in progress':
+        case 'pending submit transfer':
+        case 'on hold':
             return "bg-yellow-600"
         default:
             // Fallback safety check with includes()
@@ -194,7 +193,7 @@ const StatusBadge = ({ status, className = "" }: { status: string, className?: s
 const ActionsMenu = ({ options, data, t }: { options: any[], data: any, t: any }) => (
     <DropdownMenu>
         <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="sm" className="h-8 w-8 p-0"  onClick={(e) => e.stopPropagation()} >
+            <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={(e) => e.stopPropagation()} >
                 <MoreVertical className="h-4 w-4" />
             </Button>
         </DropdownMenuTrigger>
@@ -222,7 +221,7 @@ const ActionsMenu = ({ options, data, t }: { options: any[], data: any, t: any }
 
 
 
-const ListOFCards = ({ cardsConfig, cardsData, isProducts = false }: ListOfCardsProps) => {
+const ListOFCards = ({ cardsConfig, cardsData, isProducts = false, cardClick = false }: ListOfCardsProps) => {
     const { t } = useTranslation();
 
     return (
@@ -239,7 +238,7 @@ const ListOFCards = ({ cardsConfig, cardsData, isProducts = false }: ListOfCards
                 return (
                     <Card
                         key={getValue(data, cardsConfig.id)}
-                        className={`relative ${cardsConfig?.menuOptions?.[0]?.onClick ? 'cursor-pointer': ''}`}
+                        className={`relative ${(cardsConfig?.menuOptions?.[0]?.onClick && cardClick) ? 'cursor-pointer' : ''}`}
                         onClick={() => {
                             if (cardsConfig?.menuOptions?.[0]?.onClick) {
                                 cardsConfig.menuOptions[0].onClick(data);

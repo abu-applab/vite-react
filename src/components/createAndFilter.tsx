@@ -1,4 +1,4 @@
-import { Building2, ChevronsUpDown, CirclePlus, ListFilter, Plus, Search } from "lucide-react"
+import { Building2, ChevronsUpDown, CirclePlus, ListFilter, Plus, Search, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -51,11 +51,21 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, set
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {companies.map((company) => (
-                  <SelectItem key={company.accountID} value={company.accountID}>
-                    {company.englishName}
-                  </SelectItem>
-                ))}
+                {companies.map((company) => {
+                  return (
+                    <SelectItem
+                      key={company.accountID}
+                      value={company.accountID}
+                      className={
+                        company.accountID === selectedCompany?.accountID
+                          ? "text-maroon-100!"
+                          : ""
+                      }
+                    >
+                      {company.englishName}
+                    </SelectItem>
+                  )
+                })}
               </SelectContent>
             </Select>
           </div>
@@ -76,11 +86,21 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, set
                 <SelectValue placeholder="" />
               </SelectTrigger>
               <SelectContent>
-                {companies.map((company) => (
-                  <SelectItem key={company.accountID} value={company.accountID}>
+              {companies.map((company) => {
+                return (
+                  <SelectItem
+                    key={company.accountID}
+                    value={company.accountID}
+                    className={
+                      company.accountID === selectedCompany?.accountID
+                        ? "text-maroon-100!"
+                        : ""
+                    }
+                  >
                     {company.englishName}
                   </SelectItem>
-                ))}
+                )
+              })}
               </SelectContent>
             </Select>
           </div>
@@ -205,11 +225,21 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, set
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              {companies.map((company) => (
-                <SelectItem key={company.accountID} value={company.accountID}>
-                  {company.englishName}
-                </SelectItem>
-              ))}
+            {companies.map((company) => {
+                return (
+                  <SelectItem
+                    key={company.accountID}
+                    value={company.accountID}
+                    className={
+                      company.accountID === selectedCompany?.accountID
+                        ? "text-maroon-100!"
+                        : ""
+                    }
+                  >
+                    {company.englishName}
+                  </SelectItem>
+                )
+              })}
             </SelectContent>
           </Select>
         </div>
@@ -221,7 +251,7 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, set
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-maroon-100" />
           <Input
             placeholder={t('search')}
-            className="pl-10 bg-background"
+            className="pl-10 pr-10 bg-background"
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
             onKeyDown={(e) => {
@@ -234,6 +264,16 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, set
               }
             }}
           />
+
+          {searchText && (
+            <button
+              type="button"
+              onClick={() => setSearchText("")}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-maroon-100"
+            >
+              <X className="h-4 w-4 text-maroon-100" />
+            </button>
+          )}
 
         </div>
         <div className="flex gap-2">
@@ -276,19 +316,21 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, set
               <SelectValue placeholder="" />
             </SelectTrigger>
             <SelectContent>
-              {companies.map((company) => (
-                <SelectItem
-                  key={company.accountID}
-                  value={company.accountID}
-                  className={
-                    company.accountID === selectedCompany?.accountID
-                      ? "!text-maroon-100"
-                      : ""
-                  }
-                >
-                  {company.englishName}
-                </SelectItem>
-              ))}
+              {companies.map((company) => {
+                return (
+                  <SelectItem
+                    key={company.accountID}
+                    value={company.accountID}
+                    className={
+                      company.accountID === selectedCompany?.accountID
+                        ? "text-maroon-100!"
+                        : ""
+                    }
+                  >
+                    {company.englishName}
+                  </SelectItem>
+                )
+              })}
             </SelectContent>
           </Select>
           <Popover>

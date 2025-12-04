@@ -178,7 +178,7 @@ const ViolationPage = () => {
                 <>
                     <CreateAndFilter filterConfig={filterKeys} setAppliedFilter={setViolationFilter} appliedFilter={violationFilter} hideFilters={hideFilters}/>
                     <div className="">
-                        <ListOFCards cardsConfig={cardsConfig} cardsData={violationData} />
+                        <ListOFCards cardsConfig={cardsConfig} cardsData={violationData} cardClick={true} />
                         {!!(violationFilter?.totalPages && violationFilter.totalPages > 1 && violationData.length > 0) && <CustomPagination handlePageChange={handlePageChange} currentPage={violationFilter?.page} totalPages={violationFilter?.totalPages ?? 0} />}
                         {!loading && (violationData?.length === 0 || !violationData) && <EmptyRequest hideButton={true} title={'no_violation_found'} />}
                     </div>
