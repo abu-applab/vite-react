@@ -86,21 +86,21 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, set
                 <SelectValue placeholder="" />
               </SelectTrigger>
               <SelectContent>
-              {companies.map((company) => {
-                return (
-                  <SelectItem
-                    key={company.accountID}
-                    value={company.accountID}
-                    className={
-                      company.accountID === selectedCompany?.accountID
-                        ? "text-maroon-100!"
-                        : ""
-                    }
-                  >
-                    {company.englishName}
-                  </SelectItem>
-                )
-              })}
+                {companies.map((company) => {
+                  return (
+                    <SelectItem
+                      key={company.accountID}
+                      value={company.accountID}
+                      className={
+                        company.accountID === selectedCompany?.accountID
+                          ? "text-maroon-100!"
+                          : ""
+                      }
+                    >
+                      {company.englishName}
+                    </SelectItem>
+                  )
+                })}
               </SelectContent>
             </Select>
           </div>
@@ -133,6 +133,22 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, set
                 }
               }}
             />
+            {searchText && (
+              <button
+                type="button"
+                onClick={() => {
+                  setSearchText("")
+                  setAppliedFilter((prev: any) => ({
+                    ...prev,
+                    page: 1,
+                    searchTerm: searchText
+                  }))
+                }}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-maroon-100"
+              >
+                <X className="h-4 w-4 text-maroon-100" />
+              </button>
+            )}
 
           </div>
           {filterConfig?.createNewRequest && <Button
@@ -225,7 +241,7 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, set
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-            {companies.map((company) => {
+              {companies.map((company) => {
                 return (
                   <SelectItem
                     key={company.accountID}
@@ -268,7 +284,14 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, set
           {searchText && (
             <button
               type="button"
-              onClick={() => setSearchText("")}
+              onClick={() => {
+                setSearchText("")
+                setAppliedFilter((prev: any) => ({
+                  ...prev,
+                  page: 1,
+                  searchTerm: ""
+                }))
+              }}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-maroon-100"
             >
               <X className="h-4 w-4 text-maroon-100" />
