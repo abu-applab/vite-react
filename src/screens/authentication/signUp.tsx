@@ -11,7 +11,7 @@ const SignUp = () => {
             <p className="text-gray-500 text-sm mt-1 mb-10">
                 Enter your details to continue.
             </p>
-            <SignUpForm onSwitch={(view: any) => navigate(`/${view}`)} />
+            <SignUpForm onSwitch={(view: any, data?: any) => navigate(`/${view}`, { state: data })} />
         </AuthLayout>
     )
 }

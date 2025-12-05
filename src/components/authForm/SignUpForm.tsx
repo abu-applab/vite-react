@@ -15,7 +15,7 @@ import PasswordInput from "../ui/passwordInput";
 import { useGoogleLogin } from "@react-oauth/google";
 
 interface SignUpFormProps {
-  onSwitch: (view: any) => void;
+  onSwitch: (view: any, data?: any) => void;
 }
 
 type FormData = {
@@ -154,10 +154,7 @@ const SignUpForm = ({ onSwitch }: SignUpFormProps) => {
       });
 
       if (response?.success) {
-
-        setSuccessMessage(response?.message || "Signup successful.");
-        // You can auto-switch to login after success
-        // onSwitch("login");
+        onSwitch("login", { successMessage: "Registration Successful. You can now login and start using your account" });
       } else {
         setApiError(response?.message || "Signup failed. Please try again.");
       }

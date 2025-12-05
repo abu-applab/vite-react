@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Label } from "@radix-ui/react-label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
@@ -15,6 +15,7 @@ import { useMsal } from "@azure/msal-react";
 import { loginRequest } from "@/lib/auth/authConfig";
 import { useApp } from "@/context/AppContext";
 import { motion } from "framer-motion";
+import { useLocation } from "react-router-dom";
 
 const icons = { Mail, Lock };
 
@@ -32,10 +33,22 @@ const LoginForm = ({ onSwitch }: LoginFormProps) => {
   const [formData, setFormData] = useState<FormData>({ email: "", password: "" });
   const [fieldErrors, setFieldErrors] = useState<Partial<Record<keyof FormData, string>>>({});
   const [authError, setAuthError] = useState<string>("");
+  const [successMessage, setSuccessMessage] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const networkRequest = useNetworkRequest();
   const { instance } = useMsal();
   const { setContact } = useApp();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.state?.successMessage) {
+      setSuccessMessage(location.state.successMessage);
+      // Optional: Clear the state so it doesn't persist on refresh if desired, 
+      // but usually react-router state persists until navigation. 
+      // We can clear it by replacing history but let's keep it simple for now.
+      window.history.replaceState({}, document.title)
+    }
+  }, [location.state]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -49,6 +62,7 @@ const LoginForm = ({ onSwitch }: LoginFormProps) => {
     });
 
     if (authError) setAuthError("");
+    if (successMessage) setSuccessMessage("");
   };
 
   const validate = () => {
@@ -86,6 +100,7 @@ const LoginForm = ({ onSwitch }: LoginFormProps) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setAuthError("");
+    setSuccessMessage("");
     if (!validate()) return;
 
     try {
@@ -213,6 +228,12 @@ const LoginForm = ({ onSwitch }: LoginFormProps) => {
           Forgot Password?
         </span>
       </div>
+      {successMessage && (
+        <div className="w-full mb-3 flex items-center justify-center rounded-lg bg-white py-2 text-sm text-green-600 border border-green-200">
+          <AlertCircle className="w-4 h-4 mr-2 ml-2 text-green-600" />
+          <span>{successMessage}</span>
+        </div>
+      )}
       {authError && (
         <div className="w-full mb-3 flex items-center justify-center rounded-lg bg-white py-2 text-sm text-red-600 border border-red-200">
           <AlertCircle className="w-4 h-4 mr-2" />
