@@ -1,5 +1,5 @@
 import { getLocalStorageItem } from "@/lib/utils";
-import React, { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import React, { createContext, useContext, useState, useEffect, type ReactNode } from "react";
 
 // Define type for context
 
@@ -117,7 +117,16 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
 
 
   //navbar
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  // Initialize from localStorage, default to true if not set
+  const [isMenuOpen, setIsMenuOpen] = useState(() => {
+    const saved = localStorage.getItem("isMenuOpen");
+    return saved !== null ? JSON.parse(saved) : true;
+  });
+
+  // Sync with localStorage
+  useEffect(() => {
+    localStorage.setItem("isMenuOpen", JSON.stringify(isMenuOpen));
+  }, [isMenuOpen]);
 
   //create new company
   const [addCompanySteps, setAddCompanySteps] = useState([
