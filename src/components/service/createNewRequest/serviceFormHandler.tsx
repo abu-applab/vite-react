@@ -16,6 +16,7 @@ interface ServiceFormHandlerProps {
   selectedService: string;
   setSelectedService: Dispatch<SetStateAction<string>>;
   onBack: () => void;
+  serviceDetails: any;
 }
 
 type ApiConfig =
@@ -26,6 +27,7 @@ export const ServiceFormHandler = ({
   selectedService,
   onBack,
   setSelectedService,
+  serviceDetails,
 }: ServiceFormHandlerProps) => {
   const [config, setConfig] = useState<any>(null);
   const [formState, setFormState] = useState<Record<string, any>>({});
@@ -39,8 +41,30 @@ export const ServiceFormHandler = ({
   const networkRequest = useNetworkRequest();
   const { selectedCompany, setSelectedCompany, companies, contact } = useApp();
   const [formStage, setFormStage] = useState(1);
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const [isConfirmSubmitOpen, setConfirmSubmitOpen] = useState(false);
+
+  useEffect(() => {
+    if (serviceDetails) {
+      const baseDetails = serviceDetails.details ?? serviceDetails;
+
+      // Map first attached document (if any) into the file field so DynamicForm can render it
+      const firstDoc = serviceDetails.documents?.documents?.[0];
+
+      const mappedDoc = firstDoc
+        ? {
+          fileUrl: firstDoc.fileUrl,
+          fileName: firstDoc.fileName,
+          createdOn: firstDoc.createdOn,
+        }
+        : undefined;
+
+      setFormState({
+        ...baseDetails,
+        ...(mappedDoc && { LetterAttachment: mappedDoc }),
+      })
+    }
+  }, [serviceDetails])
 
   useEffect(() => {
     const loadFormConfig = async () => {
@@ -62,6 +86,14 @@ export const ServiceFormHandler = ({
             }
             if (field.id.toLowerCase() === "agreement") {
               initialValues[field.id] = "";
+            }
+
+            // For any detail view, hide LetterAttachment when there are no documents in the response
+            if (field.id === "LetterAttachment") {
+              const docs = serviceDetails?.documents?.documents ?? [];
+              if (docs.length === 0) {
+                return { ...field, hidden: true };
+              }
             }
             return field;
           }),
@@ -98,10 +130,10 @@ export const ServiceFormHandler = ({
       }
     }
     loadFormConfig()
-  }, [selectedService, selectedCompany])
+  }, [selectedService, selectedCompany, serviceDetails])
 
   useEffect(() => {
-     if(formStage === 2) {
+    if (formStage === 2) {
       const loadFormConfig = async () => {
         try {
           const finalConfig = await loadServiceSignatory(config)
@@ -114,8 +146,8 @@ export const ServiceFormHandler = ({
         }
       }
       loadFormConfig();
-     }
-     return;
+    }
+    return;
   }, [formStage])
 
   const handleInputChange = (fieldId: string, value: any) => {
@@ -193,9 +225,9 @@ export const ServiceFormHandler = ({
             .map((f: any) => ({
               ...f,
               disabled:
-              f.id === "Company" || f.id === "Plot"
-                ? false                
-                : f.disabled   
+                f.id === "Company" || f.id === "Plot"
+                  ? false
+                  : f.disabled
             }))
         }
       ];
@@ -203,11 +235,11 @@ export const ServiceFormHandler = ({
         ...prev,
         sections: updatedSections
       }));
-  
+
       setFormStage(1);
     }
   };
-  
+
 
   const handleNext = async (e?: React.FormEvent) => {
     e?.preventDefault();
@@ -231,20 +263,20 @@ export const ServiceFormHandler = ({
         ...baseConfig,
         sections: baseConfig.sections.map((baseSection: any, i: number) => {
           const prevSection = prev.sections?.[i] ?? {};
-      
+
           return {
             ...baseSection,
             ...prevSection,
             fields: baseSection.fields.map((baseField: any, j: number) => {
               const prevField = prevSection.fields?.[j] ?? {};
-      
+
               const alwaysDisableFields = ["company", "plot"]; // 👈 add your fixed fields here
-      
+
               const shouldDisable =
-                baseField.showStage === 1 ||  
+                baseField.showStage === 1 ||
                 alwaysDisableFields.includes(baseField.id) ||   // 👈 Match by field id/name
                 prevField.disabled; // keep whatever was disabled before
-      
+
               return {
                 ...baseField,
                 ...prevField,
@@ -254,7 +286,7 @@ export const ServiceFormHandler = ({
           };
         })
       }));
-      
+
 
       setFormStage(2);
       setIsLoading(false);
@@ -266,7 +298,7 @@ export const ServiceFormHandler = ({
 
   const executeSubmit = async () => {
     setConfirmSubmitOpen(false);
-    await handleSubmit(); 
+    await handleSubmit();
   };
 
 
@@ -296,9 +328,9 @@ export const ServiceFormHandler = ({
         title="request_submitted_successfully"
         heading="request_submitted"
       />
-      <ConfirmationModal 
-        open={isConfirmSubmitOpen}  
-        onOpenChange={setConfirmSubmitOpen} 
+      <ConfirmationModal
+        open={isConfirmSubmitOpen}
+        onOpenChange={setConfirmSubmitOpen}
         onConfirm={executeSubmit}
         description="confirmation_request_desc"
       />

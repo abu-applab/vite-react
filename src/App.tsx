@@ -73,6 +73,7 @@ function App() {
           <Route path="violations/:id" element={<ViolationPage />} />
           <Route path="directory" element={<DirectoryScreen />} />
           <Route path="service" element={<Service />} />
+          <Route path="service/:id" element={<Service />} />
           <Route path="my-profile" element={<MyProfile />} />
           <Route path="notifications" element={<Notifications />} />
           <Route path="company-profile" element={<CompanyProfile />} />

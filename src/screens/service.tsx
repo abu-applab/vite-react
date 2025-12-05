@@ -14,6 +14,7 @@ import Loader from "@/components/loader"
 import CustomPagination from "@/components/customPagination"
 import { PAGE_SIZE } from "@/constants"
 import Breadcrumb from "@/components/appBreadcrumb"
+import { useNavigate } from "react-router-dom"
 // import { AttachmentPopup } from "@/components/violationScreen/attachmentPopup"
 
 // const header = {
@@ -62,20 +63,58 @@ const cardsConfigBase = {
     },
   ]
 }
+interface ServiceData {
+  requestId: string;
+  referenceNumber: string;
+  serviceType: string;
+  status: string;
+  plotNumber: string;
+  submittedDate: string;
+}
 
 const Service = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedService, setSelectedService] = useState<string>("")
+  const [selectedServiceData, setSelectedServiceData] = useState<ServiceData | null>(null)
   const [loading, setLoading] = useState(false)
   const [serviceData, setServiceData] = useState<any[]>([])
   const { serviceFilter, setServiceFilter, selectedCompany } = useApp();
+  const [serviceDetails, setServiceDetails] = useState<any>(null)
   // const [isCreateNewService, setCreateNewService] = useState(false);
   const networkRequest = useNetworkRequest();
+  const navigate = useNavigate();
   const { t } = useTranslation();
+  const [isLoading, setIsLoading] = useState(false)
+
+  const handleCardSelect = async (card: any) => {
+    try {
+      setIsLoading(true)
+      const params = new URLSearchParams();
+      params.append("requestId", card.requestId);
+
+      const response = await networkRequest(API_ENDPOINTS.getServiceRequestDetails, {
+        method: "GET",
+        body: params,
+      });
+      if (response.success) {
+        const details = response.data;
+        setServiceDetails(details)
+      }
+
+
+      console.log("Service request details response:", response);
+    } catch (error) {
+      console.error("Error fetching service request details:", error);
+    } finally {
+      setIsLoading(false)
+    }
+  };
 
   const cardActions = {
     view: (card: any) => {
-      setSelectedService(card.requestId);
+      setSelectedServiceData(card);
+      setSelectedService(card.serviceType);
+      navigate(`/portal/service/${card.requestId}`)
     },
   };
 
@@ -84,6 +123,7 @@ const Service = () => {
     menuOptions: cardsConfigBase.menuOptions.map((option) => ({
       ...option,
       onClick: (card: any) => {
+        handleCardSelect(card);
         const handler = cardActions[option.actionKey as keyof typeof cardActions];
         if (handler) handler(card);
       },
@@ -151,29 +191,36 @@ const Service = () => {
       { label: selectedCompany?.englishName ?? "Home", path: "/portal" },
       {
         label: "service_request",
-        onClick: () => setSelectedService("")
+        onClick: () => {
+          setSelectedService("");
+          setSelectedServiceData(null);
+          navigate("/portal/service");
+        }
       },
     ];
 
-    if (selectedService) {
-      const service = serviceData.find(item => item.requestId === selectedService);
-      if (service) {
-        items.push({ label: service?.referenceNumber ?? "Details", path: "" });
-      } else {
-        const option = serviceOptions.find(o => o.key === selectedService);
-        if (option) {
-          items.push({ label: `Create ${t(option.title)} Request`, path: "" });
-        }
+    if (selectedServiceData) {
+      items.push({
+        label: selectedServiceData.referenceNumber || "Details",
+        path: ""
+      });
+    } else if (selectedService) {
+      const option = serviceOptions.find(o => o.key === selectedService);
+      if (option) {
+        items.push({
+          label: `Create ${t(option.title)} Request`,
+          path: ""
+        });
       }
     }
 
     return items;
-  }, [selectedCompany, selectedService, serviceData, t]);
-
+  }, [selectedCompany, selectedService, selectedServiceData, t, navigate]);
   return (
     <div className="">
       {/* <PageHeader header={header} selectedForm={selectedService} /> */}
       <Breadcrumb items={breadcrumbs} />
+      {isLoading && <Loader />}
       {!selectedService ? (
         <div className="min-h-[55vh]">
           <CreateAndFilter onNewRequest={() => setIsModalOpen(true)} filterConfig={filterKeys} setAppliedFilter={setServiceFilter} appliedFilter={serviceFilter} hideFilters={hideFilters} />
@@ -190,6 +237,7 @@ const Service = () => {
           selectedService={selectedService}
           setSelectedService={setSelectedService}
           onBack={() => setSelectedService("")}
+          serviceDetails={serviceDetails}
         />
       )}
 

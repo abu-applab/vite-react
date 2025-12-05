@@ -150,6 +150,112 @@ export function getServiceFormConfig(formType: string): FormConfig {
                     },
                 ],
             }
+        case "SR-Rental Relationship":
+            return {
+                title: "rental_relation",
+                description: "rental_relationship_request",
+                needsPlots: true,
+                sections: [
+                    {
+                        title: "request_details",
+                        fields: [
+                            {
+                                id: "Investorid",
+                                label: "company",
+                                type: "text",
+                                disabled: true,
+                                required: true,
+                            },
+                            {
+                                id: "Plotnumberid",
+                                label: "plot",
+                                type: "text",
+                                disabled: true,
+                                required: true,
+                            },
+                            {
+                                id: "Currentagreementid",
+                                label: "agreement",
+                                type: "text",
+                                required: true,
+                                disabled: true
+                            },
+                            {
+                                id: "Duration",
+                                label: "duration",
+                                type: "text",
+                                required: true,
+                                disabled: true
+                            },
+                            {
+                                id: "Amount",
+                                label: "amount",
+                                type: "text",
+                                required: true,
+                                disabled: true
+                            },
+                            {
+                                id: "Comment",
+                                label: "comments",
+                                type: "textarea",
+                                required: false,
+                                disabled: true,
+                                placeholder: "Enter any additional comments",
+                                min: 3,
+                                max: 200
+                            },
+                        ],
+                    },
+                    {
+                        title: "required_documents",
+                        subTitle: "(Note: Allowed file types: PDF, JPG, PNG. Max 2MB per file)",
+                        fields: [
+                            {
+                                id: "CrOfOwner",
+                                label: "cr_of_the_owner",
+                                type: "file",
+                                required: true,
+                            },
+                            {
+                                id: "CrOfTenant",
+                                label: "cr_of_the_tenant",
+                                type: "file",
+                                required: true,
+                            },
+                            {
+                                id: "CompletionCertificate",
+                                label: "completion_certificate",
+                                type: "file",
+                                required: true,
+                            },
+                            {
+                                id: "SubleaseAgreement",
+                                label: "sublease_agreement",
+                                type: "file",
+                                required: true,
+                            },
+                            {
+                                id: "RentalRelationshipForm",
+                                label: "rental_relationship_form",
+                                type: "file",
+                                required: true,
+                            },
+                            {
+                                id: "LeaseAuthorizationForm",
+                                label: "lease_authorization_form",
+                                type: "file",
+                                required: true,
+                            },
+                            // {
+                            //     id: "nocCertificate",
+                            //     label: "NOC (No Objection Certificate)",
+                            //     type: "file",
+                            //     required: true,
+                            // },
+                        ],
+                    },
+                ],
+            }
         case "certifiedCopyOfAgreement":
             return {
                 title: "certified_copy_of_agreement_form",
@@ -188,6 +294,54 @@ export function getServiceFormConfig(formType: string): FormConfig {
                                 label: "comments",
                                 type: "textarea",
                                 required: false,
+                                placeholder: "Enter any additional comments",
+                                min: 3,
+                                max: 200
+                            },
+                        ],
+                    },
+                ],
+            }
+        case "SR-Certified Copy of Agreement":
+            return {
+                title: "certified_copy_of_agreement_form",
+                description: "create_certifiedCopyOfAgreement",
+                needsPlots: true,
+                sections: [
+                    {
+                        title: "request_details",
+                        fields: [
+                            {
+                                id: "Companyid",
+                                label: "company",
+                                type: "text",
+                                required: true,
+                                disabled: true,
+                                options: [],
+                            },
+                            {
+                                id: "Plotid",
+                                label: "plot",
+                                type: "text",
+                                required: true,
+                                disabled: true,
+                                dependsOn: "agreement",
+                            },
+                            {
+                                id: "Agreementid",
+                                label: "agreement",
+                                type: "text",
+                                required: true,
+                                dependsOn: "Plot",
+                                options: [],
+                                disabled: true
+                            },
+                            {
+                                id: "Comments",
+                                label: "comments",
+                                type: "textarea",
+                                required: false,
+                                disabled: true,
                                 placeholder: "Enter any additional comments",
                                 min: 3,
                                 max: 200
@@ -235,6 +389,49 @@ export function getServiceFormConfig(formType: string): FormConfig {
                                 type: "textarea",
                                 required: false,
                                 placeholder: "Enter any additional comments",
+                                min: 3,
+                                max: 200
+                            },
+                        ],
+                    },
+                ],
+            }
+        case "OR-Kahrama Request":
+            return {
+                title: "kahramaa",
+                description: "create_kahramaa",
+                needsPlots: true,
+                sections: [
+                    {
+                        title: "request_details",
+                        fields: [
+                            {
+                                id: "Investorid",
+                                label: "company",
+                                type: "text",
+                                required: true,
+                                disabled: true,
+                            },
+                            {
+                                id: "Plotnumberid",
+                                label: "plot",
+                                type: "text",
+                                required: true,
+                                disabled: true,
+                            },
+                            {
+                                id: "Currentagreementid",
+                                label: "agreement",
+                                type: "text",
+                                required: true,
+                                disabled: true
+                            },
+                            {
+                                id: "Comment",
+                                label: "comments",
+                                type: "textarea",
+                                required: false,
+                                disabled: true,
                                 min: 3,
                                 max: 200
                             },
@@ -463,6 +660,71 @@ export function getServiceFormConfig(formType: string): FormConfig {
                     }
                 ],
             }
+        case "SR-Company Details Update":
+            return {
+                title: "company_details_update",
+                description: "company_details_update_request",
+                needsPlots: true,
+                sections: [
+                    {
+                        title: "request_details",
+                        fields: [
+                            {
+                                id: "Investorid",
+                                label: "company",
+                                type: "text",
+                                required: true,
+                                disabled: true,
+                                showStage: 1
+                            },
+                            {
+                                id: "Plotnumberid",
+                                label: "plot",
+                                type: "text",
+                                required: true,
+                                disabled: true,
+                                showStage: 1
+                            },
+                            {
+                                id: "Currentagreementid",
+                                label: "agreement",
+                                type: "text",
+                                required: true,
+                                disabled: true
+                            },
+                            {
+                                id: "comment",
+                                label: "comments",
+                                type: "textarea",
+                                required: false,
+                                disabled: true,
+                                placeholder: "Enter any additional comments",
+                                min: 3,
+                                max: 200,
+                                showStage: 2
+                            },
+                        ],
+                    },
+                    {
+                        title: "required_documents",
+                        subTitle: "(Note: Allowed file types: PDF, JPG, PNG. Max 2MB per file)",
+                        fields: [
+                            {
+                                id: "NOCToWhomItMayConcern",
+                                label: "noc_to_whom_it_may_concern",
+                                type: "file",
+                                required: true,
+                            },
+                            {
+                                id: "NewCRCopy",
+                                label: "new_ommercial_registration_copy",
+                                type: "file",
+                                required: true,
+                            },
+                        ]
+                    }
+                ],
+            }
         case "updateContactDetails":
             return {
                 title: "update_contact_details",
@@ -557,6 +819,94 @@ export function getServiceFormConfig(formType: string): FormConfig {
                     }
                 ],
             }
+        case "SR-Contact Details Update":
+            return {
+                title: "update_contact_details",
+                description: "create_updateContactDetails",
+                needsPlots: true,
+                sections: [
+                    {
+                        title: "request_details",
+                        fields: [
+                            {
+                                id: "Investorid",
+                                label: "company",
+                                type: "text",
+                                required: true,
+                                disabled: true
+                            },
+                            {
+                                id: "Plotnumberid",
+                                label: "plot",
+                                type: "text",
+                                required: true,
+                                disabled: true
+                            },
+                            {
+                                id: "Currentagreementid",
+                                label: "agreement",
+                                type: "text",
+                                required: true,
+                                disabled: true
+                            },
+                            {
+                                id: "Requiredupdateset",
+                                label: "required_update",
+                                type: "text",
+                                required: true,
+                                disabled: true
+                            },
+                            {
+                                id: "Newemail",
+                                label: "new_email",
+                                type: "text",
+                                required: true,
+                                placeholder: "Enter new email",
+                                showIfSelected: "Email",
+                                disabled: true,
+                                max: 50,
+                            },
+                            {
+                                id: "phone",
+                                label: "new_phone",
+                                type: "number",
+                                required: true,
+                                placeholder: "Enter new phone number",
+                                showIfSelected: "Phone",
+                            },
+                            {
+                                id: "pOBox",
+                                label: "new_po_box",
+                                type: "number",
+                                required: true,
+                                placeholder: "Enter new PO box number",
+                                showIfSelected: "POBox",
+                            },
+                            {
+                                id: "Comment",
+                                label: "comments",
+                                type: "textarea",
+                                required: false,
+                                disabled: true,
+                                min: 3,
+                                max: 200
+                            },
+                        ],
+                    },
+                    {
+                        title: "required_documents",
+                        subTitle: "(Note: Allowed file types: PDF, JPG, PNG. Max 2MB per file)",
+                        fields: [
+                            {
+                                id: "LetterAttachment",
+                                label: "letter_attachment",
+                                type: "file",
+                                required: true,
+                            },
+                        ]
+                    }
+                ],
+            }
         case "technicalQueries":
             return {
                 title: "technical_queries",
@@ -602,6 +952,63 @@ export function getServiceFormConfig(formType: string): FormConfig {
                                 label: "comments",
                                 type: "textarea",
                                 required: false,
+                                placeholder: "Enter any additional comments",
+                                min: 3,
+                                max: 200
+                            },
+                        ],
+                    },
+                ],
+            }
+        case "OR-Technical Queries Request":
+            return {
+                title: "technical_queries",
+                description: "create_technicalQueries",
+                needsPlots: true,
+                sections: [
+                    {
+                        title: "request_details",
+                        fields: [
+                            {
+                                id: "Investorid",
+                                label: "company",
+                                type: "text",
+                                required: true,
+                                disabled: true,
+                                options: [],
+                            },
+                            {
+                                id: "Plotnumberid",
+                                label: "plot",
+                                type: "text",
+                                required: true,
+                                disabled: true,
+                                options: [{ id: "loading", name: "Fetching plots...", disabled: true }],
+                                dependsOn: "agreement",
+                            },
+                            {
+                                id: "Currentagreementid",
+                                label: "agreement",
+                                type: "text",
+                                required: true,
+                                dependsOn: "Plot",
+                                options: [],
+                                disabled: true
+                            },
+                            {
+                                id: "subject",
+                                label: "subject",
+                                type: "text",
+                                disabled: true,
+                                required: true,
+                                placeholder: "Enter subjects",
+                            },
+                            {
+                                id: "Comments",
+                                label: "comments",
+                                type: "textarea",
+                                required: false,
+                                disabled: true,
                                 placeholder: "Enter any additional comments",
                                 min: 3,
                                 max: 200
@@ -1593,11 +2000,11 @@ export const TotalCalculationMap: Record<string, string[]> = {
 export const violationFormConfig: {
     title: string;
     sections: {
-      title: string;
-      key?: string;
-      fields: FormField[];
+        title: string;
+        key?: string;
+        fields: FormField[];
     }[];
-  } = {
+} = {
     title: "",
     sections: [
         {
@@ -1758,7 +2165,7 @@ export const violationFormConfig: {
                     id: "closeoutEvidence",
                     label: "closeout_evidence",
                     type: "attachment",
-                    required: false, 
+                    required: false,
                 },
             ],
         },
@@ -1767,115 +2174,114 @@ export const violationFormConfig: {
 
 export const findingTypeRules = {
     "Observations - ملاحظات": {
-      showField: "proposedActionEn",
-      hideField: null,
-      mandatory: ["closureComments"],
-      readOnly: false,
+        showField: "proposedActionEn",
+        hideField: null,
+        mandatory: ["closureComments"],
+        readOnly: false,
     },
-  
+
     "CARR - تقرير الإجراء التصحيحي": {
-      showField: "requirementEn",
-      hideField: null,
-      mandatory: [
-        "closureComments",
-        "correctiveActionPlan",
-        "remedialActionCorrection",
-        "rootCause",
-      ],
-      readOnly: false,
+        showField: "requirementEn",
+        hideField: null,
+        mandatory: [
+            "closureComments",
+            "correctiveActionPlan",
+            "remedialActionCorrection",
+            "rootCause",
+        ],
+        readOnly: false,
     },
 
     "CARR - DN": {
-      showField: "requirementEn",
-      hideField: null,
-      mandatory: [
-        "closureComments",
-        "correctiveActionPlan",
-        "remedialActionCorrection",
-        "rootCause",
-      ],
-      readOnly: false,
+        showField: "requirementEn",
+        hideField: null,
+        mandatory: [
+            "closureComments",
+            "correctiveActionPlan",
+            "remedialActionCorrection",
+            "rootCause",
+        ],
+        readOnly: false,
     },
 
     "CARR - NCR": {
-      showField: "requirementEn",
-      hideField: null,
-      mandatory: [
-        "closureComments",
-        "correctiveActionPlan",
-        "remedialActionCorrection",
-        "rootCause",
-      ],
-      readOnly: false,
+        showField: "requirementEn",
+        hideField: null,
+        mandatory: [
+            "closureComments",
+            "correctiveActionPlan",
+            "remedialActionCorrection",
+            "rootCause",
+        ],
+        readOnly: false,
     },
 
     "OBS - CARR": {
-      showField: "requirementEn",
-      hideField: null,
-      mandatory: [
-        "closureComments",
-        "correctiveActionPlan",
-        "remedialActionCorrection",
-        "rootCause",
-      ],
-      readOnly: false,
+        showField: "requirementEn",
+        hideField: null,
+        mandatory: [
+            "closureComments",
+            "correctiveActionPlan",
+            "remedialActionCorrection",
+            "rootCause",
+        ],
+        readOnly: false,
     },
-  
+
     "NCR - تقرير عدم المطابقة للإجراءات": {
-      showField: "requirementEn",
-      hideField: null,
-      mandatory: [
-        "closureComments",
-        "correctiveActionPlan",
-        "remedialActionCorrection",
-        "rootCause",
-      ],
-      readOnly: false,
+        showField: "requirementEn",
+        hideField: null,
+        mandatory: [
+            "closureComments",
+            "correctiveActionPlan",
+            "remedialActionCorrection",
+            "rootCause",
+        ],
+        readOnly: false,
     },
-  
+
     "SOS - الإيقاف الفوري للأعمال": {
-      showField: "requirementEn",
-      hideField: null,
-      mandatory: [
-        "closureComments",
-        "correctiveActionPlan",
-        "remedialActionCorrection",
-        "rootCause",
-      ],
-      readOnly: false,
+        showField: "requirementEn",
+        hideField: null,
+        mandatory: [
+            "closureComments",
+            "correctiveActionPlan",
+            "remedialActionCorrection",
+            "rootCause",
+        ],
+        readOnly: false,
     },
 
     "Compliance - الإمتثال و أفضل الممارسات": {
-      showField: null,
-      hideField: null,
-      mandatory: [],  
-      readOnly: true,
-      blankStatus: true,
+        showField: null,
+        hideField: null,
+        mandatory: [],
+        readOnly: true,
+        blankStatus: true,
     },
-  
+
     "Not Inspected - لم يتم التفتيش": {
-      showField: null,
-      hideField: null,
-      mandatory: [],  
-      readOnly: true,
-      blankStatus: true,
+        showField: null,
+        hideField: null,
+        mandatory: [],
+        readOnly: true,
+        blankStatus: true,
     },
 
     "Closed+": {
-      showField: null,
-      hideField: null,
-      mandatory: [],  
-      readOnly: true,
-      blankStatus: true,
+        showField: null,
+        hideField: null,
+        mandatory: [],
+        readOnly: true,
+        blankStatus: true,
     },
 
     "Closed-": {
-      showField: null,
-      hideField: null,
-      mandatory: [],  
-      readOnly: true,
-      blankStatus: true,
+        showField: null,
+        hideField: null,
+        mandatory: [],
+        readOnly: true,
+        blankStatus: true,
     },
-  };
-  
-  
+};
+
