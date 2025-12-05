@@ -693,6 +693,37 @@ export function getServiceFormConfig(formType: string): FormConfig {
                                 disabled: true
                             },
                             {
+                                id: "Requiredupdateset",
+                                label: "required_update",
+                                type: "text",
+                                required: true,
+                                disabled: true
+                            },
+                            {
+                                id: "Newcompanyname",
+                                label: "new_company_name_en",
+                                type: "text",
+                                required: true,
+                                disabled: true,
+                                showIfSelected: "companyName"
+                            },
+                            {
+                                id: "Companynamear",
+                                label: "new_company_name_ar",
+                                type: "text",
+                                required: true,
+                                disabled: true,
+                                showIfSelected: "companyName"
+                            },
+                            {
+                                id: "Newsignatoryid",
+                                label: "new_signatory",
+                                type: "text",
+                                required: true,
+                                disabled: true,
+                                showIfSelected: "signatory"
+                            },
+                            {
                                 id: "comment",
                                 label: "comments",
                                 type: "textarea",

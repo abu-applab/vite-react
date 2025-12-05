@@ -20,6 +20,7 @@ import FormSteps from "./addCompany/formSteps"
 import { useTranslation } from "react-i18next"
 import SubmittedFormSteps from "./submittedFormSteps"
 import { MultipleAttachments } from "./violationScreen/multipleAttachments"
+import get from "lodash/get"
 
 interface DynamicFormProps {
   config: FormConfig
@@ -95,11 +96,22 @@ const DynamicForm = ({
               }}
               type={field.type}
               placeholder={field.placeholder}
-              value={
-                field.id === 'debt'
-                  ? String(formData[field.id])
-                  : (formData[field.id] || '')
-              }
+              value={(() => {
+                const raw = formData[field.id];
+
+                if (field.id === 'debt') {
+                  return String(raw);
+                }
+
+                // If the value is an object (e.g. Newsignatoryid from details),
+                // show logicalName or name instead of [object Object]
+                if (raw && typeof raw === 'object') {
+                  const logicalName = get(raw, 'logicalName') ?? get(raw, 'name');
+                  return logicalName || '';
+                }
+
+                return raw || '';
+              })()}
               onChange={(e) => handleInputChange(field.id, e.target.value)}
               className={`${errors[field.id] ? "border-red-600" : ""} placeholder:text-sm`}
               {...(field.type === "number" ? { onWheel: (e) => e.currentTarget.blur() } : {})}
@@ -436,8 +448,8 @@ const DynamicForm = ({
                           key={year}
                           variant={isSelected ? "default" : "outline"}
                           className={`w-full ${isSelected
-                              ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                              : ""
+                            ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                            : ""
                             }`}
                           onClick={() => handleInputChange(field.id, String(year))}
                         >
@@ -519,12 +531,35 @@ const DynamicForm = ({
                           // If field has showIfSelected, show it only if that value is selected in multiselect
                           // This for filtering and showing the check box field
                           if (field.showIfSelected) {
-                            const selectedList =
+                            let selectedList: any =
                               formData.requiredUpdateSet ??
                               formData.requiredUpdate ??
                               formData.Requiredupdateset ??
                               [];
-                            return selectedList.includes(field.showIfSelected);
+
+                            // Handle backend string formats like 'Company Name; Signatory'
+                            if (typeof selectedList === "string") {
+                              const normalizedParts = selectedList
+                                .split(/[;,]/)
+                                .map((part: string) => part.trim().toLowerCase())
+                                .filter(Boolean);
+
+                              // Map human-readable labels to internal ids used in showIfSelected
+                              selectedList = normalizedParts.map((val: string) => {
+                                if (val === "company name") return "companyName";
+                                if (val === "signatory") return "signatory";
+                                if (val === "email") return "Email";
+                                if (val === "phone") return "Phone";
+                                if (val === "pobox" || val === "po box") return "POBox";
+                                return val;
+                              });
+                            }
+
+                            if (Array.isArray(selectedList)) {
+                              return selectedList.includes(field.showIfSelected);
+                            }
+
+                            return false;
                           }
                           if (!formData[field?.id] && isSubmittedApplication && field.type === 'file') {
                             return false
