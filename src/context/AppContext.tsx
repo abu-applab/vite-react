@@ -1,5 +1,5 @@
 import { getLocalStorageItem } from "@/lib/utils";
-import React, { createContext, useContext, useState, type ReactNode } from "react";
+import React, { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 
 // Define type for context
 
@@ -107,6 +107,7 @@ interface AppProviderProps {
 
 // Provider
 export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
+
   const storedContact = getLocalStorageItem("contact");
   const initialContact: Contact | null = storedContact ? JSON.parse(storedContact) : null;
   const [contact, setContact] = useState<Contact | null>(initialContact);
@@ -130,8 +131,20 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   // comapnies
   const [contactName, setContactName] = useState('')
   const [companies, setCompanies] = useState<CompanyType[]>([]);
-  const [selectedCompany, setSelectedCompany] = useState<CompanyType | null>(null);
+  const [selectedCompany, setSelectedCompany] = useState<CompanyType | null>(() => {
+    // Initialize from localStorage if available
+    const savedCompany = localStorage.getItem('selectedCompany');
+    return savedCompany ? JSON.parse(savedCompany) : null;
+  });
   const [companiesFilter, setCompaniesFilter] = useState<CompanyFilter>({ page: 1 })
+
+  useEffect(() => {
+    if (selectedCompany) {
+      localStorage.setItem('selectedCompany', JSON.stringify(selectedCompany));
+    } else {
+      localStorage.removeItem('selectedCompany');
+    }
+  }, [selectedCompany]);
 
 
   //Application

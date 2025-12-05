@@ -211,7 +211,10 @@ const ApplicationPage = () => {
     const navigate = useNavigate();
     const { id } = useParams();
     const { t } = useTranslation();
-
+    const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+    const [breadCrumbNavigation, setBreadCrumbNavigation] = useState<(number)>(-1);
+    const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
+    
     const cardActions = {
         view: (card: any) => {
             console.log("Viewing:", card.typeOfApplication);
@@ -455,7 +458,14 @@ const ApplicationPage = () => {
                     selectedApplication={selectedApplication}
                     setSelectedApplication={setSelectedApplication}
                     setCreateNewApplication={setCreateNewApplication}
+                    setSelectedApplicationRef={setSelectedApplicationRef}
                     setStep={setStep}
+                    breadCrumbNavigation={breadCrumbNavigation}
+                    setBreadCrumbNavigation={setBreadCrumbNavigation}
+                    hasUnsavedChanges={hasUnsavedChanges}
+                    setHasUnsavedChanges={setHasUnsavedChanges}
+                    showLeaveConfirm={showLeaveConfirm}
+                    setShowLeaveConfirm={setShowLeaveConfirm}
                 />
             ),
         },
@@ -469,6 +479,11 @@ const ApplicationPage = () => {
             {
                 label: tabs.find((t) => t.id === activeTab)?.label ?? "submitted_applications",
                 onClick: () => {
+                    if (hasUnsavedChanges) {
+                        setBreadCrumbNavigation(0);
+                        setShowLeaveConfirm(true);
+                        return;
+                    }
                     setCreateNewApplication(false);
                     setStep(0);
                     setSelectedApplication("");
@@ -489,7 +504,14 @@ const ApplicationPage = () => {
                     items.push({
                         label: typeLabel,
                         path: "",
-                        onClick: step > 1 ? () => setStep(1) : undefined,
+                        onClick: step > 1 ? () => {
+                            if (hasUnsavedChanges) {
+                                setBreadCrumbNavigation(1);
+                                setShowLeaveConfirm(true);
+                                return;
+                            }
+                            setStep(1);
+                        } : undefined,
                         isTranslated: true
                     });
 
@@ -501,7 +523,7 @@ const ApplicationPage = () => {
         }
 
         return items;
-    }, [selectedCompany, activeTab, selectedApplicationRef, isCreateNewApplication, step, selectedApplication, selectedInvestment, t]);
+    }, [selectedCompany, activeTab, selectedApplicationRef, isCreateNewApplication, step, selectedApplication, selectedInvestment, t, hasUnsavedChanges]);
 
     return (
         <div className="">
@@ -524,9 +546,9 @@ const ApplicationPage = () => {
                             {
                                 hideFilters ? <EmptyRequest title='no_applications_found' description="havent_submitted_application_yet" buttonText="submit_new_applications" onNewRequest={() => setCreateNewApplication(true)} /> :
                                     <>
-                                        <div className="flex items-center bg-white h-[56px] rounded-lg shadow-md gap-[8px] max-md:justify-between max-md:px-4 mt-6">
+                                        <div className="flex items-center bg-white h-14 rounded-lg shadow-md gap-2 max-md:justify-between max-md:px-4 mt-6">
                                             {tabs.map((tab) => (
-                                                <button key={tab.id} className={`py-[10px] h-full md:ml-[40px] text-sm font-medium ${activeTab === tab.id ? 'text-maroon-100 border-b-2 border-maroon-100' : 'text-black hover:text-gray-500'} focus:outline-none focus:text-maroon-100 `} onClick={() => setActiveTab(tab.id)} > {t(tab.label)}
+                                                <button key={tab.id} className={`py-2.5 h-full md:ml-10 text-sm font-medium ${activeTab === tab.id ? 'text-maroon-100 border-b-2 border-maroon-100' : 'text-black hover:text-gray-500'} focus:outline-none focus:text-maroon-100 cursor-pointer`} onClick={() => setActiveTab(tab.id)} > {t(tab.label)}
                                                 </button>
                                             ))}
                                         </div>
