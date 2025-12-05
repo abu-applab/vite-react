@@ -2019,7 +2019,7 @@ export const violationFormConfig: {
                     required: false,
                 },
                 {
-                    id: "riskRatingOBS", // need to change
+                    id: "riskRatingOBS", //riskRatingOBS || riskRatingNCR || riskRatingCARR
                     label: "risk_level_rating",
                     type: "text",
                     placeholder: "",

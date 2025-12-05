@@ -1,6 +1,6 @@
 import { Card, CardContent } from '../ui/card'
 import { Button } from '../ui/button'
-import { ChevronsUpDown, Plus, Search } from 'lucide-react'
+import { ChevronsUpDown, Plus, Search, X } from 'lucide-react'
 import { Input } from '../ui/input'
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { useState, type Dispatch, type SetStateAction } from 'react'
@@ -72,6 +72,22 @@ const WelcomeHeader = ({ setIsAddNewCompany, totalCompanies, currentCompanies }:
                                 }
                             }}
                         />
+                        {searchText && (
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setSearchText("")
+                                    setCompaniesFilter((prev: any) => ({
+                                        ...prev,
+                                        page: 1,
+                                        searchTerm: ""
+                                    }))
+                                }}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-maroon-100"
+                            >
+                                <X className="h-4 w-4 text-maroon-100" />
+                            </button>
+                        )}
                     </div>
                     <Popover>
                         <PopoverTrigger asChild>

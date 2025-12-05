@@ -20,6 +20,7 @@ export const API_ENDPOINTS = {
   GetFindingFromOP: "/WebApp/GetFindingFromOP",
   updateFindingDetails: "/WebApp/updateFindingDetails",
   getServiceRequestDetails: "/MobileApp/getServiceRequestDetails",
+  createBasicCompanyUpdateRequest: "/WebApp/createBasicCompanyUpdateRequest",
   logIn: "/RegistrationAndLogin/login",
   logOut: "/RegistrationAndLogin/logout",
   signUp: "/RegistrationAndLogin/signup",
