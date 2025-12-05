@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react"
+import { useEffect, useState, useMemo, useLayoutEffect } from "react"
 import { useTranslation } from "react-i18next"
 // import { ServiceHeader } from "@/components/service/serviceRequestPage/service-header"
 import { ServiceFormHandler } from "@/components/service/createNewRequest/serviceFormHandler"
@@ -14,7 +14,7 @@ import Loader from "@/components/loader"
 import CustomPagination from "@/components/customPagination"
 import { PAGE_SIZE } from "@/constants"
 import Breadcrumb from "@/components/appBreadcrumb"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 // import { AttachmentPopup } from "@/components/violationScreen/attachmentPopup"
 
 // const header = {
@@ -80,6 +80,7 @@ const Service = () => {
   const [serviceData, setServiceData] = useState<any[]>([])
   const { serviceFilter, setServiceFilter, selectedCompany } = useApp();
   const [serviceDetails, setServiceDetails] = useState<any>(null)
+  const { id } = useParams();
   // const [isCreateNewService, setCreateNewService] = useState(false);
   const networkRequest = useNetworkRequest();
   const navigate = useNavigate();
@@ -93,6 +94,17 @@ const Service = () => {
     "SR-Contact Details Update",
     "OR-Technical Queries Request",
   ];
+
+  useLayoutEffect(() => {
+    const navType =
+      (performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming | undefined)?.type ||
+      (performance.navigation?.type === 1 ? "reload" : "");
+
+
+    if (id && navType === "reload") {
+      navigate("/portal/service", { replace: true });
+    }
+  }, []);
 
   const handleCardSelect = async (card: any) => {
     try {
@@ -235,9 +247,9 @@ const Service = () => {
       <Breadcrumb items={breadcrumbs} />
       {isLoading && <Loader />}
       {!selectedService ? (
-        <div className="min-h-[55vh]">
+        <div className="w-full min-h-[55vh] flex flex-col">
           <CreateAndFilter onNewRequest={() => setIsModalOpen(true)} filterConfig={filterKeys} setAppliedFilter={setServiceFilter} appliedFilter={serviceFilter} hideFilters={hideFilters} />
-          <div className="">
+          <div className="flex-1 flex flex-col justify-center">
             <ListOFCards cardsConfig={cardsConfig} cardsData={cardsDataWithViewFlag} cardClick={true} />
             {!!(serviceFilter?.totalPages && serviceFilter.totalPages > 1) && <CustomPagination handlePageChange={handlePageChange} currentPage={serviceFilter?.page} totalPages={serviceFilter?.totalPages ?? 0} />}
             {!loading && serviceData.length === 0 && (

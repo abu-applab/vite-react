@@ -154,7 +154,7 @@ interface FieldConfig {
         }
 
         if ( field.id === 'equity' && formState.equity < formState.TotalCost * 0.3) {
-          newErrors[field.id] = "Equity contribution must be at least 30% of project cost.";
+          newErrors[field.id] = "Equity contribution must be at least 30% of Total Cost.";
         }
 
         if((field.id === 'technologyCountryOfOrigin' || field.id === 'equipmentCountryOfOrigin') && value && hasSpecialCharacters(value)) {

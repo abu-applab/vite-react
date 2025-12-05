@@ -54,7 +54,7 @@ export function NavigationBar() {
   };
 
   return (
-    <div className="flex flex-row justify-between h-[56px] lg:px-[68px] md:px-6 w-full border-b-2 overflow-auto">
+    <div className="flex flex-row justify-between h-14 lg:px-[68px] md:px-6 w-full border-b-2 overflow-auto">
       {navigationItems.map((item) => {
         if (item.children) {
           return (
@@ -66,7 +66,7 @@ export function NavigationBar() {
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
-                  className={`h-full m-0 p-0 px-4 rounded-b-none hover:text-[#852533] hover:bg-[#f6f5ef] ${!!(item.children.find(option => pathName === option.href)) && "h-[56px] border-b-4 border-b-[#852533] text-[#852533]"
+                  className={`h-full m-0 p-0 px-4 rounded-b-none hover:text-[#852533] hover:bg-[#f6f5ef] ${isActiveNavItem(item, pathName) && "h-14 border-b-4 border-b-[#852533] text-[#852533]"
                     }`}
                 >
                   <item.icon className="h-5 w-5" />

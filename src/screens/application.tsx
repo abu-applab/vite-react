@@ -554,7 +554,7 @@ const ApplicationPage = () => {
                                                 </button>
                                             ))}
                                         </div>
-                                        <div className="mt-4 w-full min-h-[35vh] rounded-b-lg">
+                                        <div className="mt-4 w-full min-h-[35vh] rounded-b-lg flex-1 flex flex-col justify-center">
                                             {activeTab === 'submitted' &&
                                                 ((applicationData.length > 0 && (applicationFilter?.totalPages ?? 0) > 0) ?
                                                     <>

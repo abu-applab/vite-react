@@ -245,7 +245,7 @@ const ProductInformation = ({ products, setProducts, isError, isSubmittedApplica
         <>
             <div className="flex flex-row justify-between items-center">
                 <h4 className="max-md:text-maroon-100 max-md:ml-4 mb-3 flex">{t('product_information')}
-                <div className="text-destructive">*</div>
+                    <div className="text-destructive">*</div>
                 </h4>
                 {(products?.length > 0 && !isSubmittedApplication) && <Button type="button" variant="ghost" className="border cursor-pointer" onClick={handleOpenModal}>
                     <Plus />
@@ -333,7 +333,7 @@ const ProductInformation = ({ products, setProducts, isError, isSubmittedApplica
                         </div>
                     </div>
 
-                    <div className="flex justify-between px-5 py-3 border-t border-border h-14">
+                    <div className="flex justify-between px-5 py-6 border-t border-border h-14 mb-6">
                         <Button variant="outline" className="cursor-pointer" type="button" onClick={() => setIsProductModalOpen(false)}>
                             {t('cancel')}
                         </Button>
