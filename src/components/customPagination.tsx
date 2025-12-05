@@ -6,7 +6,7 @@ interface CustomPagination {
     currentPage: number,
     totalPages: number
 }
-const CustomPagination = ({handlePageChange, currentPage, totalPages}: CustomPagination) => {
+const CustomPagination = ({ handlePageChange, currentPage, totalPages }: CustomPagination) => {
     return (
         <div>
             <Pagination className="mt-6 flex justify-center">
@@ -40,7 +40,7 @@ const CustomPagination = ({handlePageChange, currentPage, totalPages}: CustomPag
                                     <PaginationLink
                                         onClick={() => handlePageChange(Number(page))}
                                         isActive={currentPage === page}
-                                        className='cursor-pointer'
+                                        className="cursor-pointer"
                                     >
                                         {page}
                                     </PaginationLink>

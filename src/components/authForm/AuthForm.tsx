@@ -20,8 +20,8 @@ const AuthForm = () => {
     const [searchParams] = useSearchParams();
     const token = searchParams.get("token");
 
-    const handleSwitch = (view: keyof typeof authView) => {
-        navigate(`/${view}`)
+    const handleSwitch = (view: keyof typeof authView, data?: any) => {
+        navigate(`/${view}`, { state: data })
         // setAuthView({
         //     login: false,
         //     signup: false,

@@ -11,6 +11,7 @@ import { PAGE_SIZE } from "@/constants";
 import { useApp } from "@/context/AppContext";
 import { Eye, SquareLibrary } from "lucide-react";
 import { useEffect, useLayoutEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 
 
@@ -83,6 +84,7 @@ const ViolationPage = () => {
     const [showFInding, setShowFinding] = useState(false);
     const navigate = useNavigate();
     const { id } = useParams();
+    const { t } = useTranslation();
 
     const cardActions = {
         view: (card: any) => {
@@ -174,11 +176,11 @@ const ViolationPage = () => {
             <PageHeader header={header} customTitle={id ? 'view_violation_report' : ''} />
             {!showFInding ? <div className="min-h-[55vh]">
                 <>
-                    <CreateAndFilter filterConfig={filterKeys} setAppliedFilter={setViolationFilter} appliedFilter={violationFilter} hideFilters={hideFilters}/>
+                    <CreateAndFilter filterConfig={filterKeys} setAppliedFilter={setViolationFilter} appliedFilter={violationFilter} hideFilters={hideFilters} />
                     <div className="">
                         <ListOFCards cardsConfig={cardsConfig} cardsData={violationData} cardClick={true} />
                         {!!(violationFilter?.totalPages && violationFilter.totalPages > 1 && violationData.length > 0) && <CustomPagination handlePageChange={handlePageChange} currentPage={violationFilter?.page} totalPages={violationFilter?.totalPages ?? 0} />}
-                        {!loading && (violationData?.length === 0 || !violationData) && <EmptyRequest hideButton={true} title={'no_violation_found'} />}
+                        {!loading && (violationData?.length === 0 || !violationData) && <EmptyRequest title='no_companies_found' description="no_companies_found_desc" descriptionParams={{ entity: t('violation') }} buttonText="add_new_company" />}
                     </div>
                 </>
             </div> :

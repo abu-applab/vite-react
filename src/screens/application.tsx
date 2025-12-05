@@ -544,7 +544,9 @@ const ApplicationPage = () => {
                         />
                         <div className="w-full min-h-[55vh] flex flex-col justify-center">
                             {
-                                hideFilters ? <EmptyRequest title='no_applications_found' description="havent_submitted_application_yet" buttonText="submit_new_applications" onNewRequest={() => setCreateNewApplication(true)} /> :
+                                hideFilters ?
+                                    <EmptyRequest title='no_companies_found' description="no_companies_found_desc" descriptionParams={{ entity: t('applications') }} buttonText="add_new_company" />
+                                    :
                                     <>
                                         <div className="flex items-center bg-white h-14 rounded-lg shadow-md gap-2 max-md:justify-between max-md:px-4 mt-6">
                                             {tabs.map((tab) => (
