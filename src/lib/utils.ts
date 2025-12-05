@@ -2,6 +2,7 @@ import { clsx, type ClassValue } from "clsx"
 import { AppWindow, FileText, Home, MessageSquareDot, SquareDashed, SquareLibrary, Wallet } from "lucide-react"
 import { twMerge } from "tailwind-merge"
 import { findingTypeRules, TotalCalculationMap, violationFormConfig } from "./form-data";
+import { API_ENDPOINTS } from "@/api/apiEndpoints";
 
 interface SubmitCompanyUpdateProps {
   formState: Record<string, any>;
@@ -61,7 +62,7 @@ export const createCompanyUpdateRequest = async ({ formState, networkRequest, co
     contactPerson: contactId,
   }
 
-  const response = await networkRequest('/createBasicCompanyUpdateRequest'
+  const response = await networkRequest(API_ENDPOINTS.createBasicCompanyUpdateRequest
     , {
       method: "POST",
       body

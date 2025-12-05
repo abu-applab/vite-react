@@ -155,23 +155,73 @@ function getPointerColor(status: string) {
 }
 
 const convertDate = (value: string) => {
-    // value = "26/11/2025 03:53 PM"
-    const [datePart, timePart, modifier] = value.split(" ");
+    // Handle null/undefined or empty values
+    if (!value) {
+        console.error("Invalid date value:", value);
+        return "N/A";
+    }
 
-    const [day, month, year] = datePart.split("/").map(Number);
+    // Trim the value to remove any extra whitespace
+    value = value.trim();
+    
+    // Split by space to separate date, time, and modifier
+    const parts = value.split(" ");
+    
+    // Validate that we have at least 2 parts (date and time)
+    if (parts.length < 2) {
+        return "N/A";
+    }
+    
+    const [datePart, timePart, modifier] = parts;
 
-    let [hours, minutes] = timePart.split(":").map(Number);
+    // Split date part
+    const dateParts = datePart?.split("/");
+    if (!dateParts || dateParts.length !== 3) {
+        return "N/A";
+    }
 
-    if (modifier === "PM" && hours !== 12) hours += 12;
-    if (modifier === "AM" && hours === 12) hours = 0;
+    // Split time part (handle case where time might include AM/PM)
+    const timeParts = timePart?.split(":");
+    if (!timeParts || timeParts.length < 2) {
+        return "N/A";
+    }
 
-    const jsDate = new Date(year, month - 1, day, hours, minutes);
+    const [day, month, year] = dateParts.map(Number);
+    let [hours, minutes] = timeParts.map(Number);
+    
+    // Validate numbers
+    if (isNaN(day) || isNaN(month) || isNaN(year) || isNaN(hours) || isNaN(minutes)) {
+        return "N/A";
+    }
+    
+    // Handle 12-hour format conversion
+    if (modifier) {
+        const upperModifier = modifier.toUpperCase();
+        if (upperModifier === "PM" && hours !== 12) {
+            hours += 12;
+        }
+        if (upperModifier === "AM" && hours === 12) {
+            hours = 0;
+        }
+    }
 
-    return jsDate.toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-    });
+    try {
+        // Note: month is 0-indexed in JavaScript Date
+        const jsDate = new Date(year, month - 1, day, hours, minutes);
+        
+        // Validate the date object
+        if (isNaN(jsDate.getTime())) {
+            return "N/A";
+        }
+        
+        return jsDate.toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+        });
+    } catch (error) {
+        return "N/A";
+    }
 };
 
 const getValue = (obj: any, key?: string) => {
