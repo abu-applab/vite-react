@@ -48,23 +48,48 @@ export const ServiceFormHandler = ({
     if (serviceDetails) {
       const baseDetails = serviceDetails.details ?? serviceDetails;
 
-      // Map first attached document (if any) into the file field so DynamicForm can render it
-      const firstDoc = serviceDetails.documents?.documents?.[0];
+      // Map attached documents (if any) into their corresponding file fields
+      const docs = serviceDetails.documents?.documents ?? [];
 
-      const mappedDoc = firstDoc
-        ? {
-          fileUrl: firstDoc.fileUrl,
-          fileName: firstDoc.fileName,
-          createdOn: firstDoc.createdOn,
+      const mapDoc = (doc: any) => ({
+        fileUrl: doc.fileUrl,
+        fileName: doc.fileName,
+        createdOn: doc.createdOn,
+      });
+
+      const mappedFiles: Record<string, any> = {};
+
+      if (docs.length > 0) {
+        // Special case: Company Details Update keeps CR and NOC in a fixed order
+        if (selectedService === "SR-Company Details Update" || selectedService === "updateCompanyInformation") {
+          if (docs[0]) mappedFiles.NewCRCopy = mapDoc(docs[0]);
+          if (docs[1]) mappedFiles.NOCToWhomItMayConcern = mapDoc(docs[1]);
+        } else {
+          // Generic case: map docs to required_documents file fields in order
+          const viewConfig = getServiceFormConfig(selectedService);
+          const docSection = viewConfig.sections.find((s: any) => s.title === "required_documents");
+          const fileFields = docSection?.fields?.filter((f: any) => f.type === "file") ?? [];
+
+          fileFields.forEach((field: any, index: number) => {
+            const doc = docs[index];
+            if (doc) {
+              mappedFiles[field.id] = mapDoc(doc);
+            }
+          });
+
+          // Fallback: if there is only one doc and a LetterAttachment field, map it there too
+          if (docs[0] && fileFields.some((f: any) => f.id === "LetterAttachment")) {
+            mappedFiles.LetterAttachment = mapDoc(docs[0]);
+          }
         }
-        : undefined;
+      }
 
       setFormState({
         ...baseDetails,
-        ...(mappedDoc && { LetterAttachment: mappedDoc }),
+        ...mappedFiles,
       })
     }
-  }, [serviceDetails])
+  }, [serviceDetails, selectedService])
 
   useEffect(() => {
     const loadFormConfig = async () => {

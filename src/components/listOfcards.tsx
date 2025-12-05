@@ -47,7 +47,7 @@ function getStatusColor(status: string) {
         case "approved - موافقة":
         case "closed+":
         case "closed-":
-        case 'submitted':    
+        case 'submitted':
             return "bg-green-100 text-green-600 hover:bg-green-100"
         case "rejected":
         case "cancelled":
@@ -104,7 +104,7 @@ function getPointerColor(status: string) {
         case "approved - موافقة":
         case "closed+":
         case "closed-":
-        case 'submitted':    
+        case 'submitted':
             return "bg-green-600"
         case "rejected":
         case "cancelled":
@@ -163,15 +163,15 @@ const convertDate = (value: string) => {
 
     // Trim the value to remove any extra whitespace
     value = value.trim();
-    
+
     // Split by space to separate date, time, and modifier
     const parts = value.split(" ");
-    
+
     // Validate that we have at least 2 parts (date and time)
     if (parts.length < 2) {
         return "N/A";
     }
-    
+
     const [datePart, timePart, modifier] = parts;
 
     // Split date part
@@ -188,12 +188,12 @@ const convertDate = (value: string) => {
 
     const [day, month, year] = dateParts.map(Number);
     let [hours, minutes] = timeParts.map(Number);
-    
+
     // Validate numbers
     if (isNaN(day) || isNaN(month) || isNaN(year) || isNaN(hours) || isNaN(minutes)) {
         return "N/A";
     }
-    
+
     // Handle 12-hour format conversion
     if (modifier) {
         const upperModifier = modifier.toUpperCase();
@@ -208,12 +208,12 @@ const convertDate = (value: string) => {
     try {
         // Note: month is 0-indexed in JavaScript Date
         const jsDate = new Date(year, month - 1, day, hours, minutes);
-        
+
         // Validate the date object
         if (isNaN(jsDate.getTime())) {
             return "N/A";
         }
-        
+
         return jsDate.toLocaleDateString("en-US", {
             year: "numeric",
             month: "2-digit",
@@ -249,22 +249,30 @@ const ActionsMenu = ({ options, data, t }: { options: any[], data: any, t: any }
         </DropdownMenuTrigger>
 
         <DropdownMenuContent align="end">
-            {options.map((option, idx) => {
-                const Icon = option.icon;
-                return (
-                    <DropdownMenuItem
-                        key={idx}
-                        className="flex items-center gap-2"
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            option.onClick?.(data)
-                        }}
-                    >
-                        {Icon && <Icon className="h-4 w-4 text-maroon-100" />}
-                        {t(option.label)}
-                    </DropdownMenuItem>
-                );
-            })}
+            {options
+                .filter((option) => {
+                    // Hide view_details for cards where canView is explicitly false
+                    if (option.label === "view_details" && data?.canView === false) {
+                        return false;
+                    }
+                    return true;
+                })
+                .map((option, idx) => {
+                    const Icon = option.icon;
+                    return (
+                        <DropdownMenuItem
+                            key={idx}
+                            className="flex items-center gap-2"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                option.onClick?.(data)
+                            }}
+                        >
+                            {Icon && <Icon className="h-4 w-4 text-maroon-100" />}
+                            {t(option.label)}
+                        </DropdownMenuItem>
+                    );
+                })}
         </DropdownMenuContent>
     </DropdownMenu>
 );
@@ -285,11 +293,14 @@ const ListOFCards = ({ cardsConfig, cardsData, isProducts = false, cardClick = f
                 subTitleValue = subTitleValue === 'Logistics' ? 'Logistics Park' : subTitleValue
                 const tagValue = getValue(data, cardsConfig.tag);
 
+                const canView = data?.canView !== false;
+
                 return (
                     <Card
                         key={getValue(data, cardsConfig.id)}
-                        className={`relative ${(cardsConfig?.menuOptions?.[0]?.onClick && cardClick) ? 'cursor-pointer' : ''}`}
+                        className={`relative ${(cardsConfig?.menuOptions?.[0]?.onClick && cardClick && canView) ? 'cursor-pointer' : ''}`}
                         onClick={() => {
+                            if (!canView) return;
                             if (cardsConfig?.menuOptions?.[0]?.onClick) {
                                 cardsConfig.menuOptions[0].onClick(data);
                             }
@@ -331,7 +342,7 @@ const ListOFCards = ({ cardsConfig, cardsData, isProducts = false, cardClick = f
                                     <StatusBadge status={statusValue} className="hidden md:flex" />
                                 )}
 
-                                {!!cardsConfig.menuOptions?.length && (
+                                {!!cardsConfig.menuOptions?.length && canView && (
                                     <ActionsMenu options={cardsConfig.menuOptions} data={data} t={t} />
                                 )}
                             </div>

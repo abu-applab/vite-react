@@ -85,6 +85,14 @@ const Service = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false)
+  const detailServiceTypes = [
+    "SR-Certified Copy of Agreement",
+    "SR-Rental Relationship",
+    "OR-Kahrama Request",
+    "SR-Company Details Update",
+    "SR-Contact Details Update",
+    "OR-Technical Queries Request",
+  ];
 
   const handleCardSelect = async (card: any) => {
     try {
@@ -216,6 +224,11 @@ const Service = () => {
 
     return items;
   }, [selectedCompany, selectedService, selectedServiceData, t, navigate]);
+
+  const cardsDataWithViewFlag = serviceData.map((item: any) => ({
+    ...item,
+    canView: detailServiceTypes.includes(item.serviceType),
+  }));
   return (
     <div className="">
       {/* <PageHeader header={header} selectedForm={selectedService} /> */}
@@ -225,7 +238,7 @@ const Service = () => {
         <div className="min-h-[55vh]">
           <CreateAndFilter onNewRequest={() => setIsModalOpen(true)} filterConfig={filterKeys} setAppliedFilter={setServiceFilter} appliedFilter={serviceFilter} hideFilters={hideFilters} />
           <div className="">
-            <ListOFCards cardsConfig={cardsConfig} cardsData={serviceData} cardClick={true} />
+            <ListOFCards cardsConfig={cardsConfig} cardsData={cardsDataWithViewFlag} cardClick={true} />
             {!!(serviceFilter?.totalPages && serviceFilter.totalPages > 1) && <CustomPagination handlePageChange={handlePageChange} currentPage={serviceFilter?.page} totalPages={serviceFilter?.totalPages ?? 0} />}
             {!loading && serviceData.length === 0 && (
               hideFilters ? <EmptyRequest title='no_service_requests_yet' description="havent_submitted_request_yet" buttonText="submit_new_request" onNewRequest={() => setIsModalOpen(true)} />
