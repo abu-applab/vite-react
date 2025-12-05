@@ -40,7 +40,7 @@ const DirectoryScreen = () => {
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-maroon-100" />
                     <Input placeholder="Search..." className="pl-10 w-md bg-background" />
                 </div>
-                <Button variant="outline" onClick={() => { }}>
+                <Button variant="outline" className="cursor-pointer" onClick={() => { }}>
                     <Funnel className="w-4 h-4" />
                     <span className="font-normal text-xs">Sort by</span>
                 </Button>

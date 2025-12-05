@@ -105,7 +105,7 @@ export default function CompanyDetailsForm({goToNextStep, goToPreviousStep, isAd
                     <h1 className="text-xl font-semibold text-foreground">{t('review_company_details')}</h1>
                     <p className="text-muted-foreground text-sm">{isAddNewCompany ? t('review_company_details_existing_user_desc') : t('review_company_details_desc')}</p>
                 </div>
-                <Button onClick={isEditing ? handleSave : () => setIsEditing(true)} className={`flex items-center gap-2 ${!isEditing ? 'text-black hover:bg-zinc-50' : 'bg-maroon-100 hover:bg-maroon-100'}`}>
+                <Button onClick={isEditing ? handleSave : () => setIsEditing(true)} className={`flex items-center gap-2 cursor-pointer ${!isEditing ? 'text-black hover:bg-zinc-50' : 'bg-maroon-100 hover:bg-maroon-100'}`}>
                     {isEditing ? <Save className="h-4 w-4" /> : <Edit className="h-4 w-4" />}
                     {isEditing ? "Save" : "Edit"}
                 </Button>
@@ -235,8 +235,8 @@ export default function CompanyDetailsForm({goToNextStep, goToPreviousStep, isAd
 
             {/* Navigation Buttons */}
             <div className="flex justify-between pt-4">
-                <Button variant="outline" className="bg-transparent" onClick={() => goToPreviousStep()}>{t('previous')}</Button>
-                <Button className="bg-maroon-100 hover:bg-[#60091A]" onClick={() => goToNextStep()}>{t('next')}</Button>
+                <Button variant="outline" className="bg-transparent cursor-pointer" onClick={() => goToPreviousStep()}>{t('previous')}</Button>
+                <Button className="bg-maroon-100 hover:bg-[#60091A] cursor-pointer" onClick={() => goToNextStep()}>{t('next')}</Button>
             </div>
         </div>
     )

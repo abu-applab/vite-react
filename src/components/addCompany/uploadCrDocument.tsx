@@ -93,17 +93,17 @@ const UploadCrDocument = ({ goToNextStep, isAddNewCompany = false }: UploadCrDoc
                     <img src={warning} alt="completed" className="w-3 h-3" />
                     <span>Failed</span>
                     <span>•</span>
-                    <button onClick={() => { }} className="underline underline-offset-2 text-maroon-100">
+                    <button onClick={() => { }} className="underline underline-offset-2 text-maroon-100 cursor-pointer">
                       Try again
                     </button>
                   </p>}
                 </div>
               </div>
               <div className="flex flex-row gap-2">
-                {status === 'completed' && <Button className="border-2 h-8 w-8 p-2" type="button" variant="ghost" onClick={() => { }}>
+                {status === 'completed' && <Button className="border-2 h-8 w-8 p-2 cursor-pointer" type="button" variant="ghost" onClick={() => { }}>
                   <Repeat className="h-4 w-4 text-[#82764f]" />
                 </Button>}
-                <Button className="border-2 h-8 w-8 p-2" type="button" variant="ghost" onClick={() => setUploadedFile(null)}>
+                <Button className="border-2 h-8 w-8 p-2 cursor-pointer" type="button" variant="ghost" onClick={() => setUploadedFile(null)}>
                   <Trash2 className="h-4 w-4 text-[#82764f]" />
                 </Button>
               </div>

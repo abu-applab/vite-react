@@ -25,7 +25,7 @@ const SubmittedFormSteps = ({ applicationSteps, setApplicationSteps }: Submitted
                 <button
                     key={index}
                     onClick={() => handleStepClick(index)}
-                    className={`w-full py-2 text-sm font-medium rounded-md transition-colors ${step.active
+                    className={`w-full py-2 text-sm font-medium rounded-md transition-colors cursor-pointer ${step.active
                             ? "bg-[#8b0015] text-white"
                             : step.completed
                                 ? "bg-[#8b001520] text-[#8b0015]"

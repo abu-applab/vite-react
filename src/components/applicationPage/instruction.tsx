@@ -62,10 +62,10 @@ const Instruction = ({ config, goToNextStep, goToPreviousStep, applicationSteps 
                 })
                 }
                 <div className="flex justify-between">
-                    <Button type="button" variant="outline" onClick={goToPreviousStep}>
+                    <Button type="button" className="cursor-pointer" variant="outline" onClick={goToPreviousStep}>
                         {t('previous')}
                     </Button>
-                    <Button type="submit" onClick={goToNextStep} className="bg-maroon-100 hover:bg-[#7A1F2B]">
+                    <Button type="submit" onClick={goToNextStep} className="bg-maroon-100 hover:bg-[#7A1F2B] cursor-pointer">
                         {t('next')}
                     </Button>
                 </div>

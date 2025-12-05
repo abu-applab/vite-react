@@ -332,7 +332,7 @@ const DynamicForm = ({
 
                   {!isSubmittedApplication && (
                     <Button
-                      className="border-2 h-8 w-8 p-2"
+                      className="border-2 h-8 w-8 p-2 cursor-pointer"
                       type="button"
                       variant="ghost"
                       onClick={() => handleInputChange(field.id, null)}
@@ -382,7 +382,7 @@ const DynamicForm = ({
                     </Button>
                     {!isSubmittedApplication && (
                       <Button
-                        className="border-2 h-8 w-8 p-2"
+                        className="border-2 h-8 w-8 p-2 cursor-pointer"
                         type="button"
                         variant="ghost"
                         onClick={() => handleInputChange(field.id, null)}
@@ -553,16 +553,16 @@ const DynamicForm = ({
           })}
 
           {!isSubmittedApplication && (<div className="flex items-center justify-between">
-            <Button type="button" variant="outline" onClick={handlePerviousButton}>
+            <Button type="button" className="cursor-pointer" variant="outline" onClick={handlePerviousButton}>
               {t('previous')}
             </Button>
             <div className="flex flex-row items-center gap-3">
               {isCreateApplication &&
-                <Button type="submit" variant="outline" onClick={handleSave}>
+                <Button type="submit" className="cursor-pointer" variant="outline" onClick={handleSave}>
                   {t("save")}
                 </Button>
               }
-              <Button type="button" className="bg-maroon-100 hover:bg-[#7A1F2B]" onClick={(!isLastStepActive || isNext) ? goToNextStep : handleSubmit}>
+              <Button type="button" className="bg-maroon-100 hover:bg-[#7A1F2B] cursor-pointer" onClick={(!isLastStepActive || isNext) ? goToNextStep : handleSubmit}>
                 {(!isLastStepActive || isNext) ? t("next") : t("submit")}
               </Button>
             </div>

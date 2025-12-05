@@ -75,10 +75,10 @@ function SelectCompanyDetails({goToNextStep, goToPreviousStep}: SelectCompanyDet
             </div>
 
             <div className="flex justify-between pt-6">
-              <Button type="button" variant="outline" className="bg-transparent" onClick={() => goToPreviousStep()}>
+              <Button type="button" variant="outline" className="bg-transparent cursor-pointer" onClick={() => goToPreviousStep()}>
                 {t('previous')}
               </Button>
-              <Button type="submit" className="px-8 bg-maroon-100 hover:bg-[#60091A]" onClick={handleSubmit}>
+              <Button type="submit" className="px-8 bg-maroon-100 hover:bg-[#60091A] cursor-pointer" onClick={handleSubmit}>
                 {t('next')}
               </Button>
             </div>

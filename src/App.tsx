@@ -1,8 +1,9 @@
 import './App.css'
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import { lazy, type JSX } from 'react';
+import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
+import { lazy, Suspense, type JSX } from 'react';
 import { getLocalStorageItem } from './lib/utils';
 import { useLanguageInit } from './hooks/useLanguageInit';
+import Loader from './components/loader'; // Add a loader component if you don't have one
 
 // Lazy load components
 const Login = lazy(() => import('./screens/authentication/login'));
@@ -30,57 +31,174 @@ const CompanyProfile = lazy(() => import('./screens/companyProfile'));
 const AUTH_TOKEN_KEY = 'auth_txn';
 
 function App() {
+  useLanguageInit();
 
-  useLanguageInit()
+    // Helper components for auth
+    const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
+      const authToken = getLocalStorageItem(AUTH_TOKEN_KEY);
+      return authToken ? children : <Navigate to="/login" replace />;
+    };
+  
+    const AuthRedirect = ({ children }: { children: JSX.Element }) => {
+      const authToken = getLocalStorageItem(AUTH_TOKEN_KEY);
+      return authToken ? <Navigate to="/portal" replace /> : children;
+    };
+  
 
-  const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
-    const authToken = getLocalStorageItem(AUTH_TOKEN_KEY);
-    return authToken ? children : <Navigate to="/login" replace />;
-  };
-
-  const AuthRedirect = ({ children }: { children: JSX.Element }) => {
-    const authToken = getLocalStorageItem(AUTH_TOKEN_KEY);
-    return authToken ? <Navigate to="/portal" replace /> : children;
-  };
+  // Create router configuration
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: <LoginLayout />,
+      children: [
+        {
+          index: true,
+          element: <AuthRedirect><Login /></AuthRedirect>,
+        },
+        {
+          path: "login",
+          element: <AuthRedirect><Login /></AuthRedirect>,
+        },
+        {
+          path: "signup",
+          element: <AuthRedirect><SignUp /></AuthRedirect>,
+        },
+        {
+          path: "forgotpassword",
+          element: <AuthRedirect><ForgotPassword /></AuthRedirect>,
+        },
+        {
+          path: "resetpassword",
+          element: <AuthRedirect><ResetPassword /></AuthRedirect>,
+        },
+        {
+          path: "otpverification",
+          element: <AuthRedirect><OtpVerification /></AuthRedirect>,
+        },
+        {
+          path: "add-company",
+          element: <AuthRedirect><AddCompany /></AuthRedirect>,
+        },
+      ],
+    },
+    {
+      path: "/portal",
+      element: <ProtectedRoute><PortalLayout /></ProtectedRoute>,
+      children: [
+        {
+          index: true,
+          element: <HubPage />,
+        },
+        {
+          path: "application",
+          children: [
+            {
+              index: true,
+              element: <ApplicationPage />,
+            },
+            {
+              path: ":id",
+              element: <ApplicationPage />,
+            },
+          ],
+        },
+        {
+          path: "payments",
+          element: <PaymentScreen />,
+        },
+        {
+          path: "allocated-plots",
+          children: [
+            {
+              index: true,
+              element: <AllocatedPlotsPage />,
+            },
+            {
+              path: ":id",
+              element: <PlotDetailsScreen />,
+            },
+          ],
+        },
+        {
+          path: "agreements",
+          element: <Agreements />,
+        },
+        {
+          path: "bot-requests",
+          children: [
+            {
+              index: true,
+              element: <BotRequestAndReportsPage selectedBotType="request" />,
+            },
+            {
+              path: ":form",
+              element: <BotRequestAndReportsPage selectedBotType="request" />,
+            },
+          ],
+        },
+        {
+          path: "bot-reports",
+          children: [
+            {
+              index: true,
+              element: <BotRequestAndReportsPage selectedBotType="reports" />,
+            },
+            {
+              path: ":form",
+              element: <BotRequestAndReportsPage selectedBotType="reports" />,
+            },
+          ],
+        },
+        {
+          path: "violations",
+          children: [
+            {
+              index: true,
+              element: <ViolationPage />,
+            },
+            {
+              path: ":id",
+              element: <ViolationPage />,
+            },
+          ],
+        },
+        {
+          path: "directory",
+          element: <DirectoryScreen />,
+        },
+        {
+          path: "service",
+          children: [
+            {
+              index: true,
+              element: <Service />,
+            },
+            {
+              path: ":id",
+              element: <Service />,
+            },
+          ],
+        },
+        {
+          path: "my-profile",
+          element: <MyProfile />,
+        },
+        {
+          path: "notifications",
+          element: <Notifications />,
+        },
+        {
+          path: "company-profile",
+          element: <CompanyProfile />,
+        },
+      ],
+    },
+  ]);
 
   return (
-    <Router>
-      {/* <Suspense fallback={<div></div>}> */}
-      <Routes>
-        <Route path="/" element={<LoginLayout />}>
-          <Route index element={<AuthRedirect><Login /></AuthRedirect>} />
-          <Route path="/login" element={<AuthRedirect><Login /></AuthRedirect>} />
-          <Route path="/signup" element={<AuthRedirect><SignUp /></AuthRedirect>} />
-          <Route path="/forgotpassword" element={<AuthRedirect><ForgotPassword /></AuthRedirect>} />
-          <Route path="/resetpassword" element={<AuthRedirect><ResetPassword /></AuthRedirect>} />
-          <Route path="/otpverification" element={<AuthRedirect><OtpVerification /></AuthRedirect>} />
-          <Route path="/add-company" element={<AuthRedirect><AddCompany /></AuthRedirect>} />
-        </Route>
-
-        <Route path="/portal" element={<ProtectedRoute><PortalLayout /></ProtectedRoute>}>
-          <Route index element={<HubPage />} />
-          <Route path="application" element={<ApplicationPage />} />
-          <Route path="application/:id" element={<ApplicationPage />} />
-          <Route path="payments" element={<PaymentScreen />} />
-          <Route path="allocated-plots" element={<AllocatedPlotsPage />} />
-          <Route path="agreements" element={<Agreements />} />
-          <Route path="allocated-plots/:id" element={<PlotDetailsScreen />} />
-          <Route path="bot-requests" element={<BotRequestAndReportsPage selectedBotType="request" />} />
-          <Route path="bot-reports" element={<BotRequestAndReportsPage selectedBotType="reports" />} />
-          <Route path="bot-requests/:form" element={<BotRequestAndReportsPage selectedBotType="request" />} />
-          <Route path="bot-reports/:form" element={<BotRequestAndReportsPage selectedBotType="reports" />} />
-          <Route path="violations" element={<ViolationPage />} />
-          <Route path="violations/:id" element={<ViolationPage />} />
-          <Route path="directory" element={<DirectoryScreen />} />
-          <Route path="service" element={<Service />} />
-          <Route path="service/:id" element={<Service />} />
-          <Route path="my-profile" element={<MyProfile />} />
-          <Route path="notifications" element={<Notifications />} />
-          <Route path="company-profile" element={<CompanyProfile />} />
-        </Route>
-      </Routes>
-      {/* </Suspense> */}
-    </Router>
+    <Suspense fallback={<Loader />}>
+      <RouterProvider router={router} />
+    </Suspense>
   );
 }
 

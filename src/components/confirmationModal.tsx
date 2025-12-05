@@ -12,6 +12,7 @@ interface ConfirmationModalProps {
     confirmText?: string
     cancelText?: string
     onConfirm: () => void
+    onCancel?: () => void  
 }
 
 export function ConfirmationModal({
@@ -23,9 +24,14 @@ export function ConfirmationModal({
     confirmText = "submit",
     cancelText = "cancel",
     onConfirm,
+    onCancel,
 }: ConfirmationModalProps) {
     const { t } = useTranslation();
-    const handleClose = () => onOpenChange(false)
+    const handleClose = () => {
+        onOpenChange(false);
+        if (onCancel) onCancel();  
+    }
+
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
@@ -58,7 +64,7 @@ export function ConfirmationModal({
 
                         <Button
                             variant="outline"
-                            className="px-4 py-2 rounded-md text-sm leading-5 font-medium"
+                            className="px-4 py-2 rounded-md text-sm leading-5 font-medium cursor-pointer"
                             onClick={handleClose}
                             type="button"
                         >

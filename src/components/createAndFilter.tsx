@@ -47,7 +47,7 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, set
           <h2 className="text-lg leading-7 font-medium text-card-foreground">{filterConfig.title}</h2>
           <div className="flex flex-row gap-3">
             <Select defaultValue={selectedCompany?.accountID}>
-              <SelectTrigger className="bg-background flex-1 min-w-[100px]">
+              <SelectTrigger className="bg-background flex-1 min-w-[100px] cursor-pointer">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -81,7 +81,7 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, set
                 setAppliedFilter({ ...appliedFilter, page: 1 })
               }}
             >
-              <SelectTrigger className="bg-background">
+              <SelectTrigger className="bg-background cursor-pointer">
                 <Building2 className="h-4 w-4 mr-2 text-foreground" />
                 <SelectValue placeholder="" />
               </SelectTrigger>
@@ -120,7 +120,7 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, set
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-maroon-100" />
             <Input
               placeholder={t('search')}
-              className="pl-10 bg-background"
+              className="pl-10 bg-background cursor-pointer"
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
               onKeyDown={(e) => {
@@ -144,7 +144,7 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, set
                     searchTerm: searchText
                   }))
                 }}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-maroon-100"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-maroon-100 cursor-pointer"
               >
                 <X className="h-4 w-4 text-maroon-100" />
               </button>
@@ -159,7 +159,7 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, set
             <Plus className="h-5 w-5" />
           </Button>}
           <Popover>
-            <PopoverTrigger asChild>
+            <PopoverTrigger asChild className="cursor-pointer">
               <Button
                 size="icon"
                 className="bg-white text-black hover:bg-zinc-50 rounded-md border cursor-pointer"
@@ -224,7 +224,7 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, set
             <Select onValueChange={(value) => {
               setAppliedFilter({ ...appliedFilter, page: 1, typeOfApplication: value })
             }}>
-              <SelectTrigger className="bg-background data-[placeholder]:text-foreground flex-1 min-w-[100px]">
+              <SelectTrigger className="bg-background data-[placeholder]:text-foreground flex-1 min-w-[100px] cursor-pointer">
                 <SelectValue placeholder={t("application_type")} />
               </SelectTrigger>
               <SelectContent>
@@ -237,7 +237,7 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, set
               </SelectContent>
             </Select>}
           <Select defaultValue={selectedCompany?.accountID}>
-            <SelectTrigger className="bg-background flex-1 min-w-[100px]">
+            <SelectTrigger className="bg-background flex-1 min-w-[100px] cursor-pointer">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -267,7 +267,7 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, set
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-maroon-100" />
           <Input
             placeholder={t('search')}
-            className="pl-10 pr-10 bg-background"
+            className="pl-10 pr-10 bg-background cursor-pointer"
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
             onKeyDown={(e) => {
@@ -292,7 +292,7 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, set
                   searchTerm: ""
                 }))
               }}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-maroon-100"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-maroon-100 cursor-pointer"
             >
               <X className="h-4 w-4 text-maroon-100" />
             </button>
@@ -300,8 +300,9 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, set
 
         </div>
         <div className="flex gap-2">
-          {filterConfig?.createNewRequest && <Button
-            className="text-black bg-white hover:bg-gray-100 cursor-pointer"
+          {filterConfig?.createNewRequest && 
+          <Button
+            className="text-zinc-900 bg-white hover:bg-gray-100 cursor-pointer font-medium"
             onClick={onNewRequest}
           >
             <CirclePlus className="h-4 w-4 mr-2" />
@@ -314,7 +315,7 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, set
                 setAppliedFilter({ ...appliedFilter, page: 1, typeOfApplication: value })
               }}
             >
-              <SelectTrigger className="bg-background data-[placeholder]:text-foreground">
+              <SelectTrigger className="bg-background data-[placeholder]:text-zinc-900 font-medium text-zinc-900 cursor-pointer ">
                 <SelectValue placeholder={t("application_type")} />
               </SelectTrigger>
               <SelectContent>
@@ -334,7 +335,7 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, set
               setAppliedFilter({ ...appliedFilter, page: 1 })
             }}
           >
-            <SelectTrigger className="bg-background">
+            <SelectTrigger className="bg-background font-medium text-zinc-900 cursor-pointer">
               <Building2 className="h-4 w-4 mr-2 text-foreground" />
               <SelectValue placeholder="" />
             </SelectTrigger>
@@ -357,7 +358,7 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, set
             </SelectContent>
           </Select>
           <Popover>
-            <PopoverTrigger asChild>
+            <PopoverTrigger asChild className="text-zinc-900 cursor-pointer">
               <Button
                 variant="outline"
                 role="combobox"
@@ -427,7 +428,7 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, set
           {(appliedFilter?.status || appliedFilter?.searchTerm || appliedFilter?.typeOfApplication) && (
             <Button
               variant="ghost"
-              className="text-sm text-zinc-600 hover:text-zinc-70 px-3"
+              className="text-sm text-zinc-600 hover:text-zinc-70 px-3 cursor-pointer"
               onClick={() => {
                 setSearchText("")
                 setAppliedFilter({ page: 1 })

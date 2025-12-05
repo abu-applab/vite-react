@@ -20,7 +20,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ErrorState } from "@/components/errorState";
 
 const PortalLayout = () => {
-    const { isMenuOpen, setIsMenuOpen, setCompanies, setSelectedCompany, contact, setCompaniesFilter } = useApp();
+    const { isMenuOpen, setIsMenuOpen, setCompanies, selectedCompany, setSelectedCompany, contact, setCompaniesFilter } = useApp();
     const navigate = useNavigate();
     const networkRequest = useNetworkRequest();
     const [isLoading, setIsLoading] = useState(false);
@@ -58,7 +58,7 @@ const PortalLayout = () => {
                     const companyList = response?.data?.[0]?.companies || [];
                     setCompanies(companyList);
                     if (companyList.length > 0) {
-                        setSelectedCompany(companyList[0]);
+                        setSelectedCompany(selectedCompany ?  selectedCompany : companyList[0]);
                         setCompaniesFilter((prev) => ({
                             ...prev,
                             totalPages: Math.ceil(companyList.length / PAGE_SIZE)
@@ -127,17 +127,17 @@ const PortalLayout = () => {
                 </Button>
                 <div className="flex items-center justify-center gap-2">
                     <div className="hidden md:flex items-center gap-2">
-                        <Button className="flex cursor-pointer h-10 border-1 p-1.5 gap-0.5 hover:bg-gray-50" onClick={switchLanguage}>
+                        <Button className="flex cursor-pointer h-10 border p-1.5 gap-0.5 hover:bg-gray-50" onClick={switchLanguage}>
                             <img src={qatarFlag} className="w-4 h-4" alt="Qatar flag " />
                             <span className="text-black">{lang === 'en' ? 'العربية' : 'English'}</span>
                         </Button>
-                        <Button onClick={() => navigate('/portal/notifications')} className="relative border-[1px] h-10 hover:bg-gray-50" disabled>
+                        <Button onClick={() => navigate('/portal/notifications')} className="relative border h-10 hover:bg-gray-50" disabled>
                             <BellDot className="w-2 h-2 text-black" />
-                            <span className="absolute top-[12px] right-[11px] block h-2 w-2 rounded-full bg-green-500"></span>
+                            <span className="absolute top-3 right-[11px] block h-2 w-2 rounded-full bg-green-500"></span>
                         </Button>
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <Button className="relative border-[1px] h-10 hover:bg-gray-50">
+                                <Button className="relative border h-10 hover:bg-gray-50">
                                     <User className="w-2 h-2 text-black" />
                                 </Button>
                             </DropdownMenuTrigger>
@@ -149,11 +149,11 @@ const PortalLayout = () => {
                                     </Avatar>
                                     <h1 className="text-xs">{`${fullName}`}</h1>
                                 </DropdownMenuLabel>
-                                <DropdownMenuItem className="flex items-center mt-2 gap-3 px-4 py-2 hover:bg-gray-50 cursor-pointer font-medium text-xs" onClick={() => navigate('/portal/my-profile')} disabled>
+                                <DropdownMenuItem className="flex items-center mt-2 gap-3 px-4 py-2 hover:bg-gray-50 font-medium text-xs" onClick={() => navigate('/portal/my-profile')} disabled>
                                     <User className="w-5 h-5  text-black" />
                                     {t('my_profile')}
                                 </DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => navigate('/portal/settings')} className="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 cursor-pointer font-medium text-xs" disabled>
+                                <DropdownMenuItem onClick={() => navigate('/portal/settings')} className="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 font-medium text-xs" disabled>
                                     <Settings className="w-5 h-5  text-black" />
                                     {t('settings')}
                                 </DropdownMenuItem>
@@ -164,7 +164,7 @@ const PortalLayout = () => {
                             </DropdownMenuContent>
                         </DropdownMenu>
                     </div>
-                    <Button className={`border text-black h-10 ${isMenuOpen ? 'bg-bg-gray-50 hover:bg-gray-50' : 'bg-transparent hover:bg-transparent'}`} onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                    <Button className={`border text-black h-10 cursor-pointer ${isMenuOpen ? 'bg-bg-gray-50 hover:bg-gray-50' : 'bg-transparent hover:bg-transparent'}`} onClick={() => setIsMenuOpen(!isMenuOpen)}>
                         <Menu className={`w-2 h-2`} />
                     </Button>
                 </div>

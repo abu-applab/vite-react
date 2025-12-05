@@ -273,10 +273,10 @@ const UploadOwnerDocument = ({ goToNextStep, goToPreviousStep }: UploadOwnerDocu
                 </Card>
             </div>
             <div className="flex justify-between pt-6 mx-10">
-                <Button type="button" variant="outline" className="bg-transparent" onClick={() => goToPreviousStep()}>
+                <Button type="button" variant="outline" className="bg-transparent cursor-pointer" onClick={() => goToPreviousStep()}>
                     {t('previous')}
                 </Button>
-                <Button type="submit" className="px-8 bg-maroon-100 hover:bg-[#60091A]" onClick={() => goToNextStep()}>
+                <Button type="submit" className="px-8 bg-maroon-100 hover:bg-[#60091A] cursor-pointer" onClick={() => goToNextStep()}>
                     {t('next')}
                 </Button>
             </div>

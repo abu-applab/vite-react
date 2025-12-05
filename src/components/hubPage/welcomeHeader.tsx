@@ -49,7 +49,7 @@ const WelcomeHeader = ({ setIsAddNewCompany, totalCompanies, currentCompanies }:
                             <p className="text-sm text-gray-600">{t('Stay_informed_desc')}</p>
                         </div>
                     </div>
-                    <Button className="bg-maroon-100 hover:bg-maroon-100 hover:text-white max-md:w-full" onClick={() => setIsAddNewCompany(true)}>
+                    <Button className="bg-maroon-100 hover:bg-maroon-100 hover:text-white max-md:w-full cursor-pointer" onClick={() => setIsAddNewCompany(true)}>
                         <Plus className="h-4 w-4 mr-2" />
                         {t('add_new_company')}
                     </Button>
@@ -83,7 +83,7 @@ const WelcomeHeader = ({ setIsAddNewCompany, totalCompanies, currentCompanies }:
                                         searchTerm: ""
                                     }))
                                 }}
-                                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-maroon-100"
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-maroon-100 cursor-pointer"
                             >
                                 <X className="h-4 w-4 text-maroon-100" />
                             </button>
@@ -156,7 +156,7 @@ const WelcomeHeader = ({ setIsAddNewCompany, totalCompanies, currentCompanies }:
                     {(companiesFilter?.status || companiesFilter?.searchTerm) && (
                         <Button
                             variant="ghost"
-                            className="text-sm text-zinc-600 hover:text-zinc-70 p-0"
+                            className="text-sm text-zinc-600 hover:text-zinc-70 p-0 cursor-pointer"
                             onClick={() => {
                                 setSearchText("")
                                 setCompaniesFilter({ page: 1 })

@@ -15,7 +15,7 @@ const CustomPagination = ({handlePageChange, currentPage, totalPages}: CustomPag
                         <PaginationPrevious
                             onClick={() => handlePageChange(currentPage - 1)}
                             aria-disabled={currentPage === 1}
-                            className={currentPage === 1 ? "opacity-50 pointer-events-none" : ""}
+                            className={currentPage === 1 ? "opacity-50 pointer-events-none" : "cursor-pointer"}
                         />
                     </PaginationItem>
                     {(() => {
@@ -40,6 +40,7 @@ const CustomPagination = ({handlePageChange, currentPage, totalPages}: CustomPag
                                     <PaginationLink
                                         onClick={() => handlePageChange(Number(page))}
                                         isActive={currentPage === page}
+                                        className='cursor-pointer'
                                     >
                                         {page}
                                     </PaginationLink>
@@ -51,7 +52,7 @@ const CustomPagination = ({handlePageChange, currentPage, totalPages}: CustomPag
                         <PaginationNext
                             onClick={() => handlePageChange(currentPage + 1)}
                             aria-disabled={currentPage === totalPages}
-                            className={currentPage === totalPages ? "opacity-50 pointer-events-none" : ""}
+                            className={currentPage === totalPages ? "opacity-50 pointer-events-none" : "cursor-pointer"}
                         />
                     </PaginationItem>
                 </PaginationContent>

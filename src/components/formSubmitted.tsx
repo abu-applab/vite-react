@@ -20,7 +20,7 @@ const FormSubmitted = ({ onGoToRequest, referenceNumber = "SR-2025-000123" }: Fo
       </div>
 
       <Button
-        className="bg-maroon-100 hover:bg-[#7A1F2B] text-white px-6 py-2 rounded-md text-sm font-medium"
+        className="bg-maroon-100 hover:bg-[#7A1F2B] text-white px-6 py-2 rounded-md text-sm font-medium cursor-pointer"
         onClick={onGoToRequest}
       >
         Go to My Request

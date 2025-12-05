@@ -198,7 +198,7 @@ const ReviewAndSubmit = ({
             <div>
                 <div className='flex items-center justify-between'>
                     <h3 className="mb-3">{t('company_information')}</h3>
-                    <Button className='underline text-[#83764F] text-base font-medium' variant="ghost" onClick={() => handleEdit('companyInfo')}>{isEditing.companyInfo ? 'Save' : 'Edit'}</Button>
+                    <Button className='underline text-[#83764F] text-base font-medium cursor-pointer' variant="ghost" onClick={() => handleEdit('companyInfo')}>{isEditing.companyInfo ? 'Save' : 'Edit'}</Button>
                 </div>
                 <Card>
                     <CardContent className="space-y-4">
@@ -226,7 +226,7 @@ const ReviewAndSubmit = ({
             <div>
                 <div className='flex items-center justify-between'>
                     <h3 className="mb-3">{t('owners_details')}</h3>
-                    <Button className='underline text-[#83764F] text-base font-medium' variant="ghost" onClick={() => handleEdit('owners')}>{isEditing.owners ? 'Save' : 'Edit'}</Button>
+                    <Button className='underline text-[#83764F] text-base font-medium cursor-pointer' variant="ghost" onClick={() => handleEdit('owners')}>{isEditing.owners ? 'Save' : 'Edit'}</Button>
                 </div>
                 <Card className="w-full">
                     {/* Header */}
@@ -300,7 +300,7 @@ const ReviewAndSubmit = ({
             <div>
                 <div className='flex items-center justify-between'>
                     <h3 className="mb-3">{t('authorized_signatories')}</h3>
-                    <Button className='underline text-[#83764F] text-base font-medium' variant="ghost" onClick={() => handleEdit('signatories')}>{isEditing.signatories ? 'Save' : 'Edit'}</Button>
+                    <Button className='underline text-[#83764F] text-base font-medium cursor-pointer' variant="ghost" onClick={() => handleEdit('signatories')}>{isEditing.signatories ? 'Save' : 'Edit'}</Button>
                 </div>
                 <Card className="w-full">
                     {/* Header */}
@@ -374,7 +374,7 @@ const ReviewAndSubmit = ({
             <div className=' w-full'>
                 <div className='flex items-center justify-between'>
                     <h3 className="mb-3">{t('additional_documents')}</h3>
-                    <Button className='underline text-[#83764F] text-base font-medium' variant="ghost" onClick={() => handleEdit('documents')}>{isEditing.documents ? 'Save' : 'Edit'}</Button>
+                    <Button className='underline text-[#83764F] text-base font-medium cursor-pointer' variant="ghost" onClick={() => handleEdit('documents')}>{isEditing.documents ? 'Save' : 'Edit'}</Button>
                 </div>
                 <div className='flex flex-row w-full gap-5'>
                     {
@@ -409,7 +409,7 @@ const ReviewAndSubmit = ({
             <div className=' w-full'>
                 <div className='flex items-center justify-between'>
                     <h3 className="mb-3">{t('company_details')} </h3>
-                    <Button className='underline text-[#83764F] text-base font-medium' variant="ghost" onClick={() => handleEdit('comapanyDetails')}>{isEditing.comapanyDetails ? 'Save' : 'Edit'}</Button>
+                    <Button className='underline text-[#83764F] text-base font-medium cursor-pointer' variant="ghost" onClick={() => handleEdit('comapanyDetails')}>{isEditing.comapanyDetails ? 'Save' : 'Edit'}</Button>
                 </div>
                 <Card className={cn('flex flex-row w-full gap-5 p-6', { 'grid grid-cols-2': isEditing.comapanyDetails })}>
 
@@ -461,8 +461,8 @@ const ReviewAndSubmit = ({
 
             {/* Navigation Buttons */}
             <div className="flex justify-between pt-4">
-                <Button variant="outline" className="bg-transparent" onClick={() => goToPreviousStep()}>{t('previous')}</Button>
-                <Button className="bg-maroon-100 hover:bg-[#60091A]" onClick={() => handleSubmit()}>{!isAddNewCompany ? t('next') : t('submit')}</Button>
+                <Button variant="outline" className="bg-transparent cursor-pointer" onClick={() => goToPreviousStep()}>{t('previous')}</Button>
+                <Button className="bg-maroon-100 hover:bg-[#60091A] cursor-pointer" onClick={() => handleSubmit()}>{!isAddNewCompany ? t('next') : t('submit')}</Button>
             </div>
         </div>
     )

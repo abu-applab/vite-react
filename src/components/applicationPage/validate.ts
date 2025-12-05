@@ -73,10 +73,6 @@ interface FieldConfig {
         if(field.id === 'location' && !value && isSave) {
           newErrors[field.id] = `${t(field.label)} is required`;
         }
-
-        if((field.id === 'technologyCountryOfOrigin' || field.id === 'equipmentCountryOfOrigin') && value && hasSpecialCharacters(value)) {
-          newErrors[field.id] = "This field can only contain letters and spaces."
-        }
   
         // 🔹 Handle numeric fields with 10-digit limit and > 0 validation
         const numericFields = [
@@ -159,6 +155,10 @@ interface FieldConfig {
 
         if ( field.id === 'equity' && formState.equity < formState.TotalCost * 0.3) {
           newErrors[field.id] = "Equity contribution must be at least 30% of project cost.";
+        }
+
+        if((field.id === 'technologyCountryOfOrigin' || field.id === 'equipmentCountryOfOrigin') && value && hasSpecialCharacters(value)) {
+          newErrors[field.id] = "This field can only contain letters and spaces."
         }
       });
     });

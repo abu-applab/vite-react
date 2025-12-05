@@ -157,7 +157,6 @@ function getPointerColor(status: string) {
 const convertDate = (value: string) => {
     // Handle null/undefined or empty values
     if (!value) {
-        console.error("Invalid date value:", value);
         return "N/A";
     }
 
@@ -243,7 +242,7 @@ const StatusBadge = ({ status, className = "" }: { status: string, className?: s
 const ActionsMenu = ({ options, data, t }: { options: any[], data: any, t: any }) => (
     <DropdownMenu>
         <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={(e) => e.stopPropagation()} >
+            <Button variant="ghost" size="sm" className="h-8 w-8 p-0 cursor-pointer" onClick={(e) => e.stopPropagation()} >
                 <MoreVertical className="h-4 w-4" />
             </Button>
         </DropdownMenuTrigger>
@@ -262,7 +261,7 @@ const ActionsMenu = ({ options, data, t }: { options: any[], data: any, t: any }
                     return (
                         <DropdownMenuItem
                             key={idx}
-                            className="flex items-center gap-2"
+                            className="flex items-center gap-2 cursor-pointer"
                             onClick={(e) => {
                                 e.stopPropagation();
                                 option.onClick?.(data)
