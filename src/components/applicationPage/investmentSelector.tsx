@@ -79,7 +79,7 @@ export function InvestmentSelector({ handleSelectedOption, investmentContent }: 
           {investmentContent.options.map((option) => (
             <div
               key={option.id}
-              className={cn("overflow-hidden transition-shadow duration-300 flex flex-col h-full border rounded-2xl", {"opacity-60": option.disabled})}
+              className={cn("overflow-hidden transition-shadow duration-300 flex flex-col h-full border rounded-2xl", {"opacity-60": option.disabled}, {"cursor-pointer": !option.disabled})}
               onMouseEnter={() => setHoveredCard(option.id)}
               onMouseLeave={() => {
                 setHoveredCard(null)
@@ -106,7 +106,7 @@ export function InvestmentSelector({ handleSelectedOption, investmentContent }: 
                       onMouseLeave={() => setHoveredButton(null)}
                       className={`
                         relative p-2 bg-maroon-100 hover:bg-[#7A1F2B] text-sm text-white leading-5 font-medium rounded-sm
-                        flex items-center gap-2 transition-all duration-300
+                        flex items-center gap-2 transition-all duration-300 cursor-pointer
                       `}
                     >
                       Apply Now

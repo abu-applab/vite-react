@@ -253,14 +253,14 @@ const LoginForm = ({ onSwitch }: LoginFormProps) => {
         <button
           type="button"
           onClick={() => handleSocialSignIn("outlook")}
-          className="flex-1 flex items-center justify-center gap-2 border border-gray-200 rounded-md py-2 text-sm hover:bg-gray-50"
+          className="flex-1 flex items-center justify-center gap-2 border border-gray-200 rounded-md py-2 text-sm hover:bg-gray-50 cursor-pointer"
         >
           <img src={outlook} alt="Outlook" className="w-4 h-4" /> Outlook
         </button>
         <button
           type="button"
           onClick={() => handleSocialSignIn("google")}
-          className="flex-1 flex items-center justify-center gap-2 border border-gray-200 rounded-md py-2 text-sm hover:bg-gray-50"
+          className="flex-1 flex items-center justify-center gap-2 border border-gray-200 rounded-md py-2 text-sm hover:bg-gray-50 cursor-pointer"
         >
           <img src={google} alt="Google" className="w-4 h-4" /> Google
         </button>

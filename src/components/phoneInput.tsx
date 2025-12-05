@@ -77,7 +77,7 @@ export function PhoneInput({
               <DropdownMenuItem
                 key={`${country.code}-${country.country}`}
                 onClick={() => handleCountryChange(country)}
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 cursor-pointer"
               >
                 <span className="text-sm font-mono">{country.code}</span>
                 <span className="text-xs text-muted-foreground truncate">{country.country}</span>

@@ -244,8 +244,10 @@ const ProductInformation = ({ products, setProducts, isError, isSubmittedApplica
     return (
         <>
             <div className="flex flex-row justify-between items-center">
-                <h4 className="max-md:text-maroon-100 max-md:ml-4 mb-3">{t('product_information')}</h4>
-                {(products?.length > 0 && !isSubmittedApplication) && <Button type="button" variant="ghost" className="border" onClick={handleOpenModal}>
+                <h4 className="max-md:text-maroon-100 max-md:ml-4 mb-3 flex">{t('product_information')}
+                <div className="text-destructive">*</div>
+                </h4>
+                {(products?.length > 0 && !isSubmittedApplication) && <Button type="button" variant="ghost" className="border cursor-pointer" onClick={handleOpenModal}>
                     <Plus />
                     {t('add_new_product')}
                 </Button>}
@@ -256,7 +258,7 @@ const ProductInformation = ({ products, setProducts, isError, isSubmittedApplica
                 !isSubmittedApplication && <div className="">
                     <Card className={cn("flex flex-col items-center justify-center gap-6 p-6 mb-0", { "border-red-600": isError })}>
                         <h4 className="text-sm font-normal">No Product Information Found</h4>
-                        <Button variant="ghost" type="button" className={cn("border", { "border-red-600": isError })} onClick={handleOpenModal}>
+                        <Button variant="ghost" type="button" className={cn("border cursor-pointer", { "border-red-600": isError })} onClick={handleOpenModal}>
                             <CirclePlus />{t('add_new_product')}
                         </Button>
                     </Card>
@@ -331,11 +333,11 @@ const ProductInformation = ({ products, setProducts, isError, isSubmittedApplica
                         </div>
                     </div>
 
-                    <div className="flex justify-between px-5 py-3 border-t border-border h-[56px]">
-                        <Button variant="outline" type="button" onClick={() => setIsProductModalOpen(false)}>
+                    <div className="flex justify-between px-5 py-3 border-t border-border h-14">
+                        <Button variant="outline" className="cursor-pointer" type="button" onClick={() => setIsProductModalOpen(false)}>
                             {t('cancel')}
                         </Button>
-                        <Button className="bg-maroon-100" type="button" onClick={handleSaveProduct}>
+                        <Button className="bg-maroon-100 cursor-pointer" type="button" onClick={handleSaveProduct}>
                             {editingIndex === null ? t("add") : t("update")}
                         </Button>
                     </div>

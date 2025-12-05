@@ -196,7 +196,7 @@ export default function OtpVeirificationForm({
                         type="button"
                         onClick={handleResendOtp}
                         disabled={resending}
-                        className="text-xs text-[#971B2F] font-medium underline disabled:opacity-60"
+                        className="text-xs text-[#971B2F] font-medium underline disabled:opacity-60 cursor-pointer"
                     >
                         {resending ? "Resending OTP..." : "Resend OTP"}
                     </button>
@@ -209,7 +209,7 @@ export default function OtpVeirificationForm({
                 <div className="w-full flex justify-center">
                     <button
                         type="button"
-                        className="flex items-center justify-center font-normal text-sm text-gray-500 hover:text-gray-800 gap-2 mt-4"
+                        className="flex items-center justify-center font-normal text-sm text-gray-500 hover:text-gray-800 gap-2 mt-4 cursor-pointer"
                         onClick={() => setOtpData((prev: any) => ({
                             ...prev,
                             show: false,

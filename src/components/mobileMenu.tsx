@@ -47,7 +47,7 @@ export const MobileMenu = ({ isOpen, onClose, switchLanguage }: MobileMenuProps)
             {!item.children ? (
               <Button
                 variant="ghost"
-                className="justify-start p-0 h-auto text-base font-medium leading-4 text-zinc-950 hover:text-[#852533] hover:bg-transparent"
+                className="justify-start p-0 h-auto text-base font-medium leading-4 text-zinc-950 hover:text-[#852533] hover:bg-transparent cursor-pointer"
                 onClick={() => {
                   navigate(item.href)
                   onClose()
@@ -60,7 +60,7 @@ export const MobileMenu = ({ isOpen, onClose, switchLanguage }: MobileMenuProps)
               <>
                 <Button
                   variant="ghost"
-                  className="flex items-center justify-between w-full p-0 !px-0 h-auto text-base font-medium leading-4 text-zinc-950 hover:text-[#852533] hover:bg-transparent"
+                  className="flex items-center justify-between w-full p-0 px-0! h-auto text-base font-medium leading-4 text-zinc-950 hover:text-[#852533] hover:bg-transparent cursor-pointer"
                   onClick={() => setExpanded((prev) => !prev)}
                 >
                   {item.name}
@@ -72,7 +72,7 @@ export const MobileMenu = ({ isOpen, onClose, switchLanguage }: MobileMenuProps)
                       <Button
                         key={sub.name}
                         variant="ghost"
-                        className="justify-start p-0 h-auto text-base font-medium text-gray-950 hover:text-[#852533] hover:bg-transparent"
+                        className="justify-start p-0 h-auto text-base font-medium text-gray-950 hover:text-[#852533] hover:bg-transparent cursor-pointer"
                         onClick={() => {
                           navigate(sub.href)
                           onClose()
@@ -93,7 +93,7 @@ export const MobileMenu = ({ isOpen, onClose, switchLanguage }: MobileMenuProps)
           <h3 className="text-xs text-gray-500 uppercase tracking-wider mb-3">
           {t('language_preference')}
           </h3>
-          <Button className="flex items-center gap-2 border px-3 py-2" onClick={switchLanguage}>
+          <Button className="flex items-center gap-2 border px-3 py-2 cursor-pointer" onClick={switchLanguage}>
             <img src={qatarFlag} alt="Flag" className="w-5 h-5" />
             <span className="text-black text-sm">العربية</span>
           </Button>
