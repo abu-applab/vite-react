@@ -103,7 +103,6 @@ const ViolationPage = () => {
     };
 
     useLayoutEffect(() => {
-        // Run this only once — not on id changes
         const navType =
             (performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming | undefined)?.type ||
             (performance.navigation?.type === 1 ? "reload" : "");
@@ -112,7 +111,6 @@ const ViolationPage = () => {
         if (id && navType === "reload") {
             navigate("/portal/violations", { replace: true });
         }
-        // 👇 Empty dependency ensures this runs only once on page load
     }, []);
 
 

@@ -1745,6 +1745,7 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                 "three_years_audited_financial_statements",
                                 "traffic_listing_moi",
                                 "photos_materials_equipment",
+                                "company_profile_if_applicable",
                             ],
                         },
                     ],

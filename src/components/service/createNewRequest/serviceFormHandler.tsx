@@ -11,6 +11,7 @@ import { useApp, type CompanyType } from "@/context/AppContext";
 import { useServiceFormConfigLoader } from "@/hooks/useServiceConfigLoader";
 import { useTranslation } from "react-i18next";
 import { ConfirmationModal } from "@/components/confirmationModal";
+import { useParams } from "react-router-dom";
 
 interface ServiceFormHandlerProps {
   selectedService: string;
@@ -43,6 +44,7 @@ export const ServiceFormHandler = ({
   const [formStage, setFormStage] = useState(1);
   const { t } = useTranslation();
   const [isConfirmSubmitOpen, setConfirmSubmitOpen] = useState(false);
+  const { id } = useParams();
 
   useEffect(() => {
     if (serviceDetails) {
@@ -114,12 +116,12 @@ export const ServiceFormHandler = ({
             }
 
             // For any detail view, hide LetterAttachment when there are no documents in the response
-            if (field.id === "LetterAttachment") {
-              const docs = serviceDetails?.documents?.documents ?? [];
-              if (docs.length === 0) {
-                return { ...field, hidden: true };
-              }
-            }
+            // if (field.id === "LetterAttachment") {
+            //   const docs = serviceDetails?.documents?.documents ?? [];
+            //   if (docs.length === 0) {
+            //     return { ...field, hidden: true };
+            //   }
+            // }
             return field;
           }),
         })),
@@ -341,6 +343,7 @@ export const ServiceFormHandler = ({
         fieldRefs={fieldRefs}
         isNext={isNext}
         goToNextStep={handleNext}
+        isSubmittedApplication={!!id}
       />
       <RequestSubmittedModal
         open={isSubmittedModalOpen}
