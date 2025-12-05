@@ -85,7 +85,7 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, set
                 <Building2 className="h-4 w-4 mr-2 text-foreground" />
                 <SelectValue placeholder="" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent align="end">
                 {companies.map((company) => {
                   return (
                     <SelectItem
@@ -339,7 +339,7 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, set
               <Building2 className="h-4 w-4 mr-2 text-foreground" />
               <SelectValue placeholder="" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent align="end">
               {companies.map((company) => {
                 return (
                   <SelectItem
