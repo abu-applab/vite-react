@@ -286,14 +286,14 @@ const SignUpForm = ({ onSwitch }: SignUpFormProps) => {
         <button
           type="button"
           onClick={() => handleSocialSignUp("outlook")}
-          className="flex-1 flex items-center justify-center gap-2 border border-gray-200 rounded-md py-2 text-sm hover:bg-gray-50"
+          className="flex-1 flex items-center justify-center gap-2 border border-gray-200 rounded-md py-2 text-sm hover:bg-gray-50 cursor-pointer"
         >
           <img src={outlook} alt="Outlook" className="w-4 h-4" /> Outlook
         </button>
         <button
           type="button"
           onClick={() => handleSocialSignUp("google")}
-          className="flex-1 flex items-center justify-center gap-2 border border-gray-200 rounded-md py-2 text-sm hover:bg-gray-50"
+          className="flex-1 flex items-center justify-center gap-2 border border-gray-200 rounded-md py-2 text-sm hover:bg-gray-50 cursor-pointer"
         >
           <img src={google} alt="Google" className="w-4 h-4" /> Google
         </button>
@@ -303,7 +303,7 @@ const SignUpForm = ({ onSwitch }: SignUpFormProps) => {
         Already a member?{" "}
         <span
           onClick={() => onSwitch("login")}
-          className="text-[#971B2F] font-medium cursor-pointer ml-1 underline"
+          className="text-[#971B2F] font-medium cursor-pointer ml-1 underline cursor-pointer"
         >
           Sign In
         </span>

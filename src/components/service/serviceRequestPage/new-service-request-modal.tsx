@@ -99,8 +99,8 @@ export function NewServiceRequestModal({ open, onOpenChange, setSelectedService 
           </RadioGroup>
         </div>
 
-        <div className="flex justify-between space-x-3 px-5 py-3 border-t border-border h-[56px]">
-          <Button variant="outline" onClick={handleCancel} className="px-6 bg-transparent" type="button">
+        <div className="flex justify-between space-x-3 px-5 py-3 border-t border-border h-14">
+          <Button variant="outline" onClick={handleCancel} className="px-6 bg-transparent cursor-pointer" type="button">
             {t('cancel')}
           </Button>
           <Button
