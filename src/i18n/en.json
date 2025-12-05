@@ -356,5 +356,9 @@
     "are_you_sure_want_to_leave": "Are you sure you want to exit without saving the application?",
     "exit": "Exit",
     "stay": "Stay",
+    "no_companies_found": "No Companies Found",
+    "no_companies_found_desc": "Please add a company in order to access your {{entity}}",
+    "services": "services",
+    "violation": "Violation",
     "": ""
 }

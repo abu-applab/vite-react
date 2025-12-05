@@ -9,21 +9,22 @@ interface EmptyRequestProps {
   hideButton?: boolean
   title?: string
   description?: string
+  descriptionParams?: Record<string, string>
   buttonText?: string
 }
 
-export const EmptyRequest = ({ onNewRequest, hideButton = false, title = '', description = '', buttonText = '' }: EmptyRequestProps) => {
+export const EmptyRequest = ({ onNewRequest, hideButton = false, title = '', description = '', descriptionParams = {}, buttonText = '' }: EmptyRequestProps) => {
   const { t } = useTranslation();
   // const navigate = useNavigate();
   return (
-    <div className={cn('w-full h-full flex flex-col items-center justify-center text-center', {'mt-20': hideButton})}>
+    <div className={cn('w-full h-full flex flex-col items-center justify-center text-center', { 'mt-20': hideButton })}>
       <div className='w-[150px] h-[140px] mr-3'>
         <img src={documentsLogo} alt='' />
       </div>
       <div className='mt-4 my-10'>
         <h3 className='text-2xl font-semibold'>{t(title)}</h3>
         {!hideButton && <p className='text-sm leading-5 font-normal text-muted-foreground'>
-          {t(description)}
+          {t(description, descriptionParams)}
         </p>}
       </div>
       {!hideButton && (<div className='flex flex-col gap-3'>

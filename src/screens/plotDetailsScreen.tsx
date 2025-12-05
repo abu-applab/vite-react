@@ -100,7 +100,7 @@ const PlotDetailsScreen = () => {
             <div className="p-8 w-full bg-[#fcfaf7] rounded-b-lg">
                 {activeTab === 'phaseAndMilestones' && <ProjectTimeline />}
                 {activeTab === 'paymentHistory' && <PaymentTable />}
-                {activeTab === 'documents' && <FileUploadSection  />}
+                {activeTab === 'documents' && <FileUploadSection />}
                 {activeTab === 'inspectionsAndFindings' && <FindingsList />}
                 {activeTab === 'actions' && <ActionCards />}
                 {activeTab === 'activityLog' && <ActivityList />}
