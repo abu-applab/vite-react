@@ -47,7 +47,7 @@ export const ServiceFormHandler = ({
   const { id } = useParams();
 
   useEffect(() => {
-    if (serviceDetails) {
+    if (serviceDetails && id) {
       const baseDetails = serviceDetails.details ?? serviceDetails;
 
       // Map attached documents (if any) into their corresponding file fields
@@ -91,7 +91,7 @@ export const ServiceFormHandler = ({
         ...mappedFiles,
       })
     }
-  }, [serviceDetails, selectedService])
+  }, [serviceDetails, selectedService, id])
 
   useEffect(() => {
     const loadFormConfig = async () => {

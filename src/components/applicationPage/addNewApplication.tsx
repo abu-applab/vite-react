@@ -534,7 +534,6 @@ const AddNewApplication = ({ selectedApplication,
       const excludedKeys = [
         "TotalCost",
         "TotalFunding",
-        "TotalRequestedPlotSize",
       ];
 
       Object.entries(formState).forEach(([key, value]) => {
@@ -634,7 +633,6 @@ const AddNewApplication = ({ selectedApplication,
       const excludedKeys = [
         "TotalCost",
         "TotalFunding",
-        "TotalRequestedPlotSize",
       ];
 
       Object.entries(formState).forEach(([key, value]) => {

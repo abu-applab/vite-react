@@ -251,7 +251,7 @@ const Service = () => {
           <CreateAndFilter onNewRequest={() => setIsModalOpen(true)} filterConfig={filterKeys} setAppliedFilter={setServiceFilter} appliedFilter={serviceFilter} hideFilters={hideFilters} />
           <div className="flex-1 flex flex-col justify-center">
             <ListOFCards cardsConfig={cardsConfig} cardsData={cardsDataWithViewFlag} cardClick={true} />
-            {!!(serviceFilter?.totalPages && serviceFilter.totalPages > 1) && <CustomPagination handlePageChange={handlePageChange} currentPage={serviceFilter?.page} totalPages={serviceFilter?.totalPages ?? 0} />}
+            {!!(serviceFilter?.totalPages && serviceFilter.totalPages > 1 && !loading) && <CustomPagination handlePageChange={handlePageChange} currentPage={serviceFilter?.page} totalPages={serviceFilter?.totalPages ?? 0} />}
             {!loading && serviceData.length === 0 && (
               hideFilters ? <EmptyRequest title='no_companies_found' description="no_companies_found_desc" descriptionParams={{ entity: t('services') }} buttonText="add_new_company" />
                 : <EmptyRequest hideButton={true} title={'no_requests_found'} />)}

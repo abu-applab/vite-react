@@ -898,7 +898,7 @@ export function getServiceFormConfig(formType: string): FormConfig {
                                 max: 50,
                             },
                             {
-                                id: "phone",
+                                id: "Newphone",
                                 label: "new_phone",
                                 type: "number",
                                 required: true,
@@ -906,7 +906,7 @@ export function getServiceFormConfig(formType: string): FormConfig {
                                 showIfSelected: "Phone",
                             },
                             {
-                                id: "pOBox",
+                                id: "Newpobox",
                                 label: "new_po_box",
                                 type: "number",
                                 required: true,
