@@ -55,7 +55,7 @@ const AddNewApplication = ({ selectedApplication,
 
   const networkRequest = useNetworkRequest()
   const { loadApplicationConfig } = useApplicationConfigLoader();
-  const { setCreateNewForm, setSelectedInvestment, selectedCompany, contact, selectedInvestment } = useApp();
+  const { setCreateNewForm, setSelectedInvestment, selectedCompany, contact, selectedInvestment, locations } = useApp();
   const fieldRefs = useRef<Record<string, HTMLElement | null>>({})
   const { id } = useParams();
 
@@ -301,15 +301,15 @@ const AddNewApplication = ({ selectedApplication,
     const hasObjectChanged = (obj1: any, obj2: any): boolean => {
       const keys1 = Object.keys(obj1 || {});
       const keys2 = Object.keys(obj2 || {});
-    
+
       // Combine all unique keys from both objects
       const allKeys = new Set([...keys1, ...keys2]);
-    
+
       // Check each key
       for (const key of allKeys) {
         const val1 = obj1?.[key];
         const val2 = obj2?.[key];
-    
+
         // Handle empty string vs undefined/null - treat as same
         if (val1 === '' && (val2 === undefined || val2 === null || val2 === '')) {
           continue;
@@ -317,40 +317,40 @@ const AddNewApplication = ({ selectedApplication,
         if (val2 === '' && (val1 === undefined || val1 === null || val1 === '')) {
           continue;
         }
-    
+
         // Handle File objects specially
         if (val1 instanceof File || val2 instanceof File) {
           if (val1 !== val2) return true;
           continue;
         }
-    
+
         // Handle arrays (for products)
         if (Array.isArray(val1) || Array.isArray(val2)) {
           if (!Array.isArray(val1) || !Array.isArray(val2)) return true;
           if (val1.length !== val2.length) return true;
-    
+
           // Simple array comparison
           const str1 = JSON.stringify(val1);
           const str2 = JSON.stringify(val2);
           if (str1 !== str2) return true;
           continue;
         }
-    
+
         // Handle objects recursively
         if (typeof val1 === 'object' && typeof val2 === 'object' && val1 !== null && val2 !== null) {
           if (hasObjectChanged(val1, val2)) return true;
           continue;
         }
-    
+
         // Regular value comparison
         if (val1 !== val2) return true;
       }
-    
+
       return false;
     };
 
     const formChanged = hasObjectChanged(formState, initialFormState);
-    
+
     const productsChanged = hasObjectChanged(
       products.map((p: any) => {
         const { hsCodeName, ...rest } = p;
@@ -414,9 +414,9 @@ const AddNewApplication = ({ selectedApplication,
       return updated;
     });
 
-  // Clear error for the changed field
-  setErrors((prev) => ({ ...prev, [fieldId]: "" }));
-};
+    // Clear error for the changed field
+    setErrors((prev) => ({ ...prev, [fieldId]: "" }));
+  };
 
 
   const goToNextStep = (e?: React.FormEvent) => {
@@ -525,6 +525,25 @@ const AddNewApplication = ({ selectedApplication,
       body.append('Company', selectedCompany?.accountID ?? '');
       body.append('ContactPerson', contact?.id ?? '');
       body.append('ApplicationType', selectedInvestment?.applicationType ?? '');
+
+      let locationValue = '';
+
+      if (formState.location) {
+        locationValue = formState.location;
+      } else if (selectedInvestment?.location) {
+        const foundLocation = locations.find(loc => loc.name === t(selectedInvestment.location ?? "", { lng: "en" }));
+
+        if (foundLocation) {
+          locationValue = foundLocation.id;
+        }
+        //  else {
+        //   // If not found by English name, try Arabic name
+        //   const foundLocationAr = locations.find(loc => loc.nameAr === selectedInvestment.location);
+        //   locationValue = foundLocationAr?.id || '';
+        // }
+      }
+
+      body.append('location', locationValue);
 
       const transformedProducts = products?.map(({ id, hsCodeName, ...rest }: any) => rest);
 

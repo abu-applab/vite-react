@@ -5,12 +5,10 @@ import { landUseData } from "@/constants";
 import { useApp } from "@/context/AppContext";
 import { getApplicationFormConfig } from "@/lib/form-data";
 import { useEffect } from "react";
-import { useTranslation } from "react-i18next";
 
 export const useApplicationConfigLoader = () => {
   const networkRequest = useNetworkRequest();
-  const { selectedInvestment, setLocations } = useApp();
-  const { t } = useTranslation();
+  const { selectedInvestment, setLocations, locations } = useApp();
 
   const loadApplicationConfig = async (selectedApplication: string, _setFormData: any) => {
     let baseConfig = getApplicationFormConfig(selectedApplication);
@@ -18,14 +16,14 @@ export const useApplicationConfigLoader = () => {
     let [clusterRes, iSICSectionsRes, locationRes] = await Promise.all([
       selectedInvestment?.applicationType === 'LogisticsParks' && networkRequest(API_ENDPOINTS.getClusters, { method: "GET" }),
       selectedInvestment?.applicationType !== 'LogisticsParks' && networkRequest(API_ENDPOINTS.getISICSections, { method: "GET" }),
-      networkRequest(API_ENDPOINTS.getLocations, { method: "GET" }),
+      locations.length === 0 ? networkRequest(API_ENDPOINTS.getLocations, { method: "GET" })  : {data: locations},
     ]);
 
     const clusters = clusterRes?.data || [];
     const iSICSections = iSICSectionsRes?.data || [];
-    const locations = locationRes?.data || [];
+    const locationsRes = locationRes?.data || [];
 
-    setLocations(locations);
+    setLocations(locationsRes);
 
     // map to select options
     const clusterOptions = clusters.map((cluster: any) => ({
@@ -38,26 +36,12 @@ export const useApplicationConfigLoader = () => {
       name: cluster.descriptionEN,
     }));
 
-    const locationOptions = locations
-      .filter((location: any) =>
-        selectedInvestment?.location
-          ? location.name === t(selectedInvestment.location ?? "", { lng: "en" })
-          : true
-      )
-      .map((location: any) => ({
-        name: location.name,
-        id: location.id,
-      }));
-
     // inject into config
     const updatedConfig = baseConfig.map((step: any) => ({
       ...step,
       sections: step.sections?.map((section: any) => ({
         ...section,
         fields: section.fields?.map((field: any) => {
-          if (field.id === "location") {
-            return { ...field, options: locationOptions };
-          }
           if (field.id === "cluster") {
             return { ...field, options: clusterOptions };
           }

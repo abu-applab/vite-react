@@ -200,7 +200,7 @@ const ApplicationPage = () => {
     const [isCreateNewApplication, setCreateNewApplication] = useState(false);
     const [selectedApplication, setSelectedApplication] = useState<string>("");
     const [selectedApplicationRef, setSelectedApplicationRef] = useState<string>("");
-    const { setSelectedInvestment, setApplicationFilter, applicationDraftFilter, setApplicationDarftFilter, applicationFilter, selectedCompany, selectedInvestment } = useApp();
+    const { setSelectedInvestment, setApplicationFilter, applicationDraftFilter, setApplicationDarftFilter, applicationFilter, selectedCompany, selectedInvestment, locations, setLocations } = useApp();
     const [loading, setLoading] = useState(false);
     const networkRequest = useNetworkRequest();
     const [applicationData, setApplicationData] = useState([])
@@ -280,6 +280,23 @@ const ApplicationPage = () => {
         }
     }, []);
 
+
+    useEffect(() => {
+        const fetchLocations = async () => {
+            // Only fetch if locations array is empty
+            if (locations.length === 0) {
+                try {
+                    const locationRes = await networkRequest(API_ENDPOINTS.getLocations, { method: "GET" });
+                    const fetchedLocations = locationRes?.data || [];
+                    setLocations(fetchedLocations);
+                } catch (error) {
+                    console.error("Error fetching locations:", error);
+                }
+            }
+        };
+    
+        fetchLocations();
+    }, [locations.length]);
 
     useEffect(() => {
         const fetchRequests = async () => {
@@ -479,15 +496,20 @@ const ApplicationPage = () => {
             {
                 label: tabs.find((t) => t.id === activeTab)?.label ?? "submitted_applications",
                 onClick: () => {
-                    if (hasUnsavedChanges) {
+                    if (hasUnsavedChanges && !id) {
                         setBreadCrumbNavigation(0);
                         setShowLeaveConfirm(true);
                         return;
                     }
-                    setCreateNewApplication(false);
-                    setStep(0);
-                    setSelectedApplication("");
-                    setSelectedApplicationRef("");
+                    if(id) {
+                        navigate("/portal/application", { replace: true }); 
+                    }
+                    else {
+                        setCreateNewApplication(false);
+                        setStep(0);
+                        setSelectedApplication("");
+                        setSelectedApplicationRef("");
+                    }
                 }
             },
         ];
@@ -523,7 +545,7 @@ const ApplicationPage = () => {
         }
 
         return items;
-    }, [selectedCompany, activeTab, selectedApplicationRef, isCreateNewApplication, step, selectedApplication, selectedInvestment, t, hasUnsavedChanges]);
+    }, [selectedCompany, activeTab, selectedApplicationRef, isCreateNewApplication, step, selectedApplication, selectedInvestment, t, hasUnsavedChanges, id]);
 
     const isEmptySubmitted =
         activeTab === 'submitted' &&

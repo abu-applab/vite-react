@@ -63,7 +63,7 @@ const DynamicForm = ({
   setApplicationSteps,
   isSubmittedApplication = false,
 }: DynamicFormProps) => {
-  const { setCreateNewForm, setSelectedInvestment } = useApp();
+  const { setCreateNewForm, setSelectedInvestment, selectedInvestment, locations } = useApp();
   const { t } = useTranslation()
 
 
@@ -103,8 +103,17 @@ const DynamicForm = ({
                   return String(raw);
                 }
 
-                // If the value is an object (e.g. Newsignatoryid from details),
-                // show logicalName or name instead of [object Object]
+                if (field.id === 'selectedApplicationLocation') {
+                  if (selectedInvestment?.location) {
+                    return t(selectedInvestment.location, { lng: "en" });
+                  } else if (formData.location) {
+                    // Find location by ID from the locations array
+                    const foundLocation = locations.find(loc => loc.id === formData.location);
+                    return foundLocation?.name;
+                  }
+                  return '';
+                }
+
                 if (raw && typeof raw === 'object') {
                   const logicalName = get(raw, 'logicalName') ?? get(raw, 'name');
                   return logicalName || '';
