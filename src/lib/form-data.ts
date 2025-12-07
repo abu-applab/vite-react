@@ -977,6 +977,7 @@ export function getServiceFormConfig(formType: string): FormConfig {
                                 type: "text",
                                 required: true,
                                 placeholder: "Enter subjects",
+                                max: 80,
                             },
                             {
                                 id: "comments",
