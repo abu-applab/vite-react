@@ -153,8 +153,12 @@ interface FieldConfig {
            newErrors[field.id] = "Maximum 3 digits allowed"
         }
 
-        if ( field.id === 'equity' && formState.equity < formState.TotalCost * 0.3) {
-          newErrors[field.id] = "Equity contribution must be at least 30% of Total Cost.";
+        if (field.id === 'equity') {
+          if (formState.equity > formState.TotalCost) {
+            newErrors[field.id] = "Equity contribution cannot exceed Total Cost.";
+          } else if (formState.equity < formState.TotalCost * 0.3) {
+            newErrors[field.id] = "Equity contribution must be at least 30% of Total Cost.";
+          }
         }
 
         if((field.id === 'technologyCountryOfOrigin' || field.id === 'equipmentCountryOfOrigin') && value && hasSpecialCharacters(value)) {

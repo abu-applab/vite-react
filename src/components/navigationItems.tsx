@@ -53,6 +53,15 @@ export function NavigationBar() {
     return currentPathname === href;
   };
 
+  const handleNavigation = (href: string) => {
+    // If navigating to service, pass state to trigger reset
+    if (href === "/portal/service") {
+      navigate(href, { state: { resetTrigger: true } });
+    } else {
+      navigate(href);
+    }
+  };
+
   return (
     <div className="flex flex-row justify-between h-14 lg:px-[68px] md:px-6 w-full border-b-2 overflow-auto">
       {navigationItems.map((item) => {
@@ -76,7 +85,7 @@ export function NavigationBar() {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" className="w-56">
                 {item.children.map((option) => (
-                  <DropdownMenuItem key={option.name} onClick={() => navigate(option.href)} className="cursor-pointer" disabled={!!option.disable}>
+                  <DropdownMenuItem key={option.name} onClick={() => handleNavigation(option.href)} className="cursor-pointer" disabled={!!option.disable}>
                     {t(option.name)}
                   </DropdownMenuItem>
                 ))}

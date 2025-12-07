@@ -23,6 +23,10 @@ import { useNavigate, useParams } from "react-router-dom"
 //   contentLinks: ['all_service_requests', 'new_service_request'],
 // }
 
+interface ServiceProps {
+  resetTrigger?: boolean;
+}
+
 const filterKeys = {
   title: 'Service Request',
   createNewRequest: 'New Service Request',
@@ -72,7 +76,7 @@ interface ServiceData {
   submittedDate: string;
 }
 
-const Service = () => {
+const Service = ({resetTrigger = false}: ServiceProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedService, setSelectedService] = useState<string>("")
   const [selectedServiceData, setSelectedServiceData] = useState<ServiceData | null>(null)
@@ -105,6 +109,12 @@ const Service = () => {
       navigate("/portal/service", { replace: true });
     }
   }, []);
+
+  useEffect(() => {
+    if (resetTrigger) {
+      setSelectedService("");
+    }
+  }, [resetTrigger]);
 
   const handleCardSelect = async (card: any) => {
     try {

@@ -171,7 +171,7 @@ function App() {
           children: [
             {
               index: true,
-              element: <Service />,
+              element: <Service resetTrigger={true}/>,
             },
             {
               path: ":id",

@@ -91,6 +91,9 @@ export const ServiceFormHandler = ({
         ...mappedFiles,
       })
     }
+    return () => {
+      setFormState({});
+    };
   }, [serviceDetails, selectedService, id])
 
   useEffect(() => {
