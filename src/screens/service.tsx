@@ -76,13 +76,13 @@ interface ServiceData {
   submittedDate: string;
 }
 
-const Service = ({resetTrigger = false}: ServiceProps) => {
+const Service = ({ resetTrigger = false }: ServiceProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedService, setSelectedService] = useState<string>("")
   const [selectedServiceData, setSelectedServiceData] = useState<ServiceData | null>(null)
   const [loading, setLoading] = useState(false)
   const [serviceData, setServiceData] = useState<any[]>([])
-  const { serviceFilter, setServiceFilter, selectedCompany } = useApp();
+  const { serviceFilter, setServiceFilter, selectedCompany, companies } = useApp();
   const [serviceDetails, setServiceDetails] = useState<any>(null)
   const { id } = useParams();
   // const [isCreateNewService, setCreateNewService] = useState(false);
@@ -263,7 +263,12 @@ const Service = ({resetTrigger = false}: ServiceProps) => {
             <ListOFCards cardsConfig={cardsConfig} cardsData={cardsDataWithViewFlag} cardClick={true} />
             {!!(serviceFilter?.totalPages && serviceFilter.totalPages > 1 && !loading) && <CustomPagination handlePageChange={handlePageChange} currentPage={serviceFilter?.page} totalPages={serviceFilter?.totalPages ?? 0} />}
             {!loading && serviceData.length === 0 && (
-              hideFilters ? <EmptyRequest title='no_companies_found' description="no_companies_found_desc" descriptionParams={{ entity: t('services') }} buttonText="add_new_company" />
+              hideFilters ? (
+                companies.length > 0 ?
+                  <EmptyRequest title='no_service_requests_yet' description="havent_submitted_request_yet" buttonText="submit_new_request" onNewRequest={() => setIsModalOpen(true)} />
+                  :
+                  <EmptyRequest title='no_companies_found' description="no_companies_found_desc" descriptionParams={{ entity: t('services') }} buttonText="add_new_company" />
+              )
                 : <EmptyRequest hideButton={true} title={'no_requests_found'} />)}
           </div>
         </div>

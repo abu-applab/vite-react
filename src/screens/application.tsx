@@ -200,7 +200,17 @@ const ApplicationPage = () => {
     const [isCreateNewApplication, setCreateNewApplication] = useState(false);
     const [selectedApplication, setSelectedApplication] = useState<string>("");
     const [selectedApplicationRef, setSelectedApplicationRef] = useState<string>("");
-    const { setSelectedInvestment, setApplicationFilter, applicationDraftFilter, setApplicationDarftFilter, applicationFilter, selectedCompany, selectedInvestment, locations, setLocations } = useApp();
+    const { setSelectedInvestment,
+        setApplicationFilter,
+        applicationDraftFilter,
+        setApplicationDarftFilter,
+        applicationFilter,
+        selectedCompany,
+        selectedInvestment,
+        locations,
+        setLocations,
+        companies,
+    } = useApp();
     const [loading, setLoading] = useState(false);
     const networkRequest = useNetworkRequest();
     const [applicationData, setApplicationData] = useState([])
@@ -294,7 +304,7 @@ const ApplicationPage = () => {
                 }
             }
         };
-    
+
         fetchLocations();
     }, [locations.length]);
 
@@ -501,8 +511,8 @@ const ApplicationPage = () => {
                         setShowLeaveConfirm(true);
                         return;
                     }
-                    if(id) {
-                        navigate("/portal/application", { replace: true }); 
+                    if (id) {
+                        navigate("/portal/application", { replace: true });
                     }
                     else {
                         setCreateNewApplication(false);
@@ -577,7 +587,11 @@ const ApplicationPage = () => {
                         <div className={`w-full min-h-[55vh] flex flex-col ${hideFilters && 'justify-center'}`}>
                             {
                                 hideFilters ?
-                                    <EmptyRequest title='no_companies_found' description="no_companies_found_desc" descriptionParams={{ entity: t('applications') }} buttonText="add_new_company" />
+                                    (companies.length > 0 ?
+                                        <EmptyRequest title='no_applications_found' description="havent_submitted_application_yet" buttonText="submit_new_applications" onNewRequest={() => setCreateNewApplication(true)} />
+                                        :
+                                        <EmptyRequest title='no_companies_found' description="no_companies_found_desc" descriptionParams={{ entity: t('applications') }} buttonText="add_new_company" />
+                                    )
                                     :
                                     <>
                                         <div className="flex items-center bg-white h-14 rounded-lg shadow-md gap-2 max-md:justify-between max-md:px-4 mt-6">
@@ -591,7 +605,7 @@ const ApplicationPage = () => {
                                                  mt-4 w-full min-h-[35vh] rounded-b-lg flex-1 flex flex-col
                                                  ${isEmptySubmitted || isEmptyDrafted ? "justify-center" : "justify-start"}
                                                `}
-                                         >
+                                        >
                                             {activeTab === 'submitted' &&
                                                 ((applicationData.length > 0 && (applicationFilter?.totalPages ?? 0) > 0) ?
                                                     <>

@@ -77,7 +77,7 @@ const cardsConfigBase = {
 
 const ViolationPage = () => {
 
-    const { violationFilter, setViolationFilter, selectedCompany } = useApp();
+    const { violationFilter, setViolationFilter, selectedCompany, companies } = useApp();
     const [loading, setLoading] = useState(false);
     const networkRequest = useNetworkRequest();
     const [violationData, setViolationData] = useState<any[]>([]);
@@ -174,13 +174,17 @@ const ViolationPage = () => {
     return (
         <div className="">
             <PageHeader header={header} customTitle={id ? 'view_violation_report' : ''} />
-            {!showFInding ? <div className="min-h-[55vh]">
+            {!showFInding ? <div className="min-h-[55vh] flex flex-col">
                 <>
                     <CreateAndFilter filterConfig={filterKeys} setAppliedFilter={setViolationFilter} appliedFilter={violationFilter} hideFilters={hideFilters} />
-                    <div className="">
+                    <div className={`flex-1 flex flex-col ${violationData.length === 0 && 'justify-center'}`}>
                         <ListOFCards cardsConfig={cardsConfig} cardsData={violationData} cardClick={true} />
                         {!!(violationFilter?.totalPages && violationFilter.totalPages > 1 && violationData.length > 0) && <CustomPagination handlePageChange={handlePageChange} currentPage={violationFilter?.page} totalPages={violationFilter?.totalPages ?? 0} />}
-                        {!loading && (violationData?.length === 0 || !violationData) && <EmptyRequest title='no_companies_found' description="no_companies_found_desc" descriptionParams={{ entity: t('violation') }} buttonText="add_new_company" />}
+                        {!loading && (violationData?.length === 0 || !violationData) && (
+                            companies.length > 0 ?
+                            <EmptyRequest hideButton={true} title={'no_violation_found'} /> :
+                            <EmptyRequest title='no_companies_found' description="no_companies_found_desc" descriptionParams={{ entity: t('violation') }} buttonText="add_new_company" />
+                        )}
                     </div>
                 </>
             </div> :
