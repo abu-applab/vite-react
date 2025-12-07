@@ -643,6 +643,24 @@ const AddNewApplication = ({ selectedApplication,
       body.append('Company', selectedCompany?.accountID ?? '');
       body.append('ContactPerson', contact?.id ?? '');
       body.append('ApplicationType', selectedInvestment?.applicationType ?? '');
+      let locationValue = '';
+
+      if (formState.location) {
+        locationValue = formState.location;
+      } else if (selectedInvestment?.location) {
+        const foundLocation = locations.find(loc => loc.name === t(selectedInvestment.location ?? "", { lng: "en" }));
+
+        if (foundLocation) {
+          locationValue = foundLocation.id;
+        }
+        //  else {
+        //   // If not found by English name, try Arabic name
+        //   const foundLocationAr = locations.find(loc => loc.nameAr === selectedInvestment.location);
+        //   locationValue = foundLocationAr?.id || '';
+        // }
+      }
+
+      body.append('location', locationValue);
 
       const transformedProducts = products?.map(({ id, hsCodeName, ...rest }: any) => rest);
 
@@ -803,9 +821,13 @@ const AddNewApplication = ({ selectedApplication,
         open={isSubmittedModalOpen}
         onOpenChange={setSubmittedModal}
         onGoToRequest={() => {
-          setStep(0)
-          setSelectedInvestment(null)
-          setCreateNewApplication(false)
+          if(id) {
+            navigate("/portal/application", { replace: true }); 
+          } else {
+            setStep(0)
+            setSelectedInvestment(null)
+            setCreateNewApplication(false)
+          }
         }
         }
         referenceMessage={referenceMessage}
