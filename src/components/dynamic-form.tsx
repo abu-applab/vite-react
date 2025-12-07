@@ -547,6 +547,7 @@ const DynamicForm = ({
                               // Map human-readable labels to internal ids used in showIfSelected
                               selectedList = normalizedParts.map((val: string) => {
                                 if (val === "company name") return "companyName";
+                                if (val === "companyname") return "companyName";
                                 if (val === "signatory") return "signatory";
                                 if (val === "email") return "Email";
                                 if (val === "phone") return "Phone";
