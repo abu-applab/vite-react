@@ -294,7 +294,7 @@ const ApplicationPage = () => {
     useEffect(() => {
         const fetchLocations = async () => {
             // Only fetch if locations array is empty
-            if (locations.length === 0) {
+            if (locations?.length === 0) {
                 try {
                     const locationRes = await networkRequest(API_ENDPOINTS.getLocations, { method: "GET" });
                     const fetchedLocations = locationRes?.data || [];
@@ -306,7 +306,7 @@ const ApplicationPage = () => {
         };
 
         fetchLocations();
-    }, [locations.length]);
+    }, [locations?.length]);
 
     useEffect(() => {
         const fetchRequests = async () => {
@@ -498,7 +498,7 @@ const ApplicationPage = () => {
         },
     ];
 
-    const hideFilters = (applicationData.length === 0 && applicationDraftData.length === 0 && !applicationFilter?.searchTerm && !applicationFilter?.typeOfApplication && !applicationFilter?.status && !loading)
+    const hideFilters = (applicationData?.length === 0 && applicationDraftData?.length === 0 && !applicationFilter?.searchTerm && !applicationFilter?.typeOfApplication && !applicationFilter?.status && !loading)
 
     const breadcrumbs = useMemo(() => {
         const items: { label: string; path?: string; onClick?: () => void; isTranslated?: boolean }[] = [
@@ -559,12 +559,12 @@ const ApplicationPage = () => {
 
     const isEmptySubmitted =
         activeTab === 'submitted' &&
-        applicationData.length === 0 &&
+        applicationData?.length === 0 &&
         !loading;
 
     const isEmptyDrafted =
         activeTab === 'drafted' &&
-        applicationDraftData.length === 0 &&
+        applicationDraftData?.length === 0 &&
         !loading;
 
     return (
@@ -587,7 +587,7 @@ const ApplicationPage = () => {
                         <div className={`w-full min-h-[55vh] flex flex-col ${hideFilters && 'justify-center'}`}>
                             {
                                 hideFilters ?
-                                    (companies.length > 0 ?
+                                    (companies?.length > 0 ?
                                         <EmptyRequest title='no_applications_found' description="havent_submitted_application_yet" buttonText="submit_new_applications" onNewRequest={() => setCreateNewApplication(true)} />
                                         :
                                         <EmptyRequest title='no_companies_found' description="no_companies_found_desc" descriptionParams={{ entity: t('applications') }} buttonText="add_new_company" />
@@ -607,7 +607,7 @@ const ApplicationPage = () => {
                                                `}
                                         >
                                             {activeTab === 'submitted' &&
-                                                ((applicationData.length > 0 && (applicationFilter?.totalPages ?? 0) > 0) ?
+                                                ((applicationData?.length > 0 && (applicationFilter?.totalPages ?? 0) > 0) ?
                                                     <>
                                                         <ListOFCards cardsConfig={cardsConfig} cardsData={applicationData} cardClick={true} />
                                                         {(applicationFilter?.totalPages ?? 0) > 1 && (
@@ -617,7 +617,7 @@ const ApplicationPage = () => {
                                                     : !loading && <EmptyRequest hideButton={true} title={'no_applications_found'} />)
                                             }
                                             {activeTab === 'drafted' &&
-                                                ((applicationDraftData.length > 0 && (applicationDraftFilter?.totalPages ?? 0) > 0) ?
+                                                ((applicationDraftData?.length > 0 && (applicationDraftFilter?.totalPages ?? 0) > 0) ?
                                                     <>
                                                         <ListOFCards cardsConfig={cardsDraftConfig} cardsData={applicationDraftData} cardClick={true} />
                                                         {(applicationDraftFilter?.totalPages ?? 0) > 1 && (

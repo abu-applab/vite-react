@@ -177,7 +177,7 @@ const ViolationPage = () => {
             {!showFInding ? <div className="min-h-[55vh] flex flex-col">
                 <>
                     <CreateAndFilter filterConfig={filterKeys} setAppliedFilter={setViolationFilter} appliedFilter={violationFilter} hideFilters={hideFilters} />
-                    <div className={`flex-1 flex flex-col ${violationData.length === 0 && 'justify-center'}`}>
+                    <div className={`flex-1 flex flex-col ${violationData?.length === 0 && 'justify-center'}`}>
                         <ListOFCards cardsConfig={cardsConfig} cardsData={violationData} cardClick={true} />
                         {!!(violationFilter?.totalPages && violationFilter.totalPages > 1 && violationData.length > 0) && <CustomPagination handlePageChange={handlePageChange} currentPage={violationFilter?.page} totalPages={violationFilter?.totalPages ?? 0} />}
                         {!loading && (violationData?.length === 0 || !violationData) && (

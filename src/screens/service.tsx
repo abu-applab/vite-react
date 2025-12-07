@@ -213,7 +213,7 @@ const Service = ({ resetTrigger = false }: ServiceProps) => {
     }
   }
 
-  const hideFilters = serviceData.length === 0 && !serviceFilter?.searchTerm && !serviceFilter?.status && !loading;
+  const hideFilters = serviceData?.length === 0 && !serviceFilter?.searchTerm && !serviceFilter?.status && !loading;
 
 
   const breadcrumbs = useMemo(() => {
@@ -259,12 +259,12 @@ const Service = ({ resetTrigger = false }: ServiceProps) => {
       {!selectedService ? (
         <div className="w-full min-h-[55vh] flex flex-col">
           <CreateAndFilter onNewRequest={() => setIsModalOpen(true)} filterConfig={filterKeys} setAppliedFilter={setServiceFilter} appliedFilter={serviceFilter} hideFilters={hideFilters} />
-          <div className={`flex-1 flex flex-col ${serviceData.length === 0 && 'justify-center'}`}>
+          <div className={`flex-1 flex flex-col ${serviceData?.length === 0 && 'justify-center'}`}>
             <ListOFCards cardsConfig={cardsConfig} cardsData={cardsDataWithViewFlag} cardClick={true} />
             {!!(serviceFilter?.totalPages && serviceFilter.totalPages > 1 && !loading) && <CustomPagination handlePageChange={handlePageChange} currentPage={serviceFilter?.page} totalPages={serviceFilter?.totalPages ?? 0} />}
-            {!loading && serviceData.length === 0 && (
+            {!loading && serviceData?.length === 0 && (
               hideFilters ? (
-                companies.length > 0 ?
+                companies?.length > 0 ?
                   <EmptyRequest title='no_service_requests_yet' description="havent_submitted_request_yet" buttonText="submit_new_request" onNewRequest={() => setIsModalOpen(true)} />
                   :
                   <EmptyRequest title='no_companies_found' description="no_companies_found_desc" descriptionParams={{ entity: t('services') }} buttonText="add_new_company" />
