@@ -214,7 +214,7 @@ const ApplicationPage = () => {
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
     const [breadCrumbNavigation, setBreadCrumbNavigation] = useState<(number)>(-1);
     const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
-    
+
     const cardActions = {
         view: (card: any) => {
             console.log("Viewing:", card.typeOfApplication);
@@ -525,6 +525,16 @@ const ApplicationPage = () => {
         return items;
     }, [selectedCompany, activeTab, selectedApplicationRef, isCreateNewApplication, step, selectedApplication, selectedInvestment, t, hasUnsavedChanges]);
 
+    const isEmptySubmitted =
+        activeTab === 'submitted' &&
+        applicationData.length === 0 &&
+        !loading;
+
+    const isEmptyDrafted =
+        activeTab === 'drafted' &&
+        applicationDraftData.length === 0 &&
+        !loading;
+
     return (
         <div className="">
             {/* Header */}
@@ -542,7 +552,7 @@ const ApplicationPage = () => {
                             disableStatus={activeTab === 'drafted'}
                             hideFilters={hideFilters}
                         />
-                        <div className="w-full min-h-[55vh] flex flex-col justify-center">
+                        <div className={`w-full min-h-[55vh] flex flex-col ${hideFilters && 'justify-center'}`}>
                             {
                                 hideFilters ?
                                     <EmptyRequest title='no_companies_found' description="no_companies_found_desc" descriptionParams={{ entity: t('applications') }} buttonText="add_new_company" />
@@ -554,7 +564,12 @@ const ApplicationPage = () => {
                                                 </button>
                                             ))}
                                         </div>
-                                        <div className="mt-4 w-full min-h-[35vh] rounded-b-lg flex-1 flex flex-col justify-center">
+                                        <div
+                                            className={`
+                                                 mt-4 w-full min-h-[35vh] rounded-b-lg flex-1 flex flex-col
+                                                 ${isEmptySubmitted || isEmptyDrafted ? "justify-center" : "justify-start"}
+                                               `}
+                                         >
                                             {activeTab === 'submitted' &&
                                                 ((applicationData.length > 0 && (applicationFilter?.totalPages ?? 0) > 0) ?
                                                     <>
