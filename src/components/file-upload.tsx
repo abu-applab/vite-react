@@ -119,7 +119,8 @@ const FileUpload = ({
                                 <div className='flex flex-col items-start'>
                                     <div className='flex items-center justify-start'>
                                         <h4 className="text-base font-medium text-gray-900 inline-block text-left">{fileLabel}
-                                        {isRequired && <span className="text-destructive">*</span>}
+                                            {isRequired ? <span className="text-destructive">*</span> :
+                                                <span className="text-zinc-400">{" " + t('if_applicable')}</span>}
                                         </h4>
                                         {tooltip && (
                                             <TooltipProvider>
