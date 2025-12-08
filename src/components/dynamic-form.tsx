@@ -67,7 +67,6 @@ const DynamicForm = ({
   const { t } = useTranslation()
 
 
-
   // handling this state to show whether it's for view or create new service 
   useEffect(() => {
     setCreateNewForm(true);
@@ -87,7 +86,7 @@ const DynamicForm = ({
           <div className="space-y-2">
             <Label htmlFor={field.id} className="gap-0">
               {t(field.label)}
-              {field.required && <div className="text-destructive">*</div>}
+              {(field.required && !isSubmittedApplication) && <div className="text-destructive">*</div>}
             </Label>
             <Input
               {...commonProps}
@@ -148,7 +147,7 @@ const DynamicForm = ({
           <div className="space-y-2">
             <Label htmlFor={field.id}>
               {t(field.label)}
-              {field.required && <span className="text-destructive">*</span>}
+              {(field.required && !isSubmittedApplication) && <span className="text-destructive">*</span>}
             </Label>
             <Select
               value={formData[field.id] || ""}
@@ -201,7 +200,7 @@ const DynamicForm = ({
           <div className="space-y-2">
             <Label htmlFor={field.id}>
               {t(field.label)}
-              {field.required && <span className="text-destructive">*</span>}
+              {(field.required && !isSubmittedApplication) && <span className="text-destructive">*</span>}
             </Label>
             <Textarea
               {...commonProps}
@@ -224,7 +223,7 @@ const DynamicForm = ({
           <div className="space-y-2" key={field.id}>
             <Label htmlFor={field.id}>
               {t(field.label)}
-              {field.required && <span className="text-destructive">*</span>}
+              {(field.required && !isSubmittedApplication) && <span className="text-destructive">*</span>}
             </Label>
 
             <Popover>
@@ -318,7 +317,7 @@ const DynamicForm = ({
                   isServiceForm
                   fileLabel={t(field.label)}
                   buttonText="upload_file"
-                  isRequired={field.required}
+                  isRequired={field.required && !isSubmittedApplication}
                   tooltip={field.tooltip}
                 />
                 {errors[field.id] && (
@@ -332,7 +331,7 @@ const DynamicForm = ({
               <div className="space-y-2">
                 <Label htmlFor={field.id}>
                   {t(field.label)}
-                  {field.required && <span className="text-destructive">*</span>}
+                  {(field.required && !isSubmittedApplication) && <span className="text-destructive">*</span>}
                 </Label>
                 <Card className="p-4.5 flex flex-row items-center justify-between">
                   <div className="flex flex-row gap-3 items-center justify-start">
@@ -370,7 +369,7 @@ const DynamicForm = ({
               <div className="space-y-2">
                 <Label htmlFor={field.id}>
                   {t(field.label)}
-                  {field.required && <span className="text-destructive">*</span>}
+                  {(field.required && !isSubmittedApplication) && <span className="text-destructive">*</span>}
                 </Label>
                 <Card className="p-4.5 flex flex-row items-center justify-between">
                   <div className="flex flex-row gap-3 items-center">
@@ -427,7 +426,7 @@ const DynamicForm = ({
           <div className="space-y-2">
             <Label htmlFor={field.id}>
               {t(field.label)}
-              {field.required && <span className="text-destructive">*</span>}
+              {(field.required && !isSubmittedApplication) && <span className="text-destructive">*</span>}
             </Label>
 
             <Popover>

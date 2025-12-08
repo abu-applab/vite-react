@@ -245,7 +245,7 @@ const ProductInformation = ({ products, setProducts, isError, isSubmittedApplica
         <>
             <div className="flex flex-row justify-between items-center">
                 <h4 className="max-md:text-maroon-100 max-md:ml-4 mb-3 flex">{t('product_information')}
-                    <div className="text-destructive">*</div>
+                    {(products?.length > 0 && !isSubmittedApplication) && <div className="text-destructive">*</div>}
                 </h4>
                 {(products?.length > 0 && !isSubmittedApplication) && <Button type="button" variant="ghost" className="border cursor-pointer" onClick={handleOpenModal}>
                     <Plus />
