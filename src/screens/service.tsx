@@ -97,6 +97,7 @@ const Service = ({ resetTrigger = false }: ServiceProps) => {
     "SR-Company Details Update",
     "SR-Contact Details Update",
     "OR-Technical Queries Request",
+    "SR - Complaint"
   ];
 
   useLayoutEffect(() => {

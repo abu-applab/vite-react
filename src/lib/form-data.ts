@@ -660,6 +660,64 @@ export function getServiceFormConfig(formType: string): FormConfig {
                     }
                 ],
             }
+        case "SR - Complaint":
+            return {
+                title: "complaint_details_update",
+                description: "complaint_details_update_request",
+                needsPlots: true,
+                sections: [
+                    {
+                        title: "request_details",
+                        fields: [
+                            {
+                                id: "company",
+                                label: "company",
+                                type: "select",
+                                required: true,
+                                options: [],
+                            },
+                            {
+                                id: "Plotnumber",
+                                label: "plot",
+                                type: "text",
+                                required: true,
+                                disabled: true,
+                                showStage: 1
+                            },
+                            {
+                                id: "Description",
+                                label: "description",
+                                type: "text",
+                                required: true,
+                                placeholder: "Enter description",
+                                min: 3,
+                                max: 100
+                            },
+                            {
+                                id: "Comment",
+                                label: "comments",
+                                type: "textarea",
+                                required: false,
+                                placeholder: "Enter any additional comments",
+                                min: 3,
+                                max: 200
+                            },
+                        ],
+                    },
+                    {
+                        title: "required_documents",
+                        subTitle: "(Note: Allowed file types: PDF, JPG, PNG. Max 2MB per file)",
+                        fields: [
+                            {
+                                id: "ComplaintLetter",
+                                label: "letter_with_full_description_of_complaint",
+                                type: "file",
+                                required: true,
+                            },
+                        ]
+                    }
+                ],
+            }
         case "SR-Company Details Update":
             return {
                 title: "company_details_update",
