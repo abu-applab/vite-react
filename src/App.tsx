@@ -154,7 +154,7 @@ function App() {
           children: [
             {
               index: true,
-              element: <ViolationPage />,
+              element: <ViolationPage resetTrigger={true}/>,
             },
             {
               path: ":id",

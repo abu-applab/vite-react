@@ -55,7 +55,7 @@ export function NavigationBar() {
 
   const handleNavigation = (href: string) => {
     // If navigating to service, pass state to trigger reset
-    if (href === "/portal/service") {
+    if (href === "/portal/service" || href === "/portal/violations") {
       navigate(href, { state: { resetTrigger: true } });
     } else {
       navigate(href);

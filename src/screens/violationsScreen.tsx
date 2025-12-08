@@ -1,24 +1,21 @@
 import { API_ENDPOINTS } from "@/api/apiEndpoints";
 import useNetworkRequest from "@/api/useNetworkRequest";
+import Breadcrumb from "@/components/appBreadcrumb";
 import { CreateAndFilter } from "@/components/createAndFilter";
 import CustomPagination from "@/components/customPagination";
 import ListOFCards from "@/components/listOfcards";
 import Loader from "@/components/loader";
-import PageHeader from "@/components/pageHeader";
 import { EmptyRequest } from "@/components/service/serviceRequestPage/empty-request";
 import { ViolationFormHandler } from "@/components/violationScreen/violationFormHandler";
 import { PAGE_SIZE } from "@/constants";
 import { useApp } from "@/context/AppContext";
 import { Eye, SquareLibrary } from "lucide-react";
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 
-
-const header = {
-    title: "violation_reports",
-    homeLink: 'Home',
-    contentLinks: ['all_violation_reports', 'all_violation_reports'],
+interface ViolationProps {
+    resetTrigger?: boolean;
 }
 
 const filterKeys = {
@@ -75,19 +72,21 @@ const cardsConfigBase = {
     warning: 'expectedCloseOutDate'
 }
 
-const ViolationPage = () => {
+const ViolationPage = ({resetTrigger = false}: ViolationProps) => {
 
     const { violationFilter, setViolationFilter, selectedCompany, companies } = useApp();
     const [loading, setLoading] = useState(false);
     const networkRequest = useNetworkRequest();
     const [violationData, setViolationData] = useState<any[]>([]);
     const [showFInding, setShowFinding] = useState(false);
+    const [selectedViolationFindingNumber, setSelectedViolationFindingNumber] = useState('');
     const navigate = useNavigate();
     const { id } = useParams();
     const { t } = useTranslation();
 
     const cardActions = {
         view: (card: any) => {
+            setSelectedViolationFindingNumber(card.findingNumber)
             setShowFinding(true);
             navigate(`/portal/violations/${card.id}`);
         },
@@ -103,6 +102,13 @@ const ViolationPage = () => {
             },
         })),
     };
+
+    useEffect(() => {
+        if (resetTrigger) {
+            setSelectedViolationFindingNumber("")
+            setShowFinding(false);
+        }
+      }, [resetTrigger]);
 
     useLayoutEffect(() => {
         const navType =
@@ -169,15 +175,39 @@ const ViolationPage = () => {
         }
     }
 
+      const breadcrumbs = useMemo(() => {
+        const items: { label: string; path?: string; onClick?: () => void }[] = [
+          { label: selectedCompany?.englishName ?? "Home", path: "/portal" },
+          {
+            label: "violation_reports",
+            onClick: () => {
+                setSelectedViolationFindingNumber("")
+                setShowFinding(false);
+                navigate("/portal/violations");
+            }
+          },
+        ];
+    
+        if (showFInding) {
+          items.push({
+            label: selectedViolationFindingNumber || "Finding Number",
+            path: ""
+          });
+        }
+    
+        return items;
+      }, [selectedCompany, navigate, setShowFinding, showFInding, selectedViolationFindingNumber]);
+
     const hideFilters = (violationData?.length === 0 || !violationData) && !violationFilter?.searchTerm && !violationFilter?.status && !loading
 
     return (
         <div className="">
-            <PageHeader header={header} customTitle={id ? 'view_violation_report' : ''} />
+            {/* <PageHeader header={header} customTitle={id ? 'view_violation_report' : ''} /> */}
+            <Breadcrumb items={breadcrumbs} />
             {!showFInding ? <div className="min-h-[55vh] flex flex-col">
                 <>
                     <CreateAndFilter filterConfig={filterKeys} setAppliedFilter={setViolationFilter} appliedFilter={violationFilter} hideFilters={hideFilters} />
-                    <div className={`flex-1 flex flex-col ${violationData?.length === 0 && 'justify-center'}`}>
+                    <div className={`flex-1 flex flex-col ${(violationData?.length === 0 ||  !violationData) ? 'justify-center' : ''}`}>
                         <ListOFCards cardsConfig={cardsConfig} cardsData={violationData} cardClick={true} />
                         {!!(violationFilter?.totalPages && violationFilter.totalPages > 1 && violationData.length > 0) && <CustomPagination handlePageChange={handlePageChange} currentPage={violationFilter?.page} totalPages={violationFilter?.totalPages ?? 0} />}
                         {!loading && (violationData?.length === 0 || !violationData) && (
