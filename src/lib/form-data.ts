@@ -1220,7 +1220,7 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                 "financial_capacity_proof",
                                 "credit_bureau_consent_form",
                                 "company_profile_if_applicable",
-                                "three_years_audited_financial_statements_if_applicable",
+                                "three_years_of_audited_financial_statements_if_applicable",
                             ],
                         },
                     ],
@@ -1701,14 +1701,14 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                 },
                                 {
                                     id: "Documents.ThreeYearsOfAuditedFinancialStatements",
-                                    label: "three_years_of_audited_financial_statements_if_applicable",
+                                    label: "three_years_of_audited_financial_statements",
                                     type: "file",
                                     required: false,
                                     fileName: 'Audited Financials'
                                 },
                                 {
                                     id: "Documents.CompanyProfile",
-                                    label: "company_profile_if_applicable",
+                                    label: "company_profile",
                                     type: "file",
                                     required: false,
                                     fileName: "Company Profile"
@@ -1750,8 +1750,8 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                 "establishment_card",
                                 "owners_id",
                                 "business_plan",
-                                "three_years_audited_financial_statements",
-                                "traffic_listing_moi",
+                                "three_years_of_audited_financial_statements_if_applicable",
+                                "traffic_listing_moi_if_applicable",
                                 "photos_materials_equipment",
                                 "company_profile_if_applicable",
                             ],
@@ -1867,7 +1867,7 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                 },
                                 {
                                     id: "Documents.ThreeYearsOfAuditedFinancialStatements",
-                                    label: "three_years_audited_financial_statements",
+                                    label: "three_years_of_audited_financial_statements",
                                     type: "file",
                                     required: false,
                                     fileName: 'Audited Financials'
@@ -1889,7 +1889,7 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                 },
                                 {
                                     id: "Documents.CompanyProfile",
-                                    label: "company_profile_if_applicable",
+                                    label: "company_profile",
                                     type: "file",
                                     required: false,
                                     fileName: "Company Profile"
