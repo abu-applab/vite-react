@@ -498,7 +498,13 @@ const DynamicForm = ({
         )}
       </div>
       <CardContent className="max-md:p-0">
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6"
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e?.preventDefault();
+              e?.stopPropagation();
+            }
+          }}>
           {config?.sections.map((section, sectionIndex) => {
             if (section.key === "ProductsJson") {
               return <ProductInformation
@@ -602,7 +608,7 @@ const DynamicForm = ({
             </Button>
             <div className="flex flex-row items-center gap-3">
               {isCreateApplication &&
-                <Button type="submit" className="cursor-pointer" variant="outline" onClick={handleSave}>
+                <Button type="button" className="cursor-pointer" variant="outline" onClick={handleSave}>
                   {t("save")}
                 </Button>
               }

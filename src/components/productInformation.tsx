@@ -337,7 +337,7 @@ const ProductInformation = ({ products, setProducts, isError, isSubmittedApplica
                         <Button variant="outline" className="cursor-pointer" type="button" onClick={() => setIsProductModalOpen(false)}>
                             {t('cancel')}
                         </Button>
-                        <Button className="bg-maroon-100 cursor-pointer" type="button" onClick={handleSaveProduct}>
+                        <Button className="bg-maroon-100 hover:bg-maroon-100  cursor-pointer" type="button" onClick={handleSaveProduct}>
                             {editingIndex === null ? t("add") : t("update")}
                         </Button>
                     </div>

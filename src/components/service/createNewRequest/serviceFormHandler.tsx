@@ -189,6 +189,24 @@ export const ServiceFormHandler = ({
     setErrors((prev) => ({ ...prev, [fieldId]: "" }));
   };
 
+  const handlePreSubmit = (e?: React.FormEvent) => {
+    e?.preventDefault();
+    e?.stopPropagation();
+    const newErrors = validateForm(selectedService, formState, t);
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) {
+      const firstErrorFieldId = Object.keys(newErrors)[0];
+      const el = fieldRefs.current[firstErrorFieldId];
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+        el.focus({ preventScroll: true });
+      }
+      return;
+    }
+    setConfirmSubmitOpen(true)
+  }
+
+
   const handleSubmit = async (e?: React.FormEvent) => {
     e?.preventDefault();
     try {
@@ -275,6 +293,23 @@ export const ServiceFormHandler = ({
     e?.preventDefault();
     e?.stopPropagation();
     if (selectedService !== "updateCompanyInformation") return;
+    let newErrors = {};
+    if (!formState?.plot) {
+      newErrors = {
+        plot: 'Plot is required',
+        agreement: 'Agreement is required'
+      }
+    }
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) {
+      const firstErrorFieldId = Object.keys(newErrors)[0];
+      const el = fieldRefs.current[firstErrorFieldId];
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+        el.focus({ preventScroll: true });
+      }
+      return;
+    }
     setIsLoading(true);
     try {
       const updateRequestId = await createCompanyUpdateRequest({
@@ -341,7 +376,7 @@ export const ServiceFormHandler = ({
         errors={errors}
         setErrors={setErrors}
         handleInputChange={handleInputChange}
-        handleSubmit={() => setConfirmSubmitOpen(true)}
+        handleSubmit={() => handlePreSubmit()}
         handlePerviousButton={formStage === 2 ? handleCompanyUpdateBack : onBack}
         fieldRefs={fieldRefs}
         isNext={isNext}

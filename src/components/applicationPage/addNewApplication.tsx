@@ -73,6 +73,7 @@ const AddNewApplication = ({ selectedApplication,
   const [isSaveApplication, setSaveApplication] = useState(false);
   const [isUpdatedApplication, setUpdatedApplication] = useState(false);
   const [isConfirmSubmitOpen, setConfirmSubmitOpen] = useState(false);
+  const [isConfirmSavetOpen, setConfirmSaveOpen] = useState(false);
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [pendingNavigation, setPendingNavigation] = useState<any>(null);
@@ -496,6 +497,25 @@ const AddNewApplication = ({ selectedApplication,
     }
   }
 
+  const handlePreSave = (e?: React.FormEvent) => {
+    e?.preventDefault();
+    e?.stopPropagation();
+    const currentIndex = applicationSteps.findIndex((s: any) => s.active)
+    const stepConfig = config?.[currentIndex];
+    const newErrors = validateForm(stepConfig, formState, t, true);
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) {
+      const firstErrorFieldId = Object.keys(newErrors)[0];
+      const el = fieldRefs.current[firstErrorFieldId];
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+        el.focus({ preventScroll: true });
+      }
+      return;
+    }
+    setConfirmSaveOpen(true)
+  }
+
   const handleSave = async (e?: React.FormEvent) => {
     e?.preventDefault();
     e?.stopPropagation();
@@ -731,7 +751,12 @@ const AddNewApplication = ({ selectedApplication,
 
   const executeSubmit = async () => {
     setConfirmSubmitOpen(false);
-    await handleSubmit();   // your original function runs untouched
+    await handleSubmit();  
+  };
+
+  const executeSave = async () => {
+    setConfirmSaveOpen(false);
+    await handleSave();   
   };
 
   const isLastStepActive = applicationSteps[applicationSteps.length - 1]?.active === true;
@@ -766,7 +791,7 @@ const AddNewApplication = ({ selectedApplication,
         setErrors={setErrors}
         handleInputChange={handleInputChange}
         fieldRefs={fieldRefs}
-        handleSave={handleSave}
+        handleSave={() => handlePreSave()}
         products={products}
         setProducts={setProducts}
         isLastStepActive={isLastStepActive}
@@ -844,6 +869,17 @@ const AddNewApplication = ({ selectedApplication,
         onOpenChange={setConfirmSubmitOpen}
         onConfirm={executeSubmit}
         description="confirmation_application_desc"
+        confirmText="submit"
+        cancelText="cancel"
+      />
+      <ConfirmationModal
+        open={isConfirmSavetOpen}
+        onOpenChange={setConfirmSaveOpen}
+        onConfirm={executeSave}
+        subTitle="confirm_save"
+        description="are_you_sure_to_save_as_draft"
+        confirmText="yes"
+        cancelText="no"
       />
       <ConfirmationModal
         open={showLeaveConfirm}

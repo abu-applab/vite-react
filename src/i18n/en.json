@@ -364,5 +364,9 @@
     "services": "services",
     "violation": "Violation",
     "if_applicable": "(if applicable)",
-    "": ""
+    "yes": "Yes",
+    "no": "No",
+    "are_you_sure_to_save_as_draft": "Are you sure you want to save the application as draft?",
+    "confirm_save": "Confirm Save ?",
+    "":""
 }
