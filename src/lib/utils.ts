@@ -124,14 +124,14 @@ export const prepareRequestBody = (
   contentType: string,
   contactId: string,
 ) => {
-  const requiredUpdateKey = "RequiredUpdateSet";
+  const requiredUpdateKey = "requiredUpdateSet";
   let requiredValues: string[] = [];
 
   if (formState[requiredUpdateKey]) {
     requiredValues = String(formState[requiredUpdateKey])
-      .split(",")
-      .map(v => v.trim())
-      .filter(Boolean);
+    .split(",")
+    .map(v => v.trim())
+    .filter(Boolean);
   }
   if (contentType === "multipart") {
     const body = new FormData();

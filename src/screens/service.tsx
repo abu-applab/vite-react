@@ -114,6 +114,7 @@ const Service = ({ resetTrigger = false }: ServiceProps) => {
   useEffect(() => {
     if (resetTrigger) {
       setSelectedService("");
+      setServiceDetails("null")
     }
   }, [resetTrigger]);
 
