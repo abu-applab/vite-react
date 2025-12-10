@@ -29,6 +29,8 @@ export const API_ENDPOINTS = {
 
   forgotpassword: "/RegistrationAndLogin/requestPasswordReset",
   resetPassword: "/RegistrationAndLogin/resetPassword",
+
+  addNewCompany: "/WebApp/addNewCompany"
 }
 
 export const API_SERVICES_ENDPOINTS = {

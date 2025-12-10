@@ -2277,6 +2277,68 @@ export const violationFormConfig: {
     ],
 }
 
+export const AddNewCompanyFormConfig: {
+    title: string;
+    description: string;
+    sections: {
+        title: string;
+        key?: string;
+        fields: FormField[];
+    }[];
+} = {
+    title: "add_new_company",
+    description: "add_new_company_desc",
+    sections: [
+        {
+            title: "company_details",
+            fields: [
+                {
+                    id: "crNumber",
+                    label: "cr_number",
+                    type: "text",
+                    placeholder: "",
+                    required: true,
+                },
+                {
+                    id: "arabicCompanyName", 
+                    label: "arabic_company_name",
+                    type: "text",
+                    placeholder: "",
+                    required: true,
+                },
+                {
+                    id: "englishCompanyName",  
+                    label: "english_company_name",
+                    type: "text",
+                    placeholder: "",
+                    required: true,
+                },
+                {
+                    id: "address",
+                    label: "address",
+                    type: "text",
+                    placeholder: "",
+                    required: true,
+                },
+                {
+                    id: "poBox",
+                    label: "po_box",
+                    type: "text",
+                    placeholder: "",
+                    required: true,
+                },
+                {
+                    id: "telephone",
+                    label: "telephone",
+                    type: "text",
+                    placeholder: "",
+                    required: true,
+                },
+            ],
+        },
+    ],
+}
+
 export const findingTypeRules = {
     "Observations - ملاحظات": {
         showField: "proposedActionEn",

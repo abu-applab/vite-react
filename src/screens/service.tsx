@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo, useLayoutEffect } from "react"
+import { useEffect, useState, useMemo } from "react"
 import { useTranslation } from "react-i18next"
 // import { ServiceHeader } from "@/components/service/serviceRequestPage/service-header"
 import { ServiceFormHandler } from "@/components/service/createNewRequest/serviceFormHandler"
@@ -46,7 +46,7 @@ const cardsConfigBase = {
   icon: MessageSquareDot,
   id: "requestId",
   subTitle: "serviceType",
-  title: "referenceNumber",
+  title: "mainReferenceNumber",
   status: 'status',
   showBelow: true,
   fields: [
@@ -100,7 +100,7 @@ const Service = ({ resetTrigger = false }: ServiceProps) => {
     "SR - Complaint"
   ];
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const navType =
       (performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming | undefined)?.type ||
       (performance.navigation?.type === 1 ? "reload" : "");
@@ -114,7 +114,7 @@ const Service = ({ resetTrigger = false }: ServiceProps) => {
   useEffect(() => {
     if (resetTrigger) {
       setSelectedService("");
-      setServiceDetails("null")
+      setServiceDetails(null)
     }
   }, [resetTrigger]);
 
@@ -247,7 +247,7 @@ const Service = ({ resetTrigger = false }: ServiceProps) => {
     }
 
     return items;
-  }, [selectedCompany, selectedService, selectedServiceData, t, navigate]);
+  }, [selectedCompany, selectedService, selectedServiceData, t]);
 
   const cardsDataWithViewFlag = serviceData.map((item: any) => ({
     ...item,

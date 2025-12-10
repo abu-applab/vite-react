@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Factory, FileSpreadsheet, Eye, Truck, CircleArrowRight, Trash2 } from "lucide-react"
 import AddNewApplication from "@/components/applicationPage/addNewApplication";
 import { InvestmentSelector } from "@/components/applicationPage/investmentSelector";
@@ -279,7 +279,7 @@ const ApplicationPage = () => {
         }
     }, [id]);
 
-    useLayoutEffect(() => {
+    useEffect(() => {
         const navType =
             (performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming | undefined)?.type ||
             (performance?.navigation?.type === 1 ? "reload" : "");

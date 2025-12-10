@@ -38,6 +38,10 @@ export function NavigationBar() {
       "/portal/violations"
     ];
 
+    const homeChildRoutes = [
+      "/portal/add-new-company",
+    ];
+
     // Check if this is a parent route
     if (parentRoutes.includes(href)) {
       return currentPathname === href ||
@@ -45,8 +49,8 @@ export function NavigationBar() {
     }
 
     // For home, only exact match
-    if (href === "/portal") {
-      return currentPathname === href;
+    if (href === "/portal" ) {
+      return currentPathname === href ||  homeChildRoutes.includes(currentPathname);
     }
 
     // For other routes (payments, allocated-plots, agreements, bot-requests, bot-reports)

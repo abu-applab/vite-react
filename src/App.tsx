@@ -4,6 +4,7 @@ import { lazy, Suspense, type JSX } from 'react';
 import { getLocalStorageItem } from './lib/utils';
 import { useLanguageInit } from './hooks/useLanguageInit';
 import Loader from './components/loader'; // Add a loader component if you don't have one
+import AddNewCompany from './screens/addNewCompany';
 
 // Lazy load components
 const Login = lazy(() => import('./screens/authentication/login'));
@@ -190,6 +191,10 @@ function App() {
         {
           path: "company-profile",
           element: <CompanyProfile />,
+        },
+        {
+          path: "add-new-company",
+          element: <AddNewCompany />,
         },
       ],
     },

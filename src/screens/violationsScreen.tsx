@@ -10,7 +10,7 @@ import { ViolationFormHandler } from "@/components/violationScreen/violationForm
 import { PAGE_SIZE } from "@/constants";
 import { useApp } from "@/context/AppContext";
 import { Eye, SquareLibrary } from "lucide-react";
-import { useEffect, useLayoutEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -110,7 +110,7 @@ const ViolationPage = ({resetTrigger = false}: ViolationProps) => {
         }
       }, [resetTrigger]);
 
-    useLayoutEffect(() => {
+      useEffect(() => {
         const navType =
             (performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming | undefined)?.type ||
             (performance.navigation?.type === 1 ? "reload" : "");

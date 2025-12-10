@@ -41,6 +41,7 @@ interface DynamicFormProps {
   applicationSteps?: any
   setApplicationSteps?: any
   isSubmittedApplication?: boolean
+  hidePreviousButton?: Boolean
 }
 
 const DynamicForm = ({
@@ -62,6 +63,7 @@ const DynamicForm = ({
   applicationSteps,
   setApplicationSteps,
   isSubmittedApplication = false,
+  hidePreviousButton = false,
 }: DynamicFormProps) => {
   const { setCreateNewForm, setSelectedInvestment, selectedInvestment, locations } = useApp();
   const { t } = useTranslation()
@@ -100,6 +102,14 @@ const DynamicForm = ({
 
                 if (field.id === 'debt') {
                   return String(raw);
+                }
+
+                if(field.id === 'TotalCost') {
+                  return formData?.totalInvestment || raw;
+                }
+
+                if(field.id === 'TotalFunding') {
+                  return formData?.totalFunding || raw;
                 }
 
                 if (field.id === 'selectedApplicationLocation') {
@@ -602,10 +612,11 @@ const DynamicForm = ({
             )
           })}
 
-          {!isSubmittedApplication && (<div className="flex items-center justify-between">
-            <Button type="button" className="cursor-pointer" variant="outline" onClick={handlePerviousButton}>
+          {!isSubmittedApplication && 
+          (<div className="flex items-center justify-between">
+            {!hidePreviousButton && <Button type="button" className="cursor-pointer" variant="outline" onClick={handlePerviousButton}>
               {t('previous')}
-            </Button>
+            </Button>}
             <div className="flex flex-row items-center gap-3">
               {isCreateApplication &&
                 <Button type="button" className="cursor-pointer" variant="outline" onClick={handleSave}>
