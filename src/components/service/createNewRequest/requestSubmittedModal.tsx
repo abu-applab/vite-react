@@ -37,7 +37,7 @@ export function RequestSubmittedModal({
   title = '',
   heading = ''
 }: RequestSubmittedModalProps) {
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const isSuccess = Boolean(referenceMessage)
 
   const handleClose = () => onOpenChange(false)
@@ -47,29 +47,40 @@ export function RequestSubmittedModal({
 
   const status = isSuccess
     ? {
-        heading: headingText,
-        icon: successfull,
-        title: titleText,
-        subtitle: (
-          <>
-            <span className="">{`${' '} ${t(referenceMessage)}`}</span>
-          </>
-        ),
-        buttonText: buttonText,
-        buttonAction: onGoToRequest,
-      }
+      heading: headingText,
+      icon: successfull,
+      title: titleText,
+      subtitle: (
+        <>
+          <span className="">{`${' '} ${t(referenceMessage)}`}</span>
+        </>
+      ),
+      buttonText: buttonText,
+      buttonAction: onGoToRequest,
+    }
     : {
-        heading: 'request_failed',
-        icon: failed,
-        title: "not_completed",
-        subtitle: errorMessage,
-        buttonText: "try_again",
-        buttonAction: handleTryAgain,
-      }
+      heading: 'request_failed',
+      icon: failed,
+      title: "not_completed",
+      subtitle: errorMessage,
+      buttonText: "try_again",
+      buttonAction: handleTryAgain,
+    }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="min-w-[600px] overflow-y-auto p-0 gap-0" showCloseButton={false}>
+      <DialogContent
+        className="min-w-[600px] overflow-y-auto p-0 gap-0"
+        showCloseButton={false}
+        onInteractOutside={(e) => {
+          e.preventDefault();
+          if (isSuccess && !isSaveApplication && !isUpdatedApplication) {
+            onGoToRequest();
+          } else {
+            handleClose();
+          }
+        }}
+      >
         <DialogHeader className="border-b px-5 py-3 flex flex-row items-center justify-between">
           <DialogTitle className="text-lg font-medium text-foreground">
             {t(status.heading)}
