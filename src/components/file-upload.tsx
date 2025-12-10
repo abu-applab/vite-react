@@ -18,6 +18,7 @@ interface FileUploadProps {
     showUploadIcon?: boolean
     children?: ReactNode   // 👈 ADDED CHILDREN
     tooltip?: string
+    maxSize?: number
 }
 
 const FileUpload = ({
@@ -32,7 +33,8 @@ const FileUpload = ({
     showUploadIcon = false,
     children,
     isRequired = false,
-    tooltip = ''
+    tooltip = '',
+    maxSize = 2 // 2MB default
 }: FileUploadProps) => {
 
     const [isDragActive, setIsDragActive] = useState(false);
@@ -55,7 +57,7 @@ const FileUpload = ({
         fileRejections.forEach(({ errors }) => {
             errors.forEach((err) => {
                 if (err.code === "file-too-large") {
-                    handleFileUploadError?.("Uploaded file is too large. Max 2MB allowed.");
+                    handleFileUploadError?.(`Uploaded file is too large. Max ${maxSize}MB allowed.`);
                 } else if (err.code === "file-invalid-type") {
                     handleFileUploadError?.("Invalid type. Only PDF, JPG, PNG allowed.");
                 } else if (err.code === "too-many-files") {
@@ -75,7 +77,7 @@ const FileUpload = ({
             "image/jpeg": [".jpg", ".jpeg"],
             "image/png": [".png"],
         },
-        maxSize: 2 * 1024 * 1024,
+        maxSize: maxSize * 1024 * 1024,
         multiple: allowMultiple,
         maxFiles: allowMultiple ? 5 : 1,
         onDragEnter: () => setIsDragActive(true),

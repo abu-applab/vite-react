@@ -18,6 +18,7 @@ export interface FormField {
     fileName?: string
     hidden?: boolean
     tooltip?: string
+    maxSize?: number
 }
 
 export interface FormSection {
@@ -1701,6 +1702,7 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                     label: "valid_commercial_registration",
                                     type: "file",
                                     required: true,
+                                    maxSize: 1, // 1MB
                                     fileName: 'Valid Commercial Registration',
                                 },
 
@@ -1709,6 +1711,7 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                     label: "owners_id",
                                     type: "file",
                                     required: true,
+                                    maxSize: 1, // 1MB
                                     fileName: 'Owners IDs'
                                 },
 
@@ -1725,6 +1728,7 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                     label: "industrial_license_initial_approval",
                                     type: "file",
                                     required: true,
+                                    maxSize: 1, // 1MB
                                     fileName: 'Industrial License'
                                 },
 
@@ -1844,7 +1848,7 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                     id: "proposedBusinessActivity",
                                     label: "description_of_proposed_business_activities",
                                     type: "textarea",
-                                    required: false,
+                                    required: true,
                                     placeholder: "",
                                     min: 100,
                                     max: 500,
@@ -1893,6 +1897,7 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                     label: "valid_commercial_registration",
                                     type: "file",
                                     required: true,
+                                    maxSize: 1,
                                     fileName: 'Valid Commercial Registration'
                                 },
                                 {
@@ -1900,6 +1905,7 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                     label: "valid_commercial_license",
                                     type: "file",
                                     required: true,
+                                    maxSize: 1, // 1MB
                                     fileName: 'A Valid Commercial License'
                                 },
                                 {
@@ -1907,6 +1913,7 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                     label: "owners_id",
                                     type: "file",
                                     required: true,
+                                    maxSize: 1, // 1MB
                                     fileName: 'Owners IDs'
                                 },
                                 {
@@ -1914,6 +1921,7 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                     label: "establishment_card",
                                     type: "file",
                                     required: true,
+                                    maxSize: 1, // 1MB
                                     fileName: 'The Establishment Card'
                                 },
                                 {
@@ -1935,6 +1943,7 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                     label: "traffic_listing_moi",
                                     type: "file",
                                     required: false,
+                                    maxSize: 1, // 1MB
                                     fileName: 'Traffic Listing from MOI'
                                 },
                                 {
@@ -1942,6 +1951,7 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                     label: "photos_materials_equipment",
                                     type: "file",
                                     required: true,
+                                    maxSize: 5, // 5MB
                                     fileName: 'Photos of Materials & Equipment',
                                     tooltip: 'photos_materials_equipment_tooltip'
                                 },

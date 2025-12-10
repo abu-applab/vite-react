@@ -324,6 +324,7 @@ const DynamicForm = ({
                   handleFileUploadError={(uploadError: string) =>
                     setErrors((prev) => ({ ...prev, [field.id]: uploadError }))
                   }
+                  maxSize={field.maxSize}
                   isServiceForm
                   fileLabel={t(field.label)}
                   buttonText="upload_file"
