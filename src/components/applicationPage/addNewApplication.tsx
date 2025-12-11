@@ -406,6 +406,11 @@ const AddNewApplication = ({ selectedApplication,
         updated.TotalCost = totalFunding;
         updated.TotalFunding = totalFunding;
 
+        if (updated?.totalFunding && id) {
+          updated.totalFunding = totalFunding;
+          updated.totalInvestment = totalFunding;
+        }
+
         // Calculate Debt = TotalFunding - equity
         const equity = Number(updated.equity) || 0;
         const debt = Math.max(0, totalFunding - equity);
