@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import {  useState } from "react"
 import { Card } from "@/components/ui/card"
 import { ArrowRight, ArrowUpRight, Building2 } from "lucide-react"
 import { useApp, type CompanyType } from "@/context/AppContext"
@@ -30,16 +30,8 @@ interface InvestmentType {
 export function InvestmentSelector({ handleSelectedOption, investmentContent }: InvestmentTypeProps) {
   const [hoveredCard, setHoveredCard] = useState<string | null>(null)
   const [hoveredButton, setHoveredButton] = useState<string | null>(null)
-  const { companies, selectedCompany, setSelectedCompany, setCreateNewForm } = useApp();
+  const { companies, selectedCompany, setSelectedCompany } = useApp();
   const { t } = useTranslation();
-
-  // handling this state to show whether it's for view or create new service 
-    useEffect(() => {
-      setCreateNewForm(true);
-      return () => {
-        setCreateNewForm(false);
-      }
-    })
 
   return (
     <Card className="w-full md:p-10 p-6">

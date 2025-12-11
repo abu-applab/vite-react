@@ -55,7 +55,7 @@ const AddNewApplication = ({ selectedApplication,
 
   const networkRequest = useNetworkRequest()
   const { loadApplicationConfig } = useApplicationConfigLoader();
-  const { setCreateNewForm, setSelectedInvestment, selectedCompany, contact, selectedInvestment, locations } = useApp();
+  const { setSelectedInvestment, selectedCompany, contact, selectedInvestment, locations } = useApp();
   const fieldRefs = useRef<Record<string, HTMLElement | null>>({})
   const { id } = useParams();
 
@@ -290,9 +290,7 @@ const AddNewApplication = ({ selectedApplication,
 
   // handling this state to show whether it's for view or create new service 
   useEffect(() => {
-    setCreateNewForm(true);
     return () => {
-      setCreateNewForm(false);
       setSelectedInvestment(null)
     }
   }, [])

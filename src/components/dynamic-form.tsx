@@ -10,7 +10,7 @@ import { CalendarIcon, ChevronsUpDown, Download, Trash2 } from "lucide-react"
 import pdfLogo from "../assets/images/pdf-logo.svg"
 import pngLogo from "../assets/images/png-logo.svg"
 import { cn, formatFileSize, getFileName, getFileType } from "@/lib/utils"
-import { useEffect, type Dispatch, type SetStateAction } from "react"
+import { type Dispatch, type SetStateAction } from "react"
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
 import { Command, CommandGroup, CommandItem, CommandList } from "./ui/command"
 import { Checkbox } from "./ui/checkbox"
@@ -65,18 +65,8 @@ const DynamicForm = ({
   isSubmittedApplication = false,
   hidePreviousButton = false,
 }: DynamicFormProps) => {
-  const { setCreateNewForm, setSelectedInvestment, selectedInvestment, locations } = useApp();
+  const { selectedInvestment, locations } = useApp();
   const { t } = useTranslation()
-
-
-  // handling this state to show whether it's for view or create new service 
-  useEffect(() => {
-    setCreateNewForm(true);
-    return () => {
-      setCreateNewForm(false);
-      setSelectedInvestment(null)
-    }
-  }, [])
 
   const renderField = (field: FormField) => {
     const commonProps = { id: field.id, required: field.required }

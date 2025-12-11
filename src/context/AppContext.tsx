@@ -79,8 +79,6 @@ interface AppContextType {
   setCompanies: React.Dispatch<React.SetStateAction<CompanyType[]>>;
   selectedCompany: CompanyType | null;
   setSelectedCompany: React.Dispatch<React.SetStateAction<CompanyType | null>>;
-  isCreateNewForm: boolean;
-  setCreateNewForm: React.Dispatch<React.SetStateAction<boolean>>;
   selectedInvestment: SelectedInvestment | null;
   setSelectedInvestment: React.Dispatch<React.SetStateAction<SelectedInvestment | null>>;
   serviceFilter: ServiceFilter;
@@ -157,7 +155,6 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
 
 
   //Application
-  const [isCreateNewForm, setCreateNewForm] = useState(false);
   const [selectedInvestment, setSelectedInvestment] = useState<SelectedInvestment | null>(null)
 
   //services
@@ -185,8 +182,6 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
       setSelectedCompany,
       contactName,
       setContactName,
-      isCreateNewForm,
-      setCreateNewForm,
       selectedInvestment,
       setSelectedInvestment,
       serviceFilter,
