@@ -105,7 +105,6 @@ export const ViolationFormHandler = ({ onBack }: ViolationFormHandlerProps) => {
   };
 
   const handleSubmit = async (e?: React.FormEvent) => {
-    console.log('caled');
     e?.preventDefault();
 
     const newErrors = validateForm(formState, formConfig, t);

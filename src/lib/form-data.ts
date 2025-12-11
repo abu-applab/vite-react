@@ -1277,7 +1277,7 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                 "material_safety_data_sheets",
                                 "owners_id",
                                 "financial_capacity_proof",
-                                "credit_bureau_consent_form",
+                                "credit_bureau_report_for_owner",
                                 "company_profile_if_applicable",
                                 "three_years_of_audited_financial_statements_if_applicable",
                             ],
@@ -1447,14 +1447,14 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                     id: "naturalGas",
                                     label: "natural_gas",
                                     type: "number",
-                                    required: true
+                                    required: false
                                 },
-                                {
-                                    id: "seaCoolingWater",
-                                    label: "sea_cooling_water",
-                                    type: "number",
-                                    required: true
-                                },
+                                // {
+                                //     id: "seaCoolingWater",
+                                //     label: "sea_cooling_water",
+                                //     type: "number",
+                                //     required: true
+                                // },
                                 {
                                     id: "electricity",
                                     label: "electricity_kva",
@@ -1465,7 +1465,7 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                     id: "fuelProducts",
                                     label: "fuel_products",
                                     type: "number",
-                                    required: true
+                                    required: false
                                 }
                             ]
                         },
@@ -1745,7 +1745,8 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                     label: "material_safety_date_sheets",
                                     type: "file",
                                     required: true,
-                                    fileName: "Material Safety Data Sheets"
+                                    fileName: "Material Safety Data Sheets",
+                                    tooltip: 'material_safety_date_sheets_tooltip'
                                 },
                                 {
                                     id: "Documents.FinancialCapacityProofToExecuteTheProject",
@@ -1756,7 +1757,7 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                 },
                                 {
                                     id: "Documents.SignedCopyOfCreditBureauConsentForm",
-                                    label: "credit_bureau_repor_for_owner",
+                                    label: "credit_bureau_report_for_owner",
                                     type: "file",
                                     required: true,
                                     fileName: 'Signed Credit Bureau Consent'
@@ -1816,6 +1817,7 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                 "traffic_listing_moi_if_applicable",
                                 "photos_materials_equipment",
                                 "company_profile_if_applicable",
+                                "credit_bureau_report_for_owner",
                             ],
                         },
                     ],
@@ -1961,6 +1963,13 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                     type: "file",
                                     required: false,
                                     fileName: "Company Profile"
+                                },
+                                {
+                                    id: "Documents.SignedCopyOfCreditBureauConsentForm",
+                                    label: "credit_bureau_report_for_owner",
+                                    type: "file",
+                                    required: true,
+                                    fileName: 'Signed Credit Bureau Consent'
                                 },
                             ],
                         },
