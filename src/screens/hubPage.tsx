@@ -1,6 +1,5 @@
 import { Building2, Eye, Pencil } from "lucide-react"
 import { useApp } from "@/context/AppContext"
-import { useState } from "react"
 import ListOfCards from "@/components/listOfcards"
 import WelcomeHeader from "@/components/hubPage/welcomeHeader"
 import CustomPagination from "@/components/customPagination"
@@ -53,7 +52,6 @@ const cardsConfig = {
 
 const HubPage = () => {
   const { companies, setCompaniesFilter, companiesFilter } = useApp();
-  const [_isAddNewCompany, setIsAddNewCompany] = useState(false)
 
   const handlePageChange = (newPage: number) => {
     if (newPage > 0 && newPage <= (companiesFilter?.totalPages ?? 0)) {
@@ -103,7 +101,7 @@ const HubPage = () => {
     <div className={cn("h-full")}>
       {companies.length > 0 ? (
         <>
-          <WelcomeHeader setIsAddNewCompany={setIsAddNewCompany} totalCompanies={companies.length ?? 0} currentCompanies={cardData.length ?? 0} />
+          <WelcomeHeader totalCompanies={companies.length ?? 0} currentCompanies={cardData.length ?? 0} />
           {filteredCompanies?.length > 0 ?
             <>
               <ListOfCards cardsConfig={cardsConfig} cardsData={cardData} />

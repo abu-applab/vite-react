@@ -3,31 +3,31 @@ import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom"
 import { lazy, Suspense, type JSX } from 'react';
 import { getLocalStorageItem } from './lib/utils';
 import { useLanguageInit } from './hooks/useLanguageInit';
-import Loader from './components/loader'; // Add a loader component if you don't have one
-import AddNewCompany from './screens/addNewCompany';
+import Loader from './components/loader';
 
 // Lazy load components
-const Login = lazy(() => import('./screens/authentication/login'));
-const SignUp = lazy(() => import('./screens/authentication/signUp'));
-const ForgotPassword = lazy(() => import('./screens/authentication/forgotPassword'));
-const ResetPassword = lazy(() => import('./screens/authentication/resetPassword'));
-const OtpVerification = lazy(() => import('./screens/authentication/otpVerification'));
-const AddCompany = lazy(() => import('./screens/addCompany'));
-const LoginLayout = lazy(() => import('./layout/login-layout'));
-const PortalLayout = lazy(() => import('./layout/portal-layout'));
-const HubPage = lazy(() => import('./screens/hubPage'));
-const Service = lazy(() => import('./screens/service'));
-const ApplicationPage = lazy(() => import('./screens/application'));
-const AllocatedPlotsPage = lazy(() => import('./screens/allocatedPlotsPage'));
-const PlotDetailsScreen = lazy(() => import('./screens/plotDetailsScreen'));
-const DirectoryScreen = lazy(() => import('./screens/directoryScreen'));
-const ViolationPage = lazy(() => import('./screens/violationsScreen'));
-const BotRequestAndReportsPage = lazy(() => import('./screens/botRequestAndReportsPage'));
-const PaymentScreen = lazy(() => import('./screens/paymentScreen'));
-const Agreements = lazy(() => import('./screens/agreements'));
-const MyProfile = lazy(() => import('./screens/myProfile'));
-const Notifications = lazy(() => import('./screens/notifications'));
-const CompanyProfile = lazy(() => import('./screens/companyProfile'));
+const Login = lazy(() => import('@/screens/authentication/login'));
+const SignUp = lazy(() => import('@/screens/authentication/signUp'));
+const ForgotPassword = lazy(() => import('@/screens/authentication/forgotPassword'));
+const ResetPassword = lazy(() => import('@/screens/authentication/resetPassword'));
+const OtpVerification = lazy(() => import('@/screens/authentication/otpVerification'));
+const AddCompany = lazy(() => import('@/screens/addCompany'));
+const LoginLayout = lazy(() => import('@/layout/login-layout'));
+const PortalLayout = lazy(() => import('@/layout/portal-layout'));
+const HubPage = lazy(() => import('@/screens/hubPage'));
+const Service = lazy(() => import('@/screens/service'));
+const ApplicationPage = lazy(() => import('@/screens/application'));
+const AllocatedPlotsPage = lazy(() => import('@/screens/allocatedPlotsPage'));
+const PlotDetailsScreen = lazy(() => import('@/screens/plotDetailsScreen'));
+const DirectoryScreen = lazy(() => import('@/screens/directoryScreen'));
+const ViolationPage = lazy(() => import('@/screens/violationsScreen'));
+const BotRequestAndReportsPage = lazy(() => import('@/screens/botRequestAndReportsPage'));
+const PaymentScreen = lazy(() => import('@/screens/paymentScreen'));
+const Agreements = lazy(() => import('@/screens/agreements'));
+const MyProfile = lazy(() => import('@/screens/myProfile'));
+const Notifications = lazy(() => import('@/screens/notifications'));
+const CompanyProfile = lazy(() => import('@/screens/companyProfile'));
+const AddNewCompany = lazy(() => import('@/screens/addNewCompany'));
 
 const AUTH_TOKEN_KEY = 'auth_txn';
 

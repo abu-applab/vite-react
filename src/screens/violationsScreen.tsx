@@ -213,7 +213,7 @@ const ViolationPage = ({resetTrigger = false}: ViolationProps) => {
                         {!loading && (violationData?.length === 0 || !violationData) && (
                             companies.length > 0 ?
                             <EmptyRequest hideButton={true} title={'no_violation_found'} /> :
-                            <EmptyRequest title='no_companies_found' description="no_companies_found_desc" descriptionParams={{ entity: t('violation') }} buttonText="add_new_company" />
+                            <EmptyRequest title='no_companies_found' description="no_companies_found_desc" descriptionParams={{ entity: t('violation') }} buttonText="add_new_company" onNewRequest={() => navigate('/portal/add-new-company')} />
                         )}
                     </div>
                 </>

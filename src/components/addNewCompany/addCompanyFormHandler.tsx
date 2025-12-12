@@ -6,7 +6,7 @@ import Loader from "../loader";
 import { useTranslation } from "react-i18next";
 import { RequestSubmittedModal } from "../service/createNewRequest/requestSubmittedModal";
 import { API_ENDPOINTS } from "@/api/apiEndpoints";
-import { parseApiError } from "@/lib/utils";
+import { isValidPhone, isValidPOBox, parseApiError } from "@/lib/utils";
 
 interface Document {
     fileBytes: string;
@@ -114,12 +114,33 @@ export const AddCompanyFormHandler = () => {
 }
 
 const validateForm = (
-    _formState: Record<string, any>,
-    _formConfig: any,
-    _t: any,
+    formState: Record<string, any>,
+    formConfig: any,
+    t: any
 ) => {
     const errors: Record<string, string> = {};
 
+    // Loop through all sections & fields
+    formConfig.sections.forEach((section: any) => {
+        section.fields.forEach((field: any) => {
+            const { id, required } = field;
+            const value = formState[id];
+
+            // Required field validation
+            if (required && (!value || String(value).trim() === "")) {
+                errors[id] = `${t(field.label)} is required`;
+                return;
+            }
+            if (id === "poBox" && value && !isValidPOBox(value)) {
+                errors[id] = "Must contain 5 to 8 digits."
+            }
+            if (field.label === "telephone" && value && !isValidPhone(value)) {
+                errors[id] = "Must contain exactly 8 digits."
+            }
+        });
+    });
+
     return errors;
 };
+
 

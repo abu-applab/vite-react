@@ -269,7 +269,7 @@ const Service = ({ resetTrigger = false }: ServiceProps) => {
                 companies?.length > 0 ?
                   <EmptyRequest title='no_service_requests_yet' description="havent_submitted_request_yet" buttonText="submit_new_request" onNewRequest={() => setIsModalOpen(true)} />
                   :
-                  <EmptyRequest title='no_companies_found' description="no_companies_found_desc" descriptionParams={{ entity: t('services') }} buttonText="add_new_company" />
+                  <EmptyRequest title='no_companies_found' description="no_companies_found_desc" descriptionParams={{ entity: t('services') }} buttonText="add_new_company" onNewRequest={() => navigate('/portal/add-new-company')} />
               )
                 : <EmptyRequest hideButton={true} title={'no_requests_found'} />)}
           </div>

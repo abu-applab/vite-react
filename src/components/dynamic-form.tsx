@@ -487,7 +487,7 @@ const DynamicForm = ({
     <Card className={cn("lg:p-10 md:py-6 bg-[#F6F5EF]] max-md:border-none max-md:shadow-none max-md:bg-[#F6F5EF] p-0 md:bg-white/50",
       { "border-none shadow-none": isCreateApplication }
     )}>
-      <div className="max-md:shadow max-md:border max-md:bg-white max-md:p-4 max-md:rounded-lg md:px-6">
+      {config?.title ? <div className="max-md:shadow max-md:border max-md:bg-white max-md:p-4 max-md:rounded-lg md:px-6">
         <CardTitle className="text-xl">{t(config?.title)}</CardTitle>
         <CardDescription>{t(config?.description)}</CardDescription>
         {isCreateApplication && (
@@ -497,7 +497,8 @@ const DynamicForm = ({
               <SubmittedFormSteps setApplicationSteps={setApplicationSteps} applicationSteps={applicationSteps} />}
           </div>
         )}
-      </div>
+      </div> : <div className=""></div>
+      }
       <CardContent className="max-md:p-0">
         <form onSubmit={handleSubmit} className="space-y-6"
           onKeyDown={(e) => {
@@ -603,22 +604,22 @@ const DynamicForm = ({
             )
           })}
 
-          {!isSubmittedApplication && 
-          (<div className="flex items-center justify-between">
-            {!hidePreviousButton && <Button type="button" className="cursor-pointer" variant="outline" onClick={handlePerviousButton}>
-              {t('previous')}
-            </Button>}
-            <div className="flex flex-row items-center gap-3">
-              {isCreateApplication &&
-                <Button type="button" className="cursor-pointer" variant="outline" onClick={handleSave}>
-                  {t("save")}
+          {!isSubmittedApplication &&
+            (<div className={`flex items-center justify-between ${hidePreviousButton ? 'justify-end' : ''}`}>
+              {!hidePreviousButton && <Button type="button" className="cursor-pointer" variant="outline" onClick={handlePerviousButton}>
+                {t('previous')}
+              </Button>}
+              <div className="flex flex-row items-center gap-3">
+                {isCreateApplication &&
+                  <Button type="button" className="cursor-pointer" variant="outline" onClick={handleSave}>
+                    {t("save")}
+                  </Button>
+                }
+                <Button type="button" className="bg-maroon-100 hover:bg-[#7A1F2B] cursor-pointer" onClick={(!isLastStepActive || isNext) ? goToNextStep : handleSubmit}>
+                  {(!isLastStepActive || isNext) ? t("next") : t("submit")}
                 </Button>
-              }
-              <Button type="button" className="bg-maroon-100 hover:bg-[#7A1F2B] cursor-pointer" onClick={(!isLastStepActive || isNext) ? goToNextStep : handleSubmit}>
-                {(!isLastStepActive || isNext) ? t("next") : t("submit")}
-              </Button>
-            </div>
-          </div>)}
+              </div>
+            </div>)}
         </form>
       </CardContent>
     </Card>

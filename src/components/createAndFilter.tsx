@@ -43,10 +43,17 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, set
   if (hideFilters) {
     return (
       <>
-        <Card className="flex flex-col gap-4 md:hidden p-4">
+        <Card className="flex flex-col gap-4 lg:hidden p-4">
           <h2 className="text-lg leading-7 font-medium text-card-foreground">{filterConfig.title}</h2>
           <div className="flex flex-row gap-3">
-            <Select defaultValue={selectedCompany?.accountID}>
+          <Select
+              value={selectedCompany?.accountID || ''}
+              onValueChange={(value) => {
+                const selectedValue = companies.find((company: CompanyType) => company.accountID === value)
+                selectedValue && setSelectedCompany(selectedValue)
+                setAppliedFilter({ ...appliedFilter, page: 1 })
+              }}
+            >
               <SelectTrigger className="bg-background flex-1 min-w-[100px] cursor-pointer">
                 <SelectValue />
               </SelectTrigger>
@@ -70,7 +77,7 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, set
             </Select>
           </div>
         </Card>
-        <div className="hidden md:flex flex-row items-center justify-between gap-2">
+        <div className="hidden lg:flex flex-row items-center justify-between gap-2">
           <div></div>
           <div>
             <Select
@@ -113,7 +120,7 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, set
     <div className="">
 
       {/* Mobile View */}
-      <Card className="flex flex-col gap-4 md:hidden p-4">
+      <Card className="flex flex-col gap-4 lg:hidden p-4">
         <h2 className="text-lg leading-7 font-medium text-card-foreground">{filterConfig.title}</h2>
         <div className="flex items-center gap-2">
           <div className="relative flex-1">
@@ -134,7 +141,7 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, set
               }}
             />
             {searchText && (
-              <button
+              <Button
                 type="button"
                 onClick={() => {
                   setSearchText("")
@@ -147,7 +154,7 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, set
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-maroon-100 cursor-pointer"
               >
                 <X className="h-4 w-4 text-maroon-100" />
-              </button>
+              </Button>
             )}
 
           </div>
@@ -221,9 +228,12 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, set
         {/* Company Dropdown */}
         <div className="flex flex-row gap-3">
           {filterConfig?.applicationFilter && filterConfig?.applicationFilter?.length > 0 &&
-            <Select onValueChange={(value) => {
+            <Select
+            value={appliedFilter?.typeOfApplication || ''}
+            onValueChange={(value) => {
               setAppliedFilter({ ...appliedFilter, page: 1, typeOfApplication: value })
-            }}>
+            }}
+          >
               <SelectTrigger className="bg-background data-[placeholder]:text-foreground flex-1 min-w-[100px] cursor-pointer">
                 <SelectValue placeholder={t("application_type")} />
               </SelectTrigger>
@@ -235,8 +245,16 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, set
                   </SelectItem>
                 ))}
               </SelectContent>
-            </Select>}
-          <Select defaultValue={selectedCompany?.accountID}>
+            </Select>
+          }
+            <Select
+              value={selectedCompany?.accountID || ''}
+              onValueChange={(value) => {
+                const selectedValue = companies.find((company: CompanyType) => company.accountID === value)
+                selectedValue && setSelectedCompany(selectedValue)
+                setAppliedFilter({ ...appliedFilter, page: 1 })
+              }}
+            >
             <SelectTrigger className="bg-background flex-1 min-w-[100px] cursor-pointer">
               <SelectValue />
             </SelectTrigger>
@@ -258,11 +276,23 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, set
               })}
             </SelectContent>
           </Select>
+          {(appliedFilter?.status || appliedFilter?.searchTerm || appliedFilter?.typeOfApplication) && (
+            <Button
+              variant="ghost"
+              className="text-sm text-zinc-600 hover:text-zinc-70 px-3 cursor-pointer"
+              onClick={() => {
+                setSearchText("")
+                setAppliedFilter({ page: 1 })
+              }}
+            >
+              {t('clear_filter')}
+            </Button>
+          )}
         </div>
       </Card>
 
       {/* Desktop View */}
-      <div className="hidden md:flex flex-row items-center justify-between gap-2">
+      <div className="hidden lg:flex flex-row items-center justify-between gap-2">
         <div className="relative flex-1 max-w-md">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-maroon-100" />
           <Input
@@ -282,7 +312,7 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, set
           />
 
           {searchText && (
-            <button
+            <Button
               type="button"
               onClick={() => {
                 setSearchText("")
@@ -295,7 +325,7 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, set
               className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-maroon-100 cursor-pointer"
             >
               <X className="h-4 w-4 text-maroon-100" />
-            </button>
+            </Button>
           )}
 
         </div>

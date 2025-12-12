@@ -282,7 +282,7 @@ const ListOFCards = ({ cardsConfig, cardsData, isProducts = false, cardClick = f
     const { t } = useTranslation();
 
     return (
-        <div className={cn("grid grid-cols-1 md:grid-cols-2 gap-4 mt-8", {
+        <div className={cn("grid grid-cols-1 ms:grid-cols-2 gap-4 mt-8", {
             'md:grid-cols-1': isProducts
         })}>
             {cardsData?.map((data) => {
@@ -308,19 +308,19 @@ const ListOFCards = ({ cardsConfig, cardsData, isProducts = false, cardClick = f
                     >
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 max-md:px-4">
                             <div className="flex items-center gap-3">
-                                <div className="w-12 h-12 border border-[#E4E4E7] rounded-[8px] bg-white flex items-center justify-center">
+                                <div className="w-12 h-12 border border-[#E4E4E7] rounded-xl bg-white flex items-center justify-center">
                                     <cardsConfig.icon className="w-5 h-5 text-black" />
                                 </div>
 
                                 <div className="flex flex-col">
                                     <div className="flex items-center gap-2">
-                                        <div className="flex items-center gap-2">
-                                            <span className="text-base font-medium text-gray-800 max-md:text-sm">{titleValue}</span>
+                                        <div className="flex items-center gap-2 max-xl:flex-col max-xl:items-start">
+                                            <span className={`text-base font-medium text-gray-800 max-md:text-sm ${tagValue ? 'break-words max-xl:w-60  max-lg:w-[180px] max-md:w-[130px]': ''}`}>{titleValue}</span>
                                             {tagValue && <span className="rounded-2xl text-zinc-500 border-gray-300 border p-1 w-10 h-6 flex items-center justify-center text-xs">{tagValue}</span>}
                                         </div>
 
                                         {cardsConfig.status && cardsConfig.showBelow && statusValue && (
-                                            <StatusBadge status={statusValue} className="md:hidden" />
+                                            <StatusBadge status={statusValue} className="xl:hidden" />
                                         )}
                                     </div>
 
@@ -329,7 +329,7 @@ const ListOFCards = ({ cardsConfig, cardsData, isProducts = false, cardClick = f
                                             <h3 className="font-medium text-sm text-gray-500 max-md:text-[13px]">{subTitleValue}</h3>
 
                                             {cardsConfig.status && !cardsConfig.showBelow && statusValue && (
-                                                <StatusBadge status={statusValue} className="md:hidden" />
+                                                <StatusBadge status={statusValue} className="xl:hidden" />
                                             )}
                                         </div>
                                     )}
@@ -338,7 +338,7 @@ const ListOFCards = ({ cardsConfig, cardsData, isProducts = false, cardClick = f
 
                             <div className="flex items-center">
                                 {cardsConfig.status && statusValue && (
-                                    <StatusBadge status={statusValue} className="hidden md:flex" />
+                                    <StatusBadge status={statusValue} className="hidden xl:flex" />
                                 )}
 
                                 {!!cardsConfig.menuOptions?.length && canView && (
@@ -382,7 +382,7 @@ const ListOFCards = ({ cardsConfig, cardsData, isProducts = false, cardClick = f
                                             className="flex justify-between md:block md:mb-3"
                                         >
                                             <p className="text-gray-500 mb-1 text-sm">{t(field.label)}</p>
-                                            <p className="font-medium text-gray-900 text-sm">{(value || value === 0) ? value : "N/A"}</p>
+                                            <p className="font-medium text-gray-900 text-sm break-words">{(value || value === 0) ? value : "N/A"}</p>
                                         </div>
                                     );
                                 })}

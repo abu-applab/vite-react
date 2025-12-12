@@ -590,7 +590,7 @@ const ApplicationPage = () => {
                                     (companies?.length > 0 ?
                                         <EmptyRequest title='no_applications_found' description="havent_submitted_application_yet" buttonText="submit_new_applications" onNewRequest={() => setCreateNewApplication(true)} />
                                         :
-                                        <EmptyRequest title='no_companies_found' description="no_companies_found_desc" descriptionParams={{ entity: t('applications') }} buttonText="add_new_company" />
+                                        <EmptyRequest title='no_companies_found' description="no_companies_found_desc" descriptionParams={{ entity: t('applications') }} buttonText="add_new_company" onNewRequest={() => navigate('/portal/add-new-company')} />
                                     )
                                     :
                                     <>

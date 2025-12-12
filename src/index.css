@@ -36,6 +36,8 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  --breakpoint-ms: 840px;
+  --breakpoint-lg: 1025px;
   --font-inter: 'Inter', 'sans-serif';
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);

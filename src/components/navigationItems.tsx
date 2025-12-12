@@ -49,8 +49,8 @@ export function NavigationBar() {
     }
 
     // For home, only exact match
-    if (href === "/portal" ) {
-      return currentPathname === href ||  homeChildRoutes.includes(currentPathname);
+    if (href === "/portal") {
+      return currentPathname === href || homeChildRoutes.includes(currentPathname);
     }
 
     // For other routes (payments, allocated-plots, agreements, bot-requests, bot-reports)
@@ -67,51 +67,53 @@ export function NavigationBar() {
   };
 
   return (
-    <div className="flex flex-row justify-between h-14 lg:px-[68px] md:px-6 w-full border-b-2 overflow-auto">
-      {navigationItems.map((item) => {
-        if (item.children) {
-          return (
-            <DropdownMenu
-              key={item.name}
-              open={openDropdown === item.name}
-              onOpenChange={(open) => setOpenDropdown(open ? item.name : null)}
-            >
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  className={`h-full m-0 p-0 px-4 rounded-b-none hover:text-[#852533] hover:bg-[#f6f5ef] ${isActiveNavItem(item, pathName) && "h-14 border-b-4 border-b-[#852533] text-[#852533]"
-                    }`}
-                >
-                  <item.icon className="h-5 w-5" />
-                  <span>{t(item.name)}</span>
-                  <ChevronDown className="h-4 w-4 ml-1" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-56">
-                {item.children.map((option) => (
-                  <DropdownMenuItem key={option.name} onClick={() => handleNavigation(option.href)} className="cursor-pointer" disabled={!!option.disable}>
-                    {t(option.name)}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          )
-        }
+    <div className="lg:px-[68px] md:px-6 w-full border-b-2">
+      <div className="flex flex-row justify-between h-14 w-full overflow-auto">
+        {navigationItems.map((item) => {
+          if (item.children) {
+            return (
+              <DropdownMenu
+                key={item.name}
+                open={openDropdown === item.name}
+                onOpenChange={(open) => setOpenDropdown(open ? item.name : null)}
+              >
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    className={`h-full m-0 p-0 px-4 rounded-b-none hover:text-[#852533] hover:bg-[#f6f5ef] ${isActiveNavItem(item, pathName) && "h-14 border-b-4 border-b-[#852533] text-[#852533]"
+                      }`}
+                  >
+                    <item.icon className="h-5 w-5" />
+                    <span>{t(item.name)}</span>
+                    <ChevronDown className="h-4 w-4 ml-1" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="w-56">
+                  {item.children.map((option) => (
+                    <DropdownMenuItem key={option.name} onClick={() => handleNavigation(option.href)} className="cursor-pointer" disabled={!!option.disable}>
+                      {t(option.name)}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )
+          }
 
-        return (
-          <Button
-            key={item.name}
-            variant="ghost"
-            className={`h-full m-0 p-0 px-4 rounded-b-none hover:text-[#852533] hover:bg-[#f6f5ef] cursor-pointer ${isActiveNavItem(item, pathName) ? "h-14 border-b-4 border-b-[#852533] text-[#852533]" : ""
-              }`}
-            onClick={() => navigate(item.href)}
-            disabled={!!item.disable}
-          >
-            <item.icon className="h-5 w-5" />
-            <span>{t(item.name)}</span>
-          </Button>
-        )
-      })}
+          return (
+            <Button
+              key={item.name}
+              variant="ghost"
+              className={`h-full m-0 p-0 px-4 rounded-b-none hover:text-[#852533] hover:bg-[#f6f5ef] cursor-pointer ${isActiveNavItem(item, pathName) ? "h-14 border-b-4 border-b-[#852533] text-[#852533]" : ""
+                }`}
+              onClick={() => navigate(item.href)}
+              disabled={!!item.disable}
+            >
+              <item.icon className="h-5 w-5" />
+              <span>{t(item.name)}</span>
+            </Button>
+          )
+        })}
+      </div>
     </div>
   )
 }

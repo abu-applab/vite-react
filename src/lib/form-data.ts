@@ -1742,11 +1742,11 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
 
                                 {
                                     id: "Documents.MaterialSafetyDataSheets",
-                                    label: "material_safety_date_sheets",
+                                    label: "material_safety_data_sheets",
                                     type: "file",
                                     required: true,
                                     fileName: "Material Safety Data Sheets",
-                                    tooltip: 'material_safety_date_sheets_tooltip'
+                                    tooltip: 'material_safety_data_sheets_tooltip'
                                 },
                                 {
                                     id: "Documents.FinancialCapacityProofToExecuteTheProject",
@@ -2018,14 +2018,14 @@ export function getCommonFormConfig(formType: string): FormConfig {
                             {
                                 id: "box",
                                 label: "PO Box",
-                                type: "text",
+                                type: "number",
                                 required: true,
                                 placeholder: "",
                             },
                             {
                                 id: "telephone",
                                 label: "Telephone",
-                                type: "text",
+                                type: "number",
                                 required: true,
                                 placeholder: "30321867",
                             },
