@@ -80,7 +80,7 @@ export function NavigationBar() {
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant="ghost"
-                    className={`h-full m-0 p-0 px-4 rounded-b-none hover:text-[#852533] hover:bg-[#f6f5ef] ${isActiveNavItem(item, pathName) && "h-14 border-b-4 border-b-[#852533] text-[#852533]"
+                    className={`h-full m-0 p-0 px-4 rounded-b-none hover:text-[#852533] hover:bg-[#f6f5ef] ${isActiveNavItem(item, pathName) && "h-14 border-b-2 border-b-[#852533] text-[#852533]"
                       }`}
                   >
                     <item.icon className="h-5 w-5" />
@@ -103,7 +103,7 @@ export function NavigationBar() {
             <Button
               key={item.name}
               variant="ghost"
-              className={`h-full m-0 p-0 px-4 rounded-b-none hover:text-[#852533] hover:bg-[#f6f5ef] cursor-pointer ${isActiveNavItem(item, pathName) ? "h-14 border-b-4 border-b-[#852533] text-[#852533]" : ""
+              className={`h-full m-0 p-0 px-4 rounded-b-none hover:text-[#852533] hover:bg-[#f6f5ef] cursor-pointer ${isActiveNavItem(item, pathName) ? "h-14 border-b-2 border-b-[#852533] text-[#852533]" : ""
                 }`}
               onClick={() => navigate(item.href)}
               disabled={!!item.disable}

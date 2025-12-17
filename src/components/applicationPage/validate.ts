@@ -128,6 +128,10 @@ interface FieldConfig {
           if (err) newErrors[field.id] = "This field cannot contain Arabic numerals";
         }
 
+        if (field.type === "number" &&  value !== "" && (Number(value) < 0)) {
+          newErrors[field.id] = `${t(field.label)} cannot be negative`;
+        }
+
         const maximum15digits = [
           "totalRequestedPlotSize",
           "constructionCost", 

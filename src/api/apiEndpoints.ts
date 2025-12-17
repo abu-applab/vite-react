@@ -26,11 +26,10 @@ export const API_ENDPOINTS = {
   signUp: "/RegistrationAndLogin/signup",
   validateApi: "/RegistrationAndLogin/validate-otp",
   resendOtp: "/RegistrationAndLogin/resend-otp",
-
   forgotpassword: "/RegistrationAndLogin/requestPasswordReset",
   resetPassword: "/RegistrationAndLogin/resetPassword",
-
-  addNewCompany: "/WebApp/addNewCompany"
+  associatenewcompany: "/WebApp/associatenewcompany",
+  getcompanybyCRno: "/WebApp/getcompanybyCRno",
 }
 
 export const API_SERVICES_ENDPOINTS = {

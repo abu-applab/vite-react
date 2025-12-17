@@ -369,6 +369,7 @@
     "stay": "Stay",
     "no_companies_found": "No Companies Found",
     "no_companies_found_desc": "Please add a company in order to access your {{entity}}",
+    "no_companies_found_description": "Please click the below button to add your company details",
     "services": "services",
     "violation": "Violation",
     "if_applicable": "(if applicable)",
@@ -377,5 +378,11 @@
     "are_you_sure_to_save_as_draft": "Are you sure you want to save the application as draft?",
     "confirm_save": "Confirm Save ?",
     "all_global_units": "All global units (kg, sq m, etc.)",
+    "bot_request": "Bot Request",
+    "add_new_bot_request": "Add New Bot Request",
+    "add_new_bot_reports": "Add New Bot Reports",
+    "view_companies":"View Companies",
+    "company_added":"Company Added",
+    "company_added_successfully":"Company Added Successfully",
     "":""
 }

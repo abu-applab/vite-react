@@ -1,16 +1,16 @@
 import { Card, CardContent } from '../ui/card'
 import { Button } from '../ui/button'
-import { ChevronsUpDown, Plus, Search, X } from 'lucide-react'
+import { ChevronsUpDown, Search, X } from 'lucide-react'
 import { Input } from '../ui/input'
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { useState} from 'react'
+import { useState } from 'react'
 import { useApp } from '@/context/AppContext'
 import { useTranslation } from 'react-i18next'
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
 import { Command } from 'cmdk'
 import { CommandGroup, CommandItem, CommandList } from '../ui/command'
 import { Checkbox } from '../ui/checkbox'
-import { useNavigate } from 'react-router-dom'
+import AddNewCompanyButton from '../addNewCompany/addNewCompanyButton'
 
 interface WelcomeHeaderProps {
     totalCompanies: number
@@ -28,7 +28,6 @@ const WelcomeHeader = ({ totalCompanies, currentCompanies }: WelcomeHeaderProps)
     const [searchText, setSearchText] = useState("");
     const { setCompaniesFilter, companiesFilter, contact } = useApp();
     const { t } = useTranslation();
-    const navigate = useNavigate();
 
     const fullName = `${contact?.firstName} ${contact?.lastName}`
     const initials = `${contact?.firstName.charAt(0)}${contact?.lastName.charAt(0)}`.toUpperCase();
@@ -50,11 +49,7 @@ const WelcomeHeader = ({ totalCompanies, currentCompanies }: WelcomeHeaderProps)
                             <p className="text-sm text-gray-600">{t('Stay_informed_desc')}</p>
                         </div>
                     </div>
-                    <Button className="bg-maroon-100 hover:bg-maroon-100 hover:text-white max-md:w-full cursor-pointer" 
-                    onClick={() => navigate('/portal/add-new-company')}>
-                        <Plus className="h-4 w-4 mr-2" />
-                        {t('add_new_company')}
-                    </Button>
+                    <AddNewCompanyButton />
                 </div>
                 <div className="flex flex-row items-center gap-3">
                     <div className="relative flex-1">

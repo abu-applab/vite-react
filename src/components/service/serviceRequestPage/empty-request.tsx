@@ -3,6 +3,7 @@ import documentsLogo from '../../../assets/images/documents.svg'
 // import { useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
+import AddNewCompanyButton from '@/components/addNewCompany/addNewCompanyButton';
 
 interface EmptyRequestProps {
   onNewRequest?: () => void
@@ -28,13 +29,16 @@ export const EmptyRequest = ({ onNewRequest, hideButton = false, title = '', des
         </p>}
       </div>
       {!hideButton && (<div className='flex flex-col gap-3'>
-        <Button
-          type='button'
-          className='py-2 px-4 bg-maroon-100 hover:bg-[#7A1F2B] h-10 text-sm font-medium text-primary-foreground cursor-pointer'
-          onClick={() => onNewRequest!()}
-        >
-          {t(buttonText)}
-        </Button>
+        {buttonText === 'add_new_company' ?
+          <AddNewCompanyButton hideIcon={true} />
+          : <Button
+            type='button'
+            className='py-2 px-4 bg-maroon-100 hover:bg-[#7A1F2B] h-10 text-sm font-medium text-primary-foreground cursor-pointer'
+            onClick={() => onNewRequest!()}
+          >
+            {t(buttonText)}
+          </Button>
+        }
         {/* <Button
           type='button'
           variant='ghost'

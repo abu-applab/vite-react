@@ -108,11 +108,11 @@ const HubPage = () => {
               {filteredCompanies?.length > 4 && <CustomPagination handlePageChange={handlePageChange} currentPage={companiesFilter?.page} totalPages={totalPages} />}
             </>
             :
-            <EmptyRequest hideButton={true} title={'No Companies Found'} />}
+            <EmptyRequest hideButton={true} title={'no_companies_found'} />}
         </>
       )
         :
-        <EmptyRequest title='No Companies Found' description="Please click the below button to add your company details" buttonText="Add New Company" />
+        <EmptyRequest title='no_companies_found' description="no_companies_found_description" buttonText="add_new_company" />
       }
     </div>
   )

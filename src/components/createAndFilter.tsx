@@ -29,9 +29,18 @@ interface CreateAndFilterProps {
   setAppliedFilter: any
   disableStatus?: boolean
   hideFilters?: boolean
+  hideStatus?: boolean
 }
 
-export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, setAppliedFilter, disableStatus = false, hideFilters = false }: CreateAndFilterProps) => {
+export const CreateAndFilter = ({ 
+  onNewRequest, 
+  filterConfig, 
+  appliedFilter, 
+  setAppliedFilter, 
+  disableStatus = false, 
+  hideFilters = false,
+  hideStatus = false,
+}: CreateAndFilterProps) => {
   const { companies, selectedCompany, setSelectedCompany } = useApp()
   const [searchText, setSearchText] = useState("");
   const { t } = useTranslation();
@@ -165,7 +174,7 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, set
           >
             <Plus className="h-5 w-5" />
           </Button>}
-          <Popover>
+          {!hideStatus && <Popover>
             <PopoverTrigger asChild className="cursor-pointer">
               <Button
                 size="icon"
@@ -221,7 +230,7 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, set
                 </CommandList>
               </Command>
             </PopoverContent>
-          </Popover>
+          </Popover>}
 
         </div>
 
@@ -387,7 +396,7 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, set
               })}
             </SelectContent>
           </Select>
-          <Popover>
+          {!hideStatus && <Popover>
             <PopoverTrigger asChild className="text-zinc-900 cursor-pointer">
               <Button
                 variant="outline"
@@ -454,7 +463,7 @@ export const CreateAndFilter = ({ onNewRequest, filterConfig, appliedFilter, set
                 </CommandList>
               </Command>
             </PopoverContent>
-          </Popover>
+          </Popover>}
           {(appliedFilter?.status || appliedFilter?.searchTerm || appliedFilter?.typeOfApplication) && (
             <Button
               variant="ghost"

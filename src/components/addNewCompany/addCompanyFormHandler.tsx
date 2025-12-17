@@ -1,36 +1,35 @@
 import { AddNewCompanyFormConfig } from "@/lib/form-data";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import DynamicForm from "../dynamic-form";
 import useNetworkRequest from "@/api/useNetworkRequest";
 import Loader from "../loader";
-import { useTranslation } from "react-i18next";
 import { RequestSubmittedModal } from "../service/createNewRequest/requestSubmittedModal";
 import { API_ENDPOINTS } from "@/api/apiEndpoints";
-import { isValidPhone, isValidPOBox, parseApiError } from "@/lib/utils";
-
-interface Document {
-    fileBytes: string;
-    fileName: string;
-    mimeType: string;
-}
+import { parseApiError } from "@/lib/utils";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useApp } from "@/context/AppContext";
 
 interface FormState {
-    closureComments: string;
-    rootCause: string;
-    remedialActionCorrection: string;
-    correctiveActionPlan: string;
-    documents: Document[];
+    companyNameEN: string;
+    companyNameAR: string;
+    crNumber: string;
+    telephone: string;
+    poBox: string;
+    address: string;
 }
 
 const initialFormState: FormState = {
-    closureComments: "",
-    rootCause: "",
-    remedialActionCorrection: "",
-    correctiveActionPlan: "",
-    documents: [],
+    companyNameEN: "",
+    companyNameAR: "",
+    crNumber: "",
+    telephone: "",
+    poBox: "",
+    address: ""
 };
 
 export const AddCompanyFormHandler = () => {
+    const { state } = useLocation();
+    const companyData = state?.companyData ?? null;
     const [formState, setFormState] = useState<Record<string, any>>({ ...initialFormState });
     const [formConfig, _setFormConfig] = useState(AddNewCompanyFormConfig)
     const [errors, setErrors] = useState<Record<string, string>>({});
@@ -40,7 +39,31 @@ export const AddCompanyFormHandler = () => {
     const [isSubmittedModalOpen, setSubmittedModal] = useState(false);
     const [referenceMessage, setReferenceMessage] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
-    const { t } = useTranslation();
+    const { contact, fetchCompanies } = useApp()
+    const navigate = useNavigate();
+
+    const mapCompanyDataToFormState = (companyData: any) => {
+        if (!companyData) return initialFormState;
+        return {
+          ...initialFormState,
+          companyNameEN: companyData.companyNameEN ?? '',
+          companyNameAR: companyData.companyNameAR ?? '',
+          crNumber: companyData.crNumber ?? '',
+          poBox: companyData.poBox ?? '',
+          telephone: companyData.telephone ?? '',
+          companyId: companyData.companyId ?? '',
+          address: companyData.address ?? '',
+        };
+      };
+      
+
+    useEffect(() => {
+        if (companyData) {
+          const mappedState = mapCompanyDataToFormState(companyData);
+          setFormState(mappedState);
+        }
+      }, [companyData]);
+  
 
     const handleInputChange = (fieldId: string, value: any) => {
         setFormState((prev) => ({ ...prev, [fieldId]: value }));
@@ -49,28 +72,23 @@ export const AddCompanyFormHandler = () => {
 
     const handleSubmit = async (e?: React.FormEvent) => {
         e?.preventDefault();
-
-        const newErrors = validateForm(formState, formConfig, t);
-        setErrors(newErrors);
-
-        if (Object.keys(newErrors).length > 0) {
-            const firstErrorField = Object.keys(newErrors)[0];
-            fieldRefs.current[firstErrorField]?.scrollIntoView({ behavior: "smooth", block: "center" });
-            fieldRefs.current[firstErrorField]?.focus({ preventScroll: true });
-            return;
+        const body = {
+            ...formState,
+            contactId: contact?.id ?? '', 
         }
-        const body = { ...formState }
         try {
             setIsLoading(true);
-
-            const response = await networkRequest(API_ENDPOINTS.addNewCompany, {
+            
+            const response = await networkRequest(API_ENDPOINTS.associatenewcompany, {
                 method: "POST",
                 body,
             });
-
-            if (response.success) setReferenceMessage(response.message);
-
-            //   setSubmittedModal(true);
+            
+            if (response.success) {
+                setReferenceMessage(response.message);
+                await fetchCompanies()
+                setSubmittedModal(true);
+            } 
         } catch (error) {
             setErrorMessage(parseApiError(error));
             setIsLoading(false);
@@ -80,9 +98,15 @@ export const AddCompanyFormHandler = () => {
         }
     };
 
-    const handleTryAgain = () => { }
+    const handleTryAgain = () => { 
+        setSubmittedModal(false);
+        handleSubmit() 
+    }
 
-    const onBack = () => { }
+    const onBack = () => {
+        setSubmittedModal(false);
+        navigate('/portal')
+     }
 
     return (
         <div>
@@ -103,9 +127,9 @@ export const AddCompanyFormHandler = () => {
                 referenceMessage={referenceMessage}
                 handleTryAgain={handleTryAgain}
                 errorMessage={errorMessage}
-                buttonText="view_violation_report"
-                title="violation_updated_successfully"
-                heading="violation_updated"
+                buttonText="view_companies"
+                title="company_added_successfully"
+                heading="company_added"
             />
 
             {isLoading && <Loader />}
@@ -113,34 +137,34 @@ export const AddCompanyFormHandler = () => {
     )
 }
 
-const validateForm = (
-    formState: Record<string, any>,
-    formConfig: any,
-    t: any
-) => {
-    const errors: Record<string, string> = {};
+// const validateForm = (
+//     formState: Record<string, any>,
+//     formConfig: any,
+//     t: any
+// ) => {
+//     const errors: Record<string, string> = {};
 
-    // Loop through all sections & fields
-    formConfig.sections.forEach((section: any) => {
-        section.fields.forEach((field: any) => {
-            const { id, required } = field;
-            const value = formState[id];
+//     // Loop through all sections & fields
+//     formConfig.sections.forEach((section: any) => {
+//         section.fields.forEach((field: any) => {
+//             const { id, required } = field;
+//             const value = formState[id];
 
-            // Required field validation
-            if (required && (!value || String(value).trim() === "")) {
-                errors[id] = `${t(field.label)} is required`;
-                return;
-            }
-            if (id === "poBox" && value && !isValidPOBox(value)) {
-                errors[id] = "Must contain 5 to 8 digits."
-            }
-            if (field.label === "telephone" && value && !isValidPhone(value)) {
-                errors[id] = "Must contain exactly 8 digits."
-            }
-        });
-    });
+//             // Required field validation
+//             if (required && (!value || String(value).trim() === "")) {
+//                 errors[id] = `${t(field.label)} is required`;
+//                 return;
+//             }
+//             if (id === "poBox" && value && !isValidPOBox(value)) {
+//                 errors[id] = "Must contain 5 to 8 digits."
+//             }
+//             if (field.label === "telephone" && value && !isValidPhone(value)) {
+//                 errors[id] = "Must contain exactly 8 digits."
+//             }
+//         });
+//     });
 
-    return errors;
-};
+//     return errors;
+// };
 
 

@@ -1,3 +1,6 @@
+import { API_ENDPOINTS } from "@/api/apiEndpoints";
+import useNetworkRequest from "@/api/useNetworkRequest";
+import { PAGE_SIZE } from "@/constants";
 import { getLocalStorageItem } from "@/lib/utils";
 import React, { createContext, useContext, useState, useEffect, type ReactNode } from "react";
 
@@ -93,6 +96,7 @@ interface AppContextType {
   setViolationFilter: React.Dispatch<React.SetStateAction<ViolationFilter>>;
   locations: Locations[];
   setLocations: React.Dispatch<React.SetStateAction<Locations[]>>;
+  fetchCompanies: (signal?: AbortSignal) => Promise<void>;
 }
 
 // Create context
@@ -105,6 +109,7 @@ interface AppProviderProps {
 
 // Provider
 export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
+  const networkRequest = useNetworkRequest();
 
   const storedContact = getLocalStorageItem("contact");
   const initialContact: Contact | null = storedContact ? JSON.parse(storedContact) : null;
@@ -167,6 +172,42 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const [applicationFilter, setApplicationFilter] = useState<ApplicationFilter>({ page: 1 })
   const [applicationDraftFilter, setApplicationDarftFilter] = useState<ApplicationFilter>({ page: 1, status: '939330004' })
 
+  const fetchCompanies = async (signal?: AbortSignal) => {
+    if (!contact?.id) return;
+  
+    const body = { contactId: contact.id };
+  
+    try {
+      const response = await networkRequest(API_ENDPOINTS.getCompanies, {
+        method: "GET",
+        body,
+        signal,
+      });
+  
+      if (signal?.aborted) return;
+  
+      const companyList = response?.data?.[0]?.companies || [];
+  
+      setCompanies(companyList);
+  
+      if (companyList.length > 0) {
+        setSelectedCompany((prev) => prev ?? companyList[0]);
+        setCompaniesFilter((prev) => ({
+          ...prev,
+          totalPages: Math.ceil(companyList.length / PAGE_SIZE),
+        }));
+      }
+    } catch (error: any) {
+      if (signal?.aborted) return;
+  
+      console.error("Failed to fetch companies:", error);
+  
+      // Optional: centralize error handling
+      throw error; // 👈 let caller decide (PortalLayout / AddCompanyFormHandler)
+    }
+  };
+  
+
 
   return (
     <AppContext.Provider value={{
@@ -196,6 +237,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
       setViolationFilter,
       locations,
       setLocations,
+      fetchCompanies,
     }}>
       {children}
     </AppContext.Provider>
