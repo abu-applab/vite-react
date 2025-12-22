@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { CirclePlus, Factory, Plus } from "lucide-react";
+import { CircleAlert, CirclePlus, Factory, Plus } from "lucide-react";
 import { Button } from "./ui/button";
 import { Card } from "./ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
@@ -10,11 +10,11 @@ import ListOFCards from "./listOfcards";
 import { useProductConfigLoader } from "@/hooks/useProductConfigLoader";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
 
 const initialProduct = {
     nameOfProduct: "",
     annualProductionCapacity: "",
-    quantity: "",
     hsCode: "",
     hsCodeName: "",
     sourceOfRawMaterials: "",
@@ -46,19 +46,13 @@ const validateProductForm = (form: Product) => {
     // Annual Production Capacity: required, numeric, max 15 digits, > 0
     if (!form.annualProductionCapacity) {
         errors.annualProductionCapacity = "Annual Production Capacity is required";
-    } else if (form.annualProductionCapacity.length > 15 || !/^\d{1,15}$/.test(form.annualProductionCapacity)) {
+    } else if (!/^\d{1,15}$/.test(form.annualProductionCapacity)) {
         errors.annualProductionCapacity = "Maximum 15 digits allowed";
     } else if (Number(form.annualProductionCapacity) === 0) {
         errors.annualProductionCapacity = "Value cannot be zero";
     }
-
-    // Quantity: same as above
-    if (!form.quantity) {
-        errors.quantity = "Quantity is required";
-    } else if (form.quantity.length > 15 || !/^\d{1,15}$/.test(form.quantity)) {
-        errors.quantity = "Maximum 15 digits allowed";
-    } else if (Number(form.quantity) === 0) {
-        errors.quantity = "Value cannot be zero";
+    else if (Number(form.annualProductionCapacity) < 0) {
+        errors.annualProductionCapacity = "Value cannot be negative";
     }
 
     // Source of Raw Materials: required, max 100 chars, not only digits
@@ -77,8 +71,9 @@ const validateProductForm = (form: Product) => {
     // Unit: same validation as numeric fields
     if (!form.units) {
         errors.units = "Unit is required";
-    } else if (form.units.length > 15 || !/^\d{1,15}$/.test(form.units)) {
-        errors.units = "Maximum 15 digits allowed";
+    }
+    else if (!/^[a-zA-Z0-9 _-]+$/.test(form.units)) {
+        errors.units = "Only letters, numbers, spaces, hyphens, and underscores are allowed";
     }
 
     // HS Code required
@@ -92,9 +87,8 @@ const validateProductForm = (form: Product) => {
 const productFields = [
     { label: "name_of_product", key: "nameOfProduct" },
     { label: "annual_production_capacity", key: "annualProductionCapacity", type: "number" },
-    { label: "quantity", key: "quantity", type: "number" },
     { label: "source_of_raw_materials", key: "sourceOfRawMaterials" },
-    { label: "unit", key: "units", type: "number" },
+    { label: "unit", key: "units"},
 ]
 
 const ProductInformation = ({ products, setProducts, isError, isSubmittedApplication = false }: ProductInformationProps) => {
@@ -211,7 +205,6 @@ const ProductInformation = ({ products, setProducts, isError, isSubmittedApplica
         title: "nameOfProduct",
         fields: [
             { label: "annual_production_capacity", key: "annualProductionCapacity" },
-            { label: "quantity", key: "quantity" },
             { label: "hs_code", key: "hsCodeName" },
             { label: "source_of_raw_materials", key: "sourceOfRawMaterials" },
             { label: "unit", key: "units" },
@@ -278,7 +271,25 @@ const ProductInformation = ({ products, setProducts, isError, isSubmittedApplica
                     <div className="grid md:grid-cols-2 grid-cols-1 gap-4 p-6">
                         {productFields.map(({ label, key, type }) => (
                             <div key={key} className="flex flex-col gap-2">
-                                <Label>{t(label)}</Label>
+                                <Label className="gap-0">
+                                    {t(label)}
+                                    <span className="text-destructive">*</span>
+                                    {key === 'units' && (
+                                            <TooltipProvider>
+                                                <Tooltip>
+                                                    <TooltipTrigger asChild>
+                                                        <CircleAlert className="w-4 h-4 text-gray-400 cursor-help ml-1" />
+                                                    </TooltipTrigger>
+                                                    <TooltipContent
+                                                        className="text-gray-900 bg-white p-3 rounded-lg max-w-xs shadow-lg border border-gray-200 data-[side=bottom]:fill-white data-[side=top]:fill-white data-[side=left]:fill-white data-[side=right]:fill-white"
+                                                        sideOffset={3}
+                                                    >
+                                                        <p className="text-sm font-normal leading-5">{t('all_global_units')}</p>
+                                                    </TooltipContent>
+                                                </Tooltip>
+                                            </TooltipProvider>
+                                        )}
+                                </Label>
                                 <Input
                                     type={type || "text"}
                                     value={productForm[key as keyof Product]}

@@ -289,6 +289,7 @@ const AddNewApplication = ({ selectedApplication,
   }, [selectedApplication, id, selectedInvestment?.status])
 
   // handling this state to show whether it's for view or create new service 
+  // Need to check is this really requirred
   useEffect(() => {
     return () => {
       setSelectedInvestment(null)
@@ -361,7 +362,6 @@ const AddNewApplication = ({ selectedApplication,
       })
     );
 
-    console.log('productsChanged: ', productsChanged);
     return formChanged || productsChanged;
   }, [formState, initialFormState, products, initialProducts]);
 
@@ -568,7 +568,7 @@ const AddNewApplication = ({ selectedApplication,
 
       body.append('location', locationValue);
 
-      const transformedProducts = products?.map(({ id, hsCodeName, ...rest }: any) => rest);
+      const transformedProducts = products?.map(({ id, hsCodeName, quantity, ...rest }: any) => rest);
 
       if (transformedProducts.length > 0) {
         body.append('ProductsJson', JSON.stringify(transformedProducts));
@@ -687,7 +687,7 @@ const AddNewApplication = ({ selectedApplication,
 
       body.append('location', locationValue);
 
-      const transformedProducts = products?.map(({ id, hsCodeName, ...rest }: any) => rest);
+      const transformedProducts = products?.map(({ id, hsCodeName, quantity, ...rest }: any) => rest);
 
       if (transformedProducts.length > 0) {
         body.append('ProductsJson', JSON.stringify(transformedProducts));
