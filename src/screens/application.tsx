@@ -568,7 +568,7 @@ const ApplicationPage = () => {
         !loading;
 
     return (
-        <div className="">
+        <div className="flex-1">
             {/* Header */}
             {/* <PageHeader header={header} customTitle={id ? 'submitted_application' : ''} /> */}
             <Breadcrumb items={breadcrumbs} />

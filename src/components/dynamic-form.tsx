@@ -185,7 +185,7 @@ const DynamicForm = ({
                     typeof option !== "string" && option.disabled;
                   return (
                     <SelectItem key={key} value={key} disabled={!!isOptionDisabled}>
-                      {value}
+                      {t(value)}
                     </SelectItem>
                   )
                 })}
@@ -591,7 +591,7 @@ const DynamicForm = ({
                             {field.subTitle && <h4 className=" text-maroon-100 max-md:ml-4 mb-3 col-span-full">{t(field.subTitle)}</h4>}
                             <div
                               key={field.id}
-                              className={["textarea"].includes(field.type) ? "md:col-span-2" : ""}
+                              className={(["textarea"].includes(field.type)|| field?.span === 'full') ? "md:col-span-2" : ""}
                             >
                               {renderField(field)}
                             </div>

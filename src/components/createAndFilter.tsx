@@ -1,4 +1,4 @@
-import { Building2, ChevronsUpDown, CirclePlus, ListFilter, Plus, Search, X } from "lucide-react"
+import { Building2, ChevronsUpDown, CirclePlus, Funnel, ListFilter, Plus, Search, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -15,6 +15,7 @@ interface FilterKeys {
   createNewRequest?: string,
   filterTypes: { id: string, value: string }[]
   applicationFilter?: { id: string, value: string, icon: any }[]
+  sortBy?: { id: string, value: string }[]
 }
 
 interface CreateAndFilterProps {
@@ -25,19 +26,22 @@ interface CreateAndFilterProps {
     status?: string,
     typeOfApplication?: string
     searchTerm?: string
+    /*******  ====================  Fix this =============================== *******/
+    sortBy?: string
   }
   setAppliedFilter: any
   disableStatus?: boolean
   hideFilters?: boolean
   hideStatus?: boolean
+
 }
 
-export const CreateAndFilter = ({ 
-  onNewRequest, 
-  filterConfig, 
-  appliedFilter, 
-  setAppliedFilter, 
-  disableStatus = false, 
+export const CreateAndFilter = ({
+  onNewRequest,
+  filterConfig,
+  appliedFilter,
+  setAppliedFilter,
+  disableStatus = false,
   hideFilters = false,
   hideStatus = false,
 }: CreateAndFilterProps) => {
@@ -55,7 +59,7 @@ export const CreateAndFilter = ({
         <Card className="flex flex-col gap-4 lg:hidden p-4">
           <h2 className="text-lg leading-7 font-medium text-card-foreground">{filterConfig.title}</h2>
           <div className="flex flex-row gap-3">
-          <Select
+            <Select
               value={selectedCompany?.accountID || ''}
               onValueChange={(value) => {
                 const selectedValue = companies.find((company: CompanyType) => company.accountID === value)
@@ -238,11 +242,11 @@ export const CreateAndFilter = ({
         <div className="flex flex-row gap-3">
           {filterConfig?.applicationFilter && filterConfig?.applicationFilter?.length > 0 &&
             <Select
-            value={appliedFilter?.typeOfApplication || ''}
-            onValueChange={(value) => {
-              setAppliedFilter({ ...appliedFilter, page: 1, typeOfApplication: value })
-            }}
-          >
+              value={appliedFilter?.typeOfApplication || ''}
+              onValueChange={(value) => {
+                setAppliedFilter({ ...appliedFilter, page: 1, typeOfApplication: value })
+              }}
+            >
               <SelectTrigger className="bg-background data-[placeholder]:text-foreground flex-1 min-w-[100px] cursor-pointer">
                 <SelectValue placeholder={t("application_type")} />
               </SelectTrigger>
@@ -256,14 +260,14 @@ export const CreateAndFilter = ({
               </SelectContent>
             </Select>
           }
-            <Select
-              value={selectedCompany?.accountID || ''}
-              onValueChange={(value) => {
-                const selectedValue = companies.find((company: CompanyType) => company.accountID === value)
-                selectedValue && setSelectedCompany(selectedValue)
-                setAppliedFilter({ ...appliedFilter, page: 1 })
-              }}
-            >
+          <Select
+            value={selectedCompany?.accountID || ''}
+            onValueChange={(value) => {
+              const selectedValue = companies.find((company: CompanyType) => company.accountID === value)
+              selectedValue && setSelectedCompany(selectedValue)
+              setAppliedFilter({ ...appliedFilter, page: 1 })
+            }}
+          >
             <SelectTrigger className="bg-background flex-1 min-w-[100px] cursor-pointer">
               <SelectValue />
             </SelectTrigger>
@@ -339,14 +343,14 @@ export const CreateAndFilter = ({
 
         </div>
         <div className="flex gap-2">
-          {filterConfig?.createNewRequest && 
-          <Button
-            className="text-zinc-900 bg-white hover:bg-gray-100 cursor-pointer font-medium"
-            onClick={onNewRequest}
-          >
-            <CirclePlus className="h-4 w-4 mr-2" />
-            {t(filterConfig.createNewRequest)}
-          </Button>}
+          {filterConfig?.createNewRequest &&
+            <Button
+              className="text-zinc-900 bg-white hover:bg-gray-100 cursor-pointer font-medium"
+              onClick={onNewRequest}
+            >
+              <CirclePlus className="h-4 w-4 mr-2" />
+              {t(filterConfig.createNewRequest)}
+            </Button>}
           {filterConfig?.applicationFilter && filterConfig?.applicationFilter?.length > 0 &&
             <Select
               value={appliedFilter?.typeOfApplication || ''}
@@ -464,6 +468,35 @@ export const CreateAndFilter = ({
               </Command>
             </PopoverContent>
           </Popover>}
+          {filterConfig?.sortBy && filterConfig.sortBy.length > 0 && (
+            <Select
+              value={appliedFilter?.sortBy || ""}
+              onValueChange={(value) => {
+                setAppliedFilter({
+                  ...appliedFilter,
+                  page: 1,
+                  sortBy: value,
+                })
+              }}
+            >
+              <SelectTrigger className="bg-background data-[placeholder]:text-foreground font-medium text-zinc-900 cursor-pointer">
+                <SelectValue placeholder={
+                  <>
+                    <Funnel className="text-zinc-900" />
+                    {t("sort_by")}
+                  </>
+                } />
+              </SelectTrigger>
+              <SelectContent>
+                {filterConfig?.sortBy?.map((sort: any) => (
+                  <SelectItem key={sort.id} value={sort.id}>
+                    {t(sort.value)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+
           {(appliedFilter?.status || appliedFilter?.searchTerm || appliedFilter?.typeOfApplication) && (
             <Button
               variant="ghost"

@@ -19,6 +19,7 @@ export interface FormField {
     hidden?: boolean
     tooltip?: string
     maxSize?: number
+    span?: string
 }
 
 export interface FormSection {
@@ -2477,3 +2478,61 @@ export const findingTypeRules = {
     },
 };
 
+
+export const botRequestFormConfig: {
+    title: string;
+    sections: {
+        title: string;
+        key?: string;
+        fields: FormField[];
+    }[];
+} = {
+    title: "",
+    sections: [
+        {
+            title: "finding_details",
+            fields: [
+                {
+                    id: "BotRequestCategory",
+                    label: "category",
+                    type: "select",
+                    options: [{id: 'RenewalofEnvironmentalPermit', name: 'renewal_of_environmental_permit'},
+                        {id: 'CommercialRelations', name: 'commercial_relations'},
+                        {id: 'NOCforLeasingwarehousespace', name: 'noc_for_leasin_ware_housespace'},
+                        {id: 'LegalSupport', name: 'legal_support'},
+                        {id: 'Other', name: 'other'},
+                    ],
+                    // options: [{id: '939330000', name: 'RenewalofEnvironmentalPermit'},
+                    //     {id: '939330001', name: 'CommercialRelations'},
+                    //     {id: '939330002', name: 'NOCforLeasingwarehousespace'},
+                    //     {id: '939330003', name: 'LegalSupport'},
+                    //     {id: '939330002', name: 'Other'},
+                    // ],
+                    required: true,
+                    span: 'full'
+                },
+                {
+                    id: "Description", 
+                    label: "description",
+                    type: "textarea",
+                    placeholder: "",
+                    required: true,
+                    min: 3,
+                    max: 100
+                },
+            ],
+        },
+        {
+            title: "required_documents",
+            fields: [
+                {
+                    id: "Attachment",
+                    label: "drop_your_file_here",
+                    type: "file",
+                    required: true,
+                    span: 'full'
+                },
+            ]
+        }
+    ],
+}

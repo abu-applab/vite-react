@@ -384,5 +384,18 @@
     "view_companies":"View Companies",
     "company_added":"Company Added",
     "company_added_successfully":"Company Added Successfully",
-    "":""
+    "year":"Year",
+    "month": "Month",
+    "priority": "Priority",
+    "sort_by": "Sort By",
+    "category": "Category",
+    "drop_your_file_here": "Drop your files here",
+    "renewal_of_environmental_permit": "Renewal of Environmental Permit",
+    "commercial_relations": "Commercial Relations",
+    "noc_for_leasin_ware_housespace": "NOC for Leasing ware housespace",
+    "legal_support": "LegalSupport",
+    "other": "Other",
+    "view_bot_request": "View Bot Request",
+    "bot_request_submitted": "Bot Request Submitted",
+    "bot_request_submitted_successfully": "Bot Request Submitted Successfully"
 }

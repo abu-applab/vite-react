@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Factory, FileSpreadsheet, Eye, Truck, CircleArrowRight, Trash2 } from "lucide-react"
+import { FileSpreadsheet, Eye, CircleArrowRight, Trash2 } from "lucide-react"
 import { useApp } from "@/context/AppContext";
 import { CreateAndFilter } from "@/components/createAndFilter";
 import useNetworkRequest from "@/api/useNetworkRequest";
@@ -12,10 +12,7 @@ import { EmptyRequest } from "@/components/service/serviceRequestPage/empty-requ
 import { PAGE_SIZE } from "@/constants";
 import { useTranslation } from "react-i18next";
 import Breadcrumb from "@/components/appBreadcrumb";
-
-interface BotRequestAndReportsProps {
-    selectedTab: string
-}
+import { BotRequestAndReportsFromHandler } from "@/components/botRequestAndReports/botRequestAndReportsFormHandler";
 
 const cardsConfigBase = {
     icon: FileSpreadsheet,
@@ -77,27 +74,8 @@ const tabs = [
     { id: 'botReports', label: 'bot_reports' },
 ];
 
-const filterKeys = {
-    title: 'Applications',
-    createNewRequest: 'create_new_applications',
-    filterTypes: [
-        { id: '939330000', value: 'submitted' },
-        { id: '939330001', value: 'review_in_progress' },
-        { id: '939330002', value: 'approved' },
-        { id: '939330003', value: 'Rejected' },
-        { id: '939330005', value: 'pending_submit_transfer' },
-        { id: '939330006', value: 'on_hold' },
-        { id: '939330007', value: 'cancelled' },
-        { id: '939330008', value: 'terminated' },
-    ],
-    applicationFilter: [
-        { id: '100000000', value: 'Industrial', icon: Factory },
-        { id: '100000001', value: 'Logistics', icon: Truck },
-    ]
-}
-
-const BotRequestAndReports = ({selectedTab}: BotRequestAndReportsProps) => {
-    const [activeTab, setActiveTab] = useState(selectedTab);
+const BotRequestAndReports = () => {
+    const [activeTab, setActiveTab] = useState("bot-requests");
     const [isCreateBotRequest, setCreateBotRequest] = useState(false);
     const [isCreateBotReports, setCreateBotReports] = useState(false);
     const {
@@ -116,6 +94,42 @@ const BotRequestAndReports = ({selectedTab}: BotRequestAndReportsProps) => {
     const navigate = useNavigate();
     const { id } = useParams();
     const { t } = useTranslation();
+
+    useEffect(() => {
+        const path = location.pathname;
+
+        if (path.includes("/portal/bot-requests")) {
+            // reverse mapping as requested
+            setActiveTab("botRequest");
+        } else if (path.includes("/portal/bot-reports")) {
+            setActiveTab("botReports");
+
+        }
+    }, [location.pathname]);
+
+    const filterKeys = useMemo(() => {
+        let filter = {
+            title: 'Applications',
+            createNewRequest: activeTab === 'botRequest' ? 'add_new_bot_request' : 'add_new_bot_reports',
+            filterTypes: [
+                { id: '939330000', value: 'RenewalofEnvironmentalPermit' },
+                { id: '939330001', value: 'CommercialRelations' },
+                { id: '939330002', value: 'NOCforLeasingwarehousespace' },
+                { id: '939330003', value: 'LegalSupport' },
+                { id: '939330002', value: 'Other' },
+            ],
+            ...(activeTab !== 'botRequest' && {
+                sortBy: [
+                    { id: '1', value: 'month' },
+                    { id: '2', value: 'year' },
+                    { id: '3', value: 'priority' },
+                    { id: '4', value: 'submitted_date' }
+                ],
+            })
+
+        }
+        return filter;
+    }, [activeTab])
 
 
     const cardActions = {
@@ -266,17 +280,21 @@ const BotRequestAndReports = ({selectedTab}: BotRequestAndReportsProps) => {
                 label: tabs.find((t) => t.id === activeTab)?.label ?? "bot_request",
                 onClick: () => {
                     if (isCreateBotRequest) {
+                        setCreateBotRequest(false);
+                        setCreateBotReports(false);
                         navigate('/portal/bot-requests', {
                             state: {
                                 from: 'botRequest',
-                              }
+                            }
                         })
                     }
                     if (isCreateBotReports) {
+                        setCreateBotRequest(false);
+                        setCreateBotReports(false);
                         navigate('/portal/bot-reports', {
                             state: {
                                 from: 'botReports',
-                              }
+                            }
                         })
                     }
                     return;
@@ -284,47 +302,56 @@ const BotRequestAndReports = ({selectedTab}: BotRequestAndReportsProps) => {
             },
         ];
 
-        if(isCreateBotRequest) {
-            items.push({label: "add_new_bot_request"})
-        }else if(isCreateBotReports) {
-            items.push({label: "add_new_bot_reports"})
+        if (isCreateBotRequest) {
+            items.push({ label: "add_new_bot_request" })
+        } else if (isCreateBotReports) {
+            items.push({ label: "add_new_bot_reports" })
         }
 
         return items;
-    }, [selectedCompany, activeTab, isCreateBotRequest, isCreateBotReports,  selectedInvestment, t, id]);
+    }, [selectedCompany, activeTab, isCreateBotRequest, isCreateBotReports, selectedInvestment, t, id]);
 
-    const isEmptySubmitted =
+    const handleOnNewReques = () => {
+        if (activeTab === 'botReports') {
+            setCreateBotReports(true)
+        } else {
+            setCreateBotRequest(true)
+        }
+    }
+
+    const isEmptyBotRequest =
         activeTab === 'botRequest' &&
         botRequestData?.length === 0 &&
         !loading;
 
-    const isEmptyDrafted =
+    const isEmptyBotReports =
         activeTab === 'botReports' &&
         botReportsData?.length === 0 &&
         !loading;
 
     return (
-        <div className="">
+        <div className="flex-1">
             {/* Header */}
             {/* <PageHeader header={header} customTitle={id ? 'submitted_application' : ''} /> */}
             <Breadcrumb items={breadcrumbs} />
 
-            {(!(isCreateBotRequest && isCreateBotReports)) ? (
+            {(!(isCreateBotRequest || isCreateBotReports)) ? (
                 <div className="min-h-[55vh]">
                     <div>
                         <CreateAndFilter
-                            onNewRequest={() => setCreateBotRequest(true)}
+                            onNewRequest={handleOnNewReques}
                             filterConfig={filterKeys}
                             setAppliedFilter={setApplicationFilter}
                             appliedFilter={applicationFilter}
                             hideFilters={hideFilters}
+                            hideStatus={activeTab === 'botReports'}
                         />
                         <div className={`w-full min-h-[55vh] flex flex-col ${hideFilters && 'justify-center'}`}>
                             {
                                 hideFilters ?
                                     (companies?.length > 0 ?
                                         <EmptyRequest title='no_applications_found' description="havent_submitted_application_yet" buttonText="submit_new_applications" onNewRequest={() => {
-                                            if(selectedTab === 'botRequest') {
+                                            if (activeTab === 'botRequest') {
                                                 setCreateBotRequest(true)
                                             } else {
                                                 setCreateBotReports(true)
@@ -344,7 +371,7 @@ const BotRequestAndReports = ({selectedTab}: BotRequestAndReportsProps) => {
                                         <div
                                             className={`
                                                  mt-4 w-full min-h-[35vh] rounded-b-lg flex-1 flex flex-col
-                                                 ${isEmptySubmitted || isEmptyDrafted ? "justify-center" : "justify-start"}
+                                                 ${isEmptyBotRequest || isEmptyBotReports ? "justify-center" : "justify-start"}
                                                `}
                                         >
                                             {activeTab === 'botRequest' &&
@@ -375,7 +402,8 @@ const BotRequestAndReports = ({selectedTab}: BotRequestAndReportsProps) => {
                     </div>
                 </div>
             ) :
-                <div className="min-h-[55vh] flex items-center">
+                <div>
+                    <BotRequestAndReportsFromHandler setCreateBotRequest={setCreateBotRequest} />
                 </div>
             }
             {loading && <Loader />}

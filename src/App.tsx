@@ -21,7 +21,7 @@ const AllocatedPlotsPage = lazy(() => import('@/screens/allocatedPlotsPage'));
 const PlotDetailsScreen = lazy(() => import('@/screens/plotDetailsScreen'));
 const DirectoryScreen = lazy(() => import('@/screens/directoryScreen'));
 const ViolationPage = lazy(() => import('@/screens/violationsScreen'));
-const BotRequestAndReportsPage = lazy(() => import('@/screens/botRequestAndReportsPage'));
+const BotRequestAndReportsPage = lazy(() => import('@/screens/botRequestAndReports'));
 const PaymentScreen = lazy(() => import('@/screens/paymentScreen'));
 const Agreements = lazy(() => import('@/screens/agreements'));
 const MyProfile = lazy(() => import('@/screens/myProfile'));
@@ -129,11 +129,11 @@ function App() {
           children: [
             {
               index: true,
-              element: <BotRequestAndReportsPage selectedBotType="request" />,
+              element: <BotRequestAndReportsPage />,
             },
             {
               path: ":form",
-              element: <BotRequestAndReportsPage selectedBotType="request" />,
+              element: <BotRequestAndReportsPage />,
             },
           ],
         },
@@ -142,11 +142,11 @@ function App() {
           children: [
             {
               index: true,
-              element: <BotRequestAndReportsPage selectedBotType="reports" />,
+              element: <BotRequestAndReportsPage />,
             },
             {
               path: ":form",
-              element: <BotRequestAndReportsPage selectedBotType="reports" />,
+              element: <BotRequestAndReportsPage />,
             },
           ],
         },

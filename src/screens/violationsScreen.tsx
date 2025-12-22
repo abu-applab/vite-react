@@ -201,7 +201,7 @@ const ViolationPage = ({resetTrigger = false}: ViolationProps) => {
     const hideFilters = (violationData?.length === 0 || !violationData) && !violationFilter?.searchTerm && !violationFilter?.status && !loading
 
     return (
-        <div className="">
+        <div className="flex-1">
             {/* <PageHeader header={header} customTitle={id ? 'view_violation_report' : ''} /> */}
             <Breadcrumb items={breadcrumbs} />
             {!showFInding ? <div className="min-h-[55vh] flex flex-col">

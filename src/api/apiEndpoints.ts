@@ -30,6 +30,7 @@ export const API_ENDPOINTS = {
   resetPassword: "/RegistrationAndLogin/resetPassword",
   associatenewcompany: "/WebApp/associatenewcompany",
   getcompanybyCRno: "/WebApp/getcompanybyCRno",
+  createBotServiceRequest: "/WebApp/createBotServiceRequest",
 }
 
 export const API_SERVICES_ENDPOINTS = {

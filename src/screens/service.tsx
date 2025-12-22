@@ -254,7 +254,7 @@ const Service = ({ resetTrigger = false }: ServiceProps) => {
     canView: detailServiceTypes.includes(item.serviceType),
   }));
   return (
-    <div className="">
+    <div className="flex-1">
       {/* <PageHeader header={header} selectedForm={selectedService} /> */}
       <Breadcrumb items={breadcrumbs} />
       {isLoading && <Loader />}
