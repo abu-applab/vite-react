@@ -42,6 +42,7 @@ interface DynamicFormProps {
   setApplicationSteps?: any
   isSubmittedApplication?: boolean
   hidePreviousButton?: Boolean
+  isBotReports?: boolean
 }
 
 const DynamicForm = ({
@@ -64,6 +65,7 @@ const DynamicForm = ({
   setApplicationSteps,
   isSubmittedApplication = false,
   hidePreviousButton = false,
+  isBotReports= false,
 }: DynamicFormProps) => {
   const { selectedInvestment, locations } = useApp();
   const { t } = useTranslation()
@@ -484,8 +486,9 @@ const DynamicForm = ({
   }
 
   return (
-    <Card className={cn("lg:p-10 md:py-6 bg-[#F6F5EF]] max-md:border-none max-md:shadow-none max-md:bg-[#F6F5EF] p-0 md:bg-white/50",
-      { "border-none shadow-none": isCreateApplication }
+    <Card className={cn("lg:p-6 md:py-4 bg-[#F6F5EF]] max-md:border-none max-md:shadow-none max-md:bg-[#F6F5EF] p-0 md:bg-white/50",
+      { "border-none shadow-none": isCreateApplication },
+      {"border-none shadow-none p-0! bg-[#f6f5ef]!": isBotReports }
     )}>
       {config?.title ? <div className="max-md:shadow max-md:border max-md:bg-white max-md:p-4 max-md:rounded-lg md:px-6">
         <CardTitle className="text-xl">{t(config?.title)}</CardTitle>
@@ -499,7 +502,7 @@ const DynamicForm = ({
         )}
       </div> : <div className=""></div>
       }
-      <CardContent className="max-md:p-0">
+      <CardContent className={cn("max-md:p-0", {'p-0': isBotReports})}>
         <form onSubmit={handleSubmit} className="space-y-6"
           onKeyDown={(e) => {
             if (e.key === "Enter") {

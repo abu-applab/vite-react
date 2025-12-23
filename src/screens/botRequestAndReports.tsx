@@ -12,7 +12,8 @@ import { EmptyRequest } from "@/components/service/serviceRequestPage/empty-requ
 import { PAGE_SIZE } from "@/constants";
 import { useTranslation } from "react-i18next";
 import Breadcrumb from "@/components/appBreadcrumb";
-import { BotRequestAndReportsFromHandler } from "@/components/botRequestAndReports/botRequestAndReportsFormHandler";
+import { BotRequestFromHandler } from "@/components/botRequestAndReports/botRequestFormHandler";
+import { BotReportsFromHandler } from "@/components/botRequestAndReports/botReportsFormHandler";
 
 const cardsConfigBase = {
     icon: FileSpreadsheet,
@@ -403,7 +404,12 @@ const BotRequestAndReports = () => {
                 </div>
             ) :
                 <div>
-                    <BotRequestAndReportsFromHandler setCreateBotRequest={setCreateBotRequest} />
+                    {
+                        isCreateBotRequest ?
+                            <BotRequestFromHandler setCreateBotRequest={setCreateBotRequest} />
+                            :
+                            <BotReportsFromHandler setCreateBotReports={setCreateBotReports} />
+                    }
                 </div>
             }
             {loading && <Loader />}

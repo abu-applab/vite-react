@@ -397,5 +397,19 @@
     "other": "Other",
     "view_bot_request": "View Bot Request",
     "bot_request_submitted": "Bot Request Submitted",
-    "bot_request_submitted_successfully": "Bot Request Submitted Successfully"
+    "bot_request_submitted_successfully": "Bot Request Submitted Successfully",
+    "ambiant": "Ambiant",
+    "air_conditioned": "Air Conditioned",
+    "total_area_sqm": "Total Area (SQM)",
+    "total_area_occupied_sqm": "Total Area Occupied (SQM)",
+    "occupancy": "Occupancy %",
+    "chilled_cold_stores": "Chilled/Cold Stores",
+    "frozen": "Frozen",
+    "chemical": "Chemical",
+    "small_stores": "Small Stores",
+    "mixed_use": "Mixed Use",
+    "data": "Data",
+    "warehouses": "Warehouses",
+    "retail_outlets_shops": "Retail Outlets/ Shops",
+    "accomadations": "Accomadations"
 }

@@ -1869,13 +1869,7 @@ export function getApplicationFormConfig(formType: string): FormConfig[] {
                                     placeholder: "",
                                     max: 15,
                                 },
-                                // {
-                                //     id: "location",
-                                //     label: "preferred_location",
-                                //     type: "select",
-                                //     required: true,
-                                //     options: [{ id: "loading", name: "Fetching location...", disabled: true }],
-                                // },
+
                                 {
                                     id: "selectedApplicationLocation",
                                     label: "location",
@@ -2321,7 +2315,7 @@ export const AddNewCompanyFormConfig: {
                     disabled: true,
                 },
                 {
-                    id: "companyNameAR", 
+                    id: "companyNameAR",
                     label: "arabic_company_name",
                     type: "text",
                     placeholder: "",
@@ -2329,7 +2323,7 @@ export const AddNewCompanyFormConfig: {
                     disabled: true,
                 },
                 {
-                    id: "companyNameEN",  
+                    id: "companyNameEN",
                     label: "english_company_name",
                     type: "text",
                     placeholder: "",
@@ -2496,11 +2490,11 @@ export const botRequestFormConfig: {
                     id: "BotRequestCategory",
                     label: "category",
                     type: "select",
-                    options: [{id: 'RenewalofEnvironmentalPermit', name: 'renewal_of_environmental_permit'},
-                        {id: 'CommercialRelations', name: 'commercial_relations'},
-                        {id: 'NOCforLeasingwarehousespace', name: 'noc_for_leasin_ware_housespace'},
-                        {id: 'LegalSupport', name: 'legal_support'},
-                        {id: 'Other', name: 'other'},
+                    options: [{ id: 'RenewalofEnvironmentalPermit', name: 'renewal_of_environmental_permit' },
+                    { id: 'CommercialRelations', name: 'commercial_relations' },
+                    { id: 'NOCforLeasingwarehousespace', name: 'noc_for_leasin_ware_housespace' },
+                    { id: 'LegalSupport', name: 'legal_support' },
+                    { id: 'Other', name: 'other' },
                     ],
                     // options: [{id: '939330000', name: 'RenewalofEnvironmentalPermit'},
                     //     {id: '939330001', name: 'CommercialRelations'},
@@ -2512,7 +2506,7 @@ export const botRequestFormConfig: {
                     span: 'full'
                 },
                 {
-                    id: "Description", 
+                    id: "Description",
                     label: "description",
                     type: "textarea",
                     placeholder: "",
@@ -2536,3 +2530,269 @@ export const botRequestFormConfig: {
         }
     ],
 }
+
+export const botReportFormConfig: {
+    title?: string;
+    sections: {
+        title?: string;
+        key?: string;
+        fields: FormField[];
+    }[];
+}[] = [
+        {
+            sections: [
+                {
+                    fields: [
+                        {
+                            id: "Month",
+                            label: "month",
+                            type: "select",
+                            options: [
+                                { name: "January", id: "01" },
+                                { name: "February", id: "02" },
+                                { name: "March", id: "03" },
+                                { name: "April", id: "04" },
+                                { name: "May", id: "05" },
+                                { name: "June", id: "06" },
+                                { name: "July", id: "07" },
+                                { name: "August", id: "08" },
+                                { name: "September", id: "09" },
+                                { name: "October", id: "10" },
+                                { name: "November", id: "11" },
+                                { name: "December", id: "12" },
+                            ],
+                            required: true,
+                        },
+                        {
+                            id: "Year",
+                            label: "year",
+                            type: "datepicker",
+                            required: true,
+                            placeholder: "",
+                            minYear: 2000,
+                            maxYear: 2025,
+                        },
+                    ],
+                },
+            ],
+        },
+        {
+            sections: [
+                {
+                    fields: [
+                        {
+                            id: "totalArea",
+                            label: "total_area_sqm",
+                            type: "text",
+                            required: true,
+                            subTitle: 'ambiant'
+                        },
+                        {
+                            id: "totalAreaOccupied",
+                            label: "total_area_occupied_sqm",
+                            type: "text",
+                            required: true,
+                        },
+                        {
+                            id: "occupancy",
+                            label: "occupancy",
+                            type: "text",
+                            required: true,
+                        },
+                        {
+                            id: "totalArea",
+                            label: "total_area_sqm",
+                            type: "text",
+                            required: true,
+                            subTitle: 'air_conditioned'
+                        },
+                        {
+                            id: "totalAreaOccupied",
+                            label: "total_area_occupied_sqm",
+                            type: "text",
+                            required: true,
+                        },
+                        {
+                            id: "occupancy",
+                            label: "occupancy",
+                            type: "text",
+                            required: true,
+                        },
+                        {
+                            id: "totalArea",
+                            label: "total_area_sqm",
+                            type: "text",
+                            required: true,
+                            subTitle: 'chilled_cold_stores'
+                        },
+                        {
+                            id: "totalAreaOccupied",
+                            label: "total_area_occupied_sqm",
+                            type: "text",
+                            required: true,
+                        },
+                        {
+                            id: "occupancy",
+                            label: "occupancy",
+                            type: "text",
+                            required: true,
+                        },
+                        {
+                            id: "totalArea",
+                            label: "total_area_sqm",
+                            type: "text",
+                            required: true,
+                            subTitle: 'frozen'
+                        },
+                        {
+                            id: "totalAreaOccupied",
+                            label: "total_area_occupied_sqm",
+                            type: "text",
+                            required: true,
+                        },
+                        {
+                            id: "occupancy",
+                            label: "occupancy",
+                            type: "text",
+                            required: true,
+                        },
+                        {
+                            id: "totalArea",
+                            label: "total_area_sqm",
+                            type: "text",
+                            required: true,
+                            subTitle: 'small_stores'
+                        },
+                        {
+                            id: "totalAreaOccupied",
+                            label: "total_area_occupied_sqm",
+                            type: "text",
+                            required: true,
+                        },
+                        {
+                            id: "occupancy",
+                            label: "occupancy",
+                            type: "text",
+                            required: true,
+                        },
+                        {
+                            id: "totalArea",
+                            label: "total_area_sqm",
+                            type: "text",
+                            required: true,
+                            subTitle: 'chemical'
+                        },
+                        {
+                            id: "totalAreaOccupied",
+                            label: "total_area_occupied_sqm",
+                            type: "text",
+                            required: true,
+                        },
+                        {
+                            id: "occupancy",
+                            label: "occupancy",
+                            type: "text",
+                            required: true,
+                        },
+                        {
+                            id: "totalArea",
+                            label: "total_area_sqm",
+                            type: "text",
+                            required: true,
+                            subTitle: 'mixed_use'
+                        },
+                        {
+                            id: "totalAreaOccupied",
+                            label: "total_area_occupied_sqm",
+                            type: "text",
+                            required: true,
+                        },
+                        {
+                            id: "occupancy",
+                            label: "occupancy",
+                            type: "text",
+                            required: true,
+                        },
+                    ],
+                },
+            ],
+        },
+        {
+            sections: [
+                {
+                    fields: [
+                        {
+                            id: "totalArea",
+                            label: "total_area_sqm",
+                            type: "text",
+                            required: true,
+                        },
+                        {
+                            id: "totalAreaOccupied",
+                            label: "total_area_occupied_sqm",
+                            type: "text",
+                            required: true,
+                        },
+                        {
+                            id: "occupancy",
+                            label: "occupancy",
+                            type: "text",
+                            required: true,
+                        },
+                    ],
+                },
+            ],
+        },
+        {
+            sections: [
+                {
+                    fields: [
+                        {
+                            id: "totalArea",
+                            label: "total_area_sqm",
+                            type: "text",
+                            required: true,
+                        },
+                        {
+                            id: "totalAreaOccupied",
+                            label: "total_area_occupied_sqm",
+                            type: "text",
+                            required: true,
+                        },
+                        {
+                            id: "occupancy",
+                            label: "occupancy",
+                            type: "text",
+                            required: true,
+                        },
+                    ],
+                },
+            ],
+        },
+        {
+            sections: [
+                {
+                    fields: [
+                        {
+                            id: "totalArea",
+                            label: "total_area_sqm",
+                            type: "text",
+                            required: true,
+                        },
+                        {
+                            id: "totalAreaOccupied",
+                            label: "total_area_occupied_sqm",
+                            type: "text",
+                            required: true,
+                        },
+                        {
+                            id: "occupancy",
+                            label: "occupancy",
+                            type: "text",
+                            required: true,
+                        },
+                    ],
+                },
+            ],
+        },
+    ]

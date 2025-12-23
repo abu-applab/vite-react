@@ -14,7 +14,7 @@ interface BotRequestAndReportsFromHandlerProps {
     setCreateBotRequest:  Dispatch<SetStateAction<boolean>>
 }
 
-export const BotRequestAndReportsFromHandler = ({setCreateBotRequest}: BotRequestAndReportsFromHandlerProps) => {
+export const BotRequestFromHandler = ({setCreateBotRequest}: BotRequestAndReportsFromHandlerProps) => {
     const [formState, setFormState] = useState<Record<string, any>>({});
     const [formConfig, _setFormConfig] = useState(botRequestFormConfig)
     const [errors, setErrors] = useState<Record<string, string>>({});
