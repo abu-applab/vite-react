@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { FileSpreadsheet, Eye, CircleArrowRight, Trash2 } from "lucide-react"
+import { Eye, CircleArrowRight, Trash2, MessageSquareDot } from "lucide-react"
 import { useApp } from "@/context/AppContext";
 import { CreateAndFilter } from "@/components/createAndFilter";
 import useNetworkRequest from "@/api/useNetworkRequest";
@@ -16,19 +16,22 @@ import { BotRequestFromHandler } from "@/components/botRequestAndReports/botRequ
 import { BotReportsFromHandler } from "@/components/botRequestAndReports/botReportsFormHandler";
 
 const cardsConfigBase = {
-    icon: FileSpreadsheet,
-    id: "applicationId",
-    subTitle: "typeOfApplication",
+    icon: MessageSquareDot,
+    id: "referenceNumber",
     title: "referenceNumber",
     status: 'status',
     fields: [
         {
-            label: "location",
-            key: "locationNameEn",
+            label: "category",
+            key: "category",
         },
         {
             label: "submitted_date",
             key: "submissionDate",
+        },
+        {
+            label: "modified_on",
+            key: "modifiedOn",
         },
     ],
     menuOptions: [
@@ -41,19 +44,25 @@ const cardsConfigBase = {
 }
 
 const cardsDraftConfigBase = {
-    icon: FileSpreadsheet,
-    id: "applicationId",
-    subTitle: "typeOfApplication",
+    icon: MessageSquareDot,
+    id: "referenceNumber",
     title: "referenceNumber",
-    status: 'status',
     fields: [
         {
-            label: "location",
-            key: "locationNameEn",
+            label: "modified_on",
+            key: "modifiedOn",
         },
         {
-            label: "created_date",
-            key: "createdOn",
+            label: "month",
+            key: "month",
+        },
+        {
+            label: "year",
+            key: "year",
+        },
+        {
+            label: "submitted_date",
+            key: "submissionDate",
         },
     ],
     menuOptions: [
@@ -113,11 +122,9 @@ const BotRequestAndReports = () => {
             title: 'Applications',
             createNewRequest: activeTab === 'botRequest' ? 'add_new_bot_request' : 'add_new_bot_reports',
             filterTypes: [
-                { id: '939330000', value: 'RenewalofEnvironmentalPermit' },
-                { id: '939330001', value: 'CommercialRelations' },
-                { id: '939330002', value: 'NOCforLeasingwarehousespace' },
-                { id: '939330003', value: 'LegalSupport' },
-                { id: '939330002', value: 'Other' },
+                { id: '939330000', value: 'completed' },
+                // { id: '939330001', value: 'in_progress' },
+                // { id: '939330002', value: 'on_hold' },
             ],
             ...(activeTab !== 'botRequest' && {
                 sortBy: [
@@ -351,7 +358,7 @@ const BotRequestAndReports = () => {
                             {
                                 hideFilters ?
                                     (companies?.length > 0 ?
-                                        <EmptyRequest title='no_applications_found' description="havent_submitted_application_yet" buttonText="submit_new_applications" onNewRequest={() => {
+                                        <EmptyRequest title={activeTab === 'botReports' ? 'no_bot_reports_yet': 'no_bot_requests_yet'} description={activeTab === 'botReports' ? "havent_submitted_bot_reports_yet": 'havent_submitted_bot_requests_yet'} buttonText={activeTab === 'botReports' ? "submit_new_bot_reports": "submit_new_bot_request"} onNewRequest={() => {
                                             if (activeTab === 'botRequest') {
                                                 setCreateBotRequest(true)
                                             } else {
@@ -383,7 +390,7 @@ const BotRequestAndReports = () => {
                                                             <CustomPagination handlePageChange={(page) => handlePageChange(page, applicationFilter?.totalPages ?? 0, setApplicationFilter)} currentPage={applicationFilter?.page ?? 1} totalPages={applicationFilter?.totalPages ?? 0} />
                                                         )}
                                                     </>
-                                                    : !loading && <EmptyRequest hideButton={true} title={'no_applications_found'} />)
+                                                    : !loading && <EmptyRequest hideButton={true} title={'no_bot_requests_yet'} />)
                                             }
                                             {activeTab === 'botReports' &&
                                                 ((botReportsData?.length > 0 && (applicationDraftFilter?.totalPages ?? 0) > 0) ?
@@ -393,7 +400,7 @@ const BotRequestAndReports = () => {
                                                             <CustomPagination handlePageChange={(page) => handlePageChange(page, applicationDraftFilter?.totalPages ?? 0, setApplicationDarftFilter)} currentPage={applicationDraftFilter?.page ?? 1} totalPages={applicationDraftFilter?.totalPages ?? 0} />
                                                         )}
                                                     </>
-                                                    : !loading && <EmptyRequest hideButton={true} title={'no_applications_found'} />)
+                                                    : !loading && <EmptyRequest hideButton={true} title={'no_bot_reports_yet'} />)
                                             }
                                         </div>
 

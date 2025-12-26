@@ -203,6 +203,7 @@ const DynamicForm = ({
             <Label htmlFor={field.id}>
               {t(field.label)}
               {(field.required && !isSubmittedApplication) && <span className="text-destructive">*</span>}
+              {(!field.required && !isSubmittedApplication) && <span className="text-gray-500">{t('optional')}</span>}
             </Label>
             <Textarea
               {...commonProps}

@@ -31,6 +31,7 @@ export const API_ENDPOINTS = {
   associatenewcompany: "/WebApp/associatenewcompany",
   getcompanybyCRno: "/WebApp/getcompanybyCRno",
   createBotServiceRequest: "/WebApp/createBotServiceRequest",
+  createBotServiceReport:"/WebApp/bot-report/submit",
 }
 
 export const API_SERVICES_ENDPOINTS = {

@@ -5,7 +5,7 @@ import useNetworkRequest from "@/api/useNetworkRequest";
 import Loader from "../loader";
 import { RequestSubmittedModal } from "../service/createNewRequest/requestSubmittedModal";
 import { API_ENDPOINTS } from "@/api/apiEndpoints";
-import { allowedCommentChars, hasEmojiOrUnicodeSymbols, isDigitsOnly, isEmpty, parseApiError } from "@/lib/utils";
+import { parseApiError } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 import { useApp } from "@/context/AppContext";
 import { useTranslation } from "react-i18next";
@@ -34,7 +34,7 @@ export const BotReportsFromHandler = ({ setCreateBotReports }: BotRequestAndRepo
     const [isSubmittedModalOpen, setSubmittedModal] = useState(false);
     const [referenceMessage, setReferenceMessage] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
-    const { contact, selectedCompany } = useApp()
+    const { contact } = useApp()
     const { t } = useTranslation();
     const [botReportsSteps, setBotReportsSteps] = useState<Step[]>(initialBotReportsSteps)
     const { id } = useParams();
@@ -50,7 +50,7 @@ export const BotReportsFromHandler = ({ setCreateBotReports }: BotRequestAndRepo
         e?.preventDefault();
         e?.stopPropagation();
 
-        const newErrors = validateBotRequestForm(formConfig[0], formState, t);
+        const newErrors = validateBotRequestForm(formConfig[formConfig.length -1], formState, t);
         setErrors(newErrors);
 
         if (Object.keys(newErrors).length > 0) {
@@ -61,26 +61,75 @@ export const BotReportsFromHandler = ({ setCreateBotReports }: BotRequestAndRepo
             return;
         }
 
-        const formData = new FormData();
+        const payload = {
+            contactId: contact?.id ?? "",
+            month: formState.month,
+            year: formState.year,
+            retail: {
+                totalArea: formState?.retailTotalArea,
+                totalAreaOccupied: formState?.retailTotalAreaOccupied,
+                occupancyPercent: formState?.retailOccupancyPercent,
+            },
 
-        formData.append("Company", selectedCompany?.accountID ?? '');
-        formData.append("ContactPerson", contact?.id ?? "");
-        formData.append("Description", formState.Description ?? '');
-        formData.append("BotRequestCategory", formState.BotRequestCategory ?? '');
+            accommodations: {
+                totalArea: formState?.accommodationTotalArea,
+                totalAreaOccupied: formState?.accommodationTotalAreaOccupied,
+                occupancyPercent: formState?.accommodationOccupancyPercent,
+            },
 
-        if (formState.Attachment) {
-            formData.append("Attachment", formState.Attachment);
-        }
+            openYards: {
+                totalArea: formState?.openYardsTotalArea,
+                totalAreaOccupied: formState?.openYardsTotalAreaOccupied,
+                occupancyPercent: formState?.openYardsOccupancyPercent,
+            },
+
+            warehouses: {
+                ambient: {
+                    totalArea: formState?.ambientTotalArea,
+                    totalAreaOccupied: formState?.ambientTotalAreaOccupied,
+                    occupancyPercent: formState?.ambientOccupancyPercent,
+                },
+                airConditioned: {
+                    totalArea: formState?.airConditionedTotalArea,
+                    totalAreaOccupied: formState?.airConditionedTotalAreaOccupied,
+                    occupancyPercent: formState?.airConditionedOccupancyPercent,
+                },
+                chilledColdStores: {
+                    totalArea: formState?.chilledColdStoresTotalArea,
+                    totalAreaOccupied: formState?.chilledColdStoresTotalAreaOccupied,
+                    occupancyPercent: formState?.chilledColdStoresOccupancyPercent,
+                },
+                frozen: {
+                    totalArea: formState?.frozenTotalArea,
+                    totalAreaOccupied: formState?.frozenTotalAreaOccupied,
+                    occupancyPercent: formState?.frozenOccupancyPercent,
+                },
+                smallStores: {
+                    totalArea: formState?.smallStoresTotalArea,
+                    totalAreaOccupied: formState?.smallStoresTotalAreaOccupied,
+                    occupancyPercent: formState?.smallStoresOccupancyPercent,
+                },
+                chemical: {
+                    totalArea: formState?.chemicalTotalArea,
+                    totalAreaOccupied: formState?.chemicalTotalAreaOccupied,
+                    occupancyPercent: formState?.chemicalOccupancyPercent,
+                },
+                mixedUse: {
+                    totalArea: formState?.mixedUseTotalArea,
+                    totalAreaOccupied: formState?.mixedUseTotalAreaOccupied,
+                    occupancyPercent: formState?.mixedUseOccupancyPercent,
+                },
+            }
+        };
 
         try {
             setIsLoading(true);
 
             const response = await networkRequest(
-                API_ENDPOINTS.createBotServiceRequest,
+                API_ENDPOINTS.createBotServiceReport,
                 {
                     method: "POST",
-                    body: formData, // ✅ IMPORTANT
-                    // ❌ DO NOT set Content-Type manually
+                    body: payload,
                 }
             );
 
@@ -175,27 +224,27 @@ export const BotReportsFromHandler = ({ setCreateBotReports }: BotRequestAndRepo
 
     const handleStepClick = (clickedStep: Step) => {
         setBotReportsSteps((prev) => {
-          const currentIndex = prev.findIndex(
-            (step) => step.title === clickedStep.title
-          );
-      
-          const previousStep = prev[currentIndex - 1];
-      
-          // 🚫 block if neither this step nor previous step is completed
-          if (
-            !clickedStep.completed &&
-            !(previousStep && previousStep.completed)
-          ) {
-            return prev;
-          }
-      
-          return prev.map((step) => ({
-            ...step,
-            active: step.title === clickedStep.title,
-          }));
+            const currentIndex = prev.findIndex(
+                (step) => step.title === clickedStep.title
+            );
+
+            const previousStep = prev[currentIndex - 1];
+
+            // 🚫 block if neither this step nor previous step is completed
+            if (
+                !clickedStep.completed &&
+                !(previousStep && previousStep.completed)
+            ) {
+                return prev;
+            }
+
+            return prev.map((step) => ({
+                ...step,
+                active: step.title === clickedStep.title,
+            }));
         });
-      };
-      
+    };
+
 
     const renderActiveStep = () => {
         const isLastStepActive = botReportsSteps[botReportsSteps.length - 1]?.active === true;
@@ -241,9 +290,9 @@ export const BotReportsFromHandler = ({ setCreateBotReports }: BotRequestAndRepo
                 referenceMessage={referenceMessage}
                 handleTryAgain={handleTryAgain}
                 errorMessage={errorMessage}
-                buttonText="view_bot_request"
-                title="bot_request_submitted_successfully"
-                heading="bot_request_submitted"
+                buttonText="view_bot_reports"
+                title="bot_reports_submitted_successfully"
+                heading="bot_reports_submitted"
             />
 
             {isLoading && <Loader />}
@@ -258,14 +307,12 @@ export const validateBotRequestForm = (
 ) => {
     let newErrors: Record<string, string> = {};
 
-    const validateTextLength = (field: any, value: string) => {
-        if (field.max && value.length > field.max) {
-            return `Maximum ${field.max} characters allowed`;
-        }
-        if (field.min && value.length < field.min) {
-            return `Minimum ${field.min} characters required`;
-        }
-    };
+    const error = (
+        t: any,
+        key: string,
+        field: any,
+        params: Record<string, any> = {}
+    ) => t(key, { field: t(field.label), ...params });
 
     config.sections.forEach((section: any) => {
         section.fields?.forEach((field: any) => {
@@ -274,39 +321,64 @@ export const validateBotRequestForm = (
                 typeof rawValue === "string" ? rawValue.trim() : rawValue;
 
             /* =======================
-               REQUIRED VALIDATION
+               REQUIRED
             ======================= */
-            if (field.required && isEmpty(value)) {
-                newErrors[field.id] = `${t(field.label)} is required`;
+            if (field.required && (value === undefined || value === "")) {
+                newErrors[field.id] = error(t, "required", field);
                 return;
             }
 
+            // skip empty non-required fields
+            if (value === undefined || value === "") return;
+
             /* =======================
-               DESCRIPTION VALIDATION
+               NUMERIC VALIDATION
             ======================= */
-            if (field.id === "description" && value) {
-                const lengthError = validateTextLength(field, value);
-                if (lengthError) {
-                    newErrors[field.id] = lengthError;
+            if (field.type === "number" || field.isNumeric) {
+                const numericValue = Number(value);
+                if (numericValue <= 0 && !field.id.toLowerCase().includes("occupancypercent")) {
+                    newErrors[field.id] = error(t, "greaterThanZero", field);
+                    return;
+                }
+                if (!/^\d+(\.\d+)?$/.test(value)) {
+                    newErrors[field.id] = error(t, "invalidNumber", field);
+                }
+
+
+                // must be > 0
+
+                // no leading zero (except "0" itself)
+                if (/^0\d+/.test(value)) {
+                    newErrors[field.id] = error(t, "noLeadingZero", field);
                     return;
                 }
 
-                if (isDigitsOnly(value)) {
-                    newErrors[field.id] =
-                        "This field cannot contain digits only.";
-                    return;
+                /* =======================
+                   TOTAL AREA / AREA OCCUPIED
+                ======================= */
+                if (
+                    field.id.toLowerCase().includes("totalarea") ||
+                    field.id.toLowerCase().includes("areaoccupied")
+                ) {
+                    if (value.replace(".", "").length > 10) {
+                        newErrors[field.id] = error(t, "maxLength", field, {
+                            max: 10,
+                        });
+                        return;
+                    }
                 }
 
-                if (hasEmojiOrUnicodeSymbols(value)) {
-                    newErrors[field.id] =
-                        "Emojis or special Unicode symbols are not allowed.";
-                    return;
-                }
-
-                if (!allowedCommentChars(value)) {
-                    newErrors[field.id] =
-                        "Only letters, numbers, spaces, and . , ! ? - are allowed.";
-                    return;
+                /* =======================
+                   OCCUPANCY %
+                ======================= */
+                if (field.id.toLowerCase().includes("occupancypercent")) {
+                    if (numericValue < -1 || numericValue > 100) {
+                        newErrors[field.id] = error(t, "digitsRangeBetween", field, {
+                            min: 0,
+                            max: 100,
+                        });
+                        return;
+                    }
                 }
             }
         });
@@ -314,5 +386,3 @@ export const validateBotRequestForm = (
 
     return newErrors;
 };
-
-

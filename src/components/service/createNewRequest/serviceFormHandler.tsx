@@ -1,4 +1,4 @@
-import { useState, useRef, type Dispatch, type SetStateAction, useEffect } from "react";
+import { useState, useRef, type Dispatch, type SetStateAction, useEffect, useMemo } from "react";
 import { validateForm } from "./validation";
 import useNetworkRequest from "@/api/useNetworkRequest";
 import { API_SERVICES_ENDPOINTS } from "@/api/apiEndpoints";
@@ -45,6 +45,9 @@ export const ServiceFormHandler = ({
   const { t } = useTranslation();
   const [isConfirmSubmitOpen, setConfirmSubmitOpen] = useState(false);
   const { id } = useParams();
+  const isNext = useMemo(() => {
+    return selectedService === "updateCompanyInformation" && formStage === 1;
+  }, [selectedService, formStage]);
 
   useEffect(() => {
     if (serviceDetails && id) {
@@ -250,7 +253,6 @@ export const ServiceFormHandler = ({
       setSubmittedModal(true);
       setIsLoading(false);
     } catch (error) {
-      console.error("Error:", error);
       setErrorMessage(parseApiError(error));
       setIsLoading(false);
       setSubmittedModal(true);
@@ -259,7 +261,11 @@ export const ServiceFormHandler = ({
 
   const handleTryAgain = () => {
     setSubmittedModal(false);
-    handleSubmit();
+    if(isNext) {
+      handleNext();
+    } else {
+      handleSubmit();
+    }
   };
 
   const handleCompanyUpdateBack = () => {
@@ -356,8 +362,9 @@ export const ServiceFormHandler = ({
       setFormStage(2);
       setIsLoading(false);
     } catch (err) {
+      setErrorMessage(parseApiError(err));
       setIsLoading(false);
-      console.error(err);
+      setSubmittedModal(true);
     }
   };
 
@@ -366,8 +373,6 @@ export const ServiceFormHandler = ({
     await handleSubmit();
   };
 
-
-  const isNext = selectedService === 'updateCompanyInformation' && formStage === 1
   return (
     <div>
       <DynamicForm
