@@ -124,67 +124,67 @@ export const BotRequestFromHandler = ({setCreateBotRequest}: BotRequestAndReport
     )
 }
 
+
 export const validateBotRequestForm = (
     formState: Record<string, any>,
     t: any
 ) => {
-    let newErrors: Record<string, string> = {};
+    let newErrors: Record<string, string> = {}
+    const error = (
+      t: any,
+      key: string,
+      field: any,
+      params: Record<string, any> = {}
+    ) => t(key, { field: t(field.label), ...params })
 
-    const validateTextLength = (field: any, value: string) => {
-        if (field.max && value.length > field.max) {
-            return `Maximum ${field.max} characters allowed`;
+  const validateTextLength = (field: any, value: string) => {
+    if (typeof field.max === "number" && value.length > field.max)
+      return error(t, "maxLength", field, { max: field.max })
+
+    if (typeof field.min === "number" && value.length < field.min)
+      return error(t, "minLength", field, { min: field.min })
+  }
+
+  botRequestFormConfig.sections.forEach((section) => {
+    section.fields?.forEach((field) => {
+      const rawValue = formState[field.id]
+      const value = typeof rawValue === "string" ? rawValue.trim() : rawValue
+
+      /* =======================
+         REQUIRED VALIDATION
+      ======================= */
+      if (field.required && isEmpty(value)) {
+        newErrors[field.id] = error(t, "required", field)
+        return
+      }
+
+      /* =======================
+         DESCRIPTION VALIDATION
+      ======================= */
+      if (field.id === "Description" && value) {
+        const lengthError = validateTextLength(field, value)
+        if (lengthError) {
+          newErrors[field.id] = lengthError
+          return
         }
-        if (field.min && value.length < field.min) {
-            return `Minimum ${field.min} characters required`;
+
+        if (isDigitsOnly(value)) {
+          newErrors[field.id] = error(t, "digitsOnly", field)
+          return
         }
-    };
 
-    botRequestFormConfig.sections.forEach((section) => {
-        section.fields?.forEach((field) => {
-            const rawValue = formState[field.id];
-            const value =
-                typeof rawValue === "string" ? rawValue.trim() : rawValue;
+        if (hasEmojiOrUnicodeSymbols(value)) {
+          newErrors[field.id] = error(t, "emojiNotAllowed", field)
+          return
+        }
 
-            /* =======================
-               REQUIRED VALIDATION
-            ======================= */
-            if (field.required && isEmpty(value)) {
-                newErrors[field.id] = `${t(field.label)} is required`;
-                return;
-            }
+        if (!allowedCommentChars(value)) {
+          newErrors[field.id] = error(t, "allowedChars", field)
+          return
+        }
+      }
+    })
+  })
 
-            /* =======================
-               DESCRIPTION VALIDATION
-            ======================= */
-            if (field.id === "description" && value) {
-                const lengthError = validateTextLength(field, value);
-                if (lengthError) {
-                    newErrors[field.id] = lengthError;
-                    return;
-                }
-
-                if (isDigitsOnly(value)) {
-                    newErrors[field.id] =
-                        "This field cannot contain digits only.";
-                    return;
-                }
-
-                if (hasEmojiOrUnicodeSymbols(value)) {
-                    newErrors[field.id] =
-                        "Emojis or special Unicode symbols are not allowed.";
-                    return;
-                }
-
-                if (!allowedCommentChars(value)) {
-                    newErrors[field.id] =
-                        "Only letters, numbers, spaces, and . , ! ? - are allowed.";
-                    return;
-                }
-            }
-        });
-    });
-
-    return newErrors;
-};
-
-
+  return newErrors
+}
