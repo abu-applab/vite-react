@@ -70,19 +70,16 @@ export const BotReportsFromHandler = ({ setCreateBotReports }: BotRequestAndRepo
                 totalAreaOccupied: formState?.retailTotalAreaOccupied,
                 occupancyPercent: formState?.retailOccupancyPercent,
             },
-
             accommodations: {
                 totalArea: formState?.accommodationTotalArea,
                 totalAreaOccupied: formState?.accommodationTotalAreaOccupied,
                 occupancyPercent: formState?.accommodationOccupancyPercent,
             },
-
             openYards: {
                 totalArea: formState?.openYardsTotalArea,
                 totalAreaOccupied: formState?.openYardsTotalAreaOccupied,
                 occupancyPercent: formState?.openYardsOccupancyPercent,
             },
-
             warehouses: {
                 ambient: {
                     totalArea: formState?.ambientTotalArea,

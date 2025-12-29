@@ -149,7 +149,7 @@ const PortalLayout = () => {
                                     </Avatar>
                                     <h1 className="text-xs">{`${fullName}`}</h1>
                                 </DropdownMenuLabel>
-                                <DropdownMenuItem className="flex items-center mt-2 gap-3 px-4 py-2 hover:bg-gray-50 font-medium text-xs" onClick={() => navigate('/portal/my-profile')} disabled>
+                                <DropdownMenuItem className="flex items-center mt-2 gap-3 px-4 py-2 hover:bg-gray-50 font-medium text-xs" onClick={() => navigate('/portal/my-profile')}>
                                     <User className="w-5 h-5  text-black" />
                                     {t('my_profile')}
                                 </DropdownMenuItem>

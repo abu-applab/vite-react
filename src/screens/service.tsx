@@ -256,7 +256,7 @@ const Service = ({ resetTrigger = false }: ServiceProps) => {
   return (
     <div className="flex-1">
       {/* <PageHeader header={header} selectedForm={selectedService} /> */}
-      <Breadcrumb items={breadcrumbs} />
+      <Breadcrumb items={breadcrumbs} heading="service_request"/>
       {isLoading && <Loader />}
       {!selectedService ? (
         <div className="w-full min-h-[55vh] flex flex-col">

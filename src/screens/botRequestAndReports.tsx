@@ -337,11 +337,15 @@ const BotRequestAndReports = () => {
         botReportsData?.length === 0 &&
         !loading;
 
+    const heading = useMemo(() => {
+      return  !(isCreateBotRequest || isCreateBotReports) ? 'bot_request_and_reports' : (isCreateBotRequest ? 'bot_request_form' : 'bot_reports_form')
+    }, [isCreateBotRequest, isCreateBotReports])
+
     return (
         <div className="flex-1">
             {/* Header */}
             {/* <PageHeader header={header} customTitle={id ? 'submitted_application' : ''} /> */}
-            <Breadcrumb items={breadcrumbs} />
+            <Breadcrumb items={breadcrumbs} heading={heading} />
 
             {(!(isCreateBotRequest || isCreateBotReports)) ? (
                 <div className="min-h-[55vh]">

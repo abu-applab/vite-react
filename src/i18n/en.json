@@ -424,6 +424,11 @@
     "havent_submitted_bot_requests_yet": "You haven’t submitted any bot requests yet.",
     "submit_new_bot_request": "Submit New Bot Request",
     "submit_new_bot_reports": "Submit New Bot Reports",
+    "bot_request_and_reports": "Bot Request & Reports",
+    "bot_request_form": "Bot Request Form",
+    "bot_reports_form": "Bot Reports Form",
+    "role": "Role",
+    "created_on": "Created On",
 
     
     "required": "{{field}} is required",

@@ -571,7 +571,7 @@ const ApplicationPage = () => {
         <div className="flex-1">
             {/* Header */}
             {/* <PageHeader header={header} customTitle={id ? 'submitted_application' : ''} /> */}
-            <Breadcrumb items={breadcrumbs} />
+            <Breadcrumb items={breadcrumbs} heading="applications" />
 
             {(!isCreateNewApplication) ? (
                 <div className="min-h-[55vh]">

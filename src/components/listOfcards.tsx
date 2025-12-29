@@ -31,7 +31,7 @@ interface ListOfCardsProps {
     cardsConfig: CardConfig
     cardsData: any[]
     showAlerts?: boolean
-    isProducts?: boolean
+    isFullSpan?: boolean
     cardClick?: boolean
 }
 
@@ -278,12 +278,12 @@ const ActionsMenu = ({ options, data, t }: { options: any[], data: any, t: any }
 
 
 
-const ListOFCards = ({ cardsConfig, cardsData, isProducts = false, cardClick = false }: ListOfCardsProps) => {
+const ListOFCards = ({ cardsConfig, cardsData, isFullSpan = false, cardClick = false }: ListOfCardsProps) => {
     const { t } = useTranslation();
 
     return (
         <div className={cn("grid grid-cols-1 ms:grid-cols-2 gap-4 mt-8", {
-            'md:grid-cols-1': isProducts
+            'md:grid-cols-1': isFullSpan
         })}>
             {cardsData?.map((data) => {
                 const statusValue = getValue(data, cardsConfig.status);
@@ -352,7 +352,7 @@ const ListOFCards = ({ cardsConfig, cardsData, isProducts = false, cardClick = f
 
                             <div className={cn(
                                 "pt-4 grid grid-cols-1 md:grid-cols-2 gap-3 text-sm",
-                                { "md:grid-cols-3": isProducts }
+                                { "md:grid-cols-3": isFullSpan }
                             )}>
                                 {cardsConfig.fields.map((field, i) => {
                                     let value = getValue(data, field.key);

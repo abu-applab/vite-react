@@ -202,8 +202,7 @@ const ViolationPage = ({resetTrigger = false}: ViolationProps) => {
 
     return (
         <div className="flex-1">
-            {/* <PageHeader header={header} customTitle={id ? 'view_violation_report' : ''} /> */}
-            <Breadcrumb items={breadcrumbs} />
+            <Breadcrumb items={breadcrumbs} heading={"violation_reports"} />
             {!showFInding ? <div className="min-h-[55vh] flex flex-col">
                 <>
                     <CreateAndFilter filterConfig={filterKeys} setAppliedFilter={setViolationFilter} appliedFilter={violationFilter} hideFilters={hideFilters} />

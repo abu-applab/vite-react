@@ -1,8 +1,10 @@
 import { Card } from '@/components/ui/card';
-import { UserCircle } from 'lucide-react';
-import { Link } from 'react-router-dom'
-import AlNoor from "../assets/images/all-noor-logo.svg"
-import QLink from "../assets/images/qatar-bank-logo.svg"
+import { Building2, UserCircle } from 'lucide-react';
+import { useNavigate } from 'react-router-dom'
+import { useMemo } from 'react';
+import Breadcrumb from '@/components/appBreadcrumb';
+import { useApp } from '@/context/AppContext';
+import ListOFCards from '@/components/listOfcards';
 
 const accessRequests = [
     {
@@ -25,25 +27,35 @@ const accessRequests = [
     },
 ];
 
-const connectedCompanies = [
-    {
-        nameEn: "Al Noor Real Estate W.L.L",
-        nameAr: "يرادات الغاربية للمواد الغذائية",
-        crNumber: "150903",
-        role: "Admin",
-        createdOn: "25-07-2025",
-        status: "Active",
-        logo: AlNoor,
-    },
-    {
-        nameEn: "Qatar International Islamic Bank",
-        nameAr: "يرادات الغاربية للمواد الغذائية",
-        crNumber: "150903",
-        role: "Bot",
-        createdOn: "25-07-2025",
-        status: "Active",
-        logo: QLink,
-    },
+const cardsConfig = {
+    icon: Building2,
+    id: "accountID",
+    subTitle: "arabicName",
+    title: "englishName",
+    status: 'status',
+    fields: [
+        {
+            label: "cr_number",
+            key: "crNumber",
+        },
+        {
+            label: "role",
+            key: "role",
+        },
+        {
+            label: "created_on",
+            key: "createdOn",
+        },
+    ],
+}
+
+const profileFields = [
+  { label: "First Name", key: "firstName", value: "Mohammed" },
+  { label: "Last Name", key: "lastName", value: "Rafi" },
+  { label: "Password", key: "password", value: "**********" },
+  { label: "Landline", key: "landline", value: "92736372" },
+  { label: "Mobile Phone", key: "mobilePhone", value: "+974 30321879" },
+  { label: "Email", key: "email", value: "exampleuser01@applab.qa", isEmail: true }
 ];
 
 const statusMap = {
@@ -75,125 +87,83 @@ function StatusBadge({ status }: StatusBadgeProps) {
     );
 }
 
-const myProfile = () => {
+const MyProfile = () => {
+    const navigate = useNavigate();
+    const { companies } = useApp();
+    console.log('companies: ', companies);
+
+    const breadcrumbs = useMemo(() => {
+        const items: { label: string; path?: string; onClick?: () => void }[] = [
+            { label: "Home", path: "/portal" },
+            {
+                label: "my_profile",
+                onClick: () => {
+                    navigate("/portal");
+                }
+            },
+        ];
+
+        return items;
+    }, []);
+
+
     return (
         <div className="">
-            <div>
-                <h1 className="text-2xl mb-1">My Profile</h1>
-                <p className="mb-6 text-base text-muted-foreground">
-                    <Link to="/portal">Home</Link>
-                    <span className="mx-2">›</span>
-                    <span className="text-maroon-100">My Profile</span>
-                </p>
-                <div className="max-w-8xl space-y-8">
-                    <div className="flex items-center gap-4 bg-white p-6 rounded-xl shadow-sm">
-                        <UserCircle className="w-12 h-12 text-gray-400" />
-                        <div>
-                            <h2 className="font-semibold text-lg text-gray-900">Mohammed Rafi</h2>
-                            <p className="text-sm text-gray-500">Admin</p>
+            <Breadcrumb items={breadcrumbs} heading={"my_profile"} />
+            <div className="max-w-8xl space-y-8">
+                <div className="flex items-center gap-4 bg-white p-6 rounded-xl shadow-sm">
+                    <UserCircle className="w-12 h-12 text-gray-400" />
+                    <div>
+                        <h2 className="font-semibold text-lg text-gray-900">Mohammed Rafi</h2>
+                        <p className="text-sm text-gray-500">Admin</p>
+                    </div>
+                </div>
+                <>
+                    <h3 className="font-medium text-black mb-4">Personal Information</h3>
+                    <Card className="p-6 space-y-4">
+                        <div className="grid grid-cols-4 gap-x-6 space-y-4 text-sm text-gray-700">
+                            {profileFields.map((field) => (
+                                <div key={field.key} className='space-y-1'>
+                                    <div className="font-normal text-gray-500">{field.label}</div>
+                                    {field.isEmail ? (
+                                        <a href={`mailto:${field.value}`} className="text-gray-900">
+                                            {field.value}
+                                        </a>
+                                    ) : (
+                                        <div className="font-normal text-gray-900">{field.value}</div>
+                                    )}
+                                </div>
+                            ))}
                         </div>
-                    </div>
-                    <>
-                        <h3 className="font-medium text-black mb-4">Personal Information</h3>
-                        <Card className="p-6 space-y-4">
-                            <div className="grid grid-cols-4 gap-x-6 space-y-4 text-sm text-gray-700">
-                                <div className='space-y-1'>
-                                    <div className="font-normal text-gray-500">First Name</div>
-                                    <div className="font-normal text-gray-900" >Mohammed</div>
-                                </div>
-                                <div className='space-y-1'>
-                                    <div className="font-normal text-gray-500">Last Name</div>
-                                    <div className="font-normal text-gray-900" >Rafi</div>
-                                </div>
-                                <div className='space-y-1'>
-                                    <div className="font-normal text-gray-500">Password</div>
-                                    <div className="font-normal text-gray-900" >**********</div>
-                                </div>
-                                <div className='space-y-1'>
-                                    <div className="font-normal text-gray-500">Landline</div>
-                                    <div className="font-normal text-gray-900">92736372</div>
-                                </div>
-                                <div className='space-y-1'>
-                                    <div className="font-normal text-gray-500">Mobile Phone</div>
-                                    <div className="font-normal text-gray-900">+974 30321879</div>
-                                </div>
-                                <div className='space-y-1'>
-                                    <div className="font-normal text-gray-500">Email</div>
-                                    <a href="mailto:exampleuser01@applab.qa" className="text-gray-900">
-                                        exampleuser01@applab.qa
-                                    </a>
-                                </div>
-                            </div>
-                        </Card>
-                    </>
-                    <>
-                        <h3 className="font-medium text-black mb-4">Access Requests</h3>
-                        <Card className="p-6 space-y-4">
-                            <div className="divide-y divide-gray-200">
-                                {accessRequests.map((req, idx) => (
-                                    <div
-                                        key={idx}
-                                        className="py-3 flex justify-between items-top text-sm text-gray-600"
-                                    >
-                                        <div>
-                                            <div className="font-medium text-gray-900">{req.company}</div>
-                                            <div className="text-xs mt-1">{`Request Type: ${req.requestType}`}</div>
-                                            <div className="text-xs mt-2 text-gray-400">{`Date: ${req.date}`}</div>
-                                        </div>
-                                        <StatusBadge status={req.status} />
-                                    </div>
-                                ))}
-                            </div>
-                        </Card>
-                    </>
-                    <h3 className="font-medium text-black mb-4">Connected Companies</h3>
-                    <div className="space-y-3">
-                        {connectedCompanies.map((company, idx) => (
-                            <div
-                                key={idx}
-                                className="flex flex-col bg-white rounded-lg shadow-sm divide divide-y"
-                            >
-                                <div className='flex flex-row items-center justify-between p-4 '>
-                                    <div className='flex flex-row justify-between  items-center gap-4'>
-                                        <div className="w-14 h-14 flex items-center justify-center rounded-lg bg-background border">
-                                            {company.logo ? (
-                                                <img
-                                                    src={company.logo}
-                                                    alt={company.nameEn}
-                                                    className="max-h-12 max-w-full"
-                                                />
-                                            ) : (
-                                                <UserCircle className="w-10 h-10 text-gray-400" />
-                                            )}
-                                        </div>
-                                        <div className="text-md text-gray-700 space-y-2">
-                                            <div className="font-semibold text-gray-900">{company.nameEn}</div>
-                                            <div className="text-semibold">{company.nameAr}</div>
-                                        </div>
-                                    </div>
-                                    <StatusBadge status={company.status} />
-                                </div>
-                                <div className="flex-1 grid grid-cols-4 text-sm text-gray-700 gap-4 p-4 ">
+                    </Card>
+                </>
+                <>
+                    <h3 className="font-medium text-black mb-4">Access Requests</h3>
+                    <Card className="p-6 space-y-4">
+                        <div className="divide-y divide-gray-200">
+                            {accessRequests.map((req, idx) => (
+                                <div
+                                    key={idx}
+                                    className="py-3 flex justify-between items-top text-sm text-gray-600"
+                                >
                                     <div>
-                                        <div className="font-normal text-gray-400">CR Number</div>
-                                        <div className="font-semibold text-gray-900">{company.crNumber}</div>
+                                        <div className="font-medium text-gray-900">{req.company}</div>
+                                        <div className="text-xs mt-1">{`Request Type: ${req.requestType}`}</div>
+                                        <div className="text-xs mt-2 text-gray-400">{`Date: ${req.date}`}</div>
                                     </div>
-                                    <div>
-                                        <div className="font-normal text-gray-400">Role</div>
-                                        <div className="font-semibold text-gray-900">{company.role}</div>
-                                    </div>
-                                    <div>
-                                        <div className="font-normal text-gray-400">Created On</div>
-                                        <div className="font-semibold text-gray-900">{company.createdOn}</div>
-                                    </div>
+                                    <StatusBadge status={req.status} />
                                 </div>
-                            </div>
-                        ))}
-                    </div>
+                            ))}
+                        </div>
+                    </Card>
+                </>
+                <h3 className="font-medium text-black mb-4">Connected Companies</h3>
+                <div className="space-y-3">
+                    <ListOFCards cardsConfig={cardsConfig} isFullSpan cardsData={companies} />
                 </div>
             </div>
         </div>
     )
 }
 
-export default myProfile
+export default MyProfile

@@ -25,7 +25,7 @@ const AddNewCompany = () => {
 
     return (
         <div className="flex-1 flex flex-col gap-8">
-            <Breadcrumb items={breadcrumbs} />
+            <Breadcrumb items={breadcrumbs} heading="add_new_company" />
             <div className="flex-1 flex items-start">
                 <div className="w-full">
                     <AddCompanyFormHandler />

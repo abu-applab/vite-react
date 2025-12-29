@@ -246,7 +246,7 @@ const ProductInformation = ({ products, setProducts, isError, isSubmittedApplica
                 </Button>}
             </div>
             {products?.length > 0 ? (
-                <ListOFCards cardsConfig={finalProductConfig} cardsData={products} isProducts />
+                <ListOFCards cardsConfig={finalProductConfig} cardsData={products} isFullSpan />
             ) : (
                 !isSubmittedApplication && <div className="">
                     <Card className={cn("flex flex-col items-center justify-center gap-6 p-6 mb-0", { "border-red-600": isError })}>
