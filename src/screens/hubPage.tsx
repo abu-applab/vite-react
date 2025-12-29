@@ -98,9 +98,9 @@ const HubPage = () => {
   const totalPages = Math.ceil(filteredCompanies.length / PAGE_SIZE);
 
   return (
-    <div className={cn("h-full")}>
-      {companies.length > 0 ? (
-        <>
+    <div className={cn("h-full w-full flex-1 flex flex-col", { "items-center justify-center": !(companies.length > 0) })}>
+      {companies?.length > 0 ? (
+        <div>
           <WelcomeHeader totalCompanies={companies.length ?? 0} currentCompanies={cardData.length ?? 0} />
           {filteredCompanies?.length > 0 ?
             <>
@@ -109,7 +109,7 @@ const HubPage = () => {
             </>
             :
             <EmptyRequest hideButton={true} title={'no_companies_found'} />}
-        </>
+        </div>
       )
         :
         <EmptyRequest title='no_companies_found' description="no_companies_found_description" buttonText="add_new_company" />
