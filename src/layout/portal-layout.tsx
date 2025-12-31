@@ -193,7 +193,7 @@ const PortalLayout = () => {
                 </>
             }
             <div className="flex-1 flex flex-col">
-                <div className="lg:px-20 md:px-6 md:mt-10 flex-1 flex flex-col justify-center max-md:m-4">
+                <div className="lg:px-20 md:px-6 md:mt-8 flex-1 flex flex-col justify-center max-md:m-4">
 
                     {isLoading ? (
                         <Loader />

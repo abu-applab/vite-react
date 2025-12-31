@@ -1,37 +1,38 @@
 import { Card } from '@/components/ui/card';
 import { Building2, UserCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom'
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Breadcrumb from '@/components/appBreadcrumb';
-import { useApp } from '@/context/AppContext';
 import ListOFCards from '@/components/listOfcards';
+import useNetworkRequest from '@/api/useNetworkRequest';
+import { API_ENDPOINTS } from '@/api/apiEndpoints';
+import { useApp } from '@/context/AppContext';
+import Loader from '@/components/loader';
 
-const accessRequests = [
-    {
-        company: "Gulf Horizon Trading W.L.L",
-        requestType: "Company Admin Access",
-        date: "29/07/2025",
-        status: "Approved",
-    },
-    {
-        company: "Qatar Steel Industry",
-        requestType: "Company Admin Access",
-        date: "29/07/2025",
-        status: "Pending",
-    },
-    {
-        company: "Gulf Horizon Trading W.L.L",
-        requestType: "Company Admin Access",
-        date: "29/07/2025",
-        status: "Rejected",
-    },
-];
+interface ProfileData {
+    contactId: string;
+    firstName: string;
+    lastName: string;
+    landLine: string;
+    mobile: string;
+    email: string;
+    userWebRoles: any[];
+    accessRequests: any[];
+    connectedCompanies: {
+        companyId: string;
+        companyNameEN: string;
+        companyNameAR: string;
+        crNumber: string;
+        createdOn: string;
+        status: string;
+    }[];
+}
 
 const cardsConfig = {
     icon: Building2,
-    id: "accountID",
-    subTitle: "arabicName",
-    title: "englishName",
+    id: "companyId",
+    subTitle: "companyNameAR",
+    title: "companyNameEN",
     status: 'status',
     fields: [
         {
@@ -48,15 +49,6 @@ const cardsConfig = {
         },
     ],
 }
-
-const profileFields = [
-  { label: "First Name", key: "firstName", value: "Mohammed" },
-  { label: "Last Name", key: "lastName", value: "Rafi" },
-  { label: "Password", key: "password", value: "**********" },
-  { label: "Landline", key: "landline", value: "92736372" },
-  { label: "Mobile Phone", key: "mobilePhone", value: "+974 30321879" },
-  { label: "Email", key: "email", value: "exampleuser01@applab.qa", isEmail: true }
-];
 
 const statusMap = {
     Approved: { color: "bg-green-100 text-green-600", icon: "bg-green-600" },
@@ -89,8 +81,44 @@ function StatusBadge({ status }: StatusBadgeProps) {
 
 const MyProfile = () => {
     const navigate = useNavigate();
-    const { companies } = useApp();
-    console.log('companies: ', companies);
+    const networkRequest = useNetworkRequest();
+    const [profileData, setProfileData] = useState<ProfileData | null>(null);
+    const [loading, setLoading] = useState(false);
+     const { contact } = useApp();
+
+    useEffect(() => {
+        const fetchUserProfile = async () => {
+            setLoading(true);
+            try {
+                const params = new URLSearchParams();
+                params.append("contactId", contact?.id ?? ''); // You'll need to get this from context/auth
+                
+                const response = await networkRequest(API_ENDPOINTS.getContactDetail, {
+                    method: "GET",
+                    body: params
+                });
+                
+                if (response?.success) {
+                    setProfileData(response.data);
+                }
+            } catch (error) {
+                console.error("Error fetching profile data:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchUserProfile();
+    }, []);
+
+    const profileFields = useMemo(() => [
+        { label: "First Name", key: "firstName", value: profileData?.firstName || "-" },
+        { label: "Last Name", key: "lastName", value: profileData?.lastName || "-" },
+        { label: "Password", key: "password", value: "**********" },
+        { label: "Landline", key: "landline", value: profileData?.landLine || "-" },
+        { label: "Mobile Phone", key: "mobilePhone", value: profileData?.mobile || "-" },
+        { label: "Email", key: "email", value: profileData?.email || "-", isEmail: true }
+    ], [profileData]);
 
     const breadcrumbs = useMemo(() => {
         const items: { label: string; path?: string; onClick?: () => void }[] = [
@@ -114,7 +142,9 @@ const MyProfile = () => {
                 <div className="flex items-center gap-4 bg-white p-6 rounded-xl shadow-sm">
                     <UserCircle className="w-12 h-12 text-gray-400" />
                     <div>
-                        <h2 className="font-semibold text-lg text-gray-900">Mohammed Rafi</h2>
+                        <h2 className="font-semibold text-lg text-gray-900">
+                            {profileData ? `${profileData?.firstName} ${profileData?.lastName}` : ""}
+                        </h2>
                         <p className="text-sm text-gray-500">Admin</p>
                     </div>
                 </div>
@@ -140,28 +170,49 @@ const MyProfile = () => {
                 <>
                     <h3 className="font-medium text-black mb-4">Access Requests</h3>
                     <Card className="p-6 space-y-4">
-                        <div className="divide-y divide-gray-200">
-                            {accessRequests.map((req, idx) => (
-                                <div
-                                    key={idx}
-                                    className="py-3 flex justify-between items-top text-sm text-gray-600"
-                                >
-                                    <div>
-                                        <div className="font-medium text-gray-900">{req.company}</div>
-                                        <div className="text-xs mt-1">{`Request Type: ${req.requestType}`}</div>
-                                        <div className="text-xs mt-2 text-gray-400">{`Date: ${req.date}`}</div>
+                        {loading ? (
+                            <div className="flex justify-center items-center py-8">
+                                <div className="text-gray-500">Loading access requests...</div>
+                            </div>
+                        ) : profileData?.accessRequests && profileData.accessRequests.length > 0 ? (
+                            <div className="divide-y divide-gray-200">
+                                {profileData.accessRequests.map((req, idx) => (
+                                    <div
+                                        key={idx}
+                                        className="py-3 flex justify-between items-top text-sm text-gray-600"
+                                    >
+                                        <div>
+                                            <div className="font-medium text-gray-900">{req.company}</div>
+                                            <div className="text-xs mt-1">{`Request Type: ${req.requestType}`}</div>
+                                            <div className="text-xs mt-2 text-gray-400">{`Date: ${req.date}`}</div>
+                                        </div>
+                                        <StatusBadge status={req.status} />
                                     </div>
-                                    <StatusBadge status={req.status} />
-                                </div>
-                            ))}
-                        </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="text-center py-8 text-gray-500">
+                                No access requests found
+                            </div>
+                        )}
                     </Card>
                 </>
                 <h3 className="font-medium text-black mb-4">Connected Companies</h3>
                 <div className="space-y-3">
-                    <ListOFCards cardsConfig={cardsConfig} isFullSpan cardsData={companies} />
+                    {loading ? (
+                        <div className="flex justify-center items-center py-8">
+                            <div className="text-gray-500">Loading companies...</div>
+                        </div>
+                    ) : (
+                        <ListOFCards 
+                            cardsConfig={cardsConfig} 
+                            isFullSpan 
+                            cardsData={profileData?.connectedCompanies || []} 
+                        />
+                    )}
                 </div>
             </div>
+            {loading && <Loader />}
         </div>
     )
 }

@@ -289,6 +289,7 @@ const ListOFCards = ({ cardsConfig, cardsData, isFullSpan = false, cardClick = f
                 const statusValue = getValue(data, cardsConfig.status);
                 const titleValue = getValue(data, cardsConfig.title);
                 let subTitleValue = getValue(data, cardsConfig.subTitle);
+                subTitleValue = cardsConfig.subTitle === 'crNumber' ? `CR No: ${subTitleValue}` : subTitleValue
                 subTitleValue = subTitleValue === 'Logistics' ? 'Logistics Park' : subTitleValue
                 const tagValue = getValue(data, cardsConfig.tag);
 

@@ -327,6 +327,7 @@ export const CreateAndFilter = ({
           {searchText && (
             <Button
               type="button"
+              variant="ghost"
               onClick={() => {
                 setSearchText("")
                 setAppliedFilter((prev: any) => ({
@@ -497,7 +498,7 @@ export const CreateAndFilter = ({
             </Select>
           )}
 
-          {(appliedFilter?.status || appliedFilter?.searchTerm || appliedFilter?.typeOfApplication) && (
+          {(appliedFilter?.status || appliedFilter?.searchTerm || appliedFilter?.typeOfApplication || appliedFilter?.sortBy) && (
             <Button
               variant="ghost"
               className="text-sm text-zinc-600 hover:text-zinc-70 px-3 cursor-pointer"

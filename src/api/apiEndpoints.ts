@@ -32,6 +32,9 @@ export const API_ENDPOINTS = {
   getcompanybyCRno: "/WebApp/getcompanybyCRno",
   createBotServiceRequest: "/WebApp/createBotServiceRequest",
   createBotServiceReport:"/WebApp/bot-report/submit",
+  GetBotRequests: "/WebApp/GetBotRequests",
+  GetBotReports:"/WebApp/GetBotReports",
+  getContactDetail: "/RegistrationAndLogin/getContactDetail",
 }
 
 export const API_SERVICES_ENDPOINTS = {

@@ -156,7 +156,6 @@ function App() {
             {
               index: true,
               element: <ViolationPage resetTrigger={true}/>,
-              // errorElement: add error element
             },
             {
               path: ":id",

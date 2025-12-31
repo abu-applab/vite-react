@@ -62,6 +62,19 @@ interface CompanyFilter {
   totalPages?: number
   searchTerm?: string
 }
+interface BotRequestFilter {
+  page: number,
+  status?: string,
+  totalPages?: number
+  searchTerm?: string
+}
+
+interface BotReportsFilter {
+  page: number,
+  sortBy?: string,
+  totalPages?: number
+  searchTerm?: string
+}
 
 interface Locations {
   id: string,
@@ -97,6 +110,10 @@ interface AppContextType {
   locations: Locations[];
   setLocations: React.Dispatch<React.SetStateAction<Locations[]>>;
   fetchCompanies: (signal?: AbortSignal) => Promise<void>;
+  botRequestFilter: BotRequestFilter;
+  setBotRequestFilter: React.Dispatch<React.SetStateAction<BotRequestFilter>>;
+  botReportsFilter: BotReportsFilter;
+  setBotReportsFilter: React.Dispatch<React.SetStateAction<BotReportsFilter>>;
 }
 
 // Create context
@@ -171,6 +188,11 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   //application
   const [applicationFilter, setApplicationFilter] = useState<ApplicationFilter>({ page: 1 })
   const [applicationDraftFilter, setApplicationDarftFilter] = useState<ApplicationFilter>({ page: 1, status: '939330004' })
+  
+  //bot request and report
+  const [botRequestFilter, setBotRequestFilter] = useState<BotRequestFilter>({ page: 1 })
+  const [botReportsFilter, setBotReportsFilter] = useState<BotReportsFilter>({ page: 1 })
+
 
   const fetchCompanies = async (signal?: AbortSignal) => {
     if (!contact?.id) return;
@@ -238,6 +260,10 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
       locations,
       setLocations,
       fetchCompanies,
+      botRequestFilter,
+      setBotRequestFilter,
+      botReportsFilter,
+      setBotReportsFilter,
     }}>
       {children}
     </AppContext.Provider>

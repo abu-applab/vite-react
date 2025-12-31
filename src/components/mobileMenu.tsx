@@ -77,7 +77,6 @@ export const MobileMenu = ({ isOpen, onClose, switchLanguage }: MobileMenuProps)
                           navigate(sub.href)
                           onClose()
                         }}
-                        disabled={!!sub.disable}
                       >
                         {t(sub.name)}
                       </Button>

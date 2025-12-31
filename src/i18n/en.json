@@ -429,6 +429,10 @@
     "bot_reports_form": "Bot Reports Form",
     "role": "Role",
     "created_on": "Created On",
+    "year_newest_to_oldest": "Year (Newest → Oldest)",
+    "year_oldest_to_newest": "Year (Oldest → Newest)",
+    "submitted_date_newest_to_oldest": "Submitted Date (Newest → Oldest)",
+    "submitted_date_oldest_to_newest": "Submitted Date (Oldest → Newest)",
 
     
     "required": "{{field}} is required",

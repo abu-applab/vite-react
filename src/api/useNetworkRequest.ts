@@ -7,6 +7,7 @@ interface NetworkRequestOptions {
     header?: Record<string, string>;
     signal?: AbortSignal;
     responseType?: string
+    isParams?: boolean
 }
 
 // let index = 0;
@@ -19,7 +20,8 @@ export default function useNetworkRequest() {
             body,
             header = {},
             signal,
-            responseType = "json"
+            responseType = "json",
+            isParams = false,
         }: NetworkRequestOptions = {}
     ) => {
 
@@ -35,7 +37,7 @@ export default function useNetworkRequest() {
                 method,
                 headers,
                 responseType,
-                ...(method === 'GET' ? { params: body } : { data: body }),
+                ...((method === 'GET' || isParams) ? { params: body } : { data: body }),
                 ...(signal ? { signal } : {}), // Add signal to axios config
             };
 

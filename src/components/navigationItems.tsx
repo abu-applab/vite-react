@@ -90,7 +90,7 @@ export function NavigationBar() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="start" className="w-56">
                   {item.children.map((option) => (
-                    <DropdownMenuItem key={option.name} onClick={() => handleNavigation(option.href)} className="cursor-pointer" disabled={!!option.disable}>
+                    <DropdownMenuItem key={option.name} onClick={() => handleNavigation(option.href)} className="cursor-pointer">
                       {t(option.name)}
                     </DropdownMenuItem>
                   ))}

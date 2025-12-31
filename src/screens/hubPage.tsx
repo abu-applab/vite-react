@@ -100,7 +100,7 @@ const HubPage = () => {
   return (
     <div className={cn("h-full w-full flex-1 flex flex-col", { "items-center justify-center": !(companies.length > 0) })}>
       {companies?.length > 0 ? (
-        <div>
+        <div className="md:mt-12">
           <WelcomeHeader totalCompanies={companies.length ?? 0} currentCompanies={cardData.length ?? 0} />
           {filteredCompanies?.length > 0 ?
             <>
