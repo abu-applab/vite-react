@@ -84,7 +84,7 @@ const MyProfile = () => {
     const networkRequest = useNetworkRequest();
     const [profileData, setProfileData] = useState<ProfileData | null>(null);
     const [loading, setLoading] = useState(false);
-     const { contact } = useApp();
+    const { contact } = useApp();
 
     useEffect(() => {
         const fetchUserProfile = async () => {
@@ -92,12 +92,12 @@ const MyProfile = () => {
             try {
                 const params = new URLSearchParams();
                 params.append("contactId", contact?.id ?? ''); // You'll need to get this from context/auth
-                
+
                 const response = await networkRequest(API_ENDPOINTS.getContactDetail, {
                     method: "GET",
                     body: params
                 });
-                
+
                 if (response?.success) {
                     setProfileData(response.data);
                 }
@@ -133,6 +133,12 @@ const MyProfile = () => {
 
         return items;
     }, []);
+
+    if (loading) {
+        return (
+            <Loader />
+        )
+    }
 
 
     return (
@@ -204,15 +210,14 @@ const MyProfile = () => {
                             <div className="text-gray-500">Loading companies...</div>
                         </div>
                     ) : (
-                        <ListOFCards 
-                            cardsConfig={cardsConfig} 
-                            isFullSpan 
-                            cardsData={profileData?.connectedCompanies || []} 
+                        <ListOFCards
+                            cardsConfig={cardsConfig}
+                            isFullSpan
+                            cardsData={profileData?.connectedCompanies || []}
                         />
                     )}
                 </div>
             </div>
-            {loading && <Loader />}
         </div>
     )
 }

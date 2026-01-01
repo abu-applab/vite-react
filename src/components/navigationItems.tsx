@@ -40,6 +40,7 @@ export function NavigationBar() {
 
     const homeChildRoutes = [
       "/portal/add-new-company",
+      "/portal/my-profile"
     ];
 
     // Check if this is a parent route
