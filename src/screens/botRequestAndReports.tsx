@@ -27,7 +27,7 @@ const cardsConfigBase = {
     icon: MessageSquareDot,
     id: "referenceNumber",
     title: "referenceNumber",
-    status: 'status',
+    status: 'statusCode',
     fields: [
         {
             label: "category",

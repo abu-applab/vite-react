@@ -151,7 +151,6 @@ const MyProfile = () => {
                         <h2 className="font-semibold text-lg text-gray-900">
                             {profileData ? `${profileData?.firstName} ${profileData?.lastName}` : ""}
                         </h2>
-                        <p className="text-sm text-gray-500">Admin</p>
                     </div>
                 </div>
                 <>
@@ -209,12 +208,18 @@ const MyProfile = () => {
                         <div className="flex justify-center items-center py-8">
                             <div className="text-gray-500">Loading companies...</div>
                         </div>
-                    ) : (
+                    ) : profileData?.connectedCompanies && profileData.connectedCompanies.length > 0 ? (
                         <ListOFCards
                             cardsConfig={cardsConfig}
                             isFullSpan
-                            cardsData={profileData?.connectedCompanies || []}
+                            cardsData={profileData.connectedCompanies}
                         />
+                    ) : (
+                        <Card className="p-6 space-y-4">
+                            <div className="text-center py-8 text-gray-500">
+                                No Connected Companies found
+                            </div>
+                        </Card>
                     )}
                 </div>
             </div>

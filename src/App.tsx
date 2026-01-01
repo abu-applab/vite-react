@@ -4,30 +4,53 @@ import { lazy, Suspense, type JSX } from 'react';
 import { getLocalStorageItem } from './lib/utils';
 import { useLanguageInit } from './hooks/useLanguageInit';
 import Loader from './components/loader';
+import ErrorBoundary from './components/ErrorBoundary';
 
-// Lazy load components
-const Login = lazy(() => import('@/screens/authentication/login'));
-const SignUp = lazy(() => import('@/screens/authentication/signUp'));
-const ForgotPassword = lazy(() => import('@/screens/authentication/forgotPassword'));
-const ResetPassword = lazy(() => import('@/screens/authentication/resetPassword'));
-const OtpVerification = lazy(() => import('@/screens/authentication/otpVerification'));
-const AddCompany = lazy(() => import('@/screens/addCompany'));
-const LoginLayout = lazy(() => import('@/layout/login-layout'));
-const PortalLayout = lazy(() => import('@/layout/portal-layout'));
-const HubPage = lazy(() => import('@/screens/hubPage'));
-const Service = lazy(() => import('@/screens/service'));
-const ApplicationPage = lazy(() => import('@/screens/application'));
-const AllocatedPlotsPage = lazy(() => import('@/screens/allocatedPlotsPage'));
-const PlotDetailsScreen = lazy(() => import('@/screens/plotDetailsScreen'));
-const DirectoryScreen = lazy(() => import('@/screens/directoryScreen'));
-const ViolationPage = lazy(() => import('@/screens/violationsScreen'));
-const BotRequestAndReportsPage = lazy(() => import('@/screens/botRequestAndReports'));
-const PaymentScreen = lazy(() => import('@/screens/paymentScreen'));
-const Agreements = lazy(() => import('@/screens/agreements'));
-const MyProfile = lazy(() => import('@/screens/myProfile'));
-const Notifications = lazy(() => import('@/screens/notifications'));
-const CompanyProfile = lazy(() => import('@/screens/companyProfile'));
-const AddNewCompany = lazy(() => import('@/screens/addNewCompany'));
+// Lazy load components with retry mechanism
+const lazyWithRetry = (componentImport: () => Promise<any>) => {
+  return lazy(() =>
+    componentImport().catch((error) => {
+      // If it's a chunk load error, reload the page
+      if (error?.message?.includes('Loading chunk') || error?.message?.includes('Failed to fetch')) {
+        // Add a flag to prevent infinite reloads
+        const reloadKey = 'vite_chunk_reload';
+        const lastReload = sessionStorage.getItem(reloadKey);
+        const now = Date.now();
+        
+        // Only reload if we haven't reloaded in the last 5 seconds
+        if (!lastReload || (now - parseInt(lastReload)) > 5000) {
+          sessionStorage.setItem(reloadKey, now.toString());
+          window.location.reload();
+          return new Promise(() => {}); // Never resolve to prevent further execution
+        }
+      }
+      throw error;
+    })
+  );
+};
+
+const Login = lazyWithRetry(() => import('@/screens/authentication/login'));
+const SignUp = lazyWithRetry(() => import('@/screens/authentication/signUp'));
+const ForgotPassword = lazyWithRetry(() => import('@/screens/authentication/forgotPassword'));
+const ResetPassword = lazyWithRetry(() => import('@/screens/authentication/resetPassword'));
+const OtpVerification = lazyWithRetry(() => import('@/screens/authentication/otpVerification'));
+const AddCompany = lazyWithRetry(() => import('@/screens/addCompany'));
+const LoginLayout = lazyWithRetry(() => import('@/layout/login-layout'));
+const PortalLayout = lazyWithRetry(() => import('@/layout/portal-layout'));
+const HubPage = lazyWithRetry(() => import('@/screens/hubPage'));
+const Service = lazyWithRetry(() => import('@/screens/service'));
+const ApplicationPage = lazyWithRetry(() => import('@/screens/application'));
+const AllocatedPlotsPage = lazyWithRetry(() => import('@/screens/allocatedPlotsPage'));
+const PlotDetailsScreen = lazyWithRetry(() => import('@/screens/plotDetailsScreen'));
+const DirectoryScreen = lazyWithRetry(() => import('@/screens/directoryScreen'));
+const ViolationPage = lazyWithRetry(() => import('@/screens/violationsScreen'));
+const BotRequestAndReportsPage = lazyWithRetry(() => import('@/screens/botRequestAndReports'));
+const PaymentScreen = lazyWithRetry(() => import('@/screens/paymentScreen'));
+const Agreements = lazyWithRetry(() => import('@/screens/agreements'));
+const MyProfile = lazyWithRetry(() => import('@/screens/myProfile'));
+const Notifications = lazyWithRetry(() => import('@/screens/notifications'));
+const CompanyProfile = lazyWithRetry(() => import('@/screens/companyProfile'));
+const AddNewCompany = lazyWithRetry(() => import('@/screens/addNewCompany'));
 
 const AUTH_TOKEN_KEY = 'auth_txn';
 
@@ -201,9 +224,11 @@ function App() {
   ]);
 
   return (
-    <Suspense fallback={<Loader />}>
-      <RouterProvider router={router} />
-    </Suspense>
+    <ErrorBoundary>
+      <Suspense fallback={<Loader />}>
+        <RouterProvider router={router} />
+      </Suspense>
+    </ErrorBoundary>
   );
 }
 
