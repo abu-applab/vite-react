@@ -142,7 +142,7 @@ const MyProfile = () => {
         )
     }
     
-    const initials = `${profileData?.firstName.charAt(0)}${profileData?.lastName.charAt(0)}`.toUpperCase();
+    const initials = `${contact?.firstName.charAt(0)}${contact?.lastName.charAt(0)}`.toUpperCase();
 
     return (
         <div className="">
@@ -155,7 +155,7 @@ const MyProfile = () => {
                         </Avatar>
                     <div>
                         <h2 className="font-semibold text-lg text-gray-900">
-                            {profileData ? `${profileData?.firstName} ${profileData?.lastName}` : ""}
+                            {contact ? `${contact?.firstName ?? ''} ${contact?.lastName ?? ''}` : ""}
                         </h2>
                     </div>
                 </div>
