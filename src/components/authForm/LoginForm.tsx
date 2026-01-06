@@ -5,6 +5,7 @@ import { Button } from "../ui/button";
 import { Mail, Lock, AlertCircle } from "lucide-react";
 import outlook from "../../assets/images/outlook-icon.svg";
 import google from "../../assets/images/google-icon.svg";
+import Tawtheeq from "../../assets/images/Tawtheeq-logo.svg";
 import { loginFields } from "@/constants";
 import useNetworkRequest from "@/api/useNetworkRequest";
 import { API_ENDPOINTS } from "@/api/apiEndpoints";
@@ -16,6 +17,7 @@ import { loginRequest } from "@/lib/auth/authConfig";
 import { useApp } from "@/context/AppContext";
 import { motion } from "framer-motion";
 import { useLocation } from "react-router-dom";
+import { loginWithNAS } from "@/auth/authService";
 
 const icons = { Mail, Lock };
 
@@ -284,6 +286,13 @@ const LoginForm = ({ onSwitch }: LoginFormProps) => {
           className="flex-1 flex items-center justify-center gap-2 border border-gray-200 rounded-md py-2 text-sm hover:bg-gray-50 cursor-pointer"
         >
           <img src={google} alt="Google" className="w-4 h-4" /> Google
+        </button>
+        <button
+          type="button"
+          onClick={() => loginWithNAS()}
+          className="flex-1 flex items-center justify-center gap-2 border border-gray-200 rounded-md py-2 text-sm hover:bg-gray-50 cursor-pointer"
+        >
+          <img src={Tawtheeq} alt="Google" className="w-4 h-4" /> Tawtheeq
         </button>
       </div>
 
