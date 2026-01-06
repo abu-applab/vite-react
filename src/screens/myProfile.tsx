@@ -1,5 +1,5 @@
 import { Card } from '@/components/ui/card';
-import { Building2, UserCircle } from 'lucide-react';
+import { Building2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useMemo, useState } from 'react';
 import Breadcrumb from '@/components/appBreadcrumb';
@@ -8,6 +8,8 @@ import useNetworkRequest from '@/api/useNetworkRequest';
 import { API_ENDPOINTS } from '@/api/apiEndpoints';
 import { useApp } from '@/context/AppContext';
 import Loader from '@/components/loader';
+import { Avatar } from '@radix-ui/react-avatar';
+import { AvatarFallback } from '@/components/ui/avatar';
 
 interface ProfileData {
     contactId: string;
@@ -139,14 +141,18 @@ const MyProfile = () => {
             <Loader />
         )
     }
-
+    
+    const initials = `${profileData?.firstName.charAt(0)}${profileData?.lastName.charAt(0)}`.toUpperCase();
 
     return (
         <div className="">
             <Breadcrumb items={breadcrumbs} heading={"my_profile"} />
             <div className="max-w-8xl space-y-8">
                 <div className="flex items-center gap-4 bg-white p-6 rounded-xl shadow-sm">
-                    <UserCircle className="w-12 h-12 text-gray-400" />
+                    <Avatar className="h-12 w-12 text-maroon-100">
+                            {/* <AvatarImage src={avatar} alt="Mushthtofa Ahmad Kamal" /> */}
+                            <AvatarFallback>{initials}</AvatarFallback>
+                        </Avatar>
                     <div>
                         <h2 className="font-semibold text-lg text-gray-900">
                             {profileData ? `${profileData?.firstName} ${profileData?.lastName}` : ""}
@@ -187,11 +193,11 @@ const MyProfile = () => {
                                         className="py-3 flex justify-between items-top text-sm text-gray-600"
                                     >
                                         <div>
-                                            <div className="font-medium text-gray-900">{req.company}</div>
-                                            <div className="text-xs mt-1">{`Request Type: ${req.requestType}`}</div>
-                                            <div className="text-xs mt-2 text-gray-400">{`Date: ${req.date}`}</div>
+                                            <div className="font-medium text-gray-900">{req?.company}</div>
+                                            <div className="text-xs mt-1">{`Request Type: ${req?.role}`}</div>
+                                            <div className="text-xs mt-2 text-gray-400">{`Date: ${req?.requestDate}`}</div>
                                         </div>
-                                        <StatusBadge status={req.status} />
+                                        <StatusBadge status={req?.accessStatus} />
                                     </div>
                                 ))}
                             </div>
