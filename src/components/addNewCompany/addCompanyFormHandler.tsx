@@ -51,7 +51,7 @@ export const AddCompanyFormHandler = () => {
           crNumber: companyData.crNumber ?? '',
           poBox: companyData.poBox ?? '',
           telephone: companyData.telephone ?? '',
-          companyId: companyData.companyId ?? '',
+          companyId: companyData.companyId ?? null,
           address: companyData.address ?? '',
         };
       };
