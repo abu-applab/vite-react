@@ -43,7 +43,7 @@ const cardsConfig = {
         },
         {
             label: "role",
-            key: "role",
+            key: "webRoles",
         },
         {
             label: "created_on",

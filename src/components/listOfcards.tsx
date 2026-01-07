@@ -356,7 +356,15 @@ const ListOFCards = ({ cardsConfig, cardsData, isFullSpan = false, cardClick = f
                                 { "md:grid-cols-3": isFullSpan }
                             )}>
                                 {cardsConfig.fields.map((field, i) => {
-                                    let value = getValue(data, field.key);
+                                    let value;
+                                    
+                                    if (field.key === 'webRoles') {
+                                        const roles = data?.webRoles || [];
+                                        value = roles.map((item: any) => item.role).join(', ');
+                                    }
+                                     else {
+                                        value = getValue(data, field.key);
+                                    }
 
                                     if (field.key === "mainConatact") {
                                         value = data?.mainConatact?.name;
