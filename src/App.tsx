@@ -29,7 +29,6 @@ const lazyWithRetry = (componentImport: () => Promise<any>) => {
   );
 };
 
-const Login = lazyWithRetry(() => import('@/screens/authentication/login'));
 const SignUp = lazyWithRetry(() => import('@/screens/authentication/signUp'));
 const ForgotPassword = lazyWithRetry(() => import('@/screens/authentication/forgotPassword'));
 const ResetPassword = lazyWithRetry(() => import('@/screens/authentication/resetPassword'));
@@ -51,6 +50,9 @@ const MyProfile = lazyWithRetry(() => import('@/screens/myProfile'));
 const Notifications = lazyWithRetry(() => import('@/screens/notifications'));
 const CompanyProfile = lazyWithRetry(() => import('@/screens/companyProfile'));
 const AddNewCompany = lazyWithRetry(() => import('@/screens/addNewCompany'));
+const TawtheeqSignInForm = lazyWithRetry(() => import('./screens/authentication/TawtheeqSignInForm'));
+const MobileLogin = lazyWithRetry(() => import('@/screens/authentication/MobileLogin'));
+const OtpVerify = lazyWithRetry(() => import('@/screens/authentication/OtpVerfiy'));
 
 const AUTH_TOKEN_KEY = 'auth_txn';
 
@@ -77,33 +79,51 @@ function App() {
       children: [
         {
           index: true,
-          element: <AuthRedirect><Login /></AuthRedirect>,
+          element: <AuthRedirect><TawtheeqSignInForm /></AuthRedirect>,
         },
         {
           path: "login",
-          element: <AuthRedirect><Login /></AuthRedirect>,
+          element: <AuthRedirect><TawtheeqSignInForm /></AuthRedirect>,
         },
         {
-          path: "signup",
-          element: <AuthRedirect><SignUp /></AuthRedirect>,
+          path: "login/mobile",
+          element: <AuthRedirect><MobileLogin /></AuthRedirect>,
         },
         {
-          path: "forgotpassword",
-          element: <AuthRedirect><ForgotPassword /></AuthRedirect>,
+          path: "login/mobile/verify",
+          element: <AuthRedirect><OtpVerify /></AuthRedirect>,
         },
-        {
-          path: "resetpassword",
-          element: <AuthRedirect><ResetPassword /></AuthRedirect>,
-        },
-        {
-          path: "otpverification",
-          element: <AuthRedirect><OtpVerification /></AuthRedirect>,
-        },
-        {
-          path: "add-company",
-          element: <AuthRedirect><AddCompany /></AuthRedirect>,
-        },
+        // {
+        //   path: "signup",
+        //   element: <AuthRedirect><SignUp /></AuthRedirect>,
+        // },
+        // {
+        //   path: "forgotpassword",
+        //   element: <AuthRedirect><ForgotPassword /></AuthRedirect>,
+        // },
+        // {
+        //   path: "resetpassword",
+        //   element: <AuthRedirect><ResetPassword /></AuthRedirect>,
+        // },
+        // {
+        //   path: "otpverification",
+        //   element: <AuthRedirect><OtpVerification /></AuthRedirect>,
+        // },
+        // {
+        //   path: "add-company",
+        //   element: <AuthRedirect><AddCompany /></AuthRedirect>,
+        // },
       ],
+    },
+    {
+      path: "/onboarding",
+      element: <ProtectedRoute><PortalLayout /></ProtectedRoute>,
+      children : [
+        {
+          index: true,
+          element: <></>
+        }
+      ]
     },
     {
       path: "/portal",

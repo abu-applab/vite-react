@@ -75,6 +75,7 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-maroon-100: #880E27;
+  --color-maroon-200: #862633;
 }
 
 :root {
@@ -165,6 +166,14 @@
   clip-path: inset(0 0 0 8%); /* cuts right side by 25% */
 }
 
+@keyframes spin { 
+  to { transform: rotate(360deg); 
+  } 
+} 
+
+.rotate { 
+  animation: spin 1s linear infinite; 
+}
 
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button {
