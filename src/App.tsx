@@ -29,11 +29,11 @@ const lazyWithRetry = (componentImport: () => Promise<any>) => {
   );
 };
 
-const SignUp = lazyWithRetry(() => import('@/screens/authentication/signUp'));
-const ForgotPassword = lazyWithRetry(() => import('@/screens/authentication/forgotPassword'));
-const ResetPassword = lazyWithRetry(() => import('@/screens/authentication/resetPassword'));
-const OtpVerification = lazyWithRetry(() => import('@/screens/authentication/otpVerification'));
-const AddCompany = lazyWithRetry(() => import('@/screens/addCompany'));
+// const SignUp = lazyWithRetry(() => import('@/screens/authentication/signUp'));
+// const ForgotPassword = lazyWithRetry(() => import('@/screens/authentication/forgotPassword'));
+// const ResetPassword = lazyWithRetry(() => import('@/screens/authentication/resetPassword'));
+// const OtpVerification = lazyWithRetry(() => import('@/screens/authentication/otpVerification'));
+// const AddCompany = lazyWithRetry(() => import('@/screens/addCompany'));
 const LoginLayout = lazyWithRetry(() => import('@/layout/login-layout'));
 const PortalLayout = lazyWithRetry(() => import('@/layout/portal-layout'));
 const HubPage = lazyWithRetry(() => import('@/screens/hubPage'));
